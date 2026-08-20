@@ -514,7 +514,6 @@ def render_day_section(day):
         tips_html = f'<div class="tip-card"><strong>Consiglio:</strong> {e(day["tips"])}</div>'
 
     hero_fname = f"{day['id']}-hero.jpg"
-    route_map = route_svg(day['id'])
 
     return f'''
 <section class="day-view" id="view-{day['id']}" hidden>
@@ -523,7 +522,8 @@ def render_day_section(day):
     <div class="day-title">{e(day['title'])}</div>
   </div>
   {photo_slot(hero_fname, day['title'], 'photo-slot--hero', HERO_ICON.get(day['id'], 'village'))}
-  <div class="map-frame">{route_map}</div>
+  <div class="map-frame"><div class="day-map" id="day-map-{day['id']}"></div></div>
+  <div class="line" style="margin:6px 0 0;font-size:12px;color:#7c8794;">Mappa reale (OpenStreetMap) — zoomabile e trascinabile. Percorso stradale indicativo (calcolato online); per la navigazione vera usa Google Maps offline.</div>
   <div class="grid2">
     <div class="info-card">
       <div class="info-card__label">Meteo · {e(locations[day['locKey']]['name'])}</div>
@@ -567,6 +567,7 @@ days_sections_html = ''.join(render_day_section(d) for d in days)
 sun_fallback_js = json.dumps(sun_fallback, ensure_ascii=False)
 seasonal_js = json.dumps(seasonal, ensure_ascii=False)
 locations_js = json.dumps(locations, ensure_ascii=False)
+day_routes_js = json.dumps(map_points, ensure_ascii=False)
 days_meta_js = json.dumps(
     [{'id': d['id'], 'dateISO': d['dateISO'], 'locKey': d['locKey']} for d in days],
     ensure_ascii=False
@@ -664,8 +665,9 @@ main {{ max-width:820px; margin:0 auto; padding:20px 20px 70px; display:flex; fl
 .day-head .day-date {{ font-size:12px; color:var(--amber); font-weight:700; text-transform:uppercase; letter-spacing:.08em; }}
 .day-head .day-title {{ font-family:'Cinzel',serif; font-weight:600; font-size:25px; margin-top:6px; color:#1f2c39; letter-spacing:.005em; }}
 
-.map-frame {{ border-radius:8px; overflow:hidden; border:2px solid var(--navy); box-shadow:0 4px 16px rgba(0,0,0,.12); line-height:0; }}
+.map-frame {{ border-radius:8px; overflow:hidden; border:2px solid var(--navy); box-shadow:0 4px 16px rgba(0,0,0,.12); line-height:0; height:260px; }}
 .map-frame .route-map {{ width:100%; height:auto; display:block; }}
+.day-map {{ width:100%; height:100%; background:#16263b; }}
 
 .grid2 {{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }}
 .info-card {{ background:var(--panel); border:1px solid var(--panel-border); border-radius:8px; padding:16px; }}
@@ -786,16 +788,75 @@ main {{ max-width:820px; margin:0 auto; padding:20px 20px 70px; display:flex; fl
 <script>
 const SEASONAL = {seasonal_js};
 const LOCATIONS = {locations_js};
+const DAY_ROUTES = {day_routes_js};
 const SUN_FALLBACK = {sun_fallback_js};
 const DAYS_META = {days_meta_js};
 const WEATHER_CODES = {WEATHER_CODES_JS};
 
 const state = {{ weather:{{}}, sun:{{}}, kp:null, kpStatus:'loading' }};
 
+const dayMaps = {{}};
+
+function ensureDayMap(dayId) {{
+  const el = document.getElementById('day-map-' + dayId);
+  const points = DAY_ROUTES[dayId];
+  if (!el || !points || !points.length || typeof L === 'undefined') return;
+  if (dayMaps[dayId]) {{ requestAnimationFrame(() => dayMaps[dayId].invalidateSize()); return; }}
+
+  const map = L.map(el, {{ scrollWheelZoom: false, zoomControl: true }});
+  dayMaps[dayId] = map;
+  L.tileLayer('https://{{s}}.basemaps.cartocdn.com/dark_all/{{z}}/{{x}}/{{y}}{{r}}.png', {{
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions" target="_blank" rel="noopener">CARTO</a>',
+    subdomains: 'abcd',
+    maxZoom: 19
+  }}).addTo(map);
+
+  const latlngs = points.map(p => [p.lat, p.lon]);
+
+  const seen = {{}};
+  let seq = 0;
+  points.forEach((p, i) => {{
+    const key = p.lat.toFixed(3) + ',' + p.lon.toFixed(3);
+    if (!(key in seen)) {{ seq++; seen[key] = seq; }}
+    const n = seen[key];
+    const isEnd = i === 0 || i === points.length - 1;
+    const size = isEnd ? 26 : 20;
+    const bg = isEnd ? '#b5673a' : '#f2ede2';
+    const icon = L.divIcon({{
+      className: '',
+      html: '<div style="width:' + size + 'px;height:' + size + 'px;border-radius:50%;background:' + bg + ';' +
+            'border:2px solid #16263b;display:flex;align-items:center;justify-content:center;' +
+            'font:700 11px \\'IBM Plex Sans\\',sans-serif;color:#16263b;">' + n + '</div>',
+      iconSize: [size, size],
+      iconAnchor: [size / 2, size / 2]
+    }});
+    L.marker([p.lat, p.lon], {{ icon }}).addTo(map).bindPopup(p.name);
+  }});
+
+  map.fitBounds(latlngs, {{ padding: [24, 24] }});
+
+  const fallback = L.polyline(latlngs, {{ color: '#4f8fa8', weight: 3, dashArray: '1,9', lineCap: 'round', opacity: 0.9 }}).addTo(map);
+
+  const coordStr = points.map(p => p.lon + ',' + p.lat).join(';');
+  fetch('https://router.project-osrm.org/route/v1/driving/' + coordStr + '?overview=full&geometries=geojson')
+    .then(r => r.ok ? r.json() : Promise.reject())
+    .then(data => {{
+      const route = data.routes && data.routes[0];
+      if (!route) return;
+      const coords = route.geometry.coordinates.map(c => [c[1], c[0]]);
+      map.removeLayer(fallback);
+      L.polyline(coords, {{ color: '#d9985f', weight: 4, opacity: 0.9, lineCap: 'round' }}).addTo(map);
+    }})
+    .catch(() => {{ /* resta la linea retta di riserva */ }});
+
+  el.addEventListener('touchstart', () => map.scrollWheelZoom.enable(), {{ once: true, passive: true }});
+}}
+
 function setActive(id) {{
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.toggle('active', b.dataset.nav === id));
   document.getElementById('view-info').hidden = id !== 'info';
   DAYS_META.forEach(d => {{ document.getElementById('view-' + d.id).hidden = d.id !== id; }});
+  if (id !== 'info') ensureDayMap(id);
   window.scrollTo({{ top: 0, behavior: 'instant' in window ? 'instant' : 'auto' }});
 }}
 document.querySelectorAll('.nav-btn').forEach(btn => {{
