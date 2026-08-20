@@ -1,0 +1,964 @@
+import json, html, math
+
+with open('cinzel.b64') as f:
+    cinzel_b64 = f.read().strip()
+with open('plex.b64') as f:
+    plex_b64 = f.read().strip()
+
+# ============================================================
+# DATI DEL VIAGGIO — modifica qui per aggiornare l'itinerario,
+# poi rilancia: python3 render.py
+# ============================================================
+
+locations = {
+    'reykjavik': {'name': 'Reykjavík', 'lat': 64.1466, 'lon': -21.9426},
+    'vik': {'name': 'Vík í Mýrdal', 'lat': 63.4186, 'lon': -19.0060},
+    'fludir': {'name': 'Flúðir', 'lat': 64.1372, 'lon': -20.3033},
+    'keflavik': {'name': 'Keflavík', 'lat': 63.9850, 'lon': -22.6056}
+}
+
+seasonal = {
+    'reykjavik': {'tmax': 4, 'tmin': -1, 'desc': 'Nuvoloso, rovesci di pioggia/neve frequenti', 'wind': 'moderato-forte'},
+    'vik': {'tmax': 5, 'tmin': 0, 'desc': 'Molto piovoso, tipico della costa sud', 'wind': 'forte, zona esposta'},
+    'fludir': {'tmax': 3, 'tmin': -3, 'desc': 'Più freddo, neve possibile in quota', 'wind': 'moderato'},
+    'keflavik': {'tmax': 4, 'tmin': -1, 'desc': 'Piovoso e ventoso, zona costiera aperta', 'wind': 'forte'}
+}
+
+# Alba/tramonto precalcolati (astral, Nov 2026) — fallback quando si è offline
+sun_fallback = {
+    'd1': {'sunrise': '09:57', 'sunset': '16:26', 'daylight': '6h 29m'},
+    'd2': {'sunrise': '10:00', 'sunset': '16:23', 'daylight': '6h 23m'},
+    'd3': {'sunrise': '10:03', 'sunset': '16:21', 'daylight': '6h 17m'},
+    'd4': {'sunrise': '09:48', 'sunset': '16:13', 'daylight': '6h 25m'},
+    'd5': {'sunrise': '09:51', 'sunset': '16:10', 'daylight': '6h 19m'},
+    'd6': {'sunrise': '09:54', 'sunset': '16:08', 'daylight': '6h 14m'},
+    'd7': {'sunrise': '10:09', 'sunset': '16:03', 'daylight': '5h 54m'},
+    'd8': {'sunrise': '10:12', 'sunset': '16:01', 'daylight': '5h 49m'},
+}
+
+stays = [
+    {'name': '46heima Boutique Apartments', 'detail': 'Laugavegur 46, Reykjavík · 15–18 nov (3 notti)'},
+    {'name': 'Hotel Burfell', 'detail': 'Vík í Mýrdal · 18–20 nov (2 notti)'},
+    {'name': 'The Hill Guesthouse', 'detail': 'Flúðir · 20–22 nov (2 notti)'}
+]
+
+days = [
+ {'id':'d1','num':1,'dateISO':'2026-11-15','dateLabel':'Dom 15 nov','title':'Arrivo & Reykjavík','locKey':'reykjavik',
+  'legs':[
+    {'from':'Aeroporto di Keflavík','to':'Ufficio FairCar','km':3,'time':'~10 min (navetta inclusa)','note':'Atterraggio 10:35 · ritiro auto previsto 11:00'},
+    {'from':'Keflavík','to':'Reykjavík','km':48,'time':'~45 min','note':'Se si salta la Blue Lagoon; con tappa +45 min circa'}
+  ],
+  'activities':[
+    {'time':'11:00','title':'Ritiro auto 4x4','desc':'FairCar, Bogatröð 1, Keflavík. Portare patente, carta di credito intestata al conducente e voucher stampato o digitale.','cost':None},
+    {'time':'15:00','title':'Check-in appartamento','desc':"46heima Boutique Apartments, Laugavegur 46. Codice d'accesso via email prima dell'arrivo.",'cost':None},
+    {'time':'16:30','title':'Passeggiata nel centro','desc':'Laugavegur, Hallgrímskirkja (belvedere sulla torre), porto vecchio, Sun Voyager.','cost':'gratis'}
+  ],
+  'food':[
+    {'meal':'Pranzo','place':'Bónus (supermercato) o hot dog da Bæjarins Beztu','note':'Per il senza glutine, chiedi il würstel senza pane','cost':'€','gf':True},
+    {'meal':'Cena','place':'Gló, Laugavegur','note':'Cucina salutista, piatti glútenlaus segnalati in menu','cost':'€€','gf':True}
+  ],
+  'accommodation':{'name':'46heima Boutique Apartments','detail':'Laugavegur 46, Reykjavík · 3 notti · check-in dalle 15:00'},
+  'tips':"Giornata di arrivo tranquilla: sistematevi con calma e fate un po' di spesa in un Bónus per i giorni successivi. Se volete una spa geotermica, la Sky Lagoon (Giorno 2) è più economica e meno turistica della Blue Lagoon."
+ },
+ {'id':'d2','num':2,'dateISO':'2026-11-16','dateLabel':'Lun 16 nov','title':"Cerchio d'Oro (Golden Circle)",'locKey':'reykjavik',
+  'legs':[
+    {'from':'Reykjavík','to':'Þingvellir','km':45,'time':'~45 min'},
+    {'from':'Þingvellir','to':'Geysir','km':60,'time':'~50 min'},
+    {'from':'Geysir','to':'Gullfoss','km':10,'time':'~10 min'},
+    {'from':'Gullfoss','to':'Reykjavík','km':120,'time':'~1h45'}
+  ],
+  'activities':[
+    {'time':'09:00','title':'Þingvellir National Park','desc':'Faglia tra le placche nordamericana ed euroasiatica, sito del primo parlamento islandese (Unesco).','cost':'gratis (parcheggio ~1000 ISK / ~7€)'},
+    {'time':'11:30','title':'Geysir & Strokkur','desc':'Area geotermica: Strokkur erutta ogni 5-10 minuti.','cost':'gratis'},
+    {'time':'13:00','title':'Gullfoss','desc':"Cascata a doppio salto, spettacolare anche d'inverno con il ghiaccio sulle rocce.",'cost':'gratis'},
+    {'time':'16:00','title':'Sky Lagoon (facoltativo, di sera)','desc':'Spa geotermica vista mare vicino a Reykjavík, meno turistica della Blue Lagoon.','cost':'€€ ~70€/persona'}
+  ],
+  'food':[
+    {'meal':'Pranzo','place':'Friðheimar, Reykholt','note':'Famosa zuppa di pomodoro in serra; chiedi la versione senza pane/crostini','cost':'€€','gf':True},
+    {'meal':'Cena','place':'Hlemmur Mathöll, Reykjavík','note':'Food hall con vari stand, alcuni segnalano opzioni senza glutine','cost':'€€','gf':True}
+  ],
+  'accommodation':{'name':'46heima Boutique Apartments','detail':'2ª notte a Reykjavík'},
+  'tips':'Anello di ~250 km: partite presto, in novembre il sole sorge tardi (intorno alle 10) quindi non perdete ore di luce.'
+ },
+ {'id':'d3','num':3,'dateISO':'2026-11-17','dateLabel':'Mar 17 nov','title':'Reykjavík: cultura e relax','locKey':'reykjavik',
+  'legs':[],
+  'activities':[
+    {'time':'10:00','title':'Perlan','desc':'Museo con grotta di ghiaccio artificiale e vista panoramica a 360° sulla città.','cost':'€€ ~4900 ISK / ~34€'},
+    {'time':'12:30','title':'Harpa & porto vecchio','desc':'Sala concerti in vetro iridescente, passeggiata sul lungomare.','cost':'gratis'},
+    {'time':'14:00','title':'National Museum of Iceland','desc':'Storia e cultura islandese dagli insediamenti vichinghi a oggi.','cost':'€ ~2900 ISK / ~20€'},
+    {'time':'16:00','title':'Reykjanes (facoltativo)','desc':'Mezza giornata alternativa: ponte tra i continenti, area geotermica di Gunnuhver, faro di Reykjanesviti.','cost':'gratis'}
+  ],
+  'food':[
+    {'meal':'Pranzo','place':'Hlemmur Mathöll','note':'Più stand con piatti glútenlaus','cost':'€€','gf':True},
+    {'meal':'Cena','place':'Sushi Social o cucina in appartamento','note':'Menu con opzioni senza glutine indicate','cost':'€€€','gf':True}
+  ],
+  'accommodation':{'name':'46heima Boutique Apartments','detail':'Ultima notte a Reykjavík · check-out domani 09:30-10:00'},
+  'tips':'Giornata cuscinetto: se il meteo guasta il Golden Circle, si può invertire con il Giorno 2.'
+ },
+ {'id':'d4','num':4,'dateISO':'2026-11-18','dateLabel':'Mer 18 nov','title':'Reykjavík → Vík: Costa Sud','locKey':'vik',
+  'legs':[
+    {'from':'Reykjavík','to':'Seljalandsfoss','km':125,'time':'~1h40'},
+    {'from':'Seljalandsfoss','to':'Skógafoss','km':30,'time':'~25 min'},
+    {'from':'Skógafoss','to':'Reynisfjara','km':55,'time':'~45 min'},
+    {'from':'Reynisfjara','to':'Vík','km':12,'time':'~12 min'}
+  ],
+  'activities':[
+    {'time':'09:30','title':'Check-out appartamento','desc':'','cost':None},
+    {'time':'11:30','title':'Seljalandsfoss','desc':"Cascata che si può costeggiare sul retro (in inverno spesso ghiacciata, occhio al sentiero). A 10 min a piedi c'è Gljúfrabúi, cascata nascosta in un canyon.",'cost':'gratis'},
+    {'time':'13:30','title':'Skógafoss','desc':"Una delle cascate più imponenti d'Islanda, 60m, scalinata panoramica in cima.",'cost':'gratis'},
+    {'time':'15:30','title':'Reynisfjara','desc':'Spiaggia di sabbia nera con colonne basaltiche e i faraglioni di Reynisdrangar. Attenzione alle onde anomale, non voltare le spalle al mare.','cost':'gratis'},
+    {'time':'16:30','title':'Dyrhólaey','desc':'Promontorio con arco di roccia e vista su Reynisfjara.','cost':'gratis'}
+  ],
+  'food':[
+    {'meal':'Pranzo','place':'Picnic a Skógar','note':'Porta snack dal Bónus di Reykjavík','cost':'€','gf':True},
+    {'meal':'Cena','place':'Suður-Vík Restaurant','note':'Menu con opzioni glútenlaus indicate','cost':'€€','gf':True}
+  ],
+  'accommodation':{'name':'Hotel Burfell','detail':'Vík í Mýrdal · 2 notti'},
+  'tips':'In novembre il buio scende verso le 17: pianifica Reynisfjara/Dyrhólaey per il primo pomeriggio.'
+ },
+ {'id':'d5','num':5,'dateISO':'2026-11-19','dateLabel':'Gio 19 nov','title':'Escursione a Jökulsárlón','locKey':'vik',
+  'legs':[
+    {'from':'Vík','to':'Fjaðrárgljúfur','km':72,'time':'~55 min'},
+    {'from':'Fjaðrárgljúfur','to':'Jökulsárlón','km':100,'time':'~1h15'},
+    {'from':'Jökulsárlón','to':'Vík','km':185,'time':'~2h30 (ritorno diretto)'}
+  ],
+  'activities':[
+    {'time':'08:00','title':'Partenza presto','desc':'Giornata lunga di guida: partire con il buio è normale in novembre.','cost':None},
+    {'time':'09:00','title':'Fjaðrárgljúfur','desc':'Canyon serpeggiante con pareti muschiose, punti panoramici accessibili a piedi.','cost':'gratis'},
+    {'time':'11:30','title':'Jökulsárlón Glacier Lagoon','desc':'Laguna glaciale con iceberg alla deriva verso il mare.','cost':'gratis (parcheggio a pagamento)'},
+    {'time':'13:00','title':'Diamond Beach','desc':'Spiaggia nera di fronte alla laguna dove i blocchi di ghiaccio si arenano.','cost':'gratis'}
+  ],
+  'food':[
+    {'meal':'Pranzo','place':'Kaffi Jökulsárlón o pranzo al sacco','note':'Zuppe spesso senza glutine, conferma con lo staff','cost':'€€','gf':True},
+    {'meal':'Cena','place':'Ströndin Bistro, Vík','note':'','cost':'€€','gf':True}
+  ],
+  'accommodation':{'name':'Hotel Burfell','detail':'2ª notte a Vík'},
+  'tips':'~370 km andata/ritorno da Vík: con brutto tempo valuta di fermarti solo a Fjaðrárgljúfur o Diamond Beach.'
+ },
+ {'id':'d6','num':6,'dateISO':'2026-11-20','dateLabel':'Ven 20 nov','title':'Vík → Flúðir','locKey':'fludir',
+  'legs':[
+    {'from':'Vík','to':'Kerið','km':130,'time':'~1h50'},
+    {'from':'Kerið','to':'Flúðir','km':25,'time':'~20 min'}
+  ],
+  'activities':[
+    {'time':'10:00','title':'Check-out Hotel Burfell','desc':'','cost':None},
+    {'time':'12:30','title':'Kerið','desc':'Cratere vulcanico con un lago sul fondo, percorribile a piedi in 15-20 min.','cost':'€ ~400 ISK / ~3€'},
+    {'time':'15:30','title':'Check-in The Hill Guesthouse','desc':'Flúðir','cost':None},
+    {'time':'19:00','title':'Secret Lagoon','desc':"La piscina geotermica più antica d'Islanda, meno turistica ed economica della Blue Lagoon. Ottima anche di sera per provare a scorgere l'aurora dall'acqua calda.",'cost':'€€ ~7000 ISK / ~48€ a persona, prenotare online'}
+  ],
+  'food':[
+    {'meal':'Pranzo','place':'Friðheimar (se non visitato il Giorno 2)','note':'Pane senza glutine spesso disponibile su richiesta','cost':'€€','gf':True},
+    {'meal':'Cena','place':'Cucina alla guesthouse o Restaurant Grund','note':'Verifica il menu glútenlaus in loco','cost':'€€','gf':True}
+  ],
+  'accommodation':{'name':'The Hill Guesthouse','detail':'Flúðir · 2 notti'},
+  'tips':'Prenota la Secret Lagoon in anticipo online: gli slot serali si esauriscono.'
+ },
+ {'id':'d7','num':7,'dateISO':'2026-11-21','dateLabel':'Sab 21 nov','title':'Flúðir: sorgenti calde e dintorni','locKey':'fludir',
+  'legs':[
+    {'from':'Flúðir','to':'Reykjadalur (Hveragerði)','km':55,'time':'~45 min'}
+  ],
+  'activities':[
+    {'time':'10:00','title':'Reykjadalur Hot Spring River','desc':'Cammina ~45 min tra le colline geotermiche fino al fiume caldo naturale. Porta costume e asciugamano: ingresso gratuito.','cost':'gratis'},
+    {'time':'14:00','title':'Faxi','desc':'Cascata piccola e tranquilla vicino a Flúðir, poco turistica.','cost':'gratis'},
+    {'time':'15:30','title':'Passeggiata a Flúðir','desc':'Villaggio geotermico, serre e piccole botteghe locali.','cost':'gratis'}
+  ],
+  'food':[
+    {'meal':'Pranzo','place':'Picnic o Highlander Guesthouse Café','cost':'€€','gf':True,'note':''},
+    {'meal':'Cena','place':'Cucina alla guesthouse','note':'Ultima occasione per finire la spesa dal Bónus','cost':'€','gf':True}
+  ],
+  'accommodation':{'name':'The Hill Guesthouse','detail':'Ultima notte a Flúðir · check-out presto domani'},
+  'tips':"Giornata più tranquilla prima del rientro, e cielo scuro poco inquinato: buon momento per tenere d'occhio l'aurora la sera."
+ },
+ {'id':'d8','num':8,'dateISO':'2026-11-22','dateLabel':'Dom 22 nov','title':'Flúðir → Keflavík → Volo di ritorno','locKey':'keflavik',
+  'legs':[
+    {'from':'Flúðir','to':'Aeroporto di Keflavík','km':140,'time':'~2h05'}
+  ],
+  'activities':[
+    {'time':'06:45','title':'Partenza da Flúðir','desc':'Partite presto per avere margine: riconsegna auto e imbarco sono molto ravvicinati.','cost':None},
+    {'time':'~09:00','title':'Riconsegna auto FairCar','desc':'Il voucher indica riconsegna alle 11:00, ma il volo parte alle 11:25: verificate con FairCar se potete riconsegnare prima (es. entro le 9:00-9:30) per avere tempo per check-in e imbarco.','cost':None},
+    {'time':'11:25','title':'Volo EJU3970 Keflavík → Milano Malpensa','desc':'Arrivo previsto alle 16:45.','cost':None}
+  ],
+  'food':[
+    {'meal':'Colazione','place':'Guesthouse o avanzi della spesa','note':'','cost':'€','gf':True}
+  ],
+  'accommodation': None,
+  'tips':'Pochissimo margine tra riconsegna auto (11:00) e decollo (11:25): meglio anticipare la riconsegna il più possibile.'
+ }
+]
+
+map_points = {
+    'd1': [{'name':'Aeroporto Keflavík','lat':63.9850,'lon':-22.6056}, {'name':'Reykjavík','lat':64.1466,'lon':-21.9426}],
+    'd2': [{'name':'Reykjavík','lat':64.1466,'lon':-21.9426}, {'name':'Þingvellir','lat':64.2559,'lon':-21.1297}, {'name':'Geysir','lat':64.3128,'lon':-20.3009}, {'name':'Gullfoss','lat':64.3271,'lon':-20.1199}, {'name':'Reykjavík','lat':64.1466,'lon':-21.9426}],
+    'd3': [{'name':'Perlan','lat':64.1289,'lon':-21.9147}, {'name':'Harpa','lat':64.1500,'lon':-21.9326}, {'name':'National Museum','lat':64.1417,'lon':-21.9530}, {'name':'Reykjanes (facolt.)','lat':63.8156,'lon':-22.6913}],
+    'd4': [{'name':'Reykjavík','lat':64.1466,'lon':-21.9426}, {'name':'Seljalandsfoss','lat':63.6156,'lon':-19.9886}, {'name':'Skógafoss','lat':63.5321,'lon':-19.5116}, {'name':'Reynisfjara','lat':63.4038,'lon':-19.0428}, {'name':'Dyrhólaey','lat':63.4033,'lon':-19.1250}, {'name':'Vík','lat':63.4186,'lon':-19.0060}],
+    'd5': [{'name':'Vík','lat':63.4186,'lon':-19.0060}, {'name':'Fjaðrárgljúfur','lat':63.7722,'lon':-18.1725}, {'name':'Jökulsárlón','lat':64.0784,'lon':-16.2300}, {'name':'Diamond Beach','lat':64.0645,'lon':-16.1809}, {'name':'Vík','lat':63.4186,'lon':-19.0060}],
+    'd6': [{'name':'Vík','lat':63.4186,'lon':-19.0060}, {'name':'Kerið','lat':64.0410,'lon':-20.8834}, {'name':'Flúðir','lat':64.1372,'lon':-20.3033}, {'name':'Secret Lagoon','lat':64.1306,'lon':-20.2989}],
+    'd7': [{'name':'Flúðir','lat':64.1372,'lon':-20.3033}, {'name':'Reykjadalur (Hveragerði)','lat':64.0140,'lon':-21.1870}, {'name':'Faxi','lat':64.1197,'lon':-20.2394}, {'name':'Flúðir','lat':64.1372,'lon':-20.3033}],
+    'd8': [{'name':'Flúðir','lat':64.1372,'lon':-20.3033}, {'name':'Aeroporto Keflavík','lat':63.9850,'lon':-22.6056}]
+}
+
+def e(s):
+    return html.escape(s, quote=True) if s else ''
+
+LOGISTICS_TITLES_LOWER = {'partenza presto'}
+import re
+def is_logistics(title):
+    if title.strip().lower() in LOGISTICS_TITLES_LOWER:
+        return True
+    return bool(re.search(r'check-in|check-out|ritiro auto|riconsegna auto|partenza da|volo ', title, re.I))
+
+import unicodedata
+ICELANDIC_MAP = str.maketrans({'Þ':'Th','þ':'th','Ð':'D','ð':'d','Æ':'Ae','æ':'ae','Ö':'O','ö':'o'})
+def slugify(s):
+    s = s.translate(ICELANDIC_MAP)
+    s = unicodedata.normalize('NFKD', s).encode('ascii','ignore').decode('ascii')
+    s = re.sub(r'\(.*?\)', '', s)
+    s = s.lower().strip()
+    s = re.sub(r'[^a-z0-9]+', '-', s)
+    s = re.sub(r'-+', '-', s).strip('-')
+    return s
+
+# ============================================================
+# ICONE ILLUSTRATE — una per tema, riconosciute dal nome del luogo.
+# Sostituiscono la foto finché non viene aggiunto un file reale in images/.
+# ============================================================
+
+ICON_BG = {
+    'airplane':    ('#1b2c40', '#28405c'),
+    'village':     ('#3a2f22', '#5c4a33'),
+    'rift':        ('#22344a', '#33506b'),
+    'geyser':      ('#2c4a55', '#3d6470'),
+    'waterfall':   ('#22384a', '#2f5468'),
+    'lagoon':      ('#2c4a4a', '#3d6a68'),
+    'dome':        ('#1b2c40', '#2c4560'),
+    'concerthall': ('#2c2440', '#463a63'),
+    'geocoast':    ('#2c4a55', '#3d6470'),
+    'blacksand':   ('#20242c', '#333a46'),
+    'arch':        ('#22384a', '#2f5468'),
+    'iceberg':     ('#1f3a4a', '#2e5a6e'),
+    'canyon':      ('#33291f', '#5c4830'),
+    'crater':      ('#33291f', '#5c4830'),
+    'hotriver':    ('#2c4a55', '#3d6470'),
+    'museum':      ('#2c2440', '#463a63'),
+    'saga':        ('#16263b', '#22344a'),
+}
+
+def icon_svg(key):
+    amber, paper, teal = '#d9985f', '#f2ede2', '#8fd6cd'
+    if key == 'airplane':
+        return ('<path d="M8 40 L46 20 L58 22 L48 30 L34 30 L26 40 L20 38 L24 30 L14 32 Z" fill="' + amber + '"/>'
+                '<path d="M4 44 L16 41 M4 50 L18 46" stroke="' + paper + '" stroke-width="1.6" opacity="0.5"/>')
+    if key == 'village':
+        return ('<rect x="8" y="30" width="14" height="16" fill="' + paper + '"/><polygon points="6,30 15,20 24,30" fill="' + amber + '"/>'
+                '<rect x="26" y="24" width="16" height="22" fill="' + paper + '" opacity="0.9"/><polygon points="24,24 34,12 44,24" fill="' + amber + '"/>'
+                '<rect x="46" y="33" width="12" height="13" fill="' + paper + '" opacity="0.8"/><polygon points="44,33 52,25 60,33" fill="' + amber + '"/>')
+    if key == 'rift':
+        return ('<polygon points="6,8 26,14 22,52 4,52" fill="' + paper + '" opacity="0.85"/>'
+                '<polygon points="38,14 58,8 60,52 42,52" fill="' + paper + '" opacity="0.65"/>'
+                '<path d="M27 12 L24 52 M37 13 L40 52" stroke="' + teal + '" stroke-width="2"/>')
+    if key == 'geyser':
+        return ('<path d="M6 50 Q32 46 58 50" stroke="' + paper + '" stroke-width="2" fill="none" opacity="0.6"/>'
+                '<path d="M32 48 C30 34 34 20 30 8" stroke="' + paper + '" stroke-width="4" fill="none" stroke-linecap="round"/>'
+                '<circle cx="26" cy="12" r="2.2" fill="' + paper + '"/><circle cx="36" cy="6" r="2" fill="' + paper + '"/><circle cx="30" cy="4" r="1.6" fill="' + paper + '"/>'
+                '<path d="M14 44 Q18 36 14 28" stroke="' + teal + '" stroke-width="1.6" fill="none" opacity="0.7"/>'
+                '<path d="M50 44 Q46 36 50 28" stroke="' + teal + '" stroke-width="1.6" fill="none" opacity="0.7"/>')
+    if key == 'waterfall':
+        return ('<polygon points="2,52 18,10 22,52" fill="' + amber + '" opacity="0.55"/>'
+                '<polygon points="42,52 46,10 62,52" fill="' + amber + '" opacity="0.75"/>'
+                '<polygon points="20,12 30,8 44,12 38,40 26,40" fill="' + paper + '" opacity="0.92"/>'
+                '<path d="M25 18 Q28 26 25 34 M33 16 Q36 26 33 36 M39 18 Q41 26 39 34" stroke="' + teal + '" stroke-width="1.3" fill="none" opacity="0.7"/>'
+                '<ellipse cx="31" cy="49" rx="22" ry="6" fill="' + teal + '" opacity="0.55"/>')
+    if key == 'lagoon':
+        return ('<ellipse cx="32" cy="42" rx="26" ry="12" fill="' + teal + '" opacity="0.6"/>'
+                '<path d="M16 26 Q20 18 16 10 M30 22 Q34 14 30 6 M44 26 Q48 18 44 10" stroke="' + paper + '" stroke-width="2" fill="none" opacity="0.55" stroke-linecap="round"/>'
+                '<polygon points="2,50 10,36 18,50" fill="' + amber + '" opacity="0.5"/>')
+    if key == 'dome':
+        return ('<rect x="12" y="34" width="40" height="16" fill="' + paper + '" opacity="0.85"/>'
+                '<path d="M14 34 A18 18 0 0 1 50 34 Z" fill="' + amber + '"/>'
+                '<path d="M20 34 L20 20 M28 34 L28 15 M36 34 L36 15 M44 34 L44 20" stroke="' + '#1b2c40' + '" stroke-width="1.4" opacity="0.5"/>')
+    if key == 'concerthall':
+        return ('<polygon points="6,50 6,26 20,14 34,24 34,50" fill="' + amber + '" opacity="0.85"/>'
+                '<polygon points="34,50 34,24 48,16 58,28 58,50" fill="' + teal + '" opacity="0.55"/>'
+                '<path d="M10 30 L30 30 M10 38 L30 38 M38 32 L54 32 M38 40 L54 40" stroke="' + '#1b2c40' + '" stroke-width="1" opacity="0.4"/>')
+    if key == 'geocoast':
+        return ('<path d="M2 40 Q16 30 30 40 T58 40" stroke="' + teal + '" stroke-width="2.5" fill="none"/>'
+                '<rect x="46" y="12" width="5" height="20" fill="' + paper + '"/><polygon points="44,12 48,4 53,12" fill="' + amber + '"/>'
+                '<path d="M14 36 Q17 28 14 20 M22 36 Q25 30 22 24" stroke="' + paper + '" stroke-width="1.6" fill="none" opacity="0.6" stroke-linecap="round"/>')
+    if key == 'blacksand':
+        return ('<polygon points="2,52 6,26 18,14 26,24 22,52" fill="' + amber + '" opacity="0.7"/>'
+                '<polygon points="10,40 17,32 24,40 17,48" fill="' + paper + '" opacity="0.85"/>'
+                '<polygon points="22,42 29,34 36,42 29,50" fill="' + paper + '" opacity="0.7"/>'
+                '<path d="M2 50 Q30 44 62 50" stroke="' + teal + '" stroke-width="2.5" fill="none"/>'
+                '<path d="M38 52 Q48 46 60 52" stroke="' + teal + '" stroke-width="1.6" fill="none" opacity="0.6"/>')
+    if key == 'arch':
+        return ('<path d="M10 52 C10 22 50 22 50 52" stroke="' + paper + '" stroke-width="7" fill="none"/>'
+                '<path d="M2 46 Q20 40 30 46 T58 46" stroke="' + teal + '" stroke-width="2.5" fill="none"/>'
+                '<path d="M44 14 l3 -3 3 2 M50 12 l3 -3 3 2" stroke="' + paper + '" stroke-width="1.2" fill="none" opacity="0.6"/>')
+    if key == 'iceberg':
+        return ('<path d="M2 46 Q30 40 60 46" stroke="' + teal + '" stroke-width="2.5" fill="none"/>'
+                '<polygon points="10,46 18,24 28,46" fill="' + paper + '" opacity="0.9"/>'
+                '<polygon points="24,46 36,18 50,46" fill="' + paper + '" opacity="0.7"/>'
+                '<polygon points="42,46 50,30 58,46" fill="' + paper + '" opacity="0.55"/>')
+    if key == 'canyon':
+        return ('<polygon points="2,52 2,10 16,20 10,30 20,38 12,52" fill="' + amber + '" opacity="0.55"/>'
+                '<polygon points="60,52 60,10 46,20 52,30 42,38 50,52" fill="' + amber + '" opacity="0.75"/>'
+                '<path d="M22 40 Q31 46 40 40" stroke="' + teal + '" stroke-width="2" fill="none"/>')
+    if key == 'crater':
+        return ('<ellipse cx="31" cy="30" rx="27" ry="18" fill="none" stroke="' + amber + '" stroke-width="4"/>'
+                '<ellipse cx="31" cy="32" rx="15" ry="9" fill="' + teal + '" opacity="0.7"/>')
+    if key == 'hotriver':
+        return ('<ellipse cx="16" cy="44" rx="16" ry="10" fill="' + amber + '" opacity="0.4"/>'
+                '<ellipse cx="48" cy="18" rx="16" ry="10" fill="' + amber + '" opacity="0.4"/>'
+                '<path d="M4 40 Q20 30 32 32 T58 20" stroke="' + teal + '" stroke-width="3" fill="none" stroke-linecap="round"/>'
+                '<path d="M26 30 Q29 24 26 18" stroke="' + paper + '" stroke-width="1.4" fill="none" opacity="0.6"/>')
+    if key == 'museum':
+        return ('<polygon points="6,24 31,6 56,24" fill="' + amber + '"/>'
+                '<rect x="8" y="24" width="46" height="6" fill="' + amber + '" opacity="0.6"/>'
+                '<rect x="10" y="30" width="42" height="18" fill="' + paper + '" opacity="0.9"/>'
+                '<rect x="17" y="30" width="4" height="18" fill="' + '#1b2c40' + '" opacity="0.5"/>'
+                '<rect x="29" y="30" width="4" height="18" fill="' + '#1b2c40' + '" opacity="0.5"/>'
+                '<rect x="41" y="30" width="4" height="18" fill="' + '#1b2c40' + '" opacity="0.5"/>'
+                '<rect x="6" y="48" width="50" height="4" fill="' + amber + '"/>')
+    if key == 'saga':
+        return ('<path d="M2 20 Q20 8 34 18 T62 12" stroke="' + teal + '" stroke-width="2" fill="none" opacity="0.8"/>'
+                '<circle cx="50" cy="9" r="4.5" fill="' + paper + '"/>'
+                '<polygon points="6,50 20,26 34,50" fill="' + paper + '" opacity="0.9"/>'
+                '<polygon points="26,50 42,18 60,50" fill="' + amber + '"/>')
+    # fallback generico
+    return ('<path d="M0 34 L14 20 L26 30 L40 12 L54 26 L64 16 L64 40 L0 40 Z" fill="' + paper + '"/>'
+            '<circle cx="50" cy="9" r="6" fill="' + amber + '"/>')
+
+HERO_ICON = {
+    'd1': 'airplane', 'd2': 'waterfall', 'd3': 'dome', 'd4': 'blacksand',
+    'd5': 'iceberg', 'd6': 'crater', 'd7': 'hotriver', 'd8': 'airplane',
+}
+
+def guess_icon(title):
+    t = title.lower()
+    checks = [
+        (['volo', 'aeroporto'], 'airplane'),
+        (['þingvellir', 'thingvellir'], 'rift'),
+        (['geysir', 'strokkur'], 'geyser'),
+        (['faxi'], 'waterfall'),
+        (['foss'], 'waterfall'),
+        (['perlan'], 'dome'),
+        (['harpa'], 'concerthall'),
+        (['museum'], 'museum'),
+        (['reykjanes'], 'geocoast'),
+        (['reynisfjara'], 'blacksand'),
+        (['dyrhólaey', 'dyrholaey'], 'arch'),
+        (['jökulsárlón', 'jokulsarlon', 'diamond beach'], 'iceberg'),
+        (['fjaðrárgljúfur', 'fjadrargljufur'], 'canyon'),
+        (['kerið', 'kerid'], 'crater'),
+        (['reykjadalur', 'hot spring'], 'hotriver'),
+        (['secret lagoon', 'sky lagoon', 'lagoon'], 'lagoon'),
+        (['passeggiata', 'centro', 'villaggio'], 'village'),
+    ]
+    for keywords, key in checks:
+        if any(k in t for k in keywords):
+            return key
+    return 'village'
+
+def photo_slot(filename, label, css_class, icon_key='village'):
+    bg1, bg2 = ICON_BG.get(icon_key, ('#3a2f22', '#5c4a33'))
+    inner = icon_svg(icon_key)
+    return (f'<div class="photo-slot {css_class}" data-photo="{e(filename)}" '
+            f'style="--bg1:{bg1};--bg2:{bg2}">'
+            f'<img src="images/{filename}" alt="{e(label)}" loading="lazy" '
+            f'onerror="this.parentElement.classList.add(\'photo-slot--empty\')">'
+            f'<div class="photo-slot__ph"><svg viewBox="0 0 64 56" class="photo-slot__icon">{inner}</svg>'
+            f'<span>{e(label)}</span></div></div>')
+
+def render_leg(leg):
+    note = f'<div class="leg-note">{e(leg["note"])}</div>' if leg.get('note') else ''
+    return (f'<div class="leg"><div class="leg-route">{e(leg["from"])} → {e(leg["to"])}</div>'
+            f'<div class="leg-meta">{leg["km"]} km · {e(leg["time"])}</div>{note}</div>')
+
+def render_activity(day_id, idx, act):
+
+    has_img = not is_logistics(act['title']) and act['title'].strip()
+    img_html = ''
+    if has_img:
+        fname = f"{day_id}-{slugify(act['title'])}.jpg"
+        img_html = photo_slot(fname, act['title'], 'photo-slot--thumb', guess_icon(act['title']))
+    cost_html = f'<div class="act-cost">{e(act["cost"])}</div>' if act.get('cost') else ''
+    desc_html = f'<div class="act-desc">{e(act["desc"])}</div>' if act.get('desc') else ''
+    return (f'<div class="act-card">{img_html}<div class="act-body">'
+            f'<div class="act-top"><div class="act-title">{e(act["title"])}</div>'
+            f'<div class="act-time">{e(act["time"])}</div></div>{desc_html}{cost_html}</div></div>')
+
+def render_food(f):
+    note = f'<div class="food-note">{e(f["note"])}</div>' if f.get('note') else ''
+    gf = '<span class="gf-badge">senza glutine indicato</span>' if f.get('gf') else ''
+    return (f'<div class="food-card"><div class="food-top">'
+            f'<div><strong>{e(f["meal"])}</strong> — {e(f["place"])}</div>'
+            f'<div class="food-cost">{e(f["cost"])}</div></div>{note}{gf}</div>')
+
+def route_svg(day_id):
+    points = map_points.get(day_id, [])
+    if not points:
+        return ''
+
+    W, H, PAD = 600, 320, 46
+
+    lat0, lon0 = points[0]['lat'], points[0]['lon']
+    lat_mean = sum(p['lat'] for p in points) / len(points)
+    coslat = math.cos(math.radians(lat_mean))
+
+    proj = []
+    for p in points:
+        x_km = (p['lon'] - lon0) * 111.32 * coslat
+        y_km = (p['lat'] - lat0) * 110.57
+        proj.append((x_km, y_km, p['name']))
+
+    xs = [c[0] for c in proj]
+    ys = [c[1] for c in proj]
+    range_x = max(xs) - min(xs) or 1.0
+    range_y = max(ys) - min(ys) or 1.0
+    scale = min((W - 2 * PAD) / range_x, (H - 2 * PAD) / range_y)
+    cx0 = (max(xs) + min(xs)) / 2
+    cy0 = (max(ys) + min(ys)) / 2
+
+    def to_svg(x_km, y_km):
+        sx = W / 2 + (x_km - cx0) * scale
+        sy = H / 2 - (y_km - cy0) * scale
+        return sx, sy
+
+    svg_pts = [(to_svg(x, y), name) for x, y, name in proj]
+
+    # linea di percorso (unisce le tappe nell'ordine di visita)
+    path_d = 'M ' + ' L '.join(f'{sx:.1f} {sy:.1f}' for (sx, sy), _ in svg_pts)
+    route_path = f'<path d="{path_d}" fill="none" stroke="#4f8fa8" stroke-width="3" stroke-dasharray="1,9" stroke-linecap="round"/>'
+
+    markers = []
+    labels = []
+    n = len(svg_pts)
+    # tappe uniche (senza contare due volte lo stesso punto di ritorno) per la numerazione
+    seen = {}
+    seq = 0
+    for i, ((sx, sy), name) in enumerate(svg_pts):
+        is_endpoint = i == 0 or i == n - 1
+        key = round(sx, 1), round(sy, 1)
+        if key not in seen:
+            seq += 1
+            seen[key] = seq
+        r = 9 if is_endpoint else 7
+        fill = '#b5673a' if is_endpoint else '#f2ede2'
+        markers.append(f'<circle cx="{sx:.1f}" cy="{sy:.1f}" r="{r}" fill="{fill}" stroke="#16263b" stroke-width="2"/>')
+        if is_endpoint:
+            markers.append(f'<text x="{sx:.1f}" y="{sy+3.5:.1f}" font-size="9" font-weight="700" fill="#16263b" text-anchor="middle" font-family="IBM Plex Sans,sans-serif">{seen[key]}</text>')
+        # etichetta ruotata in 4 direzioni (evita sovrapposizioni tra punti vicini),
+        # e per punti molto ravvicinati (< 30px) alterna un raggio maggiore
+        near_prev = i > 0 and math.hypot(sx - svg_pts[i-1][0][0], sy - svg_pts[i-1][0][1]) < 30
+        radius = 24 if near_prev else 15
+        direction = i % 4
+        if direction == 0:
+            lx, ly, anchor = sx, sy - radius, 'middle'
+        elif direction == 1:
+            lx, ly, anchor = sx + radius, sy + 3, 'start'
+        elif direction == 2:
+            lx, ly, anchor = sx, sy + radius + 8, 'middle'
+        else:
+            lx, ly, anchor = sx - radius, sy + 3, 'end'
+        labels.append(
+            f'<text x="{lx:.1f}" y="{ly:.1f}" font-size="12" font-weight="600" fill="#e4dcc8" '
+            f'text-anchor="{anchor}" font-family="IBM Plex Sans,sans-serif" '
+            f'style="paint-order:stroke;stroke:#16263b;stroke-width:3px;stroke-linejoin:round;">{e(name)}</text>'
+        )
+
+    # barra di scala (in km, basata sulla stessa proiezione)
+    scale_km_options = [5, 10, 20, 30, 50, 75, 100, 150]
+    target_px = 70
+    best_km = min(scale_km_options, key=lambda k: abs(k * scale - target_px))
+    bar_px = best_km * scale
+    bar_x0, bar_y0 = 24, H - 22
+
+    compass = (
+        f'<g transform="translate({W-38},34)">'
+        f'<path d="M0 -12 L5 6 L0 2 L-5 6 Z" fill="#d9985f"/>'
+        f'<text x="0" y="-16" font-size="10" font-weight="700" fill="#e4dcc8" text-anchor="middle" font-family="IBM Plex Sans,sans-serif">N</text>'
+        f'</g>'
+    )
+
+    scale_bar = (
+        f'<g>'
+        f'<line x1="{bar_x0}" y1="{bar_y0}" x2="{bar_x0+bar_px:.1f}" y2="{bar_y0}" stroke="#e4dcc8" stroke-width="2"/>'
+        f'<line x1="{bar_x0}" y1="{bar_y0-4}" x2="{bar_x0}" y2="{bar_y0+4}" stroke="#e4dcc8" stroke-width="2"/>'
+        f'<line x1="{bar_x0+bar_px:.1f}" y1="{bar_y0-4}" x2="{bar_x0+bar_px:.1f}" y2="{bar_y0+4}" stroke="#e4dcc8" stroke-width="2"/>'
+        f'<text x="{bar_x0}" y="{bar_y0-8}" font-size="10" fill="#e4dcc8" font-family="IBM Plex Sans,sans-serif">~{best_km} km</text>'
+        f'</g>'
+    )
+
+    return (f'<svg viewBox="0 0 {W} {H}" class="route-map" preserveAspectRatio="xMidYMid meet">'
+            f'<defs><radialGradient id="rmv-{day_id}" cx="50%" cy="40%" r="75%">'
+            f'<stop offset="0%" stop-color="#22344a"/><stop offset="100%" stop-color="#16263b"/>'
+            f'</radialGradient></defs>'
+            f'<rect width="{W}" height="{H}" fill="url(#rmv-{day_id})"/>'
+            f'{route_path}{"".join(markers)}{"".join(labels)}{compass}{scale_bar}'
+            f'</svg>')
+
+def render_day_section(day):
+    legs_html = ''
+    if day['legs']:
+        legs_html = ('<div class="section"><div class="section-title">Spostamenti in auto</div>'
+                     '<div class="stack">' + ''.join(render_leg(l) for l in day['legs']) + '</div></div>')
+    acts_html = ''.join(render_activity(day['id'], i, a) for i, a in enumerate(day['activities']))
+    food_html = ''.join(render_food(f) for f in day['food'])
+    acc = day.get('accommodation')
+    acc_html = ''
+    if acc:
+        acc_html = (f'<div class="acc-card"><div class="acc-name">Alloggio: {e(acc["name"])}</div>'
+                    f'<div class="acc-detail">{e(acc["detail"])}</div></div>')
+    tips_html = ''
+    if day.get('tips'):
+        tips_html = f'<div class="tip-card"><strong>Consiglio:</strong> {e(day["tips"])}</div>'
+
+    hero_fname = f"{day['id']}-hero.jpg"
+    route_map = route_svg(day['id'])
+
+    return f'''
+<section class="day-view" id="view-{day['id']}" hidden>
+  <div class="day-head">
+    <div class="day-date">{e(day['dateLabel'])} · Giorno {day['num']}/8</div>
+    <div class="day-title">{e(day['title'])}</div>
+  </div>
+  {photo_slot(hero_fname, day['title'], 'photo-slot--hero', HERO_ICON.get(day['id'], 'village'))}
+  <div class="map-frame">{route_map}</div>
+  <div class="grid2">
+    <div class="info-card">
+      <div class="info-card__label">Meteo · {e(locations[day['locKey']]['name'])}</div>
+      <div class="info-card__big" data-weather-temp="{day['id']}">…</div>
+      <div class="info-card__sub" data-weather-desc="{day['id']}">Caricamento…</div>
+      <div class="info-card__source" data-weather-source="{day['id']}"></div>
+    </div>
+    <div class="info-card">
+      <div class="info-card__label">Sole &amp; buio</div>
+      <div class="sun-line">Alba <strong data-sunrise="{day['id']}">…</strong> · Tramonto <strong data-sunset="{day['id']}">…</strong></div>
+      <div class="info-card__sub" data-daylight="{day['id']}">Calcolo…</div>
+    </div>
+  </div>
+  <div class="aurora-note" data-aurora="{day['id']}">Calcolo delle ore di buio in corso…</div>
+  {legs_html}
+  <div class="section">
+    <div class="section-title">Itinerario</div>
+    <div class="stack">{acts_html}</div>
+  </div>
+  <div class="section">
+    <div class="section-title">Dove mangiare</div>
+    <div class="stack">{food_html}</div>
+  </div>
+  {acc_html}
+  {tips_html}
+</section>'''
+
+stays_html = ''.join(
+    f'<div class="stay-row"><div class="stay-name">{e(s["name"])}</div><div class="stay-detail">{e(s["detail"])}</div></div>'
+    for s in stays
+)
+
+nav_items = ['<button class="nav-btn active" data-nav="info">Info</button>']
+for d in days:
+    label = d['dateLabel'].split(' ')[1] + ' ' + d['dateLabel'].split(' ')[2]
+    nav_items.append(f'<button class="nav-btn" data-nav="{d["id"]}">{e(label)}</button>')
+nav_html = ''.join(nav_items)
+
+days_sections_html = ''.join(render_day_section(d) for d in days)
+
+sun_fallback_js = json.dumps(sun_fallback, ensure_ascii=False)
+seasonal_js = json.dumps(seasonal, ensure_ascii=False)
+locations_js = json.dumps(locations, ensure_ascii=False)
+days_meta_js = json.dumps(
+    [{'id': d['id'], 'dateISO': d['dateISO'], 'locKey': d['locKey']} for d in days],
+    ensure_ascii=False
+)
+
+WEATHER_CODES_JS = """{0:'Sereno',1:'Prevalentemente sereno',2:'Parzialmente nuvoloso',3:'Nuvoloso',45:'Nebbia',48:'Nebbia con brina',51:'Pioviggine leggera',53:'Pioviggine',55:'Pioviggine intensa',56:'Pioviggine gelata',57:'Pioviggine gelata intensa',61:'Pioggia leggera',63:'Pioggia',65:'Pioggia intensa',66:'Pioggia gelata',67:'Pioggia gelata intensa',71:'Neve leggera',73:'Neve',75:'Neve intensa',77:'Granelli di neve',80:'Rovesci leggeri',81:'Rovesci',82:'Rovesci forti',85:'Rovesci di neve leggeri',86:'Rovesci di neve forti',95:'Temporale'}"""
+
+html_out = f'''<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#16263b">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Islanda 2026">
+<title>Islanda 2026 · Federica &amp; Michele</title>
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icons/icon-180.png">
+<link rel="icon" href="icons/icon-192.png">
+<style>
+@font-face {{
+  font-family:'Cinzel'; font-style:normal; font-weight:500 700; font-display:swap;
+  src:url(data:font/woff2;base64,{cinzel_b64}) format('woff2');
+}}
+@font-face {{
+  font-family:'IBM Plex Sans'; font-style:normal; font-weight:400 700; font-display:swap;
+  src:url(data:font/woff2;base64,{plex_b64}) format('woff2');
+}}
+:root {{
+  --ink:#1c2b3a; --paper:#f2ede2; --panel:#faf7f0; --panel-border:#ddd5c4;
+  --navy:#16263b; --navy-2:#101d2d; --amber:#b5673a; --amber-2:#8f4d29;
+  --amber-soft:#f0d9b8; --amber-soft-border:#d9b487;
+  --teal:#2c4a55; --teal-soft:#dcecee; --teal-border:#8fb9bf;
+  --green-soft:#dcefdd; --green-border:#8fc79a; --green-text:#2c6b3a;
+  --muted:#5a6675; --muted-2:#7c8794;
+}}
+* {{ box-sizing:border-box; }}
+body {{ margin:0; background:var(--paper); color:var(--ink); font-family:'IBM Plex Sans',-apple-system,sans-serif; -webkit-font-smoothing:antialiased; }}
+a {{ color:var(--amber); }}
+::-webkit-scrollbar {{ height:6px; width:6px; }}
+::-webkit-scrollbar-thumb {{ background:#c9c0ac; border-radius:4px; }}
+.rune-rule {{ height:1px; background:linear-gradient(90deg,transparent,#c9b98f,transparent); position:relative; margin:4px 0 14px; }}
+.rune-rule::after {{ content:''; position:absolute; left:50%; top:50%; width:6px; height:6px; background:var(--amber); transform:translate(-50%,-50%) rotate(45deg); }}
+
+.hero {{ position:relative; overflow:hidden; background:linear-gradient(160deg,var(--navy),var(--navy-2)); border-bottom:3px solid var(--amber); }}
+.hero__scrim {{ position:absolute; inset:0; background:linear-gradient(180deg,rgba(16,29,45,.15),rgba(12,20,32,.9)); }}
+.hero__inner {{ position:relative; max-width:820px; margin:0 auto; padding:30px 20px 18px; }}
+.hero__eyebrow {{ font-size:11px; font-weight:600; letter-spacing:.18em; text-transform:uppercase; color:#e0ab7f; margin-bottom:6px; }}
+.hero__title {{ font-family:'Cinzel',serif; font-weight:600; font-size:30px; line-height:1.15; color:#faf5ea; letter-spacing:.01em; }}
+.hero__sub {{ font-size:13px; color:#cfd3d8; margin-top:8px; }}
+
+.navbar {{ position:sticky; top:0; z-index:10; background:var(--navy); border-bottom:1px solid #26374a; box-shadow:0 2px 10px rgba(0,0,0,.25); }}
+.navbar__inner {{ max-width:820px; margin:0 auto; display:flex; gap:8px; overflow-x:auto; padding:10px 20px; -webkit-overflow-scrolling:touch; }}
+.nav-btn {{ flex-shrink:0; padding:10px 16px; min-height:24px; border-radius:5px; font-size:13px; font-weight:600; border:1px solid #3a4a5c; background:transparent; color:#c7ccd2; cursor:pointer; font-family:'IBM Plex Sans',sans-serif; }}
+.nav-btn.active {{ border-color:#d9985f; background:var(--amber); color:#fffaf2; }}
+
+main {{ max-width:820px; margin:0 auto; padding:20px 20px 70px; display:flex; flex-direction:column; gap:18px; }}
+.panel {{ background:var(--panel); border:1px solid var(--panel-border); border-radius:8px; padding:18px 20px; }}
+.panel-title {{ font-family:'Cinzel',serif; font-weight:600; font-size:15px; letter-spacing:.06em; text-transform:uppercase; color:#2c3c4d; margin-bottom:4px; }}
+.panel p, .panel div.line {{ font-size:14px; line-height:1.8; color:#333c46; }}
+.warn-box {{ margin-top:12px; background:var(--amber-soft); border:1px solid var(--amber-soft-border); border-radius:6px; padding:12px 14px; font-size:13px; line-height:1.6; color:#5c3a1f; }}
+.stay-row {{ border-top:1px solid #e4ddcb; padding-top:10px; font-size:14px; }}
+.stay-row:first-child {{ border-top:none; padding-top:0; }}
+.stay-name {{ font-weight:600; color:#28323e; }}
+.stay-detail {{ color:#576270; font-size:13px; margin-top:2px; }}
+.stack {{ display:flex; flex-direction:column; gap:10px; }}
+
+.aurora-panel {{ background:var(--navy); border-radius:8px; padding:18px 20px; }}
+.aurora-panel .panel-title {{ color:#8fd6cd; }}
+.aurora-panel p {{ color:#c7ccd2; }}
+.kp-row {{ display:flex; align-items:baseline; gap:10px; margin-top:6px; }}
+.kp-big {{ font-family:'Cinzel',serif; font-weight:600; font-size:30px; color:#faf5ea; }}
+.kp-status {{ font-size:13px; color:#c7ccd2; }}
+.aurora-panel .more {{ font-size:13px; line-height:1.6; margin-top:10px; color:#c7ccd2; }}
+.aurora-panel .more a {{ color:#8fd6cd; }}
+
+.photo-slot {{ position:relative; overflow:hidden; background:linear-gradient(135deg,var(--bg1,#3a2f22),var(--bg2,#5c4a33)); border-radius:8px; }}
+.photo-slot img {{ width:100%; height:100%; object-fit:cover; display:block; }}
+.photo-slot__ph {{ position:absolute; inset:0; display:none; flex-direction:column; align-items:center; justify-content:center; gap:6px; color:#e4dcc8; text-align:center; padding:10px; }}
+.photo-slot__icon {{ width:56px; height:44px; opacity:.95; }}
+.photo-slot__ph span {{ font-size:11px; font-weight:600; letter-spacing:.02em; max-width:88%; color:#d9d0ba; }}
+.photo-slot--empty img {{ display:none; }}
+.photo-slot--empty .photo-slot__ph {{ display:flex; }}
+.photo-slot--hero {{ width:100%; height:180px; }}
+.photo-slot--hero .photo-slot__icon {{ width:74px; height:58px; }}
+.photo-slot--hero .photo-slot__ph span {{ font-size:13px; }}
+.photo-slot--thumb {{ width:92px; height:92px; flex-shrink:0; }}
+.photo-slot--thumb .photo-slot__icon {{ width:34px; height:26px; }}
+.photo-slot--thumb .photo-slot__ph span {{ font-size:8.5px; line-height:1.2; }}
+.photo-slot--cover {{ position:absolute; inset:0; opacity:.55; border-radius:0; }}
+.photo-slot--cover .photo-slot__ph span {{ display:none; }}
+.photo-slot--cover .photo-slot__icon {{ width:110px; height:86px; }}
+
+.day-head .day-date {{ font-size:12px; color:var(--amber); font-weight:700; text-transform:uppercase; letter-spacing:.08em; }}
+.day-head .day-title {{ font-family:'Cinzel',serif; font-weight:600; font-size:25px; margin-top:6px; color:#1f2c39; letter-spacing:.005em; }}
+
+.map-frame {{ border-radius:8px; overflow:hidden; border:2px solid var(--navy); box-shadow:0 4px 16px rgba(0,0,0,.12); line-height:0; }}
+.map-frame .route-map {{ width:100%; height:auto; display:block; }}
+
+.grid2 {{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }}
+.info-card {{ background:var(--panel); border:1px solid var(--panel-border); border-radius:8px; padding:16px; }}
+.info-card__label {{ font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.06em; color:#5a6675; margin-bottom:8px; }}
+.info-card__big {{ font-family:'Cinzel',serif; font-weight:600; font-size:20px; color:#28323e; }}
+.info-card__sub {{ font-size:13px; color:#3a4351; margin-top:4px; }}
+.info-card__source {{ font-size:11px; color:#7c8794; margin-top:8px; }}
+.sun-line {{ font-size:14px; line-height:1.7; color:#28323e; }}
+
+.aurora-note {{ background:var(--teal-soft); border:1px solid var(--teal-border); border-radius:8px; padding:14px 16px; font-size:13px; line-height:1.6; color:#1e3038; }}
+.aurora-note strong {{ color:var(--teal); }}
+
+.section-title {{ font-family:'Cinzel',serif; font-weight:600; font-size:16px; margin-bottom:8px; color:#2c3c4d; letter-spacing:.02em; }}
+
+.leg {{ background:var(--panel); border:1px solid var(--panel-border); border-left:3px solid var(--amber); border-radius:6px; padding:12px 14px; font-size:13px; }}
+.leg-route {{ font-weight:600; color:#28323e; }}
+.leg-meta {{ color:#576270; margin-top:2px; }}
+.leg-note {{ color:#3a4351; margin-top:4px; }}
+
+.act-card {{ background:var(--panel); border:1px solid var(--panel-border); border-radius:8px; padding:14px 16px; display:flex; gap:14px; }}
+.act-body {{ flex:1; min-width:0; }}
+.act-top {{ display:flex; justify-content:space-between; gap:10px; align-items:baseline; }}
+.act-title {{ font-weight:600; font-size:14px; color:#1f2c39; }}
+.act-time {{ font-size:12px; color:#7c8794; white-space:nowrap; }}
+.act-desc {{ font-size:13px; color:#3a4351; margin-top:6px; line-height:1.6; }}
+.act-cost {{ display:inline-block; margin-top:8px; background:var(--amber-soft); border:1px solid var(--amber-soft-border); border-radius:5px; padding:3px 9px; font-size:12px; color:#5c3a1f; }}
+
+.food-card {{ background:var(--panel); border:1px solid var(--panel-border); border-radius:6px; padding:12px 14px; font-size:13px; }}
+.food-top {{ display:flex; justify-content:space-between; gap:10px; color:#28323e; }}
+.food-cost {{ color:#7c8794; white-space:nowrap; }}
+.food-note {{ color:#4a5361; margin-top:4px; }}
+.gf-badge {{ display:inline-block; margin-top:6px; background:var(--green-soft); border:1px solid var(--green-border); border-radius:5px; padding:2px 8px; font-size:11px; color:var(--green-text); }}
+
+.acc-card {{ background:var(--navy); border-radius:8px; padding:14px 16px; font-size:13px; }}
+.acc-name {{ font-weight:600; color:#f2ede2; }}
+.acc-detail {{ color:#c7ccd2; margin-top:2px; }}
+
+.tip-card {{ background:var(--amber-soft); border:1px solid var(--amber-soft-border); border-radius:8px; padding:12px 14px; font-size:13px; line-height:1.6; color:#5c3a1f; }}
+
+.section {{ display:flex; flex-direction:column; gap:8px; }}
+
+.install-hint {{ font-size:12px; color:#7c8794; text-align:center; padding:6px 20px 0; }}</style>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+</head>
+<body>
+
+<div class="hero">
+  {photo_slot('cover.jpg', 'Islanda 2026', 'photo-slot--cover', 'saga')}
+  <div class="hero__scrim"></div>
+  <div class="hero__inner">
+    <div class="hero__eyebrow">Saga di viaggio</div>
+    <div class="hero__title">ISLANDA 2026</div>
+    <div class="hero__sub">Federica &amp; Michele · 15–22 novembre · Reykjavík → Vík → Flúðir</div>
+  </div>
+</div>
+
+<div class="navbar"><div class="navbar__inner">{nav_html}</div></div>
+
+<main>
+
+<section id="view-info">
+  <div class="panel">
+    <div class="panel-title">Il viaggio in breve</div>
+    <div class="rune-rule"></div>
+    <div class="line"><strong>Volo andata:</strong> EJU3969 Milano Malpensa → Keflavík, dom 15 nov, 07:00 → 10:35</div>
+    <div class="line"><strong>Volo ritorno:</strong> EJU3970 Keflavík → Milano Malpensa, dom 22 nov, 11:25 → 16:45</div>
+    <div class="line"><strong>Auto:</strong> 4x4 (FairCar) · ritiro Keflavík 15 nov ore 11:00 · riconsegna Keflavík 22 nov ore 11:00</div>
+    <div class="warn-box"><strong>Attenzione:</strong> il voucher auto indica riconsegna alle 11:00, ma il volo decolla alle 11:25 — margine quasi nullo. Contatta FairCar per riconsegnare prima (vedi Giorno 8).</div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-title">Dove dormite</div>
+    <div class="rune-rule"></div>
+    <div class="stack">{stays_html}</div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-title">Mappa del viaggio</div>
+    <div class="rune-rule"></div>
+    <div id="trip-map" style="height:260px;border-radius:8px;overflow:hidden;border:2px solid var(--navy);box-shadow:0 4px 16px rgba(0,0,0,.12);"></div>
+    <div class="line" style="margin-top:10px;font-size:12px;color:#7c8794;">Mappa reale (OpenStreetMap) — zoomabile e trascinabile. Tocca un marker per il nome della tappa. Per la navigazione stradale vera e propria usa Google Maps offline.</div>
+  </div>
+
+  <div class="aurora-panel">
+    <div class="panel-title">Aurora boreale — ora</div>
+    <p>Indice geomagnetico Kp attuale (NOAA), aggiornato in tempo reale se sei online. Non è una previsione per le date del viaggio, ma dà l'idea dell'attività del momento.</p>
+    <div class="kp-row"><div class="kp-big" id="kp-value">…</div><div class="kp-status" id="kp-status">Caricamento…</div></div>
+    <div class="more">Più vicino alla partenza, controlla <a href="https://en.vedur.is/weather/forecasts/aurora/" target="_blank" rel="noopener">vedur.is/aurora</a> per la previsione reale sulle vostre date e sul cielo sereno.</div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-title">Budget &amp; celiachia</div>
+    <div class="rune-rule"></div>
+    <div class="line">• Supermercati Bónus (logo maialino rosa) e Krónan sono i più economici per colazioni/pranzi al sacco.</div>
+    <div class="line">• Le stazioni N1 hanno zuppe e hot dog a buon prezzo lungo il Ring Road.</div>
+    <div class="line">• L'acqua del rubinetto è potabile ovunque: niente acqua in bottiglia.</div>
+    <div class="line">• Cerca la parola <strong>"glútenlaus"</strong> o <strong>"glútenfrítt"</strong> (senza glutine) sui menu — molti locali islandesi la indicano chiaramente.</div>
+    <div class="line">• Segnalati nell'itinerario i locali con opzioni gluten-free note; conferma comunque con lo staff.</div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-title">Sicurezza &amp; risorse utili</div>
+    <div class="rune-rule"></div>
+    <div class="line">• <a href="https://www.safetravel.is" target="_blank" rel="noopener">safetravel.is</a> — registra il vostro itinerario (gratis, consigliato per la guida invernale).</div>
+    <div class="line">• <a href="https://www.road.is" target="_blank" rel="noopener">road.is</a> — condizioni stradali in tempo reale.</div>
+    <div class="line">• <a href="https://en.vedur.is" target="_blank" rel="noopener">vedur.is</a> — meteo, vento e aurora ufficiali islandesi.</div>
+    <div class="line">• Numero unico di emergenza: <strong>112</strong> (anche via app 112 Iceland).</div>
+    <div class="line">• Con il 4x4 in novembre è normale trovare vento forte e strade bagnate/ghiacciate: guida con margine, specialmente sulla costa sud.</div>
+    <div class="line">• Le mappe di questa pagina sono schizzi del percorso (funzionano sempre, anche offline) ma non sono per la navigazione stradale vera e propria. Per guidare, scarica prima di partire le mappe offline di Google Maps (o Maps.me / Organic Maps) per Islanda.</div>
+  </div>
+</section>
+
+{days_sections_html}
+
+</main>
+
+<script>
+const SEASONAL = {seasonal_js};
+const LOCATIONS = {locations_js};
+const SUN_FALLBACK = {sun_fallback_js};
+const DAYS_META = {days_meta_js};
+const WEATHER_CODES = {WEATHER_CODES_JS};
+
+const state = {{ weather:{{}}, sun:{{}}, kp:null, kpStatus:'loading' }};
+
+function setActive(id) {{
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.toggle('active', b.dataset.nav === id));
+  document.getElementById('view-info').hidden = id !== 'info';
+  DAYS_META.forEach(d => {{ document.getElementById('view-' + d.id).hidden = d.id !== id; }});
+  window.scrollTo({{ top: 0, behavior: 'instant' in window ? 'instant' : 'auto' }});
+}}
+document.querySelectorAll('.nav-btn').forEach(btn => {{
+  btn.addEventListener('click', () => setActive(btn.dataset.nav));
+}});
+
+function weatherFor(day) {{
+  const live = state.weather[day.locKey];
+  if (live && live.time) {{
+    const idx = live.time.indexOf(day.dateISO);
+    if (idx >= 0) {{
+      const code = live.weathercode[idx];
+      return {{
+        temp: Math.round(live.temperature_2m_max[idx]) + '° / ' + Math.round(live.temperature_2m_min[idx]) + '°C',
+        desc: WEATHER_CODES[code] || 'Variabile',
+        source: 'Previsione live (aggiornata automaticamente)'
+      }};
+    }}
+  }}
+  const s = SEASONAL[day.locKey];
+  return {{
+    temp: '~' + s.tmax + '° / ~' + s.tmin + '°C',
+    desc: s.desc + ' · vento ' + s.wind,
+    source: 'Media stagionale tipica di novembre — offline o previsione non ancora disponibile (appare da ~16 giorni prima)'
+  }};
+}}
+
+function renderWeatherAndSun() {{
+  DAYS_META.forEach(day => {{
+    const w = weatherFor(day);
+    const tempEl = document.querySelector('[data-weather-temp="' + day.id + '"]');
+    const descEl = document.querySelector('[data-weather-desc="' + day.id + '"]');
+    const srcEl = document.querySelector('[data-weather-source="' + day.id + '"]');
+    if (tempEl) tempEl.textContent = w.temp;
+    if (descEl) descEl.textContent = w.desc;
+    if (srcEl) srcEl.textContent = w.source;
+
+    const live = state.sun[day.id];
+    const fb = SUN_FALLBACK[day.id];
+    const sr = live ? live.sunrise : fb.sunrise;
+    const ss = live ? live.sunset : fb.sunset;
+    const dl = live ? live.daylight : fb.daylight + ' (stima)';
+    const srEl = document.querySelector('[data-sunrise="' + day.id + '"]');
+    const ssEl = document.querySelector('[data-sunset="' + day.id + '"]');
+    const dlEl = document.querySelector('[data-daylight="' + day.id + '"]');
+    if (srEl) srEl.textContent = sr;
+    if (ssEl) ssEl.textContent = ss;
+    if (dlEl) dlEl.textContent = dl + ' di luce';
+
+    const auroraEl = document.querySelector('[data-aurora="' + day.id + '"]');
+    if (auroraEl) {{
+      auroraEl.innerHTML = '<strong>Aurora:</strong> Buio da ' + ss + ' a ' + sr + ' del giorno dopo — finestra ampia. Novembre è piena stagione aurora: serve cielo sereno e attività geomagnetica. Controlla vedur.is/aurora nei giorni prima.';
+    }}
+  }});
+}}
+renderWeatherAndSun();
+
+async function fetchAllWeather() {{
+  for (const key of Object.keys(LOCATIONS)) {{
+    const loc = LOCATIONS[key];
+    try {{
+      const url = 'https://api.open-meteo.com/v1/forecast?latitude=' + loc.lat + '&longitude=' + loc.lon + '&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=UTC&forecast_days=16';
+      const res = await fetch(url);
+      const json = await res.json();
+      if (json && json.daily) {{ state.weather[key] = json.daily; renderWeatherAndSun(); }}
+    }} catch (e) {{ /* resta sulla stima stagionale */ }}
+  }}
+}}
+
+async function fetchAllSun() {{
+  for (const day of DAYS_META) {{
+    const loc = LOCATIONS[day.locKey];
+    try {{
+      const url = 'https://api.sunrise-sunset.org/json?lat=' + loc.lat + '&lng=' + loc.lon + '&date=' + day.dateISO + '&formatted=0';
+      const res = await fetch(url);
+      const json = await res.json();
+      if (json && json.results) {{
+        const sr = new Date(json.results.sunrise);
+        const ss = new Date(json.results.sunset);
+        const fmt = d => String(d.getUTCHours()).padStart(2,'0') + ':' + String(d.getUTCMinutes()).padStart(2,'0');
+        const lenSec = json.results.day_length;
+        const h = Math.floor(lenSec/3600), m = Math.round((lenSec%3600)/60);
+        state.sun[day.id] = {{ sunrise: fmt(sr), sunset: fmt(ss), daylight: h + 'h ' + String(m).padStart(2,'0') + 'm' }};
+        renderWeatherAndSun();
+      }}
+    }} catch (e) {{ /* resta sulla stima calcolata offline */ }}
+  }}
+}}
+
+async function fetchKp() {{
+  try {{
+    const res = await fetch('https://services.swpc.noaa.gov/json/planetary_k_index_1m.json');
+    const json = await res.json();
+    const last = json[json.length - 1];
+    state.kp = Math.round(last.kp_index * 10) / 10;
+    state.kpStatus = 'ok';
+  }} catch (e) {{ state.kpStatus = 'error'; }}
+  document.getElementById('kp-value').textContent = state.kpStatus === 'ok' ? ('Kp ' + state.kp) : '—';
+  document.getElementById('kp-status').textContent = state.kpStatus === 'ok'
+    ? (state.kp >= 4 ? 'Attività alta in questo momento' : 'Attività bassa/moderata in questo momento')
+    : 'Dato non disponibile offline';
+}}
+
+function initTripMap() {{
+  const el = document.getElementById('trip-map');
+  if (!el || typeof L === 'undefined') return;
+
+  const stops = [
+    {{ key: 'keflavik', label: 'Keflavík (aeroporto)', n: '1' }},
+    {{ key: 'reykjavik', label: 'Reykjavík', n: '2' }},
+    {{ key: 'vik', label: 'Vík í Mýrdal', n: '3' }},
+    {{ key: 'fludir', label: 'Flúðir', n: '4' }}
+  ];
+
+  const map = L.map(el, {{ scrollWheelZoom: false, zoomControl: true }});
+  L.tileLayer('https://{{s}}.basemaps.cartocdn.com/dark_all/{{z}}/{{x}}/{{y}}{{r}}.png', {{
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions" target="_blank" rel="noopener">CARTO</a>',
+    subdomains: 'abcd',
+    maxZoom: 19
+  }}).addTo(map);
+
+  const latlngs = stops.map(s => [LOCATIONS[s.key].lat, LOCATIONS[s.key].lon]);
+
+  L.polyline(latlngs, {{
+    color: '#d9985f',
+    weight: 3,
+    dashArray: '1,9',
+    lineCap: 'round'
+  }}).addTo(map);
+
+  stops.forEach(s => {{
+    const loc = LOCATIONS[s.key];
+    const icon = L.divIcon({{
+      className: '',
+      html: '<div style="width:26px;height:26px;border-radius:50%;background:#b5673a;border:2px solid #16263b;' +
+            'display:flex;align-items:center;justify-content:center;font:700 12px \\'IBM Plex Sans\\',sans-serif;color:#16263b;">' + s.n + '</div>',
+      iconSize: [26, 26],
+      iconAnchor: [13, 13]
+    }});
+    L.marker([loc.lat, loc.lon], {{ icon }}).addTo(map).bindPopup(s.label);
+  }});
+
+  map.fitBounds(latlngs, {{ padding: [24, 24] }});
+
+  el.addEventListener('touchstart', () => map.scrollWheelZoom.enable(), {{ once: true, passive: true }});
+}}
+
+fetchAllWeather();
+fetchAllSun();
+fetchKp();
+initTripMap();
+
+if ('serviceWorker' in navigator) {{
+  window.addEventListener('load', () => {{
+    navigator.serviceWorker.register('sw.js').catch(() => {{}});
+  }});
+}}
+</script>
+</body>
+</html>
+'''
+
+with open('index.html', 'w', encoding='utf-8') as f:
+    f.write(html_out)
+
+print('index.html written,', len(html_out), 'bytes')
