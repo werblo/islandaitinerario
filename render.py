@@ -51,7 +51,7 @@ days = [
   'activities':[
     {'time':'11:00','title':'Ritiro auto 4x4','desc':'FairCar, Bogatröð 1, Keflavík. Portare patente, carta di credito intestata al conducente e voucher stampato o digitale.','cost':None},
     {'time':'15:00','title':'Check-in appartamento','desc':"46heima Boutique Apartments, Laugavegur 46. Codice d'accesso via email prima dell'arrivo.",'cost':None},
-    {'time':'16:30','title':'Passeggiata nel centro','desc':'Laugavegur, Hallgrímskirkja (belvedere sulla torre), porto vecchio, Sun Voyager.','cost':'gratis'}
+    {'time':'16:30','title':'Passeggiata nel centro','desc':'Laugavegur, Hallgrímskirkja (belvedere sulla torre), porto vecchio, Sun Voyager.','cost':'gratis','link':'https://it.wikipedia.org/wiki/Hallgr%C3%ADmskirkja'}
   ],
   'food':[
     {'meal':'Pranzo','place':'Bónus (supermercato) o hot dog da Bæjarins Beztu','note':'Per il senza glutine, chiedi il würstel senza pane','cost':'€','gf':True},
@@ -68,10 +68,10 @@ days = [
     {'from':'Gullfoss','to':'Reykjavík','km':120,'time':'~1h45'}
   ],
   'activities':[
-    {'time':'09:00','title':'Þingvellir National Park','desc':'Faglia tra le placche nordamericana ed euroasiatica, sito del primo parlamento islandese (Unesco).','cost':'gratis (parcheggio ~1000 ISK / ~7€)'},
-    {'time':'11:30','title':'Geysir & Strokkur','desc':'Area geotermica: Strokkur erutta ogni 5-10 minuti.','cost':'gratis'},
-    {'time':'13:00','title':'Gullfoss','desc':"Cascata a doppio salto, spettacolare anche d'inverno con il ghiaccio sulle rocce.",'cost':'gratis'},
-    {'time':'16:00','title':'Sky Lagoon (facoltativo, di sera)','desc':'Spa geotermica vista mare vicino a Reykjavík, meno turistica della Blue Lagoon.','cost':'€€ ~70€/persona'}
+    {'time':'09:00','title':'Þingvellir National Park','desc':'Faglia tra le placche nordamericana ed euroasiatica, sito del primo parlamento islandese (Unesco).','cost':'gratis (parcheggio ~1000 ISK / ~7€)','link':'https://www.thingvellir.is/en/'},
+    {'time':'11:30','title':'Geysir & Strokkur','desc':'Area geotermica: Strokkur erutta ogni 5-10 minuti.','cost':'gratis','link':'https://it.wikipedia.org/wiki/Geysir'},
+    {'time':'13:00','title':'Gullfoss','desc':"Cascata a doppio salto, spettacolare anche d'inverno con il ghiaccio sulle rocce.",'cost':'gratis','link':'https://it.wikipedia.org/wiki/Gullfoss'},
+    {'time':'16:00','title':'Sky Lagoon (facoltativo, di sera)','desc':'Spa geotermica vista mare vicino a Reykjavík, meno turistica della Blue Lagoon.','cost':'€€ ~70€/persona','link':'https://www.skylagoon.com/'}
   ],
   'food':[
     {'meal':'Pranzo','place':'Friðheimar, Reykholt','note':'Famosa zuppa di pomodoro in serra; chiedi la versione senza pane/crostini','cost':'€€','gf':True},
@@ -83,10 +83,10 @@ days = [
  {'id':'d3','num':3,'dateISO':'2026-11-17','dateLabel':'Mar 17 nov','title':'Reykjavík: cultura e relax','locKey':'reykjavik',
   'legs':[],
   'activities':[
-    {'time':'10:00','title':'Perlan','desc':'Museo con grotta di ghiaccio artificiale e vista panoramica a 360° sulla città.','cost':'€€ ~4900 ISK / ~34€'},
-    {'time':'12:30','title':'Harpa & porto vecchio','desc':'Sala concerti in vetro iridescente, passeggiata sul lungomare.','cost':'gratis'},
-    {'time':'14:00','title':'National Museum of Iceland','desc':'Storia e cultura islandese dagli insediamenti vichinghi a oggi.','cost':'€ ~2900 ISK / ~20€'},
-    {'time':'16:00','title':'Reykjanes (facoltativo)','desc':'Mezza giornata alternativa: ponte tra i continenti, area geotermica di Gunnuhver, faro di Reykjanesviti.','cost':'gratis'}
+    {'time':'10:00','title':'Perlan','desc':'Museo con grotta di ghiaccio artificiale e vista panoramica a 360° sulla città.','cost':'€€ ~4900 ISK / ~34€','link':'https://perlan.is/en'},
+    {'time':'12:30','title':'Harpa & porto vecchio','desc':'Sala concerti in vetro iridescente, passeggiata sul lungomare.','cost':'gratis','link':'https://www.harpa.is/en/'},
+    {'time':'14:00','title':'National Museum of Iceland','desc':'Storia e cultura islandese dagli insediamenti vichinghi a oggi.','cost':'€ ~2900 ISK / ~20€','link':'https://www.thjodminjasafn.is/english'},
+    {'time':'16:00','title':'Reykjanes (facoltativo)','desc':'Mezza giornata alternativa: ponte tra i continenti, area geotermica di Gunnuhver, faro di Reykjanesviti.','cost':'gratis','link':'https://it.wikipedia.org/wiki/Penisola_di_Reykjanes'}
   ],
   'food':[
     {'meal':'Pranzo','place':'Hlemmur Mathöll','note':'Più stand con piatti glútenlaus','cost':'€€','gf':True},
@@ -104,10 +104,10 @@ days = [
   ],
   'activities':[
     {'time':'09:30','title':'Check-out appartamento','desc':'','cost':None},
-    {'time':'11:30','title':'Seljalandsfoss','desc':"Cascata che si può costeggiare sul retro (in inverno spesso ghiacciata, occhio al sentiero). A 10 min a piedi c'è Gljúfrabúi, cascata nascosta in un canyon.",'cost':'gratis'},
-    {'time':'13:30','title':'Skógafoss','desc':"Una delle cascate più imponenti d'Islanda, 60m, scalinata panoramica in cima.",'cost':'gratis'},
-    {'time':'15:30','title':'Reynisfjara','desc':'Spiaggia di sabbia nera con colonne basaltiche e i faraglioni di Reynisdrangar. Attenzione alle onde anomale, non voltare le spalle al mare.','cost':'gratis'},
-    {'time':'16:30','title':'Dyrhólaey','desc':'Promontorio con arco di roccia e vista su Reynisfjara.','cost':'gratis'}
+    {'time':'11:30','title':'Seljalandsfoss','desc':"Cascata che si può costeggiare sul retro (in inverno spesso ghiacciata, occhio al sentiero). A 10 min a piedi c'è Gljúfrabúi, cascata nascosta in un canyon.",'cost':'gratis','link':'https://it.wikipedia.org/wiki/Seljalandsfoss'},
+    {'time':'13:30','title':'Skógafoss','desc':"Una delle cascate più imponenti d'Islanda, 60m, scalinata panoramica in cima.",'cost':'gratis','link':'https://it.wikipedia.org/wiki/Sk%C3%B3gafoss'},
+    {'time':'15:30','title':'Reynisfjara','desc':'Spiaggia di sabbia nera con colonne basaltiche e i faraglioni di Reynisdrangar. Attenzione alle onde anomale, non voltare le spalle al mare.','cost':'gratis','link':'https://it.wikipedia.org/wiki/Reynisfjara'},
+    {'time':'16:30','title':'Dyrhólaey','desc':'Promontorio con arco di roccia e vista su Reynisfjara.','cost':'gratis','link':'https://it.wikipedia.org/wiki/Dyrh%C3%B3laey'}
   ],
   'food':[
     {'meal':'Pranzo','place':'Picnic a Skógar','note':'Porta snack dal Bónus di Reykjavík','cost':'€','gf':True},
@@ -124,9 +124,9 @@ days = [
   ],
   'activities':[
     {'time':'08:00','title':'Partenza presto','desc':'Giornata lunga di guida: partire con il buio è normale in novembre.','cost':None},
-    {'time':'09:00','title':'Fjaðrárgljúfur','desc':'Canyon serpeggiante con pareti muschiose, punti panoramici accessibili a piedi.','cost':'gratis'},
-    {'time':'11:30','title':'Jökulsárlón Glacier Lagoon','desc':'Laguna glaciale con iceberg alla deriva verso il mare.','cost':'gratis (parcheggio a pagamento)'},
-    {'time':'13:00','title':'Diamond Beach','desc':'Spiaggia nera di fronte alla laguna dove i blocchi di ghiaccio si arenano.','cost':'gratis'}
+    {'time':'09:00','title':'Fjaðrárgljúfur','desc':'Canyon serpeggiante con pareti muschiose, punti panoramici accessibili a piedi.','cost':'gratis','link':'https://en.wikipedia.org/wiki/Fja%C3%B0r%C3%A1rglj%C3%BAfur'},
+    {'time':'11:30','title':'Jökulsárlón Glacier Lagoon','desc':'Laguna glaciale con iceberg alla deriva verso il mare.','cost':'gratis (parcheggio a pagamento)','link':'https://it.wikipedia.org/wiki/J%C3%B6kuls%C3%A1rl%C3%B3n'},
+    {'time':'13:00','title':'Diamond Beach','desc':'Spiaggia nera di fronte alla laguna dove i blocchi di ghiaccio si arenano.','cost':'gratis','link':'https://perlan.is/articles/diamond-beach-iceland'}
   ],
   'food':[
     {'meal':'Pranzo','place':'Kaffi Jökulsárlón o pranzo al sacco','note':'Zuppe spesso senza glutine, conferma con lo staff','cost':'€€','gf':True},
@@ -142,9 +142,9 @@ days = [
   ],
   'activities':[
     {'time':'10:00','title':'Check-out Hotel Burfell','desc':'','cost':None},
-    {'time':'12:30','title':'Kerið','desc':'Cratere vulcanico con un lago sul fondo, percorribile a piedi in 15-20 min.','cost':'€ ~400 ISK / ~3€'},
+    {'time':'12:30','title':'Kerið','desc':'Cratere vulcanico con un lago sul fondo, percorribile a piedi in 15-20 min.','cost':'€ ~400 ISK / ~3€','link':'https://en.wikipedia.org/wiki/Ker%C3%B0'},
     {'time':'15:30','title':'Check-in The Hill Guesthouse','desc':'Flúðir','cost':None},
-    {'time':'19:00','title':'Secret Lagoon','desc':"La piscina geotermica più antica d'Islanda, meno turistica ed economica della Blue Lagoon. Ottima anche di sera per provare a scorgere l'aurora dall'acqua calda.",'cost':'€€ ~7000 ISK / ~48€ a persona, prenotare online'}
+    {'time':'19:00','title':'Secret Lagoon','desc':"La piscina geotermica più antica d'Islanda, meno turistica ed economica della Blue Lagoon. Ottima anche di sera per provare a scorgere l'aurora dall'acqua calda.",'cost':'€€ ~7000 ISK / ~48€ a persona, prenotare online','link':'https://secretlagoon.is/'}
   ],
   'food':[
     {'meal':'Pranzo','place':'Friðheimar (se non visitato il Giorno 2)','note':'Pane senza glutine spesso disponibile su richiesta','cost':'€€','gf':True},
@@ -158,7 +158,7 @@ days = [
     {'from':'Flúðir','to':'Reykjadalur (Hveragerði)','km':55,'time':'~45 min'}
   ],
   'activities':[
-    {'time':'10:00','title':'Reykjadalur Hot Spring River','desc':'Cammina ~45 min tra le colline geotermiche fino al fiume caldo naturale. Porta costume e asciugamano: ingresso gratuito.','cost':'gratis'},
+    {'time':'10:00','title':'Reykjadalur Hot Spring River','desc':'Cammina ~45 min tra le colline geotermiche fino al fiume caldo naturale. Porta costume e asciugamano: ingresso gratuito.','cost':'gratis','link':'https://en.wikipedia.org/wiki/Reykjadalur_(Hverager%C3%B0i)'},
     {'time':'14:00','title':'Faxi','desc':'Cascata piccola e tranquilla vicino a Flúðir, poco turistica.','cost':'gratis'},
     {'time':'15:30','title':'Passeggiata a Flúðir','desc':'Villaggio geotermico, serre e piccole botteghe locali.','cost':'gratis'}
   ],
@@ -383,9 +383,13 @@ def render_activity(day_id, idx, act):
         img_html = photo_slot(fname, act['title'], 'photo-slot--thumb', guess_icon(act['title']))
     cost_html = f'<div class="act-cost">{e(act["cost"])}</div>' if act.get('cost') else ''
     desc_html = f'<div class="act-desc">{e(act["desc"])}</div>' if act.get('desc') else ''
+    link_html = ''
+    if act.get('link'):
+        link_html = (f'<a class="act-link" href="{e(act["link"])}" target="_blank" rel="noopener">'
+                     f'Scopri di più \u2197</a>')
     return (f'<div class="act-card">{img_html}<div class="act-body">'
             f'<div class="act-top"><div class="act-title">{e(act["title"])}</div>'
-            f'<div class="act-time">{e(act["time"])}</div></div>{desc_html}{cost_html}</div></div>')
+            f'<div class="act-time">{e(act["time"])}</div></div>{desc_html}{cost_html}{link_html}</div></div>')
 
 def render_food(f):
     note = f'<div class="food-note">{e(f["note"])}</div>' if f.get('note') else ''
@@ -694,6 +698,8 @@ main {{ max-width:820px; margin:0 auto; padding:20px 20px 70px; display:flex; fl
 .act-time {{ font-size:12px; color:#7c8794; white-space:nowrap; }}
 .act-desc {{ font-size:13px; color:#3a4351; margin-top:6px; line-height:1.6; }}
 .act-cost {{ display:inline-block; margin-top:8px; background:var(--amber-soft); border:1px solid var(--amber-soft-border); border-radius:5px; padding:3px 9px; font-size:12px; color:#5c3a1f; }}
+.act-link {{ display:block; margin-top:8px; font-size:12.5px; font-weight:600; color:var(--navy); text-decoration:none; }}
+.act-link:hover {{ text-decoration:underline; }}
 
 .food-card {{ background:var(--panel); border:1px solid var(--panel-border); border-radius:6px; padding:12px 14px; font-size:13px; }}
 .food-top {{ display:flex; justify-content:space-between; gap:10px; color:#28323e; }}
