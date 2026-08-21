@@ -58,7 +58,8 @@ days = [
     {'meal':'Cena','place':'Gló, Laugavegur','note':'Cucina salutista, piatti glútenlaus segnalati in menu','cost':'€€','gf':True}
   ],
   'accommodation':{'name':'46heima Boutique Apartments','detail':'Laugavegur 46, Reykjavík · 3 notti · check-in dalle 15:00'},
-  'tips':"Giornata di arrivo tranquilla: sistematevi con calma e fate un po' di spesa in un Bónus per i giorni successivi. Se volete una spa geotermica, la Sky Lagoon (Giorno 2) è più economica e meno turistica della Blue Lagoon."
+  'tips':"Giornata di arrivo tranquilla: sistematevi con calma e fate un po' di spesa in un Bónus per i giorni successivi. Se volete una spa geotermica, la Sky Lagoon (Giorno 2) è più economica e meno turistica della Blue Lagoon.",
+  'culture':"Reykjavík ha una storia più antica di quanto sembri: fondata nell'874 d.C. da Ingólfur Arnarson, primo colono vichingo dell'isola, deve il nome — \"baia dei fumi\" — al vapore geotermico che i primi coloni scambiarono per fumo di incendi. La Hallgrímskirkja che vedrete oggi non è un caso: il suo profilo a colonne è un omaggio diretto alle colonne di basalto che modellano le coste islandesi, le stesse che troverete tra qualche giorno a Reynisfjara. Passeggiando da Laugavegur al porto vecchio, fino al Sun Voyager sul lungomare, si attraversano più di mille anni di storia in mezz'ora a piedi."
  },
  {'id':'d2','num':2,'dateISO':'2026-11-16','dateLabel':'Lun 16 nov','title':"Cerchio d'Oro (Golden Circle)",'locKey':'reykjavik',
   'legs':[
@@ -78,7 +79,8 @@ days = [
     {'meal':'Cena','place':'Hlemmur Mathöll, Reykjavík','note':'Food hall con vari stand, alcuni segnalano opzioni senza glutine','cost':'€€','gf':True}
   ],
   'accommodation':{'name':'46heima Boutique Apartments','detail':'2ª notte a Reykjavík'},
-  'tips':'Anello di ~250 km: partite presto, in novembre il sole sorge tardi (intorno alle 10) quindi non perdete ore di luce.'
+  'tips':'Anello di ~250 km: partite presto, in novembre il sole sorge tardi (intorno alle 10) quindi non perdete ore di luce.',
+  'culture':"A Þingvellir camminerete letteralmente tra due continenti: la faglia che attraversa il parco segna il punto in cui le placche nordamericana ed eurasiatica si allontanano di circa 2 cm l'anno. Qui, nel 930 d.C., nacque l'Alþingi, tra i più antichi parlamenti al mondo ancora in vita. Poco più avanti, il nome stesso di \"geyser\" nasce da qui: Strokkur erutta ogni 5-10 minuti, mentre il Grande Geysir che gli ha dato il nome dorme quasi sempre dal 2003. Gullfoss, infine, esiste ancora grazie a Sigríður Tómasdóttir, che ai primi del '900 si oppose a un progetto di diga che l'avrebbe sommersa."
  },
  {'id':'d3','num':3,'dateISO':'2026-11-17','dateLabel':'Mar 17 nov','title':'Reykjavík: cultura e relax','locKey':'reykjavik',
   'legs':[],
@@ -93,7 +95,8 @@ days = [
     {'meal':'Cena','place':'Sushi Social o cucina in appartamento','note':'Menu con opzioni senza glutine indicate','cost':'€€€','gf':True}
   ],
   'accommodation':{'name':'46heima Boutique Apartments','detail':'Ultima notte a Reykjavík · check-out domani 09:30-10:00'},
-  'tips':'Giornata cuscinetto: se il meteo guasta il Golden Circle, si può invertire con il Giorno 2.'
+  'tips':'Giornata cuscinetto: se il meteo guasta il Golden Circle, si può invertire con il Giorno 2.',
+  'culture':"Il Perlan racconta la geologia islandese da dentro una grotta di ghiaccio artificiale, costruito sopra sei enormi serbatoi che ancora oggi riscaldano Reykjavík con l'acqua calda del sottosuolo. L'Harpa, sala concerti dalla facciata a nido d'ape ispirata alle colonne di basalto, è diventata il simbolo della rinascita della città dopo la crisi finanziaria del 2008. Al National Museum si ripercorre la storia islandese dai primi coloni vichinghi a oggi. Se scegliete Reykjanes, camminerete su un ponte che unisce simbolicamente le due placche tettoniche, a pochi passi dall'area geotermica ribollente di Gunnuhver."
  },
  {'id':'d4','num':4,'dateISO':'2026-11-18','dateLabel':'Mer 18 nov','title':'Reykjavík → Vík: Costa Sud','locKey':'vik',
   'legs':[
@@ -114,7 +117,8 @@ days = [
     {'meal':'Cena','place':'Suður-Vík Restaurant','note':'Menu con opzioni glútenlaus indicate','cost':'€€','gf':True}
   ],
   'accommodation':{'name':'Hotel Burfell','detail':'Vík í Mýrdal · 2 notti'},
-  'tips':'In novembre il buio scende verso le 17: pianifica Reynisfjara/Dyrhólaey per il primo pomeriggio.'
+  'tips':'In novembre il buio scende verso le 17: pianifica Reynisfjara/Dyrhólaey per il primo pomeriggio.',
+  'culture':"Oggi si passa dalle cascate alla costa vulcanica. Skógafoss, 60 metri di salto, nasconde secondo la leggenda un forziere vichingo dietro le sue acque. A Reynisfjara la sabbia nera è lava basaltica frantumata da millenni di oceano, e le pareti a colonne esagonali sono le stesse che hanno ispirato l'architettura della Hallgrímskirkja. Al largo, i faraglioni Reynisdrangar sarebbero — dice la leggenda — due troll pietrificati dall'alba mentre trascinavano a riva una nave: attenzione alle onde anomale, il mare qui non scherza. Dyrhólaey, il promontorio con l'arco di roccia, nacque da un'eruzione sottomarina durante l'ultima glaciazione. Vík, il villaggio più a sud dell'isola, vive all'ombra del vulcano Katla, sepolto sotto il ghiacciaio Mýrdalsjökull."
  },
  {'id':'d5','num':5,'dateISO':'2026-11-19','dateLabel':'Gio 19 nov','title':'Escursione a Jökulsárlón','locKey':'vik',
   'legs':[
@@ -133,7 +137,8 @@ days = [
     {'meal':'Cena','place':'Ströndin Bistro, Vík','note':'','cost':'€€','gf':True}
   ],
   'accommodation':{'name':'Hotel Burfell','detail':'2ª notte a Vík'},
-  'tips':'~370 km andata/ritorno da Vík: con brutto tempo valuta di fermarti solo a Fjaðrárgljúfur o Diamond Beach.'
+  'tips':'~370 km andata/ritorno da Vík: con brutto tempo valuta di fermarti solo a Fjaðrárgljúfur o Diamond Beach.',
+  'culture':"Giornata dedicata al ghiaccio. Il canyon di Fjaðrárgljúfur, scavato da un fiume glaciale in circa due milioni di anni, è diventato famoso di recente anche grazie a un video musicale di Justin Bieber. A Jökulsárlón la laguna esiste solo da un secolo: il Vatnajökull, il ghiacciaio più esteso d'Europa, si è ritirato rapidamente da inizio '900 lasciando dietro di sé questo bacino pieno di iceberg alla deriva verso il mare. Quelli che si arenano sulla sabbia nera di Diamond Beach, levigati e trasparenti, possono contenere ghiaccio compresso da centinaia o migliaia di anni."
  },
  {'id':'d6','num':6,'dateISO':'2026-11-20','dateLabel':'Ven 20 nov','title':'Vík → Flúðir','locKey':'fludir',
   'legs':[
@@ -151,7 +156,8 @@ days = [
     {'meal':'Cena','place':'Cucina alla guesthouse o Restaurant Grund','note':'Verifica il menu glútenlaus in loco','cost':'€€','gf':True}
   ],
   'accommodation':{'name':'The Hill Guesthouse','detail':'Flúðir · 2 notti'},
-  'tips':'Prenota la Secret Lagoon in anticipo online: gli slot serali si esauriscono.'
+  'tips':'Prenota la Secret Lagoon in anticipo online: gli slot serali si esauriscono.',
+  'culture':"Kerið è un cratere vulcanico di circa 3000 anni, insolito nel colore: la roccia è ricca di scoria rossastra invece del solito basalto nero, e sul fondo si è formato un piccolo lago verde-azzurro alimentato dalla falda. A Flúðir vi aspetta la Secret Lagoon, la piscina geotermica più antica dell'isola: costruita nel 1891 come prima piscina pubblica islandese, oggi resta piccola e informale rispetto alla Blue Lagoon, con l'acqua che sgorga naturalmente a circa 38-40°C da una sorgente a pochi passi dalla vasca."
  },
  {'id':'d7','num':7,'dateISO':'2026-11-21','dateLabel':'Sab 21 nov','title':'Flúðir: sorgenti calde e dintorni','locKey':'fludir',
   'legs':[
@@ -167,7 +173,8 @@ days = [
     {'meal':'Cena','place':'Cucina alla guesthouse','note':'Ultima occasione per finire la spesa dal Bónus','cost':'€','gf':True}
   ],
   'accommodation':{'name':'The Hill Guesthouse','detail':'Ultima notte a Flúðir · check-out presto domani'},
-  'tips':"Giornata più tranquilla prima del rientro, e cielo scuro poco inquinato: buon momento per tenere d'occhio l'aurora la sera."
+  'tips':"Giornata più tranquilla prima del rientro, e cielo scuro poco inquinato: buon momento per tenere d'occhio l'aurora la sera.",
+  'culture':"Flúðir vive di geotermia da oltre un secolo: le sue serre, riscaldate dal vapore del sottosuolo, coltivano pomodori e ortaggi anche nel buio di novembre. A Reykjadalur, poco più a nord, un fiume vero e proprio scorre caldo tra le colline vulcaniche: bagnarsi lì è immergersi direttamente nell'acqua riscaldata dal magma, senza vasche né biglietti. Faxi, piccola e quasi sempre deserta, è la cascata che molti islandesi preferiscono a Gullfoss nei weekend affollati."
  },
  {'id':'d8','num':8,'dateISO':'2026-11-22','dateLabel':'Dom 22 nov','title':'Flúðir → Keflavík → Volo di ritorno','locKey':'keflavik',
   'legs':[
@@ -182,7 +189,8 @@ days = [
     {'meal':'Colazione','place':'Guesthouse o avanzi della spesa','note':'','cost':'€','gf':True}
   ],
   'accommodation': None,
-  'tips':'Pochissimo margine tra riconsegna auto (11:00) e decollo (11:25): meglio anticipare la riconsegna il più possibile.'
+  'tips':'Pochissimo margine tra riconsegna auto (11:00) e decollo (11:25): meglio anticipare la riconsegna il più possibile.',
+  'culture':"L'Islanda produce quasi il 100% della sua elettricità da fonti rinnovabili — geotermia e idroelettrico — un'anomalia quasi unica al mondo, resa possibile proprio dal fuoco sotto i piedi che avete attraversato in questi otto giorni. Buon rientro."
  }
 ]
 
@@ -521,10 +529,16 @@ def render_day_section(day):
     if day.get('tips'):
         tips_html = f'<div class="tip-card"><strong>Consiglio:</strong> {e(day["tips"])}</div>'
 
+    culture_html = ''
+    if day.get('culture'):
+        culture_icon = f'<svg viewBox="0 0 64 56" xmlns="http://www.w3.org/2000/svg">{icon_svg("saga")}</svg>'
+        culture_html = (f'<div class="culture-card"><div class="culture-card__label">{culture_icon}Storia &amp; curiosità</div>'
+                         f'<p>{e(day["culture"])}</p></div>')
+
     hero_fname = f"{day['id']}-hero.jpg"
 
     return f'''
-<section class="day-view" id="view-{day['id']}" hidden>
+<section class="day-view page-view" id="view-{day['id']}" hidden>
   <div class="day-head">
     <div class="day-date">{e(day['dateLabel'])} · Giorno {day['num']}/8</div>
     <div class="day-title">{e(day['title'])}</div>
@@ -546,6 +560,7 @@ def render_day_section(day):
     </div>
   </div>
   <div class="aurora-note" data-aurora="{day['id']}">Calcolo delle ore di buio in corso…</div>
+  {culture_html}
   {legs_html}
   <div class="section">
     <div class="section-title">Itinerario</div>
@@ -568,9 +583,47 @@ nav_items = ['<button class="nav-btn active" data-nav="info">Info</button>']
 for d in days:
     label = d['dateLabel'].split(' ')[1] + ' ' + d['dateLabel'].split(' ')[2]
     nav_items.append(f'<button class="nav-btn" data-nav="{d["id"]}">{e(label)}</button>')
+nav_items.append('<button class="nav-btn" data-nav="storia">Storia</button>')
 nav_html = ''.join(nav_items)
 
 days_sections_html = ''.join(render_day_section(d) for d in days)
+
+storia_html = f'''
+<section class="page-view" id="view-storia" hidden>
+  <div class="day-head">
+    <div class="day-date">Infarinatura generale</div>
+    <div class="day-title">Storia dell'Islanda</div>
+  </div>
+  {photo_slot('storia-hero.jpg', "Storia dell'Islanda", 'photo-slot--hero', 'saga')}
+
+  <div class="panel">
+    <div class="panel-title">Un'isola giovanissima</div>
+    <div class="rune-rule"></div>
+    <p class="line">L'Islanda entra nella storia scritta molto tardi rispetto al resto d'Europa: solo nell'<strong>874 d.C.</strong> il norvegese Ingólfur Arnarson fonda il primo insediamento permanente, proprio dove oggi sorge Reykjavík. Secondo l'usanza vichinga, aveva lanciato in mare i pilastri del suo trono cerimoniale e costruito casa dove le correnti li avevano portati a riva. Nei decenni successivi arrivano altre migliaia di coloni, soprattutto dalla Norvegia, insieme a genti e schiavi dalle isole britanniche: da questo mix nasce la popolazione islandese.</p>
+  </div>
+
+  <div class="panel">
+    <div class="panel-title">Dal primo parlamento all'indipendenza</div>
+    <div class="rune-rule"></div>
+    <p class="line">Nel <strong>930 d.C.</strong>, a Þingvellir, i capi dell'isola fondano l'<strong>Alþingi</strong>: un'assemblea annuale all'aperto per fare leggi e giudicare le liti, una delle istituzioni parlamentari più antiche ancora esistenti al mondo. È l'epoca del cosiddetto Commonwealth islandese, senza re né esercito centrale. Nel 1262, dilaniata da faide interne, l'isola giura fedeltà al re di Norvegia; nel 1380 passa sotto la corona danese insieme alla Norvegia. Bisogna aspettare il <strong>1º dicembre 1918</strong> per un regno autonomo (ma ancora legato alla Danimarca), e il <strong>17 giugno 1944</strong> per la Repubblica islandese piena, proclamata con il 97% dei consensi mentre la Danimarca era sotto occupazione tedesca.</p>
+  </div>
+
+  <div class="culture-card">
+    <div class="culture-card__label">{f'<svg viewBox="0 0 64 56" xmlns="http://www.w3.org/2000/svg">{icon_svg("saga")}</svg>'}Le saghe e una lingua rimasta ferma nel tempo</div>
+    <p>Preparatevi a un piccolo miracolo linguistico: l'islandese di oggi è così vicino al norreno medievale che un lettore islandese può ancora leggere le saghe scritte otto secoli fa, senza traduzione — un lusso che i cugini scandinavi hanno perso da tempo. Altrettanto insolito è il sistema dei nomi: niente cognomi di famiglia, solo patronimici o matronimici (un Jónsson è "figlio di Jón"), tanto che l'elenco telefonico islandese è ordinato per nome di battesimo. La popolazione resta minuscola, poco più di 380.000 persone su un'isola grande quanto il Portogallo, con un effetto collaterale gradito: zero zanzare. Gli alberi invece scarseggiano, abbattuti in gran parte dai primi coloni per legna e pascoli.</p>
+  </div>
+
+  <div class="culture-card">
+    <div class="culture-card__label">{f'<svg viewBox="0 0 64 56" xmlns="http://www.w3.org/2000/svg">{icon_svg("saga")}</svg>'}Troll, elfi e le luci del cielo</div>
+    <p>La tradizione islandese abbonda di creature che spiegano il paesaggio prima ancora della geologia. I <strong>troll</strong> vivono nelle scogliere e nelle montagne ma temono la luce del sole: chi viene sorpreso all'alba resta pietrificato per sempre — da qui nascono formazioni come i faraglioni di Reynisfjara, che vedrete il Giorno 4. Accanto a loro vive un popolo più discreto, gli <strong>Huldufólk</strong> ("il popolo nascosto"): elfi che abitano rocce e colline e si mostrano solo quando lo scelgono loro. La credenza è ancora abbastanza radicata che alcuni progetti stradali islandesi siano stati deviati proprio per non disturbarli.</p>
+  </div>
+
+  <div class="panel">
+    <div class="panel-title">Il paese del fuoco sotto il ghiaccio</div>
+    <div class="rune-rule"></div>
+    <p class="line">L'Islanda siede a cavallo della dorsale medio-atlantica, il punto dove le placche nordamericana ed eurasiatica si allontanano di circa 2 cm l'anno: la vedrete a occhio nudo a Þingvellir il Giorno 2. Questa posizione rende l'isola una delle zone vulcaniche più attive del pianeta, con oltre 30 sistemi vulcanici attivi. È lo stesso fuoco sotterraneo, imbrigliato, a rendere l'Islanda quasi autosufficiente: circa il 85% dell'energia del paese viene da fonti rinnovabili, soprattutto geotermia e idroelettrico — le stesse sorgenti calde che userete nella Secret Lagoon e a Reykjadalur.</p>
+  </div>
+</section>'''
 
 sun_fallback_js = json.dumps(sun_fallback, ensure_ascii=False)
 seasonal_js = json.dumps(seasonal, ensure_ascii=False)
@@ -650,6 +703,14 @@ main {{ max-width:820px; margin:0 auto; padding:20px 20px 70px; display:flex; fl
 .kp-row {{ display:flex; align-items:baseline; gap:10px; margin-top:6px; }}
 .kp-big {{ font-family:'Cinzel',serif; font-weight:600; font-size:30px; color:#faf5ea; }}
 .kp-status {{ font-size:13px; color:#c7ccd2; }}
+
+.fx-row {{ display:flex; align-items:flex-end; gap:10px; }}
+.fx-field {{ flex:1; display:flex; flex-direction:column; gap:4px; }}
+.fx-field label {{ font-size:11px; font-weight:600; letter-spacing:.04em; text-transform:uppercase; color:var(--muted-2); }}
+.fx-field input {{ font-family:'IBM Plex Sans',sans-serif; font-size:16px; font-weight:600; color:var(--ink); background:var(--paper); border:1px solid var(--panel-border); border-radius:6px; padding:9px 10px; width:100%; }}
+.fx-field input:focus-visible {{ outline:2px solid var(--amber); outline-offset:1px; }}
+.fx-arrow {{ font-size:15px; color:var(--muted-2); padding-bottom:10px; }}
+.fx-rate {{ margin-top:10px; font-size:12px; color:var(--muted-2); }}
 .aurora-panel .more {{ font-size:13px; line-height:1.6; margin-top:10px; color:#c7ccd2; }}
 .aurora-panel .more a {{ color:#8fd6cd; }}
 
@@ -720,6 +781,11 @@ main {{ max-width:820px; margin:0 auto; padding:20px 20px 70px; display:flex; fl
 
 .tip-card {{ background:var(--amber-soft); border:1px solid var(--amber-soft-border); border-radius:8px; padding:12px 14px; font-size:13px; line-height:1.6; color:#5c3a1f; }}
 
+.culture-card {{ background:var(--teal-soft); border:1px solid var(--teal-border); border-radius:8px; padding:14px 16px; }}
+.culture-card__label {{ font-family:'Cinzel',serif; font-weight:600; font-size:13px; letter-spacing:.03em; color:var(--teal); margin-bottom:6px; display:flex; align-items:center; gap:6px; }}
+.culture-card__label svg {{ width:15px; height:15px; flex-shrink:0; }}
+.culture-card p {{ margin:0; font-size:13.5px; line-height:1.65; color:#22404a; }}
+
 .section {{ display:flex; flex-direction:column; gap:8px; }}
 
 .install-hint {{ font-size:12px; color:#7c8794; text-align:center; padding:6px 20px 0; }}</style>
@@ -742,7 +808,7 @@ main {{ max-width:820px; margin:0 auto; padding:20px 20px 70px; display:flex; fl
 
 <main>
 
-<section id="view-info">
+<section id="view-info" class="page-view">
   <div class="panel">
     <div class="panel-title">Il viaggio in breve</div>
     <div class="rune-rule"></div>
@@ -773,6 +839,24 @@ main {{ max-width:820px; margin:0 auto; padding:20px 20px 70px; display:flex; fl
   </div>
 
   <div class="panel">
+    <div class="panel-title">Cambio Euro &harr; Corona islandese</div>
+    <div class="rune-rule"></div>
+    <div class="line" style="margin-bottom:10px;">Tasso aggiornato in tempo reale se sei online (fonte: Frankfurter/BCE); altrimenti resta sulla stima approssimativa.</div>
+    <div class="fx-row">
+      <div class="fx-field">
+        <label for="fx-eur">Euro (EUR)</label>
+        <input type="number" id="fx-eur" inputmode="decimal" value="10" min="0" step="1">
+      </div>
+      <div class="fx-arrow">&harr;</div>
+      <div class="fx-field">
+        <label for="fx-isk">Corone (ISK)</label>
+        <input type="number" id="fx-isk" inputmode="decimal" value="0" min="0" step="1">
+      </div>
+    </div>
+    <div class="fx-rate" id="fx-rate-label">1 € &asymp; … ISK &middot; caricamento tasso…</div>
+  </div>
+
+  <div class="panel">
     <div class="panel-title">Budget &amp; celiachia</div>
     <div class="rune-rule"></div>
     <div class="line">• Supermercati Bónus (logo maialino rosa) e Krónan sono i più economici per colazioni/pranzi al sacco.</div>
@@ -795,6 +879,8 @@ main {{ max-width:820px; margin:0 auto; padding:20px 20px 70px; display:flex; fl
 </section>
 
 {days_sections_html}
+
+{storia_html}
 
 </main>
 
@@ -867,9 +953,8 @@ function ensureDayMap(dayId) {{
 
 function setActive(id) {{
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.toggle('active', b.dataset.nav === id));
-  document.getElementById('view-info').hidden = id !== 'info';
-  DAYS_META.forEach(d => {{ document.getElementById('view-' + d.id).hidden = d.id !== id; }});
-  if (id !== 'info') ensureDayMap(id);
+  document.querySelectorAll('.page-view').forEach(el => {{ el.hidden = el.id !== 'view-' + id; }});
+  if (DAYS_META.some(d => d.id === id)) ensureDayMap(id);
   window.scrollTo({{ top: 0, behavior: 'instant' in window ? 'instant' : 'auto' }});
 }}
 document.querySelectorAll('.nav-btn').forEach(btn => {{
@@ -973,6 +1058,49 @@ async function fetchKp() {{
     : 'Dato non disponibile offline';
 }}
 
+const FX_FALLBACK_RATE = 145.5; // stima approssimativa EUR->ISK, usata se offline
+let fxRate = FX_FALLBACK_RATE;
+
+function fxUpdateFrom(source) {{
+  const eurEl = document.getElementById('fx-eur');
+  const iskEl = document.getElementById('fx-isk');
+  if (!eurEl || !iskEl) return;
+  if (source === 'eur') {{
+    const eur = parseFloat(eurEl.value);
+    iskEl.value = isFinite(eur) ? Math.round(eur * fxRate) : '';
+  }} else {{
+    const isk = parseFloat(iskEl.value);
+    eurEl.value = isFinite(isk) ? Math.round((isk / fxRate) * 100) / 100 : '';
+  }}
+}}
+
+function fxSetup() {{
+  const eurEl = document.getElementById('fx-eur');
+  const iskEl = document.getElementById('fx-isk');
+  if (!eurEl || !iskEl) return;
+  eurEl.addEventListener('input', () => fxUpdateFrom('eur'));
+  iskEl.addEventListener('input', () => fxUpdateFrom('isk'));
+  fxUpdateFrom('eur');
+}}
+fxSetup();
+
+async function fetchFxRate() {{
+  const label = document.getElementById('fx-rate-label');
+  try {{
+    const res = await fetch('https://api.frankfurter.app/latest?from=EUR&to=ISK');
+    const json = await res.json();
+    if (json && json.rates && json.rates.ISK) {{
+      fxRate = json.rates.ISK;
+      if (label) label.textContent = '1 € \\u2248 ' + fxRate.toFixed(1) + ' ISK \\u00b7 aggiornato ora (' + json.date + ')';
+      fxUpdateFrom('eur');
+      return;
+    }}
+    throw new Error('no rate');
+  }} catch (e) {{
+    if (label) label.textContent = '1 € \\u2248 ' + FX_FALLBACK_RATE.toFixed(1) + ' ISK \\u00b7 stima offline, verifica il tasso reale prima di partire';
+  }}
+}}
+
 function initTripMap() {{
   const el = document.getElementById('trip-map');
   if (!el || typeof L === 'undefined') return;
@@ -1020,6 +1148,7 @@ function initTripMap() {{
 fetchAllWeather();
 fetchAllSun();
 fetchKp();
+fetchFxRate();
 initTripMap();
 
 if ('serviceWorker' in navigator) {{
