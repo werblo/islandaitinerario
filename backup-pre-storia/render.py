@@ -58,8 +58,7 @@ days = [
     {'meal':'Cena','place':'Gló, Laugavegur','note':'Cucina salutista, piatti glútenlaus segnalati in menu','cost':'€€','gf':True}
   ],
   'accommodation':{'name':'46heima Boutique Apartments','detail':'Laugavegur 46, Reykjavík · 3 notti · check-in dalle 15:00'},
-  'tips':"Giornata di arrivo tranquilla: sistematevi con calma e fate un po' di spesa in un Bónus per i giorni successivi. Se volete una spa geotermica, la Sky Lagoon (Giorno 2) è più economica e meno turistica della Blue Lagoon.",
-  'culture':"Reykjavík ha una storia più antica di quanto sembri: fondata nell'874 d.C. da Ingólfur Arnarson, primo colono vichingo dell'isola, deve il nome — \"baia dei fumi\" — al vapore geotermico che i primi coloni scambiarono per fumo di incendi. La Hallgrímskirkja che vedrete oggi non è un caso: il suo profilo a colonne è un omaggio diretto alle colonne di basalto che modellano le coste islandesi, le stesse che troverete tra qualche giorno a Reynisfjara. Passeggiando da Laugavegur al porto vecchio, fino al Sun Voyager sul lungomare, si attraversano più di mille anni di storia in mezz'ora a piedi."
+  'tips':"Giornata di arrivo tranquilla: sistematevi con calma e fate un po' di spesa in un Bónus per i giorni successivi. Se volete una spa geotermica, la Sky Lagoon (Giorno 2) è più economica e meno turistica della Blue Lagoon."
  },
  {'id':'d2','num':2,'dateISO':'2026-11-16','dateLabel':'Lun 16 nov','title':"Cerchio d'Oro (Golden Circle)",'locKey':'reykjavik',
   'legs':[
@@ -79,8 +78,7 @@ days = [
     {'meal':'Cena','place':'Hlemmur Mathöll, Reykjavík','note':'Food hall con vari stand, alcuni segnalano opzioni senza glutine','cost':'€€','gf':True}
   ],
   'accommodation':{'name':'46heima Boutique Apartments','detail':'2ª notte a Reykjavík'},
-  'tips':'Anello di ~250 km: partite presto, in novembre il sole sorge tardi (intorno alle 10) quindi non perdete ore di luce.',
-  'culture':"A Þingvellir camminerete letteralmente tra due continenti: la faglia che attraversa il parco segna il punto in cui le placche nordamericana ed eurasiatica si allontanano di circa 2 cm l'anno. Qui, nel 930 d.C., nacque l'Alþingi, tra i più antichi parlamenti al mondo ancora in vita. Poco più avanti, il nome stesso di \"geyser\" nasce da qui: Strokkur erutta ogni 5-10 minuti, mentre il Grande Geysir che gli ha dato il nome dorme quasi sempre dal 2003. Gullfoss, infine, esiste ancora grazie a Sigríður Tómasdóttir, che ai primi del '900 si oppose a un progetto di diga che l'avrebbe sommersa."
+  'tips':'Anello di ~250 km: partite presto, in novembre il sole sorge tardi (intorno alle 10) quindi non perdete ore di luce.'
  },
  {'id':'d3','num':3,'dateISO':'2026-11-17','dateLabel':'Mar 17 nov','title':'Reykjavík: cultura e relax','locKey':'reykjavik',
   'legs':[],
@@ -95,8 +93,7 @@ days = [
     {'meal':'Cena','place':'Sushi Social o cucina in appartamento','note':'Menu con opzioni senza glutine indicate','cost':'€€€','gf':True}
   ],
   'accommodation':{'name':'46heima Boutique Apartments','detail':'Ultima notte a Reykjavík · check-out domani 09:30-10:00'},
-  'tips':'Giornata cuscinetto: se il meteo guasta il Golden Circle, si può invertire con il Giorno 2.',
-  'culture':"Il Perlan racconta la geologia islandese da dentro una grotta di ghiaccio artificiale, costruito sopra sei enormi serbatoi che ancora oggi riscaldano Reykjavík con l'acqua calda del sottosuolo. L'Harpa, sala concerti dalla facciata a nido d'ape ispirata alle colonne di basalto, è diventata il simbolo della rinascita della città dopo la crisi finanziaria del 2008. Al National Museum si ripercorre la storia islandese dai primi coloni vichinghi a oggi. Se scegliete Reykjanes, camminerete su un ponte che unisce simbolicamente le due placche tettoniche, a pochi passi dall'area geotermica ribollente di Gunnuhver."
+  'tips':'Giornata cuscinetto: se il meteo guasta il Golden Circle, si può invertire con il Giorno 2.'
  },
  {'id':'d4','num':4,'dateISO':'2026-11-18','dateLabel':'Mer 18 nov','title':'Reykjavík → Vík: Costa Sud','locKey':'vik',
   'legs':[
@@ -117,8 +114,7 @@ days = [
     {'meal':'Cena','place':'Suður-Vík Restaurant','note':'Menu con opzioni glútenlaus indicate','cost':'€€','gf':True}
   ],
   'accommodation':{'name':'Hotel Burfell','detail':'Vík í Mýrdal · 2 notti'},
-  'tips':'In novembre il buio scende verso le 17: pianifica Reynisfjara/Dyrhólaey per il primo pomeriggio.',
-  'culture':"Oggi si passa dalle cascate alla costa vulcanica. Skógafoss, 60 metri di salto, nasconde secondo la leggenda un forziere vichingo dietro le sue acque. A Reynisfjara la sabbia nera è lava basaltica frantumata da millenni di oceano, e le pareti a colonne esagonali sono le stesse che hanno ispirato l'architettura della Hallgrímskirkja. Al largo, i faraglioni Reynisdrangar sarebbero — dice la leggenda — due troll pietrificati dall'alba mentre trascinavano a riva una nave: attenzione alle onde anomale, il mare qui non scherza. Dyrhólaey, il promontorio con l'arco di roccia, nacque da un'eruzione sottomarina durante l'ultima glaciazione. Vík, il villaggio più a sud dell'isola, vive all'ombra del vulcano Katla, sepolto sotto il ghiacciaio Mýrdalsjökull."
+  'tips':'In novembre il buio scende verso le 17: pianifica Reynisfjara/Dyrhólaey per il primo pomeriggio.'
  },
  {'id':'d5','num':5,'dateISO':'2026-11-19','dateLabel':'Gio 19 nov','title':'Escursione a Jökulsárlón','locKey':'vik',
   'legs':[
@@ -137,8 +133,7 @@ days = [
     {'meal':'Cena','place':'Ströndin Bistro, Vík','note':'','cost':'€€','gf':True}
   ],
   'accommodation':{'name':'Hotel Burfell','detail':'2ª notte a Vík'},
-  'tips':'~370 km andata/ritorno da Vík: con brutto tempo valuta di fermarti solo a Fjaðrárgljúfur o Diamond Beach.',
-  'culture':"Giornata dedicata al ghiaccio. Il canyon di Fjaðrárgljúfur, scavato da un fiume glaciale in circa due milioni di anni, è diventato famoso di recente anche grazie a un video musicale di Justin Bieber. A Jökulsárlón la laguna esiste solo da un secolo: il Vatnajökull, il ghiacciaio più esteso d'Europa, si è ritirato rapidamente da inizio '900 lasciando dietro di sé questo bacino pieno di iceberg alla deriva verso il mare. Quelli che si arenano sulla sabbia nera di Diamond Beach, levigati e trasparenti, possono contenere ghiaccio compresso da centinaia o migliaia di anni."
+  'tips':'~370 km andata/ritorno da Vík: con brutto tempo valuta di fermarti solo a Fjaðrárgljúfur o Diamond Beach.'
  },
  {'id':'d6','num':6,'dateISO':'2026-11-20','dateLabel':'Ven 20 nov','title':'Vík → Flúðir','locKey':'fludir',
   'legs':[
@@ -156,8 +151,7 @@ days = [
     {'meal':'Cena','place':'Cucina alla guesthouse o Restaurant Grund','note':'Verifica il menu glútenlaus in loco','cost':'€€','gf':True}
   ],
   'accommodation':{'name':'The Hill Guesthouse','detail':'Flúðir · 2 notti'},
-  'tips':'Prenota la Secret Lagoon in anticipo online: gli slot serali si esauriscono.',
-  'culture':"Kerið è un cratere vulcanico di circa 3000 anni, insolito nel colore: la roccia è ricca di scoria rossastra invece del solito basalto nero, e sul fondo si è formato un piccolo lago verde-azzurro alimentato dalla falda. A Flúðir vi aspetta la Secret Lagoon, la piscina geotermica più antica dell'isola: costruita nel 1891 come prima piscina pubblica islandese, oggi resta piccola e informale rispetto alla Blue Lagoon, con l'acqua che sgorga naturalmente a circa 38-40°C da una sorgente a pochi passi dalla vasca."
+  'tips':'Prenota la Secret Lagoon in anticipo online: gli slot serali si esauriscono.'
  },
  {'id':'d7','num':7,'dateISO':'2026-11-21','dateLabel':'Sab 21 nov','title':'Flúðir: sorgenti calde e dintorni','locKey':'fludir',
   'legs':[
@@ -173,8 +167,7 @@ days = [
     {'meal':'Cena','place':'Cucina alla guesthouse','note':'Ultima occasione per finire la spesa dal Bónus','cost':'€','gf':True}
   ],
   'accommodation':{'name':'The Hill Guesthouse','detail':'Ultima notte a Flúðir · check-out presto domani'},
-  'tips':"Giornata più tranquilla prima del rientro, e cielo scuro poco inquinato: buon momento per tenere d'occhio l'aurora la sera.",
-  'culture':"Flúðir vive di geotermia da oltre un secolo: le sue serre, riscaldate dal vapore del sottosuolo, coltivano pomodori e ortaggi anche nel buio di novembre. A Reykjadalur, poco più a nord, un fiume vero e proprio scorre caldo tra le colline vulcaniche: bagnarsi lì è immergersi direttamente nell'acqua riscaldata dal magma, senza vasche né biglietti. Faxi, piccola e quasi sempre deserta, è la cascata che molti islandesi preferiscono a Gullfoss nei weekend affollati."
+  'tips':"Giornata più tranquilla prima del rientro, e cielo scuro poco inquinato: buon momento per tenere d'occhio l'aurora la sera."
  },
  {'id':'d8','num':8,'dateISO':'2026-11-22','dateLabel':'Dom 22 nov','title':'Flúðir → Keflavík → Volo di ritorno','locKey':'keflavik',
   'legs':[
@@ -189,8 +182,7 @@ days = [
     {'meal':'Colazione','place':'Guesthouse o avanzi della spesa','note':'','cost':'€','gf':True}
   ],
   'accommodation': None,
-  'tips':'Pochissimo margine tra riconsegna auto (11:00) e decollo (11:25): meglio anticipare la riconsegna il più possibile.',
-  'culture':"L'Islanda produce quasi il 100% della sua elettricità da fonti rinnovabili — geotermia e idroelettrico — un'anomalia quasi unica al mondo, resa possibile proprio dal fuoco sotto i piedi che avete attraversato in questi otto giorni. Buon rientro."
+  'tips':'Pochissimo margine tra riconsegna auto (11:00) e decollo (11:25): meglio anticipare la riconsegna il più possibile.'
  }
 ]
 
@@ -529,12 +521,6 @@ def render_day_section(day):
     if day.get('tips'):
         tips_html = f'<div class="tip-card"><strong>Consiglio:</strong> {e(day["tips"])}</div>'
 
-    culture_html = ''
-    if day.get('culture'):
-        culture_icon = f'<svg viewBox="0 0 64 56" xmlns="http://www.w3.org/2000/svg">{icon_svg("saga")}</svg>'
-        culture_html = (f'<div class="culture-card"><div class="culture-card__label">{culture_icon}Storia &amp; curiosità</div>'
-                         f'<p>{e(day["culture"])}</p></div>')
-
     hero_fname = f"{day['id']}-hero.jpg"
 
     return f'''
@@ -560,7 +546,6 @@ def render_day_section(day):
     </div>
   </div>
   <div class="aurora-note" data-aurora="{day['id']}">Calcolo delle ore di buio in corso…</div>
-  {culture_html}
   {legs_html}
   <div class="section">
     <div class="section-title">Itinerario</div>
@@ -734,11 +719,6 @@ main {{ max-width:820px; margin:0 auto; padding:20px 20px 70px; display:flex; fl
 .acc-detail {{ color:#c7ccd2; margin-top:2px; }}
 
 .tip-card {{ background:var(--amber-soft); border:1px solid var(--amber-soft-border); border-radius:8px; padding:12px 14px; font-size:13px; line-height:1.6; color:#5c3a1f; }}
-
-.culture-card {{ background:var(--teal-soft); border:1px solid var(--teal-border); border-radius:8px; padding:14px 16px; }}
-.culture-card__label {{ font-family:'Cinzel',serif; font-weight:600; font-size:13px; letter-spacing:.03em; color:var(--teal); margin-bottom:6px; display:flex; align-items:center; gap:6px; }}
-.culture-card__label svg {{ width:15px; height:15px; flex-shrink:0; }}
-.culture-card p {{ margin:0; font-size:13.5px; line-height:1.65; color:#22404a; }}
 
 .section {{ display:flex; flex-direction:column; gap:8px; }}
 
