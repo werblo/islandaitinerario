@@ -1,4 +1,4 @@
-const CACHE_NAME = 'islanda-2026-v3';
+const CACHE_NAME = 'islanda-2026-v4';
 
 const APP_SHELL = [
   './',
@@ -30,10 +30,18 @@ self.addEventListener('fetch', (event) => {
   if (req.method !== 'GET') return;
 
   const url = new URL(req.url);
-  const isImage = url.pathname.includes('/images/');
 
-  if (isImage) {
-    // Foto: cache-first, cosi una volta viste restano disponibili offline.
+  // Cache-first per tutto cio che, una volta scaricato, non cambia piu:
+  //  - le foto in images/
+  //  - i tile della mappa (richiesti come <img> da Leaflet): cosi le zone
+  //    gia visualizzate online restano visibili anche offline
+  //  - la libreria Leaflet, che ha un URL versionato quindi immutabile
+  const isStatic = url.pathname.includes('/images/')
+    || req.destination === 'image'
+    || url.hostname === 'unpkg.com';
+
+  if (isStatic) {
+    // Cache-first: una volta visti restano disponibili offline.
     event.respondWith(
       caches.match(req).then((cached) => cached || fetch(req).then((res) => {
         if (res && res.ok) {

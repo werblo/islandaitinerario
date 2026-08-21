@@ -907,7 +907,8 @@ function ensureDayMap(dayId) {{
   L.tileLayer('https://{{s}}.basemaps.cartocdn.com/dark_all/{{z}}/{{x}}/{{y}}{{r}}.png', {{
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions" target="_blank" rel="noopener">CARTO</a>',
     subdomains: 'abcd',
-    maxZoom: 19
+    maxZoom: 19,
+    crossOrigin: true
   }}).addTo(map);
 
   const latlngs = points.map(p => [p.lat, p.lon]);
@@ -1051,11 +1052,19 @@ async function fetchKp() {{
     const last = json[json.length - 1];
     state.kp = Math.round(last.kp_index * 10) / 10;
     state.kpStatus = 'ok';
+    state.kpAt = new Date();
   }} catch (e) {{ state.kpStatus = 'error'; }}
   document.getElementById('kp-value').textContent = state.kpStatus === 'ok' ? ('Kp ' + state.kp) : '—';
-  document.getElementById('kp-status').textContent = state.kpStatus === 'ok'
-    ? (state.kp >= 4 ? 'Attività alta in questo momento' : 'Attività bassa/moderata in questo momento')
-    : 'Dato non disponibile offline';
+  let kpText;
+  if (state.kpStatus === 'ok') {{
+    const t = state.kpAt;
+    const hh = String(t.getHours()).padStart(2, '0') + ':' + String(t.getMinutes()).padStart(2, '0');
+    kpText = (state.kp >= 4 ? 'Attività alta' : 'Attività bassa/moderata')
+           + (navigator.onLine ? ' · aggiornato alle ' + hh : ' · ultimo dato salvato, sei offline');
+  }} else {{
+    kpText = 'Dato non disponibile offline';
+  }}
+  document.getElementById('kp-status').textContent = kpText;
 }}
 
 const FX_FALLBACK_RATE = 145.5; // stima approssimativa EUR->ISK, usata se offline
@@ -1116,7 +1125,8 @@ function initTripMap() {{
   L.tileLayer('https://{{s}}.basemaps.cartocdn.com/dark_all/{{z}}/{{x}}/{{y}}{{r}}.png', {{
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions" target="_blank" rel="noopener">CARTO</a>',
     subdomains: 'abcd',
-    maxZoom: 19
+    maxZoom: 19,
+    crossOrigin: true
   }}).addTo(map);
 
   const latlngs = stops.map(s => [LOCATIONS[s.key].lat, LOCATIONS[s.key].lon]);
@@ -1145,10 +1155,28 @@ function initTripMap() {{
   el.addEventListener('touchstart', () => map.scrollWheelZoom.enable(), {{ once: true, passive: true }});
 }}
 
-fetchAllWeather();
-fetchAllSun();
-fetchKp();
-fetchFxRate();
+// Aggiornamento dei dati live (alba/tramonto, aurora, meteo, cambio).
+// Le fetch vengono tentate sempre: se sei offline il service worker
+// risponde con l'ultimo dato valido salvato in cache.
+let lastLiveRefresh = 0;
+function refreshLiveData(force) {{
+  const now = Date.now();
+  if (!force && now - lastLiveRefresh < 60000) return;
+  lastLiveRefresh = now;
+  fetchAllSun();
+  fetchKp();
+  fetchAllWeather();
+  fetchFxRate();
+}}
+
+// Al ritorno della connessione, e quando si torna sull'app dopo averla
+// lasciata in background (tipico della PWA sul telefono).
+window.addEventListener('online', () => refreshLiveData(true));
+document.addEventListener('visibilitychange', () => {{
+  if (document.visibilityState === 'visible') refreshLiveData(false);
+}});
+
+refreshLiveData(true);
 initTripMap();
 
 if ('serviceWorker' in navigator) {{
