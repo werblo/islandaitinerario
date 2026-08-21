@@ -36,6 +36,36 @@ sun_fallback = {
     'd8': {'sunrise': '10:12', 'sunset': '16:01', 'daylight': '5h 49m'},
 }
 
+checklist_groups = [
+    {'title': 'Documenti', 'items': [
+        "Carta d'identità o passaporto in corso di validità",
+        'Patente di guida (valida in Islanda, non serve il permesso internazionale per cittadini UE)',
+        'Carta di credito intestata al conducente, per il noleggio auto',
+        'Voucher noleggio auto FairCar, stampato o salvato offline',
+        'Conferme di prenotazione degli alloggi',
+        'Biglietti aerei / carte d\'imbarco',
+        'Assicurazione di viaggio (verifica che copra guida invernale/neve)',
+        "Itinerario registrato su safetravel.is",
+    ]},
+    {'title': 'Abbigliamento', 'items': [
+        'Giacca impermeabile e antivento (guscio esterno)',
+        'Strato termico o pile sotto la giacca',
+        'Scarponcini impermeabili con buon grip su ghiaccio',
+        'Guanti, berretto, sciarpa',
+        'Calzini di ricambio (pioggia/neve)',
+        'Costume da bagno (Secret Lagoon, Reykjadalur)',
+        'Asciugamano compatto a rapida asciugatura',
+    ]},
+    {'title': 'Tecnologia & varie', 'items': [
+        'Power bank (il freddo scarica le batterie più in fretta)',
+        'Torcia frontale, comoda a mani libere col buio che scende presto',
+        'Mappe offline di Google Maps scaricate per l\'Islanda',
+        'App 112 Iceland installata',
+        'Carta con PIN attivo per le colonnine self-service (vedi nota sotto)',
+        'Un po\' di contanti, anche se l\'Islanda è quasi completamente cashless',
+    ]},
+]
+
 stays = [
     {'name': '46heima Boutique Apartments', 'detail': 'Laugavegur 46, Reykjavík · 15–18 nov (3 notti)'},
     {'name': 'Hotel Burfell', 'detail': 'Vík í Mýrdal · 18–20 nov (2 notti)'},
@@ -584,6 +614,7 @@ for d in days:
     label = d['dateLabel'].split(' ')[1] + ' ' + d['dateLabel'].split(' ')[2]
     nav_items.append(f'<button class="nav-btn" data-nav="{d["id"]}">{e(label)}</button>')
 nav_items.append('<button class="nav-btn" data-nav="storia">Storia</button>')
+nav_items.append('<button class="nav-btn" data-nav="checklist">Checklist</button>')
 nav_html = ''.join(nav_items)
 
 days_sections_html = ''.join(render_day_section(d) for d in days)
@@ -622,6 +653,41 @@ storia_html = f'''
     <div class="panel-title">Il paese del fuoco sotto il ghiaccio</div>
     <div class="rune-rule"></div>
     <p class="line">L'Islanda siede a cavallo della dorsale medio-atlantica, il punto dove le placche nordamericana ed eurasiatica si allontanano di circa 2 cm l'anno: la vedrete a occhio nudo a Þingvellir il Giorno 2. Questa posizione rende l'isola una delle zone vulcaniche più attive del pianeta, con oltre 30 sistemi vulcanici attivi. È lo stesso fuoco sotterraneo, imbrigliato, a rendere l'Islanda quasi autosufficiente: circa il 85% dell'energia del paese viene da fonti rinnovabili, soprattutto geotermia e idroelettrico — le stesse sorgenti calde che userete nella Secret Lagoon e a Reykjadalur.</p>
+  </div>
+</section>'''
+
+def render_checklist_group(group, group_idx):
+    items_html = ''
+    for item_idx, text in enumerate(group['items']):
+        item_id = f'chk-{group_idx}-{item_idx}'
+        items_html += (f'<label class="chk-item" for="{item_id}">'
+                        f'<input type="checkbox" id="{item_id}" class="chk-box" data-chk-id="{item_id}">'
+                        f'<span>{e(text)}</span></label>')
+    return (f'<div class="panel">'
+            f'<div class="panel-title">{e(group["title"])}</div>'
+            f'<div class="rune-rule"></div>'
+            f'<div class="chk-list">{items_html}</div>'
+            f'</div>')
+
+checklist_groups_html = ''.join(render_checklist_group(g, i) for i, g in enumerate(checklist_groups))
+
+checklist_html = f'''
+<section class="page-view" id="view-checklist" hidden>
+  <div class="day-head">
+    <div class="day-date">Prima di partire</div>
+    <div class="day-title">Checklist</div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-title">Quanto manca</div>
+    <div class="rune-rule"></div>
+    <div class="line" id="chk-progress">Caricamento…</div>
+  </div>
+
+  {checklist_groups_html}
+
+  <div class="tip-card">
+    <strong>Colonnine di benzina:</strong> in Islanda sono quasi tutte self-service e chiedono una carta con PIN attivo (niente carte prepagate senza PIN o solo contactless). Se avete una carta di credito o debito normale con PIN funziona senza problemi — verificate solo di avere il PIN a mente prima di partire.
   </div>
 </section>'''
 
@@ -711,6 +777,16 @@ main {{ max-width:820px; margin:0 auto; padding:20px 20px 70px; display:flex; fl
 .fx-field input:focus-visible {{ outline:2px solid var(--amber); outline-offset:1px; }}
 .fx-arrow {{ font-size:15px; color:var(--muted-2); padding-bottom:10px; }}
 .fx-rate {{ margin-top:10px; font-size:12px; color:var(--muted-2); }}
+
+.chk-list {{ display:flex; flex-direction:column; gap:2px; }}
+.chk-item {{ display:flex; align-items:flex-start; gap:10px; padding:9px 4px; font-size:14px; line-height:1.5; color:#333c46; cursor:pointer; border-radius:6px; }}
+.chk-item:hover {{ background:rgba(0,0,0,.03); }}
+.chk-box {{ margin-top:3px; width:18px; height:18px; flex-shrink:0; accent-color:var(--amber); }}
+.chk-item:has(.chk-box:checked) span {{ color:var(--muted-2); text-decoration:line-through; text-decoration-color:var(--amber-soft-border); }}
+
+.countdown-banner {{ background:linear-gradient(135deg,var(--navy),var(--navy-2)); border:1px solid #2c405a; border-radius:8px; padding:16px 20px; text-align:center; }}
+.countdown-banner__big {{ font-family:'Cinzel',serif; font-weight:600; font-size:22px; color:#f2ede2; }}
+.countdown-banner__sub {{ font-size:12px; color:#a9b2bb; margin-top:4px; }}
 .aurora-panel .more {{ font-size:13px; line-height:1.6; margin-top:10px; color:#c7ccd2; }}
 .aurora-panel .more a {{ color:#8fd6cd; }}
 
@@ -809,6 +885,11 @@ main {{ max-width:820px; margin:0 auto; padding:20px 20px 70px; display:flex; fl
 <main>
 
 <section id="view-info" class="page-view">
+  <div class="countdown-banner">
+    <div class="countdown-banner__big" id="countdown-big">…</div>
+    <div class="countdown-banner__sub" id="countdown-sub"></div>
+  </div>
+
   <div class="panel">
     <div class="panel-title">Il viaggio in breve</div>
     <div class="rune-rule"></div>
@@ -881,6 +962,8 @@ main {{ max-width:820px; margin:0 auto; padding:20px 20px 70px; display:flex; fl
 {days_sections_html}
 
 {storia_html}
+
+{checklist_html}
 
 </main>
 
@@ -1180,6 +1263,66 @@ window.addEventListener('online', () => refreshLiveData(true));
 document.addEventListener('visibilitychange', () => {{
   if (document.visibilityState === 'visible') refreshLiveData(false);
 }});
+
+function updateCountdown() {{
+  const bigEl = document.getElementById('countdown-big');
+  const subEl = document.getElementById('countdown-sub');
+  if (!bigEl || !DAYS_META.length) return;
+  const start = new Date(DAYS_META[0].dateISO + 'T00:00:00');
+  const end = new Date(DAYS_META[DAYS_META.length - 1].dateISO + 'T23:59:59');
+  const now = new Date();
+  if (now < start) {{
+    const days = Math.ceil((start - now) / 86400000);
+    bigEl.textContent = days === 1 ? 'Manca 1 giorno' : ('Mancano ' + days + ' giorni');
+    subEl.textContent = "alla partenza per l'Islanda";
+  }} else if (now <= end) {{
+    const dayNum = Math.min(Math.floor((now - start) / 86400000) + 1, DAYS_META.length);
+    bigEl.textContent = 'Siete in viaggio!';
+    subEl.textContent = 'Giorno ' + dayNum + ' di ' + DAYS_META.length;
+  }} else {{
+    bigEl.textContent = 'Bentornati!';
+    subEl.textContent = "Il viaggio in Islanda è finito \\u2014 che ricordo dev'essere stato.";
+  }}
+}}
+updateCountdown();
+setInterval(updateCountdown, 3600000);
+
+const CHK_STORAGE_KEY = 'islanda2026-checklist';
+function loadChecklist() {{
+  try {{
+    const raw = localStorage.getItem(CHK_STORAGE_KEY);
+    return raw ? JSON.parse(raw) : {{}};
+  }} catch (e) {{ return {{}}; }}
+}}
+function saveChecklist(state) {{
+  try {{ localStorage.setItem(CHK_STORAGE_KEY, JSON.stringify(state)); }} catch (e) {{ /* storage non disponibile */ }}
+}}
+function updateChecklistProgress() {{
+  const boxes = document.querySelectorAll('.chk-box');
+  const el = document.getElementById('chk-progress');
+  if (!el || !boxes.length) return;
+  const total = boxes.length;
+  const checked = document.querySelectorAll('.chk-box:checked').length;
+  el.textContent = checked + ' su ' + total + ' completati'
+    + (checked === total ? ' \\u2014 pronti per partire!' : '');
+}}
+function setupChecklist() {{
+  const boxes = document.querySelectorAll('.chk-box');
+  if (!boxes.length) return;
+  const saved = loadChecklist();
+  boxes.forEach((box) => {{
+    const id = box.dataset.chkId;
+    if (saved[id]) box.checked = true;
+    box.addEventListener('change', () => {{
+      const state = loadChecklist();
+      state[id] = box.checked;
+      saveChecklist(state);
+      updateChecklistProgress();
+    }});
+  }});
+  updateChecklistProgress();
+}}
+setupChecklist();
 
 refreshLiveData(true);
 initTripMap();
