@@ -841,7 +841,7 @@ main {{ max-width:820px; margin:0 auto; padding:20px 20px 70px; display:flex; fl
   <div class="panel">
     <div class="panel-title">Cambio Euro &harr; Corona islandese</div>
     <div class="rune-rule"></div>
-    <div class="line" style="margin-bottom:10px;">Tasso aggiornato in tempo reale se sei online (fonte: Frankfurter/BCE); altrimenti resta sulla stima approssimativa.</div>
+    <div class="line" style="margin-bottom:10px;">Tasso aggiornato in tempo reale se sei online (fonte: open.er-api.com); altrimenti resta sulla stima approssimativa.</div>
     <div class="fx-row">
       <div class="fx-field">
         <label for="fx-eur">Euro (EUR)</label>
@@ -1095,12 +1095,17 @@ fxSetup();
 
 async function fetchFxRate() {{
   const label = document.getElementById('fx-rate-label');
+  // La BCE (e quindi Frankfurter, che ne replica i tassi) non pubblica un
+  // cambio per la corona islandese: usiamo open.er-api.com, gratuita e
+  // senza chiave, che copre l'ISK.
   try {{
-    const res = await fetch('https://api.frankfurter.app/latest?from=EUR&to=ISK');
+    const res = await fetch('https://open.er-api.com/v6/latest/EUR');
     const json = await res.json();
-    if (json && json.rates && json.rates.ISK) {{
+    if (json && json.result === 'success' && json.rates && json.rates.ISK) {{
       fxRate = json.rates.ISK;
-      if (label) label.textContent = '1 € \\u2248 ' + fxRate.toFixed(1) + ' ISK \\u00b7 aggiornato ora (' + json.date + ')';
+      const when = json.time_last_update_utc ? new Date(json.time_last_update_utc) : new Date();
+      const hh = String(when.getHours()).padStart(2, '0') + ':' + String(when.getMinutes()).padStart(2, '0');
+      if (label) label.textContent = '1 € \\u2248 ' + fxRate.toFixed(1) + ' ISK \\u00b7 aggiornato alle ' + hh;
       fxUpdateFrom('eur');
       return;
     }}
