@@ -1,4 +1,4 @@
-const CACHE_NAME = 'islanda-2026-v2';
+const CACHE_NAME = 'islanda-2026-v3';
 
 const APP_SHELL = [
   './',
@@ -50,7 +50,7 @@ self.addEventListener('fetch', (event) => {
   // sempre aggiornati quando c'e connessione), cache come riserva offline
   // (l'ultima risposta valida ricevuta, incluse le previsioni meteo).
   event.respondWith(
-    fetch(req).then((res) => {
+    fetch(req, { cache: 'no-store' }).then((res) => {
       if (res && res.ok) {
         const clone = res.clone();
         caches.open(CACHE_NAME).then((cache) => cache.put(req, clone));
