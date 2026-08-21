@@ -1,0 +1,5 @@
+Metti qui le foto con i nomi esatti indicati in LEGGIMI.md
+(es. cover.jpg, d1-hero.jpg, d4-seljalandsfoss.jpg...).
+
+Questo file è solo un segnaposto, puoi cancellarlo una volta
+aggiunte le foto vere.
