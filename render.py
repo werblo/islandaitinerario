@@ -538,7 +538,7 @@ def render_day_section(day):
     hero_fname = f"{day['id']}-hero.jpg"
 
     return f'''
-<section class="day-view" id="view-{day['id']}" hidden>
+<section class="day-view page-view" id="view-{day['id']}" hidden>
   <div class="day-head">
     <div class="day-date">{e(day['dateLabel'])} · Giorno {day['num']}/8</div>
     <div class="day-title">{e(day['title'])}</div>
@@ -583,9 +583,47 @@ nav_items = ['<button class="nav-btn active" data-nav="info">Info</button>']
 for d in days:
     label = d['dateLabel'].split(' ')[1] + ' ' + d['dateLabel'].split(' ')[2]
     nav_items.append(f'<button class="nav-btn" data-nav="{d["id"]}">{e(label)}</button>')
+nav_items.append('<button class="nav-btn" data-nav="storia">Storia</button>')
 nav_html = ''.join(nav_items)
 
 days_sections_html = ''.join(render_day_section(d) for d in days)
+
+storia_html = f'''
+<section class="page-view" id="view-storia" hidden>
+  <div class="day-head">
+    <div class="day-date">Infarinatura generale</div>
+    <div class="day-title">Storia dell'Islanda</div>
+  </div>
+  {photo_slot('storia-hero.jpg', "Storia dell'Islanda", 'photo-slot--hero', 'saga')}
+
+  <div class="panel">
+    <div class="panel-title">Un'isola giovanissima</div>
+    <div class="rune-rule"></div>
+    <p class="line">L'Islanda entra nella storia scritta molto tardi rispetto al resto d'Europa: solo nell'<strong>874 d.C.</strong> il norvegese Ingólfur Arnarson fonda il primo insediamento permanente, proprio dove oggi sorge Reykjavík. Secondo l'usanza vichinga, aveva lanciato in mare i pilastri del suo trono cerimoniale e costruito casa dove le correnti li avevano portati a riva. Nei decenni successivi arrivano altre migliaia di coloni, soprattutto dalla Norvegia, insieme a genti e schiavi dalle isole britanniche: da questo mix nasce la popolazione islandese.</p>
+  </div>
+
+  <div class="panel">
+    <div class="panel-title">Dal primo parlamento all'indipendenza</div>
+    <div class="rune-rule"></div>
+    <p class="line">Nel <strong>930 d.C.</strong>, a Þingvellir, i capi dell'isola fondano l'<strong>Alþingi</strong>: un'assemblea annuale all'aperto per fare leggi e giudicare le liti, una delle istituzioni parlamentari più antiche ancora esistenti al mondo. È l'epoca del cosiddetto Commonwealth islandese, senza re né esercito centrale. Nel 1262, dilaniata da faide interne, l'isola giura fedeltà al re di Norvegia; nel 1380 passa sotto la corona danese insieme alla Norvegia. Bisogna aspettare il <strong>1º dicembre 1918</strong> per un regno autonomo (ma ancora legato alla Danimarca), e il <strong>17 giugno 1944</strong> per la Repubblica islandese piena, proclamata con il 97% dei consensi mentre la Danimarca era sotto occupazione tedesca.</p>
+  </div>
+
+  <div class="culture-card">
+    <div class="culture-card__label">{f'<svg viewBox="0 0 64 56" xmlns="http://www.w3.org/2000/svg">{icon_svg("saga")}</svg>'}Le saghe e una lingua rimasta ferma nel tempo</div>
+    <p>Preparatevi a un piccolo miracolo linguistico: l'islandese di oggi è così vicino al norreno medievale che un lettore islandese può ancora leggere le saghe scritte otto secoli fa, senza traduzione — un lusso che i cugini scandinavi hanno perso da tempo. Altrettanto insolito è il sistema dei nomi: niente cognomi di famiglia, solo patronimici o matronimici (un Jónsson è "figlio di Jón"), tanto che l'elenco telefonico islandese è ordinato per nome di battesimo. La popolazione resta minuscola, poco più di 380.000 persone su un'isola grande quanto il Portogallo, con un effetto collaterale gradito: zero zanzare. Gli alberi invece scarseggiano, abbattuti in gran parte dai primi coloni per legna e pascoli.</p>
+  </div>
+
+  <div class="culture-card">
+    <div class="culture-card__label">{f'<svg viewBox="0 0 64 56" xmlns="http://www.w3.org/2000/svg">{icon_svg("saga")}</svg>'}Troll, elfi e le luci del cielo</div>
+    <p>La tradizione islandese abbonda di creature che spiegano il paesaggio prima ancora della geologia. I <strong>troll</strong> vivono nelle scogliere e nelle montagne ma temono la luce del sole: chi viene sorpreso all'alba resta pietrificato per sempre — da qui nascono formazioni come i faraglioni di Reynisfjara, che vedrete il Giorno 4. Accanto a loro vive un popolo più discreto, gli <strong>Huldufólk</strong> ("il popolo nascosto"): elfi che abitano rocce e colline e si mostrano solo quando lo scelgono loro. La credenza è ancora abbastanza radicata che alcuni progetti stradali islandesi siano stati deviati proprio per non disturbarli.</p>
+  </div>
+
+  <div class="panel">
+    <div class="panel-title">Il paese del fuoco sotto il ghiaccio</div>
+    <div class="rune-rule"></div>
+    <p class="line">L'Islanda siede a cavallo della dorsale medio-atlantica, il punto dove le placche nordamericana ed eurasiatica si allontanano di circa 2 cm l'anno: la vedrete a occhio nudo a Þingvellir il Giorno 2. Questa posizione rende l'isola una delle zone vulcaniche più attive del pianeta, con oltre 30 sistemi vulcanici attivi. È lo stesso fuoco sotterraneo, imbrigliato, a rendere l'Islanda quasi autosufficiente: circa il 85% dell'energia del paese viene da fonti rinnovabili, soprattutto geotermia e idroelettrico — le stesse sorgenti calde che userete nella Secret Lagoon e a Reykjadalur.</p>
+  </div>
+</section>'''
 
 sun_fallback_js = json.dumps(sun_fallback, ensure_ascii=False)
 seasonal_js = json.dumps(seasonal, ensure_ascii=False)
@@ -665,6 +703,14 @@ main {{ max-width:820px; margin:0 auto; padding:20px 20px 70px; display:flex; fl
 .kp-row {{ display:flex; align-items:baseline; gap:10px; margin-top:6px; }}
 .kp-big {{ font-family:'Cinzel',serif; font-weight:600; font-size:30px; color:#faf5ea; }}
 .kp-status {{ font-size:13px; color:#c7ccd2; }}
+
+.fx-row {{ display:flex; align-items:flex-end; gap:10px; }}
+.fx-field {{ flex:1; display:flex; flex-direction:column; gap:4px; }}
+.fx-field label {{ font-size:11px; font-weight:600; letter-spacing:.04em; text-transform:uppercase; color:var(--muted-2); }}
+.fx-field input {{ font-family:'IBM Plex Sans',sans-serif; font-size:16px; font-weight:600; color:var(--ink); background:var(--paper); border:1px solid var(--panel-border); border-radius:6px; padding:9px 10px; width:100%; }}
+.fx-field input:focus-visible {{ outline:2px solid var(--amber); outline-offset:1px; }}
+.fx-arrow {{ font-size:15px; color:var(--muted-2); padding-bottom:10px; }}
+.fx-rate {{ margin-top:10px; font-size:12px; color:var(--muted-2); }}
 .aurora-panel .more {{ font-size:13px; line-height:1.6; margin-top:10px; color:#c7ccd2; }}
 .aurora-panel .more a {{ color:#8fd6cd; }}
 
@@ -762,7 +808,7 @@ main {{ max-width:820px; margin:0 auto; padding:20px 20px 70px; display:flex; fl
 
 <main>
 
-<section id="view-info">
+<section id="view-info" class="page-view">
   <div class="panel">
     <div class="panel-title">Il viaggio in breve</div>
     <div class="rune-rule"></div>
@@ -793,6 +839,24 @@ main {{ max-width:820px; margin:0 auto; padding:20px 20px 70px; display:flex; fl
   </div>
 
   <div class="panel">
+    <div class="panel-title">Cambio Euro &harr; Corona islandese</div>
+    <div class="rune-rule"></div>
+    <div class="line" style="margin-bottom:10px;">Tasso aggiornato in tempo reale se sei online (fonte: Frankfurter/BCE); altrimenti resta sulla stima approssimativa.</div>
+    <div class="fx-row">
+      <div class="fx-field">
+        <label for="fx-eur">Euro (EUR)</label>
+        <input type="number" id="fx-eur" inputmode="decimal" value="10" min="0" step="1">
+      </div>
+      <div class="fx-arrow">&harr;</div>
+      <div class="fx-field">
+        <label for="fx-isk">Corone (ISK)</label>
+        <input type="number" id="fx-isk" inputmode="decimal" value="0" min="0" step="1">
+      </div>
+    </div>
+    <div class="fx-rate" id="fx-rate-label">1 € &asymp; … ISK &middot; caricamento tasso…</div>
+  </div>
+
+  <div class="panel">
     <div class="panel-title">Budget &amp; celiachia</div>
     <div class="rune-rule"></div>
     <div class="line">• Supermercati Bónus (logo maialino rosa) e Krónan sono i più economici per colazioni/pranzi al sacco.</div>
@@ -815,6 +879,8 @@ main {{ max-width:820px; margin:0 auto; padding:20px 20px 70px; display:flex; fl
 </section>
 
 {days_sections_html}
+
+{storia_html}
 
 </main>
 
@@ -887,9 +953,8 @@ function ensureDayMap(dayId) {{
 
 function setActive(id) {{
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.toggle('active', b.dataset.nav === id));
-  document.getElementById('view-info').hidden = id !== 'info';
-  DAYS_META.forEach(d => {{ document.getElementById('view-' + d.id).hidden = d.id !== id; }});
-  if (id !== 'info') ensureDayMap(id);
+  document.querySelectorAll('.page-view').forEach(el => {{ el.hidden = el.id !== 'view-' + id; }});
+  if (DAYS_META.some(d => d.id === id)) ensureDayMap(id);
   window.scrollTo({{ top: 0, behavior: 'instant' in window ? 'instant' : 'auto' }});
 }}
 document.querySelectorAll('.nav-btn').forEach(btn => {{
@@ -993,6 +1058,49 @@ async function fetchKp() {{
     : 'Dato non disponibile offline';
 }}
 
+const FX_FALLBACK_RATE = 145.5; // stima approssimativa EUR->ISK, usata se offline
+let fxRate = FX_FALLBACK_RATE;
+
+function fxUpdateFrom(source) {{
+  const eurEl = document.getElementById('fx-eur');
+  const iskEl = document.getElementById('fx-isk');
+  if (!eurEl || !iskEl) return;
+  if (source === 'eur') {{
+    const eur = parseFloat(eurEl.value);
+    iskEl.value = isFinite(eur) ? Math.round(eur * fxRate) : '';
+  }} else {{
+    const isk = parseFloat(iskEl.value);
+    eurEl.value = isFinite(isk) ? Math.round((isk / fxRate) * 100) / 100 : '';
+  }}
+}}
+
+function fxSetup() {{
+  const eurEl = document.getElementById('fx-eur');
+  const iskEl = document.getElementById('fx-isk');
+  if (!eurEl || !iskEl) return;
+  eurEl.addEventListener('input', () => fxUpdateFrom('eur'));
+  iskEl.addEventListener('input', () => fxUpdateFrom('isk'));
+  fxUpdateFrom('eur');
+}}
+fxSetup();
+
+async function fetchFxRate() {{
+  const label = document.getElementById('fx-rate-label');
+  try {{
+    const res = await fetch('https://api.frankfurter.app/latest?from=EUR&to=ISK');
+    const json = await res.json();
+    if (json && json.rates && json.rates.ISK) {{
+      fxRate = json.rates.ISK;
+      if (label) label.textContent = '1 € \\u2248 ' + fxRate.toFixed(1) + ' ISK \\u00b7 aggiornato ora (' + json.date + ')';
+      fxUpdateFrom('eur');
+      return;
+    }}
+    throw new Error('no rate');
+  }} catch (e) {{
+    if (label) label.textContent = '1 € \\u2248 ' + FX_FALLBACK_RATE.toFixed(1) + ' ISK \\u00b7 stima offline, verifica il tasso reale prima di partire';
+  }}
+}}
+
 function initTripMap() {{
   const el = document.getElementById('trip-map');
   if (!el || typeof L === 'undefined') return;
@@ -1040,6 +1148,7 @@ function initTripMap() {{
 fetchAllWeather();
 fetchAllSun();
 fetchKp();
+fetchFxRate();
 initTripMap();
 
 if ('serviceWorker' in navigator) {{

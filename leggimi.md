@@ -45,6 +45,8 @@ d7-faxi.jpg                            → Faxi
 d7-passeggiata-a-fludir.jpg            → Passeggiata a Flúðir
 
 d8-hero.jpg                            → Rientro
+
+storia-hero.jpg                        → Tab "Storia" (Alþingi, saghe, paesaggio storico a piacere)
 ```
 
 Finché una foto non c'è, al suo posto compare un placeholder con l'icona e il
