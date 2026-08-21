@@ -538,7 +538,7 @@ def render_day_section(day):
     hero_fname = f"{day['id']}-hero.jpg"
 
     return f'''
-<section class="day-view" id="view-{day['id']}" hidden>
+<section class="day-view page-view" id="view-{day['id']}" hidden>
   <div class="day-head">
     <div class="day-date">{e(day['dateLabel'])} · Giorno {day['num']}/8</div>
     <div class="day-title">{e(day['title'])}</div>
@@ -762,7 +762,7 @@ main {{ max-width:820px; margin:0 auto; padding:20px 20px 70px; display:flex; fl
 
 <main>
 
-<section id="view-info">
+<section id="view-info" class="page-view">
   <div class="panel">
     <div class="panel-title">Il viaggio in breve</div>
     <div class="rune-rule"></div>
@@ -887,9 +887,8 @@ function ensureDayMap(dayId) {{
 
 function setActive(id) {{
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.toggle('active', b.dataset.nav === id));
-  document.getElementById('view-info').hidden = id !== 'info';
-  DAYS_META.forEach(d => {{ document.getElementById('view-' + d.id).hidden = d.id !== id; }});
-  if (id !== 'info') ensureDayMap(id);
+  document.querySelectorAll('.page-view').forEach(el => {{ el.hidden = el.id !== 'view-' + id; }});
+  if (DAYS_META.some(d => d.id === id)) ensureDayMap(id);
   window.scrollTo({{ top: 0, behavior: 'instant' in window ? 'instant' : 'auto' }});
 }}
 document.querySelectorAll('.nav-btn').forEach(btn => {{
