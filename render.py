@@ -87,7 +87,7 @@ days = [
     {'meal':'Pranzo','place':'Bónus (supermercato) o hot dog da Bæjarins Beztu','note':'Per il senza glutine, chiedi il würstel senza pane','cost':'€','gf':True},
     {'meal':'Cena','place':'Gló, Laugavegur','note':'Cucina salutista, piatti glútenlaus segnalati in menu','cost':'€€','gf':True}
   ],
-  'accommodation':{'name':'46heima Boutique Apartments','detail':'Laugavegur 46, Reykjavík · 3 notti · check-in dalle 15:00'},
+  'accommodation':{'name':'46heima Boutique Apartments','detail':'Laugavegur 46, Reykjavík · 3 notti · check-in dalle 15:00','url':'https://www.booking.com/hotel/is/46heima-apartments.en-gb.html'},
   'tips':"Giornata di arrivo tranquilla: sistematevi con calma e fate un po' di spesa in un Bónus per i giorni successivi. Avrete due soste alle terme nel resto del viaggio: Fontana (Giorno 2) e Secret Lagoon (Giorno 6), entrambe più economiche e meno turistiche della Blue Lagoon.",
   'culture':"Reykjavík ha una storia più antica di quanto sembri: fondata nell'874 d.C. da Ingólfur Arnarson, primo colono vichingo dell'isola, deve il nome — \"baia dei fumi\" — al vapore geotermico che i primi coloni scambiarono per fumo di incendi. La Hallgrímskirkja che vedrete oggi non è un caso: il suo profilo a colonne è un omaggio diretto alle colonne di basalto che modellano le coste islandesi, le stesse che troverete tra qualche giorno a Reynisfjara. Passeggiando da Laugavegur al porto vecchio, fino al Sun Voyager sul lungomare, si attraversano più di mille anni di storia in mezz'ora a piedi."
  },
@@ -105,7 +105,7 @@ days = [
     {'meal':'Pranzo','place':'Pranzo al sacco / Bónus','note':'Porta qualcosa dal Bónus di Reykjavík, comodo per una sosta veloce vicino a Þingvellir','cost':'€','gf':True},
     {'meal':'Cena','place':'Hlemmur Mathöll, Reykjavík','note':'Food hall con vari stand, alcuni segnalano opzioni senza glutine','cost':'€€','gf':True}
   ],
-  'accommodation':{'name':'46heima Boutique Apartments','detail':'2ª notte a Reykjavík'},
+  'accommodation':{'name':'46heima Boutique Apartments','detail':'2ª notte a Reykjavík','url':'https://www.booking.com/hotel/is/46heima-apartments.en-gb.html'},
   'tips':"Giornata più leggera (~150 km totali): Geysir e Gullfoss li vedrete il Giorno 7 da Flúðir, molto più vicini da lì che da Reykjavík. Prenota la Fontana in anticipo online, specie per gli slot serali.",
   'culture':"A Þingvellir camminerete letteralmente tra due continenti: la faglia che attraversa il parco segna il punto in cui le placche nordamericana ed eurasiatica si allontanano di circa 2 cm l'anno. Qui, nel 930 d.C., nacque l'Alþingi, tra i più antichi parlamenti al mondo ancora in vita — la culla della democrazia islandese che riprenderete più avanti nella tab Storia. Poco più a sud, sul lago di Laugarvatn, la Fontana sfrutta la stessa energia del sottosuolo che alimenta Þingvellir e Geysir: i suoi bagni di vapore sono costruiti letteralmente sopra le bocche geotermiche naturali."
  },
@@ -114,16 +114,15 @@ days = [
   'activities':[
     {'time':'10:00','title':'Perlan','desc':'Museo con grotta di ghiaccio artificiale e vista panoramica a 360° sulla città.','cost':'€€ ~4900 ISK / ~34€','link':'https://perlan.is/en'},
     {'time':'12:30','title':'Harpa & porto vecchio','desc':'Sala concerti in vetro iridescente, passeggiata sul lungomare.','cost':'gratis','link':'https://www.harpa.is/en/'},
-    {'time':'14:00','title':'National Museum of Iceland','desc':'Storia e cultura islandese dagli insediamenti vichinghi a oggi.','cost':'€ ~2900 ISK / ~20€','link':'https://www.thjodminjasafn.is/english'},
-    {'time':'16:00','title':'Borgarfjörður (facoltativo, in alternativa al pomeriggio in città)','desc':"Zona a nord di Reykjavík mai toccata nel resto del viaggio (Golden Circle e Costa Sud sono a est/sud): Deildartunguhver, la sorgente calda più potente d'Europa, e le cascate gemelle di Hraunfossar e Barnafoss, dove l'acqua sgorga direttamente da un campo di lava. ~230 km andata/ritorno da Reykjavík (~1h30 a tratta): meglio partire presto e alleggerire il programma del mattino in città.",'cost':'gratis'}
+    {'time':'14:00','title':'National Museum of Iceland','desc':'Storia e cultura islandese dagli insediamenti vichinghi a oggi.','cost':'€ ~2900 ISK / ~20€','link':'https://www.thjodminjasafn.is/english'}
   ],
   'food':[
     {'meal':'Pranzo','place':'Hlemmur Mathöll','note':'Più stand con piatti glútenlaus','cost':'€€','gf':True},
     {'meal':'Cena','place':'Sushi Social o cucina in appartamento','note':'Menu con opzioni senza glutine indicate','cost':'€€€','gf':True}
   ],
-  'accommodation':{'name':'46heima Boutique Apartments','detail':'Ultima notte a Reykjavík · check-out domani 09:30-10:00'},
-  'tips':'Giornata cuscinetto: se il meteo guasta Þingvellir, si può invertire con il Giorno 2. Il Borgarfjörður è un impegno di mezza giornata di guida: sceglietelo solo se preferite vedere una zona nuova piuttosto che godervi Reykjavík con calma.',
-  'culture':"Il Perlan racconta la geologia islandese da dentro una grotta di ghiaccio artificiale, costruito sopra sei enormi serbatoi che ancora oggi riscaldano Reykjavík con l'acqua calda del sottosuolo. L'Harpa, sala concerti dalla facciata a nido d'ape ispirata alle colonne di basalto, è diventata il simbolo della rinascita della città dopo la crisi finanziaria del 2008. Al National Museum si ripercorre la storia islandese dai primi coloni vichinghi a oggi. Se scegliete il Borgarfjörður, Deildartunguhver da sola fornisce acqua calda a gran parte del sud-ovest dell'isola tramite un acquedotto lungo oltre 70 km fino a Reykjavík e Akranes, mentre a Hraunfossar l'acqua filtra silenziosa attraverso la lava del vulcano Hallmundarhraun, invece di precipitare come una cascata comune."
+  'accommodation':{'name':'46heima Boutique Apartments','detail':'Ultima notte a Reykjavík · check-out domani 09:30-10:00','url':'https://www.booking.com/hotel/is/46heima-apartments.en-gb.html'},
+  'tips':'Giornata cuscinetto e di riposo: se il meteo guasta Þingvellir, si può invertire con il Giorno 2. Meglio tenerla leggera, i due giorni più intensi del viaggio (Costa Sud e Jökulsárlón) sono subito dopo.',
+  'culture':"Il Perlan racconta la geologia islandese da dentro una grotta di ghiaccio artificiale, costruito sopra sei enormi serbatoi che ancora oggi riscaldano Reykjavík con l'acqua calda del sottosuolo. L'Harpa, sala concerti dalla facciata a nido d'ape ispirata alle colonne di basalto, è diventata il simbolo della rinascita della città dopo la crisi finanziaria del 2008. Al National Museum si ripercorre la storia islandese dai primi coloni vichinghi a oggi."
  },
  {'id':'d4','num':4,'dateISO':'2026-11-18','dateLabel':'Mer 18 nov','title':'Reykjavík → Vík: Costa Sud','locKey':'vik',
   'legs':[
@@ -144,7 +143,7 @@ days = [
     {'meal':'Pranzo','place':'Picnic a Skógar','note':'Porta snack dal Bónus di Reykjavík','cost':'€','gf':True},
     {'meal':'Cena','place':'Suður-Vík Restaurant','note':'Menu con opzioni glútenlaus indicate','cost':'€€','gf':True}
   ],
-  'accommodation':{'name':'Hotel Burfell','detail':'Vík í Mýrdal · 2 notti'},
+  'accommodation':{'name':'Hotel Burfell','detail':'Vík í Mýrdal · 2 notti','url':'https://hotelburfell.is/'},
   'tips':'In novembre il buio scende verso le 17: pianifica Reynisfjara/Dyrhólaey per il primo pomeriggio e lascia la Víkurkirkja per ultima, è a due passi dal centro del paese.',
   'culture':"Oggi si passa dalle cascate alla costa vulcanica. Skógafoss, 60 metri di salto, nasconde secondo la leggenda un forziere vichingo dietro le sue acque. A Reynisfjara la sabbia nera è lava basaltica frantumata da millenni di oceano, e le pareti a colonne esagonali sono le stesse che hanno ispirato l'architettura della Hallgrímskirkja. Al largo, i faraglioni Reynisdrangar sarebbero — dice la leggenda — due troll pietrificati dall'alba mentre trascinavano a riva una nave: attenzione alle onde anomale, il mare qui non scherza. Dyrhólaey, il promontorio con l'arco di roccia, nacque da un'eruzione sottomarina durante l'ultima glaciazione. Vík, il villaggio più a sud dell'isola, vive all'ombra del vulcano Katla, sepolto sotto il ghiacciaio Mýrdalsjökull — e la sua chiesetta rossa e bianca, arroccata sulla collina, era il punto di raccolta designato per gli abitanti in caso di eruzione improvvisa."
  },
@@ -164,7 +163,7 @@ days = [
     {'meal':'Pranzo','place':'Kaffi Jökulsárlón o pranzo al sacco','note':'Zuppe spesso senza glutine, conferma con lo staff','cost':'€€','gf':True},
     {'meal':'Cena','place':'Ströndin Bistro, Vík','note':'','cost':'€€','gf':True}
   ],
-  'accommodation':{'name':'Hotel Burfell','detail':'2ª notte a Vík'},
+  'accommodation':{'name':'Hotel Burfell','detail':'2ª notte a Vík','url':'https://hotelburfell.is/'},
   'tips':'~370 km andata/ritorno da Vík: con brutto tempo valuta di fermarti solo a Fjaðrárgljúfur o Diamond Beach.',
   'culture':"Giornata dedicata al ghiaccio. Il canyon di Fjaðrárgljúfur, scavato da un fiume glaciale in circa due milioni di anni, è diventato famoso di recente anche grazie a un video musicale di Justin Bieber. A Jökulsárlón la laguna esiste solo da un secolo: il Vatnajökull, il ghiacciaio più esteso d'Europa, si è ritirato rapidamente da inizio '900 lasciando dietro di sé questo bacino pieno di iceberg alla deriva verso il mare. Quelli che si arenano sulla sabbia nera di Diamond Beach, levigati e trasparenti, possono contenere ghiaccio compresso da centinaia o migliaia di anni."
  },
@@ -183,7 +182,7 @@ days = [
     {'meal':'Pranzo','place':'Friðheimar (se non visitato il Giorno 2)','note':'Pane senza glutine spesso disponibile su richiesta','cost':'€€','gf':True},
     {'meal':'Cena','place':'Cucina alla guesthouse o Restaurant Grund','note':'Verifica il menu glútenlaus in loco','cost':'€€','gf':True}
   ],
-  'accommodation':{'name':'The Hill Guesthouse','detail':'Flúðir · 2 notti'},
+  'accommodation':{'name':'The Hill Guesthouse','detail':'Flúðir · 2 notti','url':'https://thehillhotel.is/guesthouse-fludir/'},
   'tips':'Prenota la Secret Lagoon in anticipo online: gli slot serali si esauriscono.',
   'culture':"Kerið è un cratere vulcanico di circa 3000 anni, insolito nel colore: la roccia è ricca di scoria rossastra invece del solito basalto nero, e sul fondo si è formato un piccolo lago verde-azzurro alimentato dalla falda. A Flúðir vi aspetta la Secret Lagoon, la piscina geotermica più antica dell'isola: costruita nel 1891 come prima piscina pubblica islandese, oggi resta piccola e informale rispetto alla Blue Lagoon, con l'acqua che sgorga naturalmente a circa 38-40°C da una sorgente a pochi passi dalla vasca."
  },
@@ -204,7 +203,7 @@ days = [
     {'meal':'Pranzo','place':'Friðheimar, Reykholt','note':'Famosa zuppa di pomodoro in serra, sulla strada per Geysir; chiedi la versione senza pane/crostini','cost':'€€','gf':True},
     {'meal':'Cena','place':'Cucina alla guesthouse','note':'Ultima occasione per finire la spesa dal Bónus','cost':'€','gf':True}
   ],
-  'accommodation':{'name':'The Hill Guesthouse','detail':'Ultima notte a Flúðir · check-out presto domani'},
+  'accommodation':{'name':'The Hill Guesthouse','detail':'Ultima notte a Flúðir · check-out presto domani','url':'https://thehillhotel.is/guesthouse-fludir/'},
   'tips':"Da Flúðir Geysir e Gullfoss sono a un tiro di schioppo (~30-40 km), molto più vicini che da Reykjavík: giornata comoda, e cielo scuro poco inquinato per tenere d'occhio l'aurora la sera.",
   'culture':"Il nome stesso di \"geyser\" nasce qui: Strokkur erutta ogni 5-10 minuti, mentre il Grande Geysir che gli ha dato il nome dorme quasi sempre dal 2003. Gullfoss esiste ancora grazie a Sigríður Tómasdóttir, che ai primi del '900 si oppose a un progetto di diga che l'avrebbe sommersa. Flúðir vive di geotermia da oltre un secolo: le sue serre, riscaldate dal vapore del sottosuolo, coltivano pomodori e ortaggi anche nel buio di novembre. Faxi, piccola e quasi sempre deserta, è la cascata che molti islandesi preferiscono a Gullfoss nei weekend affollati."
  },
@@ -229,7 +228,7 @@ days = [
 map_points = {
     'd1': [{'name':'Aeroporto Keflavík','lat':63.9850,'lon':-22.6056}, {'name':'Reykjavík','lat':64.1466,'lon':-21.9426}],
     'd2': [{'name':'Reykjavík','lat':64.1466,'lon':-21.9426}, {'name':'Þingvellir','lat':64.2559,'lon':-21.1297}, {'name':'Laugarvatn (Fontana)','lat':64.2019,'lon':-20.7357}, {'name':'Reykjavík','lat':64.1466,'lon':-21.9426}],
-    'd3': [{'name':'Perlan','lat':64.1289,'lon':-21.9147}, {'name':'Harpa','lat':64.1500,'lon':-21.9326}, {'name':'National Museum','lat':64.1417,'lon':-21.9530}, {'name':'Deildartunguhver (facolt.)','lat':64.6656,'lon':-21.4056}, {'name':'Hraunfossar (facolt.)','lat':64.7167,'lon':-20.9667}],
+    'd3': [{'name':'Perlan','lat':64.1289,'lon':-21.9147}, {'name':'Harpa','lat':64.1500,'lon':-21.9326}, {'name':'National Museum','lat':64.1417,'lon':-21.9530}],
     'd4': [{'name':'Reykjavík','lat':64.1466,'lon':-21.9426}, {'name':'Seljalandsfoss','lat':63.6156,'lon':-19.9886}, {'name':'Skógafoss','lat':63.5321,'lon':-19.5116}, {'name':'Reynisfjara','lat':63.4038,'lon':-19.0428}, {'name':'Dyrhólaey','lat':63.4033,'lon':-19.1250}, {'name':'Víkurkirkja','lat':63.4193,'lon':-19.0058}],
     'd5': [{'name':'Vík','lat':63.4186,'lon':-19.0060}, {'name':'Fjaðrárgljúfur','lat':63.7722,'lon':-18.1725}, {'name':'Jökulsárlón','lat':64.0784,'lon':-16.2300}, {'name':'Diamond Beach','lat':64.0645,'lon':-16.1809}, {'name':'Vík','lat':63.4186,'lon':-19.0060}],
     'd6': [{'name':'Vík','lat':63.4186,'lon':-19.0060}, {'name':'Kerið','lat':64.0410,'lon':-20.8834}, {'name':'Flúðir','lat':64.1372,'lon':-20.3033}, {'name':'Secret Lagoon','lat':64.1306,'lon':-20.2989}],
@@ -555,7 +554,10 @@ def render_day_section(day):
     acc = day.get('accommodation')
     acc_html = ''
     if acc:
-        acc_html = (f'<div class="acc-card"><div class="acc-name">Alloggio: {e(acc["name"])}</div>'
+        acc_name_html = e(acc["name"])
+        if acc.get('url'):
+            acc_name_html = f'<a href="{e(acc["url"])}" target="_blank" rel="noopener">{acc_name_html}</a>'
+        acc_html = (f'<div class="acc-card"><div class="acc-name">Alloggio: {acc_name_html}</div>'
                     f'<div class="acc-detail">{e(acc["detail"])}</div></div>')
     tips_html = ''
     if day.get('tips'):
@@ -855,6 +857,8 @@ main {{ max-width:820px; margin:0 auto; padding:20px 20px 70px; display:flex; fl
 
 .acc-card {{ background:var(--navy); border-radius:8px; padding:14px 16px; font-size:13px; }}
 .acc-name {{ font-weight:600; color:#f2ede2; }}
+.acc-name a {{ color:inherit; text-decoration:underline; text-underline-offset:2px; }}
+.acc-name a:hover {{ color:var(--amber); }}
 .acc-detail {{ color:#c7ccd2; margin-top:2px; }}
 
 .tip-card {{ background:var(--amber-soft); border:1px solid var(--amber-soft-border); border-radius:8px; padding:12px 14px; font-size:13px; line-height:1.6; color:#5c3a1f; }}
