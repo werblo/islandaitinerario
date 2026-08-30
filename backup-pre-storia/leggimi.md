@@ -91,6 +91,28 @@ alloggi, checklist, tab Storia) è dentro `render.py`. Se cambia qualcosa
 `python3 render.py` per rigenerare `index.html` — molto più leggero che
 editare l'export di Claude Design.
 
+## 4. Controllo di coerenza (distanze, orari, luce)
+
+L'itinerario contiene dati che vanno tenuti sincronizzati manualmente quando
+si spostano o si riordinano le tappe: km/tempi di guida in `legs`, orari
+delle `activities` rispetto ad alba/tramonto reali, e l'ordine di
+`map_points` (deve rispecchiare l'ordine reale di visita, altrimenti la
+mappa disegna un percorso sbagliato).
+
+Un controllo di questo tipo è stato fatto una volta a fondo (fine agosto
+2026) e ha trovato/corretto diversi errori: distanze sbagliate rispetto al
+reale (es. Kerið→Flúðir dichiarato più corto della sola linea d'aria,
+quindi impossibile), attività programmate prima dell'alba o dopo il
+tramonto reale (calcolato per le coordinate esatte, non per le città
+capoluogo), e un `map_points` rimasto disallineato dopo un riordino delle
+attività.
+
+È programmato un ricontrollo automatico una settimana prima della
+partenza (8 novembre 2026, promemoria anche su calendario) per rifare la
+stessa verifica nel caso qualcosa cambi nei mesi prima del viaggio. Se
+si sposta o si inverte una tappa manualmente, vale la pena rifare almeno
+il controllo su `legs`/`map_points` di quel giorno.
+
 Dopo ogni modifica confermata come funzionante, si aggiorna anche la
 cartella `backup-pre-storia/` con la stessa copia di `render.py`,
 `index.html`, `sw.js` e `leggimi.md`: serve come punto di ripristino noto
