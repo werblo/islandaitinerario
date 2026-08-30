@@ -862,14 +862,11 @@ main {{ max-width:820px; margin:0 auto; padding:20px 20px 70px; display:flex; fl
 .chk-box {{ margin-top:3px; width:18px; height:18px; flex-shrink:0; accent-color:var(--amber); }}
 .chk-item:has(.chk-box:checked) span {{ color:var(--muted-2); text-decoration:line-through; text-decoration-color:var(--amber-soft-border); }}
 
-.info-section {{ position:relative; overflow:hidden; margin-left:-20px; margin-right:-20px; }}
-.info-bg {{ position:absolute; inset:0; z-index:0; }}
-.info-bg svg {{ width:100%; height:100%; display:block; }}
-.info-scrim {{ position:absolute; inset:0; z-index:0; background:linear-gradient(180deg,rgba(10,18,30,.2),rgba(10,18,30,.55) 35%,rgba(10,18,30,.85)); }}
-.info-content {{ position:relative; z-index:1; display:flex; flex-direction:column; gap:18px; padding:20px 20px 24px; }}
-.countdown-banner {{ background:rgba(242,237,226,.1); border:1px solid rgba(242,237,226,.22); border-radius:8px; padding:16px 20px; text-align:center; -webkit-backdrop-filter:blur(2px); backdrop-filter:blur(2px); }}
+.info-hero {{ width:100%; height:180px; border-radius:8px; overflow:hidden; }}
+.info-hero svg {{ width:100%; height:100%; display:block; }}
+.countdown-banner {{ background:linear-gradient(135deg,var(--navy),var(--navy-2)); border:1px solid #2c405a; border-radius:8px; padding:16px 20px; text-align:center; }}
 .countdown-banner__big {{ font-family:'Cinzel',serif; font-weight:600; font-size:22px; color:#f2ede2; }}
-.countdown-banner__sub {{ font-size:12px; color:#d8dde2; margin-top:4px; }}
+.countdown-banner__sub {{ font-size:12px; color:#a9b2bb; margin-top:4px; }}
 .aurora-panel .more {{ font-size:13px; line-height:1.6; margin-top:10px; color:#c7ccd2; }}
 .aurora-panel .more a {{ color:#8fd6cd; }}
 
@@ -969,10 +966,8 @@ main {{ max-width:820px; margin:0 auto; padding:20px 20px 70px; display:flex; fl
 
 <main>
 
-<section id="view-info" class="page-view info-section">
-  <div class="info-bg">{aurora_scene_svg()}</div>
-  <div class="info-scrim"></div>
-  <div class="info-content">
+<section id="view-info" class="page-view">
+  <div class="info-hero">{aurora_scene_svg()}</div>
 
   <div class="countdown-banner">
     <div class="countdown-banner__big" id="countdown-big">…</div>
@@ -984,15 +979,6 @@ main {{ max-width:820px; margin:0 auto; padding:20px 20px 70px; display:flex; fl
     <p>Indice geomagnetico Kp attuale (NOAA), aggiornato in tempo reale se sei online. Non è una previsione per le date del viaggio, ma dà l'idea dell'attività del momento.</p>
     <div class="kp-row"><div class="kp-big" id="kp-value">…</div><div class="kp-status" id="kp-status">Caricamento…</div></div>
     <div class="more">Più vicino alla partenza, controlla <a href="https://en.vedur.is/weather/forecasts/aurora/" target="_blank" rel="noopener">vedur.is/aurora</a> per la previsione reale sulle vostre date e sul cielo sereno.</div>
-  </div>
-
-  <div class="panel">
-    <div class="panel-title">Il viaggio in breve</div>
-    <div class="rune-rule"></div>
-    <div class="line"><strong>Volo andata:</strong> EJU3969 Milano Malpensa → Keflavík, dom 15 nov, 07:00 → 10:35</div>
-    <div class="line"><strong>Volo ritorno:</strong> EJU3970 Keflavík → Milano Malpensa, dom 22 nov, 11:25 → 16:45</div>
-    <div class="line"><strong>Auto:</strong> 4x4 (FairCar) · ritiro Keflavík 15 nov ore 11:00 · riconsegna Keflavík 22 nov ore 11:00</div>
-    <div class="warn-box"><strong>Attenzione:</strong> il voucher auto indica riconsegna alle 11:00, ma il volo decolla alle 11:25 — margine quasi nullo. Contatta FairCar per riconsegnare prima (vedi Giorno 8).</div>
   </div>
 
   <div class="panel">
@@ -1018,6 +1004,15 @@ main {{ max-width:820px; margin:0 auto; padding:20px 20px 70px; display:flex; fl
       </div>
     </div>
     <div class="fx-rate" id="fx-rate-label">1 € &asymp; … ISK &middot; caricamento tasso…</div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-title">Il viaggio in breve</div>
+    <div class="rune-rule"></div>
+    <div class="line"><strong>Volo andata:</strong> EJU3969 Milano Malpensa → Keflavík, dom 15 nov, 07:00 → 10:35</div>
+    <div class="line"><strong>Volo ritorno:</strong> EJU3970 Keflavík → Milano Malpensa, dom 22 nov, 11:25 → 16:45</div>
+    <div class="line"><strong>Auto:</strong> 4x4 (FairCar) · ritiro Keflavík 15 nov ore 11:00 · riconsegna Keflavík 22 nov ore 11:00</div>
+    <div class="warn-box"><strong>Attenzione:</strong> il voucher auto indica riconsegna alle 11:00, ma il volo decolla alle 11:25 — margine quasi nullo. Contatta FairCar per riconsegnare prima (vedi Giorno 8).</div>
   </div>
 
   <div class="panel">
@@ -1056,8 +1051,6 @@ main {{ max-width:820px; margin:0 auto; padding:20px 20px 70px; display:flex; fl
     <div class="line">• <strong>Hótel Búrfell (Vík, Giorni 4-5):</strong> <a href="tel:+3544874660">+354 487 4660</a></div>
     <div class="line">• <strong>The Hill Hotel (Flúðir, Giorni 6-7):</strong> <a href="tel:+3544864430">+354 486 4430</a></div>
     <div class="line" style="margin-top:6px;font-size:12px;color:#7c8794;">Numeri trovati via ricerca online, non verificati con una chiamata diretta: ricontrollateli nelle email di conferma prima di partire.</div>
-  </div>
-
   </div>
 </section>
 
