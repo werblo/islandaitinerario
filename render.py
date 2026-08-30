@@ -369,45 +369,52 @@ def icon_svg(key):
             '<circle cx="50" cy="9" r="6" fill="' + amber + '"/>')
 
 def aurora_scene_svg():
-    """Illustrazione SVG di sfondo (aurora su montagne) per il countdown del tab Info.
-    Disegnata a mano nello stesso stile/palette delle icone del sito, niente foto esterne."""
-    return '''<svg viewBox="0 0 600 220" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+    """Illustrazione SVG di sfondo (aurora su montagne, cielo stellato) per l'intero tab Info.
+    Disegnata a mano nello stesso stile/palette delle icone del sito, niente foto esterne.
+    ViewBox alto e preserveAspectRatio 'slice' con ancoraggio in basso: le montagne restano
+    sempre visibili sul fondo qualunque sia l'altezza reale della tab (contenuto variabile)."""
+    return '''<svg viewBox="0 0 600 2200" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMax slice">
   <defs>
     <linearGradient id="auroraSky" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#0d1826"/>
+      <stop offset="0%" stop-color="#0a121e"/>
+      <stop offset="55%" stop-color="#0d1826"/>
       <stop offset="100%" stop-color="#16263b"/>
     </linearGradient>
     <linearGradient id="auroraBand1" x1="0" y1="0" x2="1" y2="0">
       <stop offset="0%" stop-color="#8fd6cd" stop-opacity="0"/>
-      <stop offset="50%" stop-color="#8fd6cd" stop-opacity="0.55"/>
+      <stop offset="50%" stop-color="#8fd6cd" stop-opacity="0.5"/>
       <stop offset="100%" stop-color="#8fd6cd" stop-opacity="0"/>
     </linearGradient>
     <linearGradient id="auroraBand2" x1="0" y1="0" x2="1" y2="0">
       <stop offset="0%" stop-color="#d9985f" stop-opacity="0"/>
-      <stop offset="50%" stop-color="#d9985f" stop-opacity="0.4"/>
+      <stop offset="50%" stop-color="#d9985f" stop-opacity="0.35"/>
       <stop offset="100%" stop-color="#d9985f" stop-opacity="0"/>
     </linearGradient>
     <filter id="auroraBlur" x="-20%" y="-50%" width="140%" height="220%">
-      <feGaussianBlur stdDeviation="7"/>
+      <feGaussianBlur stdDeviation="9"/>
     </filter>
+    <pattern id="starField" width="150" height="190" patternUnits="userSpaceOnUse">
+      <circle cx="18" cy="24" r="1.3" fill="#f2ede2" opacity="0.75"/>
+      <circle cx="70" cy="60" r="1" fill="#f2ede2" opacity="0.5"/>
+      <circle cx="112" cy="20" r="1.5" fill="#f2ede2" opacity="0.7"/>
+      <circle cx="40" cy="110" r="1" fill="#f2ede2" opacity="0.55"/>
+      <circle cx="130" cy="95" r="1.2" fill="#f2ede2" opacity="0.6"/>
+      <circle cx="95" cy="150" r="1" fill="#f2ede2" opacity="0.45"/>
+      <circle cx="10" cy="165" r="1.4" fill="#f2ede2" opacity="0.65"/>
+    </pattern>
   </defs>
-  <rect x="0" y="0" width="600" height="220" fill="url(#auroraSky)"/>
-  <circle cx="90" cy="38" r="1.4" fill="#f2ede2" opacity="0.8"/>
-  <circle cx="150" cy="24" r="1" fill="#f2ede2" opacity="0.6"/>
-  <circle cx="230" cy="46" r="1.6" fill="#f2ede2" opacity="0.7"/>
-  <circle cx="310" cy="20" r="1" fill="#f2ede2" opacity="0.5"/>
-  <circle cx="400" cy="34" r="1.4" fill="#f2ede2" opacity="0.8"/>
-  <circle cx="470" cy="18" r="1" fill="#f2ede2" opacity="0.6"/>
-  <circle cx="540" cy="42" r="1.6" fill="#f2ede2" opacity="0.7"/>
-  <circle cx="60" cy="70" r="1" fill="#f2ede2" opacity="0.5"/>
-  <circle cx="520" cy="70" r="1.2" fill="#f2ede2" opacity="0.6"/>
+  <rect x="0" y="0" width="600" height="2200" fill="url(#auroraSky)"/>
+  <rect x="0" y="0" width="600" height="1900" fill="url(#starField)"/>
   <g filter="url(#auroraBlur)">
-    <path d="M0 70 Q100 20 200 65 T400 55 T600 80" stroke="url(#auroraBand1)" stroke-width="26" fill="none"/>
-    <path d="M0 100 Q120 55 240 95 T480 85 T600 110" stroke="url(#auroraBand2)" stroke-width="22" fill="none"/>
-    <path d="M0 50 Q150 10 300 45 T600 40" stroke="url(#auroraBand1)" stroke-width="16" fill="none" opacity="0.6"/>
+    <path d="M0 260 Q100 190 200 250 T400 235 T600 270" stroke="url(#auroraBand1)" stroke-width="60" fill="none"/>
+    <path d="M0 340 Q120 260 240 330 T480 310 T600 355" stroke="url(#auroraBand2)" stroke-width="46" fill="none"/>
+    <path d="M0 150 Q150 80 300 140 T600 130" stroke="url(#auroraBand1)" stroke-width="34" fill="none" opacity="0.6"/>
+    <path d="M0 480 Q140 420 280 470 T600 460" stroke="url(#auroraBand2)" stroke-width="30" fill="none" opacity="0.5"/>
   </g>
-  <polygon points="0,220 0,150 40,110 80,145 130,95 175,140 220,105 260,150 310,120 360,155 410,115 460,150 510,125 560,155 600,130 600,220" fill="#101d2d" opacity="0.9"/>
-  <polygon points="0,220 0,175 60,150 120,180 190,145 250,180 320,150 390,185 460,155 530,185 600,165 600,220" fill="#0b1420"/>
+  <polygon points="0,2200 0,2050 40,2010 80,2045 130,1995 175,2040 220,2005 260,2050 310,2020 360,2055 410,2015 460,2050 510,2025 560,2055 600,2030 600,2200"
+           fill="#101d2d" opacity="0.9"/>
+  <polygon points="0,2200 0,2100 60,2075 120,2105 190,2070 250,2105 320,2075 390,2110 460,2080 530,2110 600,2090 600,2200"
+           fill="#0b1420"/>
 </svg>'''
 
 HERO_ICON = {
@@ -831,11 +838,12 @@ main {{ max-width:820px; margin:0 auto; padding:20px 20px 70px; display:flex; fl
 .chk-box {{ margin-top:3px; width:18px; height:18px; flex-shrink:0; accent-color:var(--amber); }}
 .chk-item:has(.chk-box:checked) span {{ color:var(--muted-2); text-decoration:line-through; text-decoration-color:var(--amber-soft-border); }}
 
-.countdown-banner {{ position:relative; overflow:hidden; border:1px solid #2c405a; border-radius:8px; text-align:center; }}
-.countdown-banner__bg {{ position:absolute; inset:0; }}
-.countdown-banner__bg svg {{ width:100%; height:100%; display:block; }}
-.countdown-banner__scrim {{ position:absolute; inset:0; background:linear-gradient(180deg,rgba(13,24,38,.25),rgba(11,20,32,.72)); }}
-.countdown-banner__content {{ position:relative; padding:20px 20px 18px; }}
+.info-section {{ position:relative; border-radius:14px; overflow:hidden; }}
+.info-bg {{ position:absolute; inset:0; z-index:0; }}
+.info-bg svg {{ width:100%; height:100%; display:block; }}
+.info-scrim {{ position:absolute; inset:0; z-index:0; background:linear-gradient(180deg,rgba(10,18,30,.2),rgba(10,18,30,.55) 35%,rgba(10,18,30,.85)); }}
+.info-content {{ position:relative; z-index:1; display:flex; flex-direction:column; gap:18px; padding:16px; }}
+.countdown-banner {{ background:rgba(242,237,226,.1); border:1px solid rgba(242,237,226,.22); border-radius:8px; padding:16px 20px; text-align:center; -webkit-backdrop-filter:blur(2px); backdrop-filter:blur(2px); }}
 .countdown-banner__big {{ font-family:'Cinzel',serif; font-weight:600; font-size:22px; color:#f2ede2; }}
 .countdown-banner__sub {{ font-size:12px; color:#d8dde2; margin-top:4px; }}
 .aurora-panel .more {{ font-size:13px; line-height:1.6; margin-top:10px; color:#c7ccd2; }}
@@ -937,14 +945,21 @@ main {{ max-width:820px; margin:0 auto; padding:20px 20px 70px; display:flex; fl
 
 <main>
 
-<section id="view-info" class="page-view">
+<section id="view-info" class="page-view info-section">
+  <div class="info-bg">{aurora_scene_svg()}</div>
+  <div class="info-scrim"></div>
+  <div class="info-content">
+
+  <div class="aurora-panel">
+    <div class="panel-title">Aurora boreale — ora</div>
+    <p>Indice geomagnetico Kp attuale (NOAA), aggiornato in tempo reale se sei online. Non è una previsione per le date del viaggio, ma dà l'idea dell'attività del momento.</p>
+    <div class="kp-row"><div class="kp-big" id="kp-value">…</div><div class="kp-status" id="kp-status">Caricamento…</div></div>
+    <div class="more">Più vicino alla partenza, controlla <a href="https://en.vedur.is/weather/forecasts/aurora/" target="_blank" rel="noopener">vedur.is/aurora</a> per la previsione reale sulle vostre date e sul cielo sereno.</div>
+  </div>
+
   <div class="countdown-banner">
-    <div class="countdown-banner__bg">{aurora_scene_svg()}</div>
-    <div class="countdown-banner__scrim"></div>
-    <div class="countdown-banner__content">
-      <div class="countdown-banner__big" id="countdown-big">…</div>
-      <div class="countdown-banner__sub" id="countdown-sub"></div>
-    </div>
+    <div class="countdown-banner__big" id="countdown-big">…</div>
+    <div class="countdown-banner__sub" id="countdown-sub"></div>
   </div>
 
   <div class="panel">
@@ -961,13 +976,6 @@ main {{ max-width:820px; margin:0 auto; padding:20px 20px 70px; display:flex; fl
     <div class="rune-rule"></div>
     <div id="trip-map" style="height:260px;border-radius:8px;overflow:hidden;border:2px solid var(--navy);box-shadow:0 4px 16px rgba(0,0,0,.12);"></div>
     <div class="line" style="margin-top:10px;font-size:12px;color:#7c8794;">Mappa reale (OpenStreetMap) — zoomabile e trascinabile. Tocca un marker per il nome della tappa. Per la navigazione stradale vera e propria usa Google Maps offline.</div>
-  </div>
-
-  <div class="aurora-panel">
-    <div class="panel-title">Aurora boreale — ora</div>
-    <p>Indice geomagnetico Kp attuale (NOAA), aggiornato in tempo reale se sei online. Non è una previsione per le date del viaggio, ma dà l'idea dell'attività del momento.</p>
-    <div class="kp-row"><div class="kp-big" id="kp-value">…</div><div class="kp-status" id="kp-status">Caricamento…</div></div>
-    <div class="more">Più vicino alla partenza, controlla <a href="https://en.vedur.is/weather/forecasts/aurora/" target="_blank" rel="noopener">vedur.is/aurora</a> per la previsione reale sulle vostre date e sul cielo sereno.</div>
   </div>
 
   <div class="panel">
@@ -1024,6 +1032,8 @@ main {{ max-width:820px; margin:0 auto; padding:20px 20px 70px; display:flex; fl
     <div class="line">• <strong>Hótel Búrfell (Vík, Giorni 4-5):</strong> <a href="tel:+3544874660">+354 487 4660</a></div>
     <div class="line">• <strong>The Hill Hotel (Flúðir, Giorni 6-7):</strong> <a href="tel:+3544864430">+354 486 4430</a></div>
     <div class="line" style="margin-top:6px;font-size:12px;color:#7c8794;">Numeri trovati via ricerca online, non verificati con una chiamata diretta: ricontrollateli nelle email di conferma prima di partire.</div>
+  </div>
+
   </div>
 </section>
 
