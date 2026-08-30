@@ -129,7 +129,8 @@ days = [
   'legs':[
     {'from':'Reykjavík','to':'Seljalandsfoss','km':125,'time':'~1h40'},
     {'from':'Seljalandsfoss','to':'Skógafoss','km':30,'time':'~25 min'},
-    {'from':'Skógafoss','to':'Reynisfjara','km':55,'time':'~45 min'},
+    {'from':'Skógafoss','to':'Dyrhólaey','km':30,'time':'~25 min'},
+    {'from':'Dyrhólaey','to':'Reynisfjara','km':7,'time':'~10 min'},
     {'from':'Reynisfjara','to':'Vík','km':12,'time':'~12 min'}
   ],
   'activities':[
@@ -150,7 +151,7 @@ days = [
  },
  {'id':'d5','num':5,'dateISO':'2026-11-19','dateLabel':'Gio 19 nov','title':'Escursione a Jökulsárlón','locKey':'vik',
   'legs':[
-    {'from':'Vík','to':'Jökulsárlón','km':185,'time':'~2h30 (diretto, oltre Fjaðrárgljúfur senza fermarsi)'},
+    {'from':'Vík','to':'Jökulsárlón','km':192,'time':'~2h45 (diretto, oltre Fjaðrárgljúfur senza fermarsi)'},
     {'from':'Jökulsárlón','to':'Fjaðrárgljúfur','km':100,'time':'~1h15 (sulla via del ritorno)'},
     {'from':'Fjaðrárgljúfur','to':'Vík','km':72,'time':'~55 min'}
   ],
@@ -171,7 +172,7 @@ days = [
  {'id':'d6','num':6,'dateISO':'2026-11-20','dateLabel':'Ven 20 nov','title':'Vík → Flúðir','locKey':'fludir',
   'legs':[
     {'from':'Vík','to':'Kerið','km':130,'time':'~1h50'},
-    {'from':'Kerið','to':'Flúðir','km':25,'time':'~20 min'}
+    {'from':'Kerið','to':'Flúðir','km':39,'time':'~30 min'}
   ],
   'activities':[
     {'time':'10:00','title':'Check-out Hotel Burfell','desc':'','cost':None},
@@ -191,7 +192,7 @@ days = [
   'legs':[
     {'from':'Flúðir','to':'Geysir','km':30,'time':'~25 min'},
     {'from':'Geysir','to':'Gullfoss','km':10,'time':'~10 min'},
-    {'from':'Gullfoss','to':'Faxi','km':45,'time':'~40 min'},
+    {'from':'Gullfoss','to':'Faxi','km':21,'time':'~20 min'},
     {'from':'Faxi','to':'Flúðir','km':8,'time':'~10 min'}
   ],
   'activities':[
@@ -230,7 +231,7 @@ map_points = {
     'd1': [{'name':'Aeroporto Keflavík','lat':63.9850,'lon':-22.6056}, {'name':'Reykjavík','lat':64.1466,'lon':-21.9426}],
     'd2': [{'name':'Perlan','lat':64.1289,'lon':-21.9147}, {'name':'Harpa','lat':64.1500,'lon':-21.9326}, {'name':'National Museum','lat':64.1417,'lon':-21.9530}, {'name':'Bridge Between Continents (facolt.)','lat':63.8697,'lon':-22.6764}, {'name':'Gunnuhver (facolt.)','lat':63.8181,'lon':-22.6994}, {'name':'Reykjanesviti (facolt.)','lat':63.8156,'lon':-22.6913}],
     'd3': [{'name':'Reykjavík','lat':64.1466,'lon':-21.9426}, {'name':'Þingvellir','lat':64.2559,'lon':-21.1297}, {'name':'Laugarvatn','lat':64.2019,'lon':-20.7357}, {'name':'Reykjavík','lat':64.1466,'lon':-21.9426}],
-    'd4': [{'name':'Reykjavík','lat':64.1466,'lon':-21.9426}, {'name':'Seljalandsfoss','lat':63.6156,'lon':-19.9886}, {'name':'Skógafoss','lat':63.5321,'lon':-19.5116}, {'name':'Reynisfjara','lat':63.4038,'lon':-19.0428}, {'name':'Dyrhólaey','lat':63.4033,'lon':-19.1250}, {'name':'Víkurkirkja','lat':63.4193,'lon':-19.0058}],
+    'd4': [{'name':'Reykjavík','lat':64.1466,'lon':-21.9426}, {'name':'Seljalandsfoss','lat':63.6156,'lon':-19.9886}, {'name':'Skógafoss','lat':63.5321,'lon':-19.5116}, {'name':'Dyrhólaey','lat':63.4033,'lon':-19.1250}, {'name':'Reynisfjara','lat':63.4038,'lon':-19.0428}, {'name':'Víkurkirkja','lat':63.4193,'lon':-19.0058}],
     'd5': [{'name':'Vík','lat':63.4186,'lon':-19.0060}, {'name':'Jökulsárlón','lat':64.0784,'lon':-16.2300}, {'name':'Diamond Beach','lat':64.0645,'lon':-16.1809}, {'name':'Fjaðrárgljúfur','lat':63.7722,'lon':-18.1725}, {'name':'Vík','lat':63.4186,'lon':-19.0060}],
     'd6': [{'name':'Vík','lat':63.4186,'lon':-19.0060}, {'name':'Kerið','lat':64.0410,'lon':-20.8834}, {'name':'Flúðir','lat':64.1372,'lon':-20.3033}, {'name':'Secret Lagoon','lat':64.1306,'lon':-20.2989}],
     'd7': [{'name':'Flúðir','lat':64.1372,'lon':-20.3033}, {'name':'Geysir','lat':64.3128,'lon':-20.3009}, {'name':'Gullfoss','lat':64.3271,'lon':-20.1199}, {'name':'Faxi','lat':64.1197,'lon':-20.2394}, {'name':'Flúðir','lat':64.1372,'lon':-20.3033}],
