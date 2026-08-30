@@ -368,6 +368,48 @@ def icon_svg(key):
     return ('<path d="M0 34 L14 20 L26 30 L40 12 L54 26 L64 16 L64 40 L0 40 Z" fill="' + paper + '"/>'
             '<circle cx="50" cy="9" r="6" fill="' + amber + '"/>')
 
+def aurora_scene_svg():
+    """Illustrazione SVG di sfondo (aurora su montagne) per il countdown del tab Info.
+    Disegnata a mano nello stesso stile/palette delle icone del sito, niente foto esterne."""
+    return '''<svg viewBox="0 0 600 220" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="auroraSky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0d1826"/>
+      <stop offset="100%" stop-color="#16263b"/>
+    </linearGradient>
+    <linearGradient id="auroraBand1" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#8fd6cd" stop-opacity="0"/>
+      <stop offset="50%" stop-color="#8fd6cd" stop-opacity="0.55"/>
+      <stop offset="100%" stop-color="#8fd6cd" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="auroraBand2" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#d9985f" stop-opacity="0"/>
+      <stop offset="50%" stop-color="#d9985f" stop-opacity="0.4"/>
+      <stop offset="100%" stop-color="#d9985f" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="auroraBlur" x="-20%" y="-50%" width="140%" height="220%">
+      <feGaussianBlur stdDeviation="7"/>
+    </filter>
+  </defs>
+  <rect x="0" y="0" width="600" height="220" fill="url(#auroraSky)"/>
+  <circle cx="90" cy="38" r="1.4" fill="#f2ede2" opacity="0.8"/>
+  <circle cx="150" cy="24" r="1" fill="#f2ede2" opacity="0.6"/>
+  <circle cx="230" cy="46" r="1.6" fill="#f2ede2" opacity="0.7"/>
+  <circle cx="310" cy="20" r="1" fill="#f2ede2" opacity="0.5"/>
+  <circle cx="400" cy="34" r="1.4" fill="#f2ede2" opacity="0.8"/>
+  <circle cx="470" cy="18" r="1" fill="#f2ede2" opacity="0.6"/>
+  <circle cx="540" cy="42" r="1.6" fill="#f2ede2" opacity="0.7"/>
+  <circle cx="60" cy="70" r="1" fill="#f2ede2" opacity="0.5"/>
+  <circle cx="520" cy="70" r="1.2" fill="#f2ede2" opacity="0.6"/>
+  <g filter="url(#auroraBlur)">
+    <path d="M0 70 Q100 20 200 65 T400 55 T600 80" stroke="url(#auroraBand1)" stroke-width="26" fill="none"/>
+    <path d="M0 100 Q120 55 240 95 T480 85 T600 110" stroke="url(#auroraBand2)" stroke-width="22" fill="none"/>
+    <path d="M0 50 Q150 10 300 45 T600 40" stroke="url(#auroraBand1)" stroke-width="16" fill="none" opacity="0.6"/>
+  </g>
+  <polygon points="0,220 0,150 40,110 80,145 130,95 175,140 220,105 260,150 310,120 360,155 410,115 460,150 510,125 560,155 600,130 600,220" fill="#101d2d" opacity="0.9"/>
+  <polygon points="0,220 0,175 60,150 120,180 190,145 250,180 320,150 390,185 460,155 530,185 600,165 600,220" fill="#0b1420"/>
+</svg>'''
+
 HERO_ICON = {
     'd1': 'airplane', 'd2': 'dome', 'd3': 'rift', 'd4': 'blacksand',
     'd5': 'iceberg', 'd6': 'crater', 'd7': 'hotriver', 'd8': 'airplane',
@@ -789,9 +831,13 @@ main {{ max-width:820px; margin:0 auto; padding:20px 20px 70px; display:flex; fl
 .chk-box {{ margin-top:3px; width:18px; height:18px; flex-shrink:0; accent-color:var(--amber); }}
 .chk-item:has(.chk-box:checked) span {{ color:var(--muted-2); text-decoration:line-through; text-decoration-color:var(--amber-soft-border); }}
 
-.countdown-banner {{ background:linear-gradient(135deg,var(--navy),var(--navy-2)); border:1px solid #2c405a; border-radius:8px; padding:16px 20px; text-align:center; }}
+.countdown-banner {{ position:relative; overflow:hidden; border:1px solid #2c405a; border-radius:8px; text-align:center; }}
+.countdown-banner__bg {{ position:absolute; inset:0; }}
+.countdown-banner__bg svg {{ width:100%; height:100%; display:block; }}
+.countdown-banner__scrim {{ position:absolute; inset:0; background:linear-gradient(180deg,rgba(13,24,38,.25),rgba(11,20,32,.72)); }}
+.countdown-banner__content {{ position:relative; padding:20px 20px 18px; }}
 .countdown-banner__big {{ font-family:'Cinzel',serif; font-weight:600; font-size:22px; color:#f2ede2; }}
-.countdown-banner__sub {{ font-size:12px; color:#a9b2bb; margin-top:4px; }}
+.countdown-banner__sub {{ font-size:12px; color:#d8dde2; margin-top:4px; }}
 .aurora-panel .more {{ font-size:13px; line-height:1.6; margin-top:10px; color:#c7ccd2; }}
 .aurora-panel .more a {{ color:#8fd6cd; }}
 
@@ -893,8 +939,12 @@ main {{ max-width:820px; margin:0 auto; padding:20px 20px 70px; display:flex; fl
 
 <section id="view-info" class="page-view">
   <div class="countdown-banner">
-    <div class="countdown-banner__big" id="countdown-big">…</div>
-    <div class="countdown-banner__sub" id="countdown-sub"></div>
+    <div class="countdown-banner__bg">{aurora_scene_svg()}</div>
+    <div class="countdown-banner__scrim"></div>
+    <div class="countdown-banner__content">
+      <div class="countdown-banner__big" id="countdown-big">…</div>
+      <div class="countdown-banner__sub" id="countdown-sub"></div>
+    </div>
   </div>
 
   <div class="panel">
@@ -904,22 +954,6 @@ main {{ max-width:820px; margin:0 auto; padding:20px 20px 70px; display:flex; fl
     <div class="line"><strong>Volo ritorno:</strong> EJU3970 Keflavík → Milano Malpensa, dom 22 nov, 11:25 → 16:45</div>
     <div class="line"><strong>Auto:</strong> 4x4 (FairCar) · ritiro Keflavík 15 nov ore 11:00 · riconsegna Keflavík 22 nov ore 11:00</div>
     <div class="warn-box"><strong>Attenzione:</strong> il voucher auto indica riconsegna alle 11:00, ma il volo decolla alle 11:25 — margine quasi nullo. Contatta FairCar per riconsegnare prima (vedi Giorno 8).</div>
-  </div>
-
-  <div class="panel">
-    <div class="panel-title">Numeri utili</div>
-    <div class="rune-rule"></div>
-    <div class="line">• <strong>FairCar (auto):</strong> <a href="tel:+3545717222">+354 571 7222</a> · info@faircar.is</div>
-    <div class="line">• <strong>46heima / Heimaleiga (Reykjavík, Giorni 1-3):</strong> <a href="tel:+3544494900">+354 449 4900</a></div>
-    <div class="line">• <strong>Hótel Búrfell (Vík, Giorni 4-5):</strong> <a href="tel:+3544874660">+354 487 4660</a></div>
-    <div class="line">• <strong>The Hill Hotel (Flúðir, Giorni 6-7):</strong> <a href="tel:+3544864430">+354 486 4430</a></div>
-    <div class="line" style="margin-top:6px;font-size:12px;color:#7c8794;">Numeri trovati via ricerca online, non verificati con una chiamata diretta: ricontrollateli nelle email di conferma prima di partire.</div>
-  </div>
-
-  <div class="panel">
-    <div class="panel-title">Dove dormite</div>
-    <div class="rune-rule"></div>
-    <div class="stack">{stays_html}</div>
   </div>
 
   <div class="panel">
@@ -974,6 +1008,22 @@ main {{ max-width:820px; margin:0 auto; padding:20px 20px 70px; display:flex; fl
     <div class="line">• Consolato Onorario d'Italia a Reykjavík: <a href="tel:+3546981223">+354 698 1223</a> · reykjavik.onorario@esteri.it (Bankastræti 7).</div>
     <div class="line">• Con il 4x4 in novembre è normale trovare vento forte e strade bagnate/ghiacciate: guida con margine, specialmente sulla costa sud.</div>
     <div class="line">• Le mappe di questa pagina sono schizzi del percorso (funzionano sempre, anche offline) ma non sono per la navigazione stradale vera e propria. Per guidare, scarica prima di partire le mappe offline di Google Maps (o Maps.me / Organic Maps) per Islanda.</div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-title">Dove dormite</div>
+    <div class="rune-rule"></div>
+    <div class="stack">{stays_html}</div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-title">Numeri utili</div>
+    <div class="rune-rule"></div>
+    <div class="line">• <strong>FairCar (auto):</strong> <a href="tel:+3545717222">+354 571 7222</a> · info@faircar.is</div>
+    <div class="line">• <strong>46heima / Heimaleiga (Reykjavík, Giorni 1-3):</strong> <a href="tel:+3544494900">+354 449 4900</a></div>
+    <div class="line">• <strong>Hótel Búrfell (Vík, Giorni 4-5):</strong> <a href="tel:+3544874660">+354 487 4660</a></div>
+    <div class="line">• <strong>The Hill Hotel (Flúðir, Giorni 6-7):</strong> <a href="tel:+3544864430">+354 486 4430</a></div>
+    <div class="line" style="margin-top:6px;font-size:12px;color:#7c8794;">Numeri trovati via ricerca online, non verificati con una chiamata diretta: ricontrollateli nelle email di conferma prima di partire.</div>
   </div>
 </section>
 
