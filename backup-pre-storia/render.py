@@ -53,7 +53,7 @@ checklist_groups = [
         'Scarponcini impermeabili con buon grip su ghiaccio',
         'Guanti, berretto, sciarpa',
         'Calzini di ricambio (pioggia/neve)',
-        'Costume da bagno (Fontana, Secret Lagoon)',
+        'Costume da bagno (per le terme in programma)',
         'Asciugamano compatto a rapida asciugatura',
     ]},
     {'title': 'Tecnologia & varie', 'items': [
@@ -88,7 +88,7 @@ days = [
     {'meal':'Cena','place':'Gló, Laugavegur','note':'Cucina salutista, piatti glútenlaus segnalati in menu','cost':'€€','gf':True}
   ],
   'accommodation':{'name':'46heima Boutique Apartments','detail':'Laugavegur 46, Reykjavík · 3 notti · check-in dalle 15:00','url':'https://www.booking.com/hotel/is/46heima-apartments.en-gb.html'},
-  'tips':"Giornata di arrivo tranquilla: sistematevi con calma e fate un po' di spesa in un Bónus per i giorni successivi. Avrete due soste alle terme nel resto del viaggio: Fontana (Giorno 3) e Secret Lagoon (Giorno 6), entrambe più economiche e meno turistiche della Blue Lagoon.",
+  'tips':"Giornata di arrivo tranquilla: sistematevi con calma e fate un po' di spesa in un Bónus per i giorni successivi. Avrete un paio di soste alle terme nel resto del viaggio, più economiche e meno turistiche della Blue Lagoon.",
   'culture':"Reykjavík ha una storia più antica di quanto sembri: fondata nell'874 d.C. da Ingólfur Arnarson, primo colono vichingo dell'isola, deve il nome — \"baia dei fumi\" — al vapore geotermico che i primi coloni scambiarono per fumo di incendi. La Hallgrímskirkja che vedrete oggi non è un caso: il suo profilo a colonne è un omaggio diretto alle colonne di basalto che modellano le coste islandesi, le stesse che troverete tra qualche giorno a Reynisfjara. Passeggiando da Laugavegur al porto vecchio, fino al Sun Voyager sul lungomare, si attraversano più di mille anni di storia in mezz'ora a piedi."
  },
  {'id':'d2','num':2,'dateISO':'2026-11-16','dateLabel':'Lun 16 nov','title':'Reykjavík: cultura e Reykjanes','locKey':'reykjavik',
@@ -107,7 +107,7 @@ days = [
   'tips':"Giornata cuscinetto: se il meteo è brutto, si può invertire con il Giorno 3. Nel pomeriggio scegliete: Museo se preferite restare in città con calma, Reykjanes se volete uscire a vedere un paesaggio diverso.",
   'culture':"Il Perlan racconta la geologia islandese da dentro una grotta di ghiaccio artificiale, costruito sopra sei enormi serbatoi che ancora oggi riscaldano Reykjavík con l'acqua calda del sottosuolo. L'Harpa, sala concerti dalla facciata a nido d'ape ispirata alle colonne di basalto, è diventata il simbolo della rinascita della città dopo la crisi finanziaria del 2008. Al National Museum si ripercorre la storia islandese dai primi coloni vichinghi a oggi. Se scegliete invece Reykjanes, camminerete letteralmente tra due continenti sul Bridge Between Continents, un ponte pedonale sulla stessa faglia di Þingvellir. Qui la terra non è statica: dopo quasi 800 anni di quiete, dal 2021 il vulcanismo è tornato con eruzioni vicino a Grindavík, l'ultima tra il 2023 e il 2024. Vedrete il Gunnuhver, la pozza di fango più grande d'Islanda, e il Reykjanesviti, il faro più antico della nazione — tutto dentro un UNESCO Global Geopark dove la terra si sta ancora formando."
  },
- {'id':'d3','num':3,'dateISO':'2026-11-17','dateLabel':'Mar 17 nov','title':'Þingvellir & Fontana','locKey':'reykjavik',
+ {'id':'d3','num':3,'dateISO':'2026-11-17','dateLabel':'Mar 17 nov','title':'Þingvellir & relax serale','locKey':'reykjavik',
   'legs':[
     {'from':'Reykjavík','to':'Þingvellir','km':45,'time':'~45 min'},
     {'from':'Þingvellir','to':'Laugarvatn','km':25,'time':'~20 min'},
@@ -115,15 +115,15 @@ days = [
   ],
   'activities':[
     {'time':'10:00','title':'Þingvellir National Park','desc':'Faglia tra le placche nordamericana ed euroasiatica, sito del primo parlamento islandese (Unesco).','cost':'gratis (parcheggio ~1000 ISK / ~7€)','link':'https://www.thingvellir.is/en/'},
-    {'time':'15:30','title':'Laugarvatn Fontana (facoltativo, di sera)','desc':"Terme geotermiche naturali sul lago di Laugarvatn: vasche alimentate direttamente dalla sorgente, bagni di vapore costruiti sopra le bocche geotermiche e finestra sul lago dall'acqua calda. Molte recensioni la citano proprio per l'aurora vista da dentro le vasche.",'cost':'€€ ~50€/persona','link':'https://fontana.is/'}
+    {'time':'15:30','title':'Sosta relax a Laugarvatn (facoltativo, di sera)','desc':"Una pausa rilassante nella zona di Laugarvatn, sulla strada del ritorno verso Reykjavík.",'cost':'€€ ~50€/persona'}
   ],
   'food':[
     {'meal':'Pranzo','place':'Pranzo al sacco / Bónus','note':'Porta qualcosa dal Bónus di Reykjavík, comodo per una sosta veloce vicino a Þingvellir','cost':'€','gf':True},
     {'meal':'Cena','place':'Hlemmur Mathöll, Reykjavík','note':'Food hall con vari stand, alcuni segnalano opzioni senza glutine','cost':'€€','gf':True}
   ],
   'accommodation':{'name':'46heima Boutique Apartments','detail':'Ultima notte a Reykjavík · check-out domani 09:30-10:00','url':'https://www.booking.com/hotel/is/46heima-apartments.en-gb.html'},
-  'tips':"Giornata più leggera (~150 km totali) e volutamente rilassante: è l'ultima notte a Reykjavík prima dei due giorni più intensi del viaggio (Costa Sud e Jökulsárlón). Geysir e Gullfoss li vedrete il Giorno 7 da Flúðir, molto più vicini da lì che da Reykjavík. Prenota la Fontana in anticipo online, specie per gli slot serali — un bel bagno caldo la sera prima di partire per il tour intenso.",
-  'culture':"A Þingvellir camminerete letteralmente tra due continenti: la faglia che attraversa il parco segna il punto in cui le placche nordamericana ed eurasiatica si allontanano di circa 2 cm l'anno. Qui, nel 930 d.C., nacque l'Alþingi, tra i più antichi parlamenti al mondo ancora in vita — la culla della democrazia islandese che riprenderete più avanti nella tab Storia. Poco più a sud, sul lago di Laugarvatn, la Fontana sfrutta la stessa energia del sottosuolo che alimenta Þingvellir e Geysir: i suoi bagni di vapore sono costruiti letteralmente sopra le bocche geotermiche naturali."
+  'tips':"Giornata più leggera (~150 km totali) e volutamente rilassante: è l'ultima notte a Reykjavík prima dei due giorni più intensi del viaggio (Costa Sud e Jökulsárlón). Geysir e Gullfoss li vedrete il Giorno 7 da Flúðir, molto più vicini da lì che da Reykjavík. Se prenotate qualcosa per la sera, fatelo con anticipo — gli slot serali si esauriscono in fretta.",
+  'culture':"A Þingvellir camminerete letteralmente tra due continenti: la faglia che attraversa il parco segna il punto in cui le placche nordamericana ed eurasiatica si allontanano di circa 2 cm l'anno. Qui, nel 930 d.C., nacque l'Alþingi, tra i più antichi parlamenti al mondo ancora in vita — la culla della democrazia islandese che riprenderete più avanti nella tab Storia. Poco più a sud, sul lago di Laugarvatn, la zona sfrutta la stessa energia del sottosuolo che alimenta Þingvellir e Geysir."
  },
  {'id':'d4','num':4,'dateISO':'2026-11-18','dateLabel':'Mer 18 nov','title':'Reykjavík → Vík: Costa Sud','locKey':'vik',
   'legs':[
@@ -229,7 +229,7 @@ days = [
 map_points = {
     'd1': [{'name':'Aeroporto Keflavík','lat':63.9850,'lon':-22.6056}, {'name':'Reykjavík','lat':64.1466,'lon':-21.9426}],
     'd2': [{'name':'Perlan','lat':64.1289,'lon':-21.9147}, {'name':'Harpa','lat':64.1500,'lon':-21.9326}, {'name':'National Museum','lat':64.1417,'lon':-21.9530}, {'name':'Bridge Between Continents (facolt.)','lat':63.8697,'lon':-22.6764}, {'name':'Gunnuhver (facolt.)','lat':63.8181,'lon':-22.6994}, {'name':'Reykjanesviti (facolt.)','lat':63.8156,'lon':-22.6913}],
-    'd3': [{'name':'Reykjavík','lat':64.1466,'lon':-21.9426}, {'name':'Þingvellir','lat':64.2559,'lon':-21.1297}, {'name':'Laugarvatn (Fontana)','lat':64.2019,'lon':-20.7357}, {'name':'Reykjavík','lat':64.1466,'lon':-21.9426}],
+    'd3': [{'name':'Reykjavík','lat':64.1466,'lon':-21.9426}, {'name':'Þingvellir','lat':64.2559,'lon':-21.1297}, {'name':'Laugarvatn','lat':64.2019,'lon':-20.7357}, {'name':'Reykjavík','lat':64.1466,'lon':-21.9426}],
     'd4': [{'name':'Reykjavík','lat':64.1466,'lon':-21.9426}, {'name':'Seljalandsfoss','lat':63.6156,'lon':-19.9886}, {'name':'Skógafoss','lat':63.5321,'lon':-19.5116}, {'name':'Reynisfjara','lat':63.4038,'lon':-19.0428}, {'name':'Dyrhólaey','lat':63.4033,'lon':-19.1250}, {'name':'Víkurkirkja','lat':63.4193,'lon':-19.0058}],
     'd5': [{'name':'Vík','lat':63.4186,'lon':-19.0060}, {'name':'Fjaðrárgljúfur','lat':63.7722,'lon':-18.1725}, {'name':'Jökulsárlón','lat':64.0784,'lon':-16.2300}, {'name':'Diamond Beach','lat':64.0645,'lon':-16.1809}, {'name':'Vík','lat':63.4186,'lon':-19.0060}],
     'd6': [{'name':'Vík','lat':63.4186,'lon':-19.0060}, {'name':'Kerið','lat':64.0410,'lon':-20.8834}, {'name':'Flúðir','lat':64.1372,'lon':-20.3033}, {'name':'Secret Lagoon','lat':64.1306,'lon':-20.2989}],
@@ -706,7 +706,7 @@ storia_html = f'''
   <div class="panel">
     <div class="panel-title">Il paese del fuoco sotto il ghiaccio</div>
     <div class="rune-rule"></div>
-    <p class="line">L'Islanda siede a cavallo della dorsale medio-atlantica, il punto dove le placche nordamericana ed eurasiatica si allontanano di circa 2 cm l'anno: la vedrete a occhio nudo a Þingvellir il Giorno 2. Questa posizione rende l'isola una delle zone vulcaniche più attive del pianeta, con oltre 30 sistemi vulcanici attivi. È lo stesso fuoco sotterraneo, imbrigliato, a rendere l'Islanda quasi autosufficiente: circa il 85% dell'energia del paese viene da fonti rinnovabili, soprattutto geotermia e idroelettrico — le stesse sorgenti calde che userete alla Fontana e nella Secret Lagoon.</p>
+    <p class="line">L'Islanda siede a cavallo della dorsale medio-atlantica, il punto dove le placche nordamericana ed eurasiatica si allontanano di circa 2 cm l'anno: la vedrete a occhio nudo a Þingvellir il Giorno 3. Questa posizione rende l'isola una delle zone vulcaniche più attive del pianeta, con oltre 30 sistemi vulcanici attivi. È lo stesso fuoco sotterraneo, imbrigliato, a rendere l'Islanda quasi autosufficiente: circa il 85% dell'energia del paese viene da fonti rinnovabili, soprattutto geotermia e idroelettrico — le stesse sorgenti calde che userete nelle terme in programma.</p>
   </div>
 </section>'''
 
