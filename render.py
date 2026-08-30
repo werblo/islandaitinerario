@@ -88,25 +88,26 @@ days = [
     {'meal':'Cena','place':'Gló, Laugavegur','note':'Cucina salutista, piatti glútenlaus segnalati in menu','cost':'€€','gf':True}
   ],
   'accommodation':{'name':'46heima Boutique Apartments','detail':'Laugavegur 46, Reykjavík · 3 notti · check-in dalle 15:00'},
-  'tips':"Giornata di arrivo tranquilla: sistematevi con calma e fate un po' di spesa in un Bónus per i giorni successivi. Se volete una spa geotermica, la Sky Lagoon (Giorno 2) è più economica e meno turistica della Blue Lagoon.",
+  'tips':"Giornata di arrivo tranquilla: sistematevi con calma e fate un po' di spesa in un Bónus per i giorni successivi. Avrete due soste alle terme nel resto del viaggio: Fontana (Giorno 2) e Secret Lagoon (Giorno 6), entrambe più economiche e meno turistiche della Blue Lagoon.",
   'culture':"Reykjavík ha una storia più antica di quanto sembri: fondata nell'874 d.C. da Ingólfur Arnarson, primo colono vichingo dell'isola, deve il nome — \"baia dei fumi\" — al vapore geotermico che i primi coloni scambiarono per fumo di incendi. La Hallgrímskirkja che vedrete oggi non è un caso: il suo profilo a colonne è un omaggio diretto alle colonne di basalto che modellano le coste islandesi, le stesse che troverete tra qualche giorno a Reynisfjara. Passeggiando da Laugavegur al porto vecchio, fino al Sun Voyager sul lungomare, si attraversano più di mille anni di storia in mezz'ora a piedi."
  },
- {'id':'d2','num':2,'dateISO':'2026-11-16','dateLabel':'Lun 16 nov','title':'Þingvellir & Sky Lagoon','locKey':'reykjavik',
+ {'id':'d2','num':2,'dateISO':'2026-11-16','dateLabel':'Lun 16 nov','title':'Þingvellir & Fontana','locKey':'reykjavik',
   'legs':[
     {'from':'Reykjavík','to':'Þingvellir','km':45,'time':'~45 min'},
-    {'from':'Þingvellir','to':'Reykjavík','km':45,'time':'~45 min'}
+    {'from':'Þingvellir','to':'Laugarvatn','km':25,'time':'~20 min'},
+    {'from':'Laugarvatn','to':'Reykjavík','km':80,'time':'~1h05'}
   ],
   'activities':[
     {'time':'10:00','title':'Þingvellir National Park','desc':'Faglia tra le placche nordamericana ed euroasiatica, sito del primo parlamento islandese (Unesco).','cost':'gratis (parcheggio ~1000 ISK / ~7€)','link':'https://www.thingvellir.is/en/'},
-    {'time':'15:00','title':'Sky Lagoon (facoltativo, di sera)','desc':'Spa geotermica vista mare vicino a Reykjavík, meno turistica della Blue Lagoon.','cost':'€€ ~70€/persona','link':'https://www.skylagoon.com/'}
+    {'time':'15:30','title':'Laugarvatn Fontana (facoltativo, di sera)','desc':"Terme geotermiche naturali sul lago di Laugarvatn: vasche alimentate direttamente dalla sorgente, bagni di vapore costruiti sopra le bocche geotermiche e finestra sul lago dall'acqua calda. Molte recensioni la citano proprio per l'aurora vista da dentro le vasche.",'cost':'€€ ~50€/persona','link':'https://fontana.is/'}
   ],
   'food':[
     {'meal':'Pranzo','place':'Pranzo al sacco / Bónus','note':'Porta qualcosa dal Bónus di Reykjavík, comodo per una sosta veloce vicino a Þingvellir','cost':'€','gf':True},
     {'meal':'Cena','place':'Hlemmur Mathöll, Reykjavík','note':'Food hall con vari stand, alcuni segnalano opzioni senza glutine','cost':'€€','gf':True}
   ],
   'accommodation':{'name':'46heima Boutique Apartments','detail':'2ª notte a Reykjavík'},
-  'tips':"Giornata più leggera (~90 km andata/ritorno): Geysir e Gullfoss li vedrete il Giorno 7 da Flúðir, molto più vicini da lì che da Reykjavík. Usate il tempo libero per riposare o godervi la Sky Lagoon con calma.",
-  'culture':"A Þingvellir camminerete letteralmente tra due continenti: la faglia che attraversa il parco segna il punto in cui le placche nordamericana ed eurasiatica si allontanano di circa 2 cm l'anno. Qui, nel 930 d.C., nacque l'Alþingi, tra i più antichi parlamenti al mondo ancora in vita — la culla della democrazia islandese che riprenderete più avanti nella tab Storia."
+  'tips':"Giornata più leggera (~150 km totali): Geysir e Gullfoss li vedrete il Giorno 7 da Flúðir, molto più vicini da lì che da Reykjavík. Prenota la Fontana in anticipo online, specie per gli slot serali.",
+  'culture':"A Þingvellir camminerete letteralmente tra due continenti: la faglia che attraversa il parco segna il punto in cui le placche nordamericana ed eurasiatica si allontanano di circa 2 cm l'anno. Qui, nel 930 d.C., nacque l'Alþingi, tra i più antichi parlamenti al mondo ancora in vita — la culla della democrazia islandese che riprenderete più avanti nella tab Storia. Poco più a sud, sul lago di Laugarvatn, la Fontana sfrutta la stessa energia del sottosuolo che alimenta Þingvellir e Geysir: i suoi bagni di vapore sono costruiti letteralmente sopra le bocche geotermiche naturali."
  },
  {'id':'d3','num':3,'dateISO':'2026-11-17','dateLabel':'Mar 17 nov','title':'Reykjavík: cultura e relax','locKey':'reykjavik',
   'legs':[],
@@ -114,15 +115,15 @@ days = [
     {'time':'10:00','title':'Perlan','desc':'Museo con grotta di ghiaccio artificiale e vista panoramica a 360° sulla città.','cost':'€€ ~4900 ISK / ~34€','link':'https://perlan.is/en'},
     {'time':'12:30','title':'Harpa & porto vecchio','desc':'Sala concerti in vetro iridescente, passeggiata sul lungomare.','cost':'gratis','link':'https://www.harpa.is/en/'},
     {'time':'14:00','title':'National Museum of Iceland','desc':'Storia e cultura islandese dagli insediamenti vichinghi a oggi.','cost':'€ ~2900 ISK / ~20€','link':'https://www.thjodminjasafn.is/english'},
-    {'time':'16:00','title':'Reykjadalur o Reykjanes (facoltativo)','desc':"Mezza giornata alternativa: risalita di ~45 min tra le colline geotermiche di Reykjadalur (Hveragerði, ~45 km) fino al fiume caldo naturale, oppure il ponte tra i continenti e l'area geotermica di Gunnuhver a Reykjanes.",'cost':'gratis'}
+    {'time':'16:00','title':'Borgarfjörður (facoltativo, in alternativa al pomeriggio in città)','desc':"Zona a nord di Reykjavík mai toccata nel resto del viaggio (Golden Circle e Costa Sud sono a est/sud): Deildartunguhver, la sorgente calda più potente d'Europa, e le cascate gemelle di Hraunfossar e Barnafoss, dove l'acqua sgorga direttamente da un campo di lava. ~230 km andata/ritorno da Reykjavík (~1h30 a tratta): meglio partire presto e alleggerire il programma del mattino in città.",'cost':'gratis'}
   ],
   'food':[
     {'meal':'Pranzo','place':'Hlemmur Mathöll','note':'Più stand con piatti glútenlaus','cost':'€€','gf':True},
     {'meal':'Cena','place':'Sushi Social o cucina in appartamento','note':'Menu con opzioni senza glutine indicate','cost':'€€€','gf':True}
   ],
   'accommodation':{'name':'46heima Boutique Apartments','detail':'Ultima notte a Reykjavík · check-out domani 09:30-10:00'},
-  'tips':'Giornata cuscinetto: se il meteo guasta Þingvellir, si può invertire con il Giorno 2.',
-  'culture':"Il Perlan racconta la geologia islandese da dentro una grotta di ghiaccio artificiale, costruito sopra sei enormi serbatoi che ancora oggi riscaldano Reykjavík con l'acqua calda del sottosuolo. L'Harpa, sala concerti dalla facciata a nido d'ape ispirata alle colonne di basalto, è diventata il simbolo della rinascita della città dopo la crisi finanziaria del 2008. Al National Museum si ripercorre la storia islandese dai primi coloni vichinghi a oggi. Se scegliete Reykjadalur, vi immergerete in un fiume vero riscaldato dal magma; se scegliete Reykjanes, camminerete invece su un ponte che unisce simbolicamente le due placche tettoniche, a pochi passi dall'area geotermica ribollente di Gunnuhver."
+  'tips':'Giornata cuscinetto: se il meteo guasta Þingvellir, si può invertire con il Giorno 2. Il Borgarfjörður è un impegno di mezza giornata di guida: sceglietelo solo se preferite vedere una zona nuova piuttosto che godervi Reykjavík con calma.',
+  'culture':"Il Perlan racconta la geologia islandese da dentro una grotta di ghiaccio artificiale, costruito sopra sei enormi serbatoi che ancora oggi riscaldano Reykjavík con l'acqua calda del sottosuolo. L'Harpa, sala concerti dalla facciata a nido d'ape ispirata alle colonne di basalto, è diventata il simbolo della rinascita della città dopo la crisi finanziaria del 2008. Al National Museum si ripercorre la storia islandese dai primi coloni vichinghi a oggi. Se scegliete il Borgarfjörður, Deildartunguhver da sola fornisce acqua calda a gran parte del sud-ovest dell'isola tramite un acquedotto lungo oltre 70 km fino a Reykjavík e Akranes, mentre a Hraunfossar l'acqua filtra silenziosa attraverso la lava del vulcano Hallmundarhraun, invece di precipitare come una cascata comune."
  },
  {'id':'d4','num':4,'dateISO':'2026-11-18','dateLabel':'Mer 18 nov','title':'Reykjavík → Vík: Costa Sud','locKey':'vik',
   'legs':[
@@ -227,8 +228,8 @@ days = [
 
 map_points = {
     'd1': [{'name':'Aeroporto Keflavík','lat':63.9850,'lon':-22.6056}, {'name':'Reykjavík','lat':64.1466,'lon':-21.9426}],
-    'd2': [{'name':'Reykjavík','lat':64.1466,'lon':-21.9426}, {'name':'Þingvellir','lat':64.2559,'lon':-21.1297}, {'name':'Reykjavík','lat':64.1466,'lon':-21.9426}],
-    'd3': [{'name':'Perlan','lat':64.1289,'lon':-21.9147}, {'name':'Harpa','lat':64.1500,'lon':-21.9326}, {'name':'National Museum','lat':64.1417,'lon':-21.9530}, {'name':'Reykjadalur (facolt.)','lat':64.0140,'lon':-21.1870}, {'name':'Reykjanes (facolt.)','lat':63.8156,'lon':-22.6913}],
+    'd2': [{'name':'Reykjavík','lat':64.1466,'lon':-21.9426}, {'name':'Þingvellir','lat':64.2559,'lon':-21.1297}, {'name':'Laugarvatn (Fontana)','lat':64.2019,'lon':-20.7357}, {'name':'Reykjavík','lat':64.1466,'lon':-21.9426}],
+    'd3': [{'name':'Perlan','lat':64.1289,'lon':-21.9147}, {'name':'Harpa','lat':64.1500,'lon':-21.9326}, {'name':'National Museum','lat':64.1417,'lon':-21.9530}, {'name':'Deildartunguhver (facolt.)','lat':64.6656,'lon':-21.4056}, {'name':'Hraunfossar (facolt.)','lat':64.7167,'lon':-20.9667}],
     'd4': [{'name':'Reykjavík','lat':64.1466,'lon':-21.9426}, {'name':'Seljalandsfoss','lat':63.6156,'lon':-19.9886}, {'name':'Skógafoss','lat':63.5321,'lon':-19.5116}, {'name':'Reynisfjara','lat':63.4038,'lon':-19.0428}, {'name':'Dyrhólaey','lat':63.4033,'lon':-19.1250}, {'name':'Víkurkirkja','lat':63.4193,'lon':-19.0058}],
     'd5': [{'name':'Vík','lat':63.4186,'lon':-19.0060}, {'name':'Fjaðrárgljúfur','lat':63.7722,'lon':-18.1725}, {'name':'Jökulsárlón','lat':64.0784,'lon':-16.2300}, {'name':'Diamond Beach','lat':64.0645,'lon':-16.1809}, {'name':'Vík','lat':63.4186,'lon':-19.0060}],
     'd6': [{'name':'Vík','lat':63.4186,'lon':-19.0060}, {'name':'Kerið','lat':64.0410,'lon':-20.8834}, {'name':'Flúðir','lat':64.1372,'lon':-20.3033}, {'name':'Secret Lagoon','lat':64.1306,'lon':-20.2989}],
