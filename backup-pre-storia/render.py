@@ -135,38 +135,38 @@ days = [
   'activities':[
     {'time':'09:30','title':'Check-out appartamento','desc':'','cost':None},
     {'time':'11:30','title':'Seljalandsfoss','desc':"Cascata che si può costeggiare sul retro (in inverno spesso ghiacciata, occhio al sentiero). A 10 min a piedi c'è Gljúfrabúi, cascata nascosta in un canyon.",'cost':'gratis','link':'https://it.wikipedia.org/wiki/Seljalandsfoss'},
-    {'time':'13:30','title':'Skógafoss','desc':"Una delle cascate più imponenti d'Islanda, 60m, scalinata panoramica in cima.",'cost':'gratis','link':'https://it.wikipedia.org/wiki/Skogafoss'},
+    {'time':'13:15','title':'Skógafoss','desc':"Una delle cascate più imponenti d'Islanda, 60m, scalinata panoramica in cima.",'cost':'gratis','link':'https://it.wikipedia.org/wiki/Skogafoss'},
+    {'time':'14:45','title':'Dyrhólaey','desc':'Promontorio con arco di roccia e vista su Reynisfjara. Da vedere con un po\' di luce ancora buona: il tramonto qui è verso le 16:15.','cost':'gratis'},
     {'time':'15:30','title':'Reynisfjara','desc':'Spiaggia di sabbia nera con colonne basaltiche e i faraglioni di Reynisdrangar. Attenzione alle onde anomale, non voltare le spalle al mare.','cost':'gratis'},
-    {'time':'16:30','title':'Dyrhólaey','desc':'Promontorio con arco di roccia e vista su Reynisfjara.','cost':'gratis'},
-    {'time':'17:15','title':'Víkurkirkja','desc':"La chiesetta bianca dal tetto rosso su per la collina di Vík, tra le più fotografate d'Islanda: da lassù la vista abbraccia il villaggio, la spiaggia nera e i faraglioni di Reynisdrangar sullo sfondo.",'cost':'gratis'}
+    {'time':'16:15','title':'Víkurkirkja','desc':"La chiesetta bianca dal tetto rosso su per la collina di Vík, tra le più fotografate d'Islanda: da lassù la vista abbraccia il villaggio, la spiaggia nera e i faraglioni di Reynisdrangar sullo sfondo. Ultima tappa apposta: proprio all'ora del tramonto puo' regalare una luce spettacolare.",'cost':'gratis'}
   ],
   'food':[
     {'meal':'Pranzo','place':'Picnic a Skógar','note':'Porta snack dal Bónus di Reykjavík','cost':'€','gf':True},
     {'meal':'Cena','place':'Suður-Vík Restaurant','note':'Menu con opzioni glútenlaus indicate','cost':'€€','gf':True}
   ],
   'accommodation':{'name':'Hotel Burfell','detail':'Vík í Mýrdal · 2 notti','url':'https://hotelburfell.is/'},
-  'tips':'In novembre il buio scende verso le 17: pianifica Reynisfjara/Dyrhólaey per il primo pomeriggio e lascia la Víkurkirkja per ultima, è a due passi dal centro del paese.',
+  'tips':'Il 18 novembre a Vík il sole tramonta verso le 16:15 (molto prima di quanto sembri): Dyrhólaey e Reynisfjara vanno viste per bene entro quell\'ora, la Víkurkirkja invece va benissimo proprio al tramonto/appena dopo, dato che è a due passi dal centro del paese e non richiede tempo di guida extra.',
   'culture':"Oggi si passa dalle cascate alla costa vulcanica. Skógafoss, 60 metri di salto, nasconde secondo la leggenda un forziere vichingo dietro le sue acque. A Reynisfjara la sabbia nera è lava basaltica frantumata da millenni di oceano, e le pareti a colonne esagonali sono le stesse che hanno ispirato l'architettura della Hallgrímskirkja. Al largo, i faraglioni Reynisdrangar sarebbero — dice la leggenda — due troll pietrificati dall'alba mentre trascinavano a riva una nave: attenzione alle onde anomale, il mare qui non scherza. Dyrhólaey, il promontorio con l'arco di roccia, nacque da un'eruzione sottomarina durante l'ultima glaciazione. Vík, il villaggio più a sud dell'isola, vive all'ombra del vulcano Katla, sepolto sotto il ghiacciaio Mýrdalsjökull — e la sua chiesetta rossa e bianca, arroccata sulla collina, era il punto di raccolta designato per gli abitanti in caso di eruzione improvvisa."
  },
  {'id':'d5','num':5,'dateISO':'2026-11-19','dateLabel':'Gio 19 nov','title':'Escursione a Jökulsárlón','locKey':'vik',
   'legs':[
-    {'from':'Vík','to':'Fjaðrárgljúfur','km':72,'time':'~55 min'},
-    {'from':'Fjaðrárgljúfur','to':'Jökulsárlón','km':100,'time':'~1h15'},
-    {'from':'Jökulsárlón','to':'Vík','km':185,'time':'~2h30 (ritorno diretto)'}
+    {'from':'Vík','to':'Jökulsárlón','km':185,'time':'~2h30 (diretto, oltre Fjaðrárgljúfur senza fermarsi)'},
+    {'from':'Jökulsárlón','to':'Fjaðrárgljúfur','km':100,'time':'~1h15 (sulla via del ritorno)'},
+    {'from':'Fjaðrárgljúfur','to':'Vík','km':72,'time':'~55 min'}
   ],
   'activities':[
-    {'time':'08:00','title':'Partenza presto','desc':'Giornata lunga di guida: partire con il buio è normale in novembre.','cost':None},
-    {'time':'09:00','title':'Fjaðrárgljúfur','desc':'Canyon serpeggiante con pareti muschiose, punti panoramici accessibili a piedi.','cost':'gratis'},
-    {'time':'11:30','title':'Jökulsárlón Glacier Lagoon','desc':'Laguna glaciale con iceberg alla deriva verso il mare.','cost':'gratis (parcheggio a pagamento)'},
-    {'time':'13:00','title':'Diamond Beach','desc':'Spiaggia nera di fronte alla laguna dove i blocchi di ghiaccio si arenano.','cost':'gratis','link':'https://perlan.is/articles/diamond-beach-iceland'}
+    {'time':'08:00','title':'Partenza presto','desc':'Giornata lunga di guida: partire con il buio è normale in novembre, il sole sorge solo verso le 9:50.','cost':None},
+    {'time':'10:45','title':'Jökulsárlón Glacier Lagoon','desc':'Laguna glaciale con iceberg alla deriva verso il mare.','cost':'gratis (parcheggio a pagamento)'},
+    {'time':'12:15','title':'Diamond Beach','desc':'Spiaggia nera di fronte alla laguna dove i blocchi di ghiaccio si arenano.','cost':'gratis','link':'https://perlan.is/articles/diamond-beach-iceland'},
+    {'time':'14:00','title':'Fjaðrárgljúfur','desc':"Canyon serpeggiante con pareti muschiose, punti panoramici accessibili a piedi. Visitato sulla via del ritorno apposta: con la luce del primo mattino (alba verso le 9:50) si vedrebbe pochissimo.",'cost':'gratis'}
   ],
   'food':[
     {'meal':'Pranzo','place':'Kaffi Jökulsárlón o pranzo al sacco','note':'Zuppe spesso senza glutine, conferma con lo staff','cost':'€€','gf':True},
     {'meal':'Cena','place':'Ströndin Bistro, Vík','note':'','cost':'€€','gf':True}
   ],
   'accommodation':{'name':'Hotel Burfell','detail':'2ª notte a Vík','url':'https://hotelburfell.is/'},
-  'tips':'~370 km andata/ritorno da Vík: con brutto tempo valuta di fermarti solo a Fjaðrárgljúfur o Diamond Beach.',
-  'culture':"Giornata dedicata al ghiaccio. Il canyon di Fjaðrárgljúfur, scavato da un fiume glaciale in circa due milioni di anni, è diventato famoso di recente anche grazie a un video musicale di Justin Bieber. A Jökulsárlón la laguna esiste solo da un secolo: il Vatnajökull, il ghiacciaio più esteso d'Europa, si è ritirato rapidamente da inizio '900 lasciando dietro di sé questo bacino pieno di iceberg alla deriva verso il mare. Quelli che si arenano sulla sabbia nera di Diamond Beach, levigati e trasparenti, possono contenere ghiaccio compresso da centinaia o migliaia di anni."
+  'tips':"~370 km andata/ritorno da Vík: con brutto tempo valuta di fermarti solo a Jökulsárlón/Diamond Beach, tagliando Fjaðrárgljúfur. Il giro è organizzato per arrivare a Jökulsárlón e Diamond Beach con il sole già alto, e vedere Fjaðrárgljúfur nel primo pomeriggio con luce piena.",
+  'culture':"Giornata dedicata al ghiaccio. A Jökulsárlón la laguna esiste solo da un secolo: il Vatnajökull, il ghiacciaio più esteso d'Europa, si è ritirato rapidamente da inizio '900 lasciando dietro di sé questo bacino pieno di iceberg alla deriva verso il mare. Quelli che si arenano sulla sabbia nera di Diamond Beach, levigati e trasparenti, possono contenere ghiaccio compresso da centinaia o migliaia di anni. Sulla via del ritorno, il canyon di Fjaðrárgljúfur, scavato da un fiume glaciale in circa due milioni di anni, è diventato famoso di recente anche grazie a un video musicale di Justin Bieber."
  },
  {'id':'d6','num':6,'dateISO':'2026-11-20','dateLabel':'Ven 20 nov','title':'Vík → Flúðir','locKey':'fludir',
   'legs':[
@@ -231,7 +231,7 @@ map_points = {
     'd2': [{'name':'Perlan','lat':64.1289,'lon':-21.9147}, {'name':'Harpa','lat':64.1500,'lon':-21.9326}, {'name':'National Museum','lat':64.1417,'lon':-21.9530}, {'name':'Bridge Between Continents (facolt.)','lat':63.8697,'lon':-22.6764}, {'name':'Gunnuhver (facolt.)','lat':63.8181,'lon':-22.6994}, {'name':'Reykjanesviti (facolt.)','lat':63.8156,'lon':-22.6913}],
     'd3': [{'name':'Reykjavík','lat':64.1466,'lon':-21.9426}, {'name':'Þingvellir','lat':64.2559,'lon':-21.1297}, {'name':'Laugarvatn','lat':64.2019,'lon':-20.7357}, {'name':'Reykjavík','lat':64.1466,'lon':-21.9426}],
     'd4': [{'name':'Reykjavík','lat':64.1466,'lon':-21.9426}, {'name':'Seljalandsfoss','lat':63.6156,'lon':-19.9886}, {'name':'Skógafoss','lat':63.5321,'lon':-19.5116}, {'name':'Reynisfjara','lat':63.4038,'lon':-19.0428}, {'name':'Dyrhólaey','lat':63.4033,'lon':-19.1250}, {'name':'Víkurkirkja','lat':63.4193,'lon':-19.0058}],
-    'd5': [{'name':'Vík','lat':63.4186,'lon':-19.0060}, {'name':'Fjaðrárgljúfur','lat':63.7722,'lon':-18.1725}, {'name':'Jökulsárlón','lat':64.0784,'lon':-16.2300}, {'name':'Diamond Beach','lat':64.0645,'lon':-16.1809}, {'name':'Vík','lat':63.4186,'lon':-19.0060}],
+    'd5': [{'name':'Vík','lat':63.4186,'lon':-19.0060}, {'name':'Jökulsárlón','lat':64.0784,'lon':-16.2300}, {'name':'Diamond Beach','lat':64.0645,'lon':-16.1809}, {'name':'Fjaðrárgljúfur','lat':63.7722,'lon':-18.1725}, {'name':'Vík','lat':63.4186,'lon':-19.0060}],
     'd6': [{'name':'Vík','lat':63.4186,'lon':-19.0060}, {'name':'Kerið','lat':64.0410,'lon':-20.8834}, {'name':'Flúðir','lat':64.1372,'lon':-20.3033}, {'name':'Secret Lagoon','lat':64.1306,'lon':-20.2989}],
     'd7': [{'name':'Flúðir','lat':64.1372,'lon':-20.3033}, {'name':'Geysir','lat':64.3128,'lon':-20.3009}, {'name':'Gullfoss','lat':64.3271,'lon':-20.1199}, {'name':'Faxi','lat':64.1197,'lon':-20.2394}, {'name':'Flúðir','lat':64.1372,'lon':-20.3033}],
     'd8': [{'name':'Flúðir','lat':64.1372,'lon':-20.3033}, {'name':'Aeroporto Keflavík','lat':63.9850,'lon':-22.6056}]
