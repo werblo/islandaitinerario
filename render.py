@@ -907,6 +907,16 @@ main {{ max-width:820px; margin:0 auto; padding:20px 20px 70px; display:flex; fl
   </div>
 
   <div class="panel">
+    <div class="panel-title">Numeri utili</div>
+    <div class="rune-rule"></div>
+    <div class="line">• <strong>FairCar (auto):</strong> <a href="tel:+3545717222">+354 571 7222</a> · info@faircar.is</div>
+    <div class="line">• <strong>46heima / Heimaleiga (Reykjavík, Giorni 1-3):</strong> <a href="tel:+3544494900">+354 449 4900</a></div>
+    <div class="line">• <strong>Hótel Búrfell (Vík, Giorni 4-5):</strong> <a href="tel:+3544874660">+354 487 4660</a></div>
+    <div class="line">• <strong>The Hill Hotel (Flúðir, Giorni 6-7):</strong> <a href="tel:+3544864430">+354 486 4430</a></div>
+    <div class="line" style="margin-top:6px;font-size:12px;color:#7c8794;">Numeri trovati via ricerca online, non verificati con una chiamata diretta: ricontrollateli nelle email di conferma prima di partire.</div>
+  </div>
+
+  <div class="panel">
     <div class="panel-title">Dove dormite</div>
     <div class="rune-rule"></div>
     <div class="stack">{stays_html}</div>
@@ -961,6 +971,7 @@ main {{ max-width:820px; margin:0 auto; padding:20px 20px 70px; display:flex; fl
     <div class="line">• <a href="https://www.road.is" target="_blank" rel="noopener">road.is</a> — condizioni stradali in tempo reale.</div>
     <div class="line">• <a href="https://en.vedur.is" target="_blank" rel="noopener">vedur.is</a> — meteo, vento e aurora ufficiali islandesi.</div>
     <div class="line">• Numero unico di emergenza: <strong>112</strong> (anche via app 112 Iceland).</div>
+    <div class="line">• Consolato Onorario d'Italia a Reykjavík: <a href="tel:+3546981223">+354 698 1223</a> · reykjavik.onorario@esteri.it (Bankastræti 7).</div>
     <div class="line">• Con il 4x4 in novembre è normale trovare vento forte e strade bagnate/ghiacciate: guida con margine, specialmente sulla costa sud.</div>
     <div class="line">• Le mappe di questa pagina sono schizzi del percorso (funzionano sempre, anche offline) ma non sono per la navigazione stradale vera e propria. Per guidare, scarica prima di partire le mappe offline di Google Maps (o Maps.me / Organic Maps) per Islanda.</div>
   </div>
