@@ -178,14 +178,14 @@ days = [
     {'time':'10:00','title':'Check-out Hotel Burfell','desc':'','cost':None},
     {'time':'12:30','title':'Kerið','desc':'Cratere vulcanico con un lago sul fondo, percorribile a piedi in 15-20 min.','cost':'€ ~400 ISK / ~3€','link':'https://kerid.is/'},
     {'time':'15:30','title':'Check-in The Hill Guesthouse','desc':'Flúðir','cost':None},
-    {'time':'19:00','title':'Secret Lagoon','desc':"La piscina geotermica più antica d'Islanda, meno turistica ed economica della Blue Lagoon. Ottima anche di sera per provare a scorgere l'aurora dall'acqua calda.",'cost':'€€ ~7000 ISK / ~48€ a persona, prenotare online','link':'https://secretlagoon.is/'}
+    {'time':'17:30','title':'Secret Lagoon','desc':"La piscina geotermica più antica d'Islanda, meno turistica ed economica della Blue Lagoon. Il sole è già tramontato da un'ora e mezza, quindi ottima per provare a scorgere l'aurora dall'acqua calda.",'cost':'€ ~3000 ISK / ~20€ a persona, prenotare online','link':'https://secretlagoon.is/'}
   ],
   'food':[
     {'meal':'Pranzo','place':'Selfoss (pranzo al sacco o supermercato locale)','note':'Ultima città con supermercati grandi prima di Flúðir, sulla strada da Vík','cost':'€','gf':True},
     {'meal':'Cena','place':'Cucina alla guesthouse o Restaurant Grund','note':'Verifica il menu glútenlaus in loco','cost':'€€','gf':True}
   ],
   'accommodation':{'name':'The Hill Guesthouse','detail':'Flúðir · 2 notti','url':'https://thehillhotel.is/guesthouse-fludir/'},
-  'tips':'Prenota la Secret Lagoon in anticipo online: gli slot serali si esauriscono.',
+  'tips':'Prenota la Secret Lagoon in anticipo online: gli slot serali si esauriscono. A novembre lo slot più tardo disponibile è 17:30, non più tardi.',
   'culture':"Kerið è un cratere vulcanico di circa 3000 anni, insolito nel colore: la roccia è ricca di scoria rossastra invece del solito basalto nero, e sul fondo si è formato un piccolo lago verde-azzurro alimentato dalla falda. A Flúðir vi aspetta la Secret Lagoon, la piscina geotermica più antica dell'isola: costruita nel 1891 come prima piscina pubblica islandese, oggi resta piccola e informale rispetto alla Blue Lagoon, con l'acqua che sgorga naturalmente a circa 38-40°C da una sorgente a pochi passi dalla vasca."
  },
  {'id':'d7','num':7,'dateISO':'2026-11-21','dateLabel':'Sab 21 nov','title':'Geysir & Gullfoss e sorgenti calde','locKey':'fludir',
