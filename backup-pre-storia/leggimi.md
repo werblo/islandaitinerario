@@ -118,7 +118,26 @@ cartella `backup-pre-storia/` con la stessa copia di `render.py`,
 `index.html`, `sw.js` e `leggimi.md`: serve come punto di ripristino noto
 se una modifica successiva rompe qualcosa.
 
-## 4. Struttura delle tab
+## 5. Prenotazioni confermate
+
+Entrambe le soste terme in programma sono state prenotate direttamente sui
+siti ufficiali (inizio settembre 2026):
+
+- **Giorno 3 (17 novembre)** — Comfort Admission x2, 15:30. Voucher salvato
+  in `segreto/day3-voucher.pdf` (non collegato da nessuna parte nell'app:
+  navigando il sito non compare mai — resta comunque tecnicamente
+  raggiungibile su GitHub da chi conoscesse il percorso esatto, dato che
+  il repository non è cifrato).
+- **Giorno 6 (20 novembre)** — Secret Lagoon, 2 adulti, 17:30 (lo slot
+  serale più tardo disponibile a novembre: chiusura ~20:00). Voucher
+  salvato in `segreto/day6-voucher.pdf`, stessa nota di sopra.
+
+Durante la prenotazione reale sono emerse due correzioni ai dati già in
+`render.py`, poi applicate: l'orario della Secret Lagoon (19:00 → 17:30,
+il sito non offriva slot più tardi) e il prezzo (allineato al valore
+pagato realmente, 4500 ISK/persona).
+
+## 6. Struttura delle tab
 
 - **Info** — countdown, aurora boreale in tempo reale, mappa del viaggio,
   cambio EUR/ISK, riepilogo volo/auto, budget, sicurezza, alloggi, numeri
