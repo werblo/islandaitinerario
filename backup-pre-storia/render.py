@@ -178,7 +178,7 @@ days = [
     {'time':'10:00','title':'Check-out Hotel Burfell','desc':'','cost':None},
     {'time':'12:30','title':'Kerið','desc':'Cratere vulcanico con un lago sul fondo, percorribile a piedi in 15-20 min.','cost':'€ ~400 ISK / ~3€','link':'https://kerid.is/'},
     {'time':'15:30','title':'Check-in The Hill Guesthouse','desc':'Flúðir','cost':None},
-    {'time':'17:30','title':'Secret Lagoon','desc':"La piscina geotermica più antica d'Islanda, meno turistica ed economica della Blue Lagoon. Il sole è già tramontato da un'ora e mezza, quindi ottima per provare a scorgere l'aurora dall'acqua calda.",'cost':'€ ~3000 ISK / ~20€ a persona, prenotare online','link':'https://secretlagoon.is/'}
+    {'time':'17:30','title':'Secret Lagoon','desc':"La piscina geotermica più antica d'Islanda, meno turistica ed economica della Blue Lagoon. Il sole è già tramontato da un'ora e mezza, quindi ottima per provare a scorgere l'aurora dall'acqua calda.",'cost':'€ ~4500 ISK / ~31€ a persona, prenotare online','link':'https://secretlagoon.is/'}
   ],
   'food':[
     {'meal':'Pranzo','place':'Selfoss (pranzo al sacco o supermercato locale)','note':'Ultima città con supermercati grandi prima di Flúðir, sulla strada da Vík','cost':'€','gf':True},
