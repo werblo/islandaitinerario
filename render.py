@@ -115,14 +115,14 @@ days = [
   ],
   'activities':[
     {'time':'10:00','title':'Þingvellir National Park','desc':'Faglia tra le placche nordamericana ed euroasiatica, sito del primo parlamento islandese (Unesco).','cost':'gratis (parcheggio ~1000 ISK / ~7€)','link':'https://www.thingvellir.is/en/'},
-    {'time':'15:30','title':'Sosta relax a Laugarvatn (facoltativo, di sera)','desc':"Una pausa rilassante nella zona di Laugarvatn, sulla strada del ritorno verso Reykjavík.",'cost':'€€ ~50€/persona'}
+    {'time':'15:30','title':'Sosta relax a Laugarvatn (facoltativo, di sera)','desc':"Una pausa rilassante nella zona di Laugarvatn, sulla strada del ritorno verso Reykjavík. Il posto è sul lago, a cielo aperto: se il cielo è sereno vale la pena restare fino a tardi, quasi in chiusura, con più possibilità di vedere l'aurora rispetto a rientrare subito in città.",'cost':'€€ ~50€/persona'}
   ],
   'food':[
     {'meal':'Pranzo','place':'Pranzo al sacco / Bónus','note':'Porta qualcosa dal Bónus di Reykjavík, comodo per una sosta veloce vicino a Þingvellir','cost':'€','gf':True},
     {'meal':'Cena','place':'Hlemmur Mathöll, Reykjavík','note':'Food hall con vari stand, alcuni segnalano opzioni senza glutine','cost':'€€','gf':True}
   ],
   'accommodation':{'name':'46heima Boutique Apartments','detail':'Ultima notte a Reykjavík · check-out domani 09:30-10:00','url':'https://www.booking.com/hotel/is/46heima-apartments.en-gb.html'},
-  'tips':"Giornata più leggera (~150 km totali) e volutamente rilassante: è l'ultima notte a Reykjavík prima dei due giorni più intensi del viaggio (Costa Sud e Jökulsárlón). Geysir e Gullfoss li vedrete il Giorno 7 da Flúðir, molto più vicini da lì che da Reykjavík. Se prenotate qualcosa per la sera, fatelo con anticipo — gli slot serali si esauriscono in fretta.",
+  'tips':"Giornata più leggera (~150 km totali) e volutamente rilassante: è l'ultima notte a Reykjavík prima dei due giorni più intensi del viaggio (Costa Sud e Jökulsárlón). Geysir e Gullfoss li vedrete il Giorno 7 da Flúðir, molto più vicini da lì che da Reykjavík. Se prenotate qualcosa per la sera, fatelo con anticipo — gli slot serali si esauriscono in fretta. Se restate fino a tardi la sera, il rientro a Reykjavík (~1h05 da Laugarvatn) va messo in conto: con cielo sereno può valerne la pena per l'aurora.",
   'culture':"A Þingvellir camminerete letteralmente tra due continenti: la faglia che attraversa il parco segna il punto in cui le placche nordamericana ed eurasiatica si allontanano di circa 2 cm l'anno. Qui, nel 930 d.C., nacque l'Alþingi, tra i più antichi parlamenti al mondo ancora in vita — la culla della democrazia islandese che riprenderete più avanti nella tab Storia. Poco più a sud, sul lago di Laugarvatn, la zona sfrutta la stessa energia del sottosuolo che alimenta Þingvellir e Geysir."
  },
  {'id':'d4','num':4,'dateISO':'2026-11-18','dateLabel':'Mer 18 nov','title':'Reykjavík → Vík: Costa Sud','locKey':'vik',
