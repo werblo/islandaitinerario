@@ -42,7 +42,7 @@ d7-hero.jpg                                 → Geysir & Gullfoss e sorgenti cal
 d7-geysir-strokkur.jpg                      → Geysir & Strokkur
 d7-gullfoss.jpg                             → Gullfoss
 d7-faxi.jpg                                 → Faxi
-d7-passeggiata-a-fludir.jpg                 → Passeggiata a Flúðir
+d7-efstidalur-ii.jpg                        → Efstidalur II
 
 d8-hero.jpg                                 → Rientro
 
@@ -166,7 +166,29 @@ Ogni mappa vive nel proprio contesto di stacking (`isolation:isolate`)
 apposta per evitare che i controlli interni di Leaflet finiscano sopra
 il menu dei giorni durante lo scroll (bug corretto in precedenza).
 
-## 7. Struttura delle tab
+## 7. Giorno 7: Passeggiata a Flúðir sostituita con Efstidalur II
+
+La vecchia attività "Passeggiata a Flúðir" (15:30) è stata sostituita con
+**Efstidalur II**, fattoria con gelateria e vacche visibili da dietro un
+vetro (~28 km da Faxi, ~20 km da Efstidalur a Flúðir — distanze stimate,
+da confermare su Google/Apple Maps più vicino al viaggio, non verificate
+su fonte cartografica diretta).
+
+Motivo: un controllo ha confermato che il centro di Flúðir offre poco
+oltre alla Secret Lagoon (già coperta al Giorno 6) — niente borgo
+pittoresco, solo una collina panoramica (Miðfell) e un fiume. Efstidalur
+è aperta tutto l'anno ed è una sosta calda/comoda per il pomeriggio buio
+di novembre. Scartata anche l'idea di un sito vichingo (Þjóðveldisbærinn
+Stöng, a ~45 min): chiuso da ottobre a maggio, non visitabile a novembre.
+
+Nota a margine: esiste anche **Laugarás Lagoon**, una laguna termale
+moderna a due livelli aperta da ottobre 2025 vicino a Skálholt — più
+scenografica della Secret Lagoon ma quasi il triplo del prezzo (da 6900
+ISK contro 4500 ISK). Non inserita nell'itinerario perché la Secret
+Lagoon è già prenotata e pagata; resta un'opzione da considerare per un
+eventuale viaggio futuro.
+
+## 8. Struttura delle tab
 
 - **Info** — countdown, aurora boreale in tempo reale, mappa del viaggio,
   cambio EUR/ISK, riepilogo volo/auto, budget, sicurezza, alloggi, numeri
