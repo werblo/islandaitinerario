@@ -216,7 +216,7 @@ days = [
   ],
   'activities':[
     {'time':'06:45','title':'Partenza da Flúðir','desc':'Partite presto per avere margine: riconsegna auto e imbarco sono molto ravvicinati.','cost':None},
-    {'time':'~09:00','title':'Riconsegna auto FairCar','desc':'Il voucher indica riconsegna alle 11:00, ma il volo parte alle 11:25: verificate con FairCar se potete riconsegnare prima (es. entro le 9:00-9:30) per avere tempo per check-in e imbarco.','cost':None},
+    {'time':'~09:00','title':'Riconsegna auto FairCar','desc':'Il voucher indica riconsegna alle 11:00, ma il volo parte alle 11:25: verificate con FairCar se potete riconsegnare prima (es. entro le 9:00-9:30) per avere tempo per check-in e imbarco.','cost':None,'nav':'FairCar Bogatröð 1 Keflavík'},
     {'time':'11:25','title':'Volo EJU3970 Keflavík → Milano Malpensa','desc':'Arrivo previsto alle 16:45.','cost':None}
   ],
   'food':[
