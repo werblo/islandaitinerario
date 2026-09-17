@@ -20,7 +20,7 @@ d2-reykjanes.jpg                            → Reykjanes
 
 d3-hero.jpg                                 → Þingvellir & relax serale
 d3-thingvellir-national-park.jpg            → Þingvellir
-d3-sosta-relax-a-laugarvatn.jpg             → Sosta serale a Laugarvatn
+d3-fontana-geothermal-baths.jpg             → Fontana Geothermal Baths
 
 d4-hero.jpg                                 → Costa Sud
 d4-seljalandsfoss.jpg                       → Seljalandsfoss
@@ -132,12 +132,41 @@ siti ufficiali (inizio settembre 2026):
   serale più tardo disponibile a novembre: chiusura ~20:00). Voucher
   salvato in `segreto/day6-voucher.pdf`, stessa nota di sopra.
 
+Il regalo di compleanno (17 settembre 2026) è stato consegnato: il nome
+"Fontana" è stato ripristinato ovunque nell'app (titolo/descrizione Giorno 3,
+checklist, box culture, tab Storia), non serve più tenerlo mascherato.
+Restano comunque salvati in `segreto/` anche i voucher "regalo" senza prezzi
+(`day3-voucher-regalo.pdf`, `day6-voucher-regalo.pdf`, `voucher-regalo.pdf`
+con entrambi i voucher originali uniti e i dati di pagamento rimossi
+davvero dal contenuto, non solo coperti visivamente).
+
 Durante la prenotazione reale sono emerse due correzioni ai dati già in
 `render.py`, poi applicate: l'orario della Secret Lagoon (19:00 → 17:30,
 il sito non offriva slot più tardi) e il prezzo (allineato al valore
 pagato realmente, 4500 ISK/persona).
 
-## 6. Struttura delle tab
+## 6. Mappe e fix mobile (settembre 2026)
+
+Le mappe (ogni giorno + "Mappa del viaggio" nella tab Info) usano Leaflet
+con tile OpenStreetMap standard, gratuiti e senza chiave di accesso — un
+primo tentativo con CARTO Voyager è stato scartato perché quell'endpoint
+richiede ora una API key, mostrando "API key required" al posto della
+mappa.
+
+Un audit mirato all'uso su telefono ha trovato e corretto due bug:
+- le mappe avevano il drag/pan sempre attivo, quindi uno swipe verticale
+  che partiva sulla mappa la spostava invece di scrollare la pagina;
+  ora dragging e zoom si riattivano solo al primo tocco intenzionale
+  sulla mappa;
+- i pulsanti di navigazione dei giorni e le checkbox della checklist
+  avevano un'area toccabile sotto i 44px consigliati per il tocco su
+  telefono — alzati entrambi.
+
+Ogni mappa vive nel proprio contesto di stacking (`isolation:isolate`)
+apposta per evitare che i controlli interni di Leaflet finiscano sopra
+il menu dei giorni durante lo scroll (bug corretto in precedenza).
+
+## 7. Struttura delle tab
 
 - **Info** — countdown, aurora boreale in tempo reale, mappa del viaggio,
   cambio EUR/ISK, riepilogo volo/auto, budget, sicurezza, alloggi, numeri
