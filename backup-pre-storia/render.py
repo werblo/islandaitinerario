@@ -193,13 +193,14 @@ days = [
     {'from':'Flúðir','to':'Geysir','km':30,'time':'~25 min'},
     {'from':'Geysir','to':'Gullfoss','km':10,'time':'~10 min'},
     {'from':'Gullfoss','to':'Faxi','km':21,'time':'~20 min'},
-    {'from':'Faxi','to':'Flúðir','km':8,'time':'~10 min'}
+    {'from':'Faxi','to':'Efstidalur II','km':28,'time':'~25 min (stima, da confermare su Google/Apple Maps)'},
+    {'from':'Efstidalur II','to':'Flúðir','km':20,'time':'~18 min (stima, da confermare su Google/Apple Maps)'}
   ],
   'activities':[
     {'time':'10:00','title':'Geysir & Strokkur','desc':'Area geotermica: Strokkur erutta ogni 5-10 minuti.','cost':'gratis'},
     {'time':'11:30','title':'Gullfoss','desc':"Cascata a doppio salto, spettacolare anche d'inverno con il ghiaccio sulle rocce.",'cost':'gratis','link':'https://it.wikipedia.org/wiki/Gullfoss'},
     {'time':'14:00','title':'Faxi','desc':'Cascata piccola e tranquilla vicino a Flúðir, poco turistica.','cost':'gratis','link':'https://it.wikipedia.org/wiki/Faxi'},
-    {'time':'15:30','title':'Passeggiata a Flúðir','desc':'Villaggio geotermico, serre e piccole botteghe locali.','cost':'gratis'}
+    {'time':'15:30','title':'Efstidalur II','desc':"Fattoria con gelateria e vacche visibili da dietro un vetro, ambiente al caldo e informale. Sosta comoda per il buio che cala presto in questo periodo, prima del rientro a Flúðir.",'cost':'€ gelato/spuntino a parte'}
   ],
   'food':[
     {'meal':'Pranzo','place':'Friðheimar, Reykholt','note':'Famosa zuppa di pomodoro in serra, sulla strada per Geysir; chiedi la versione senza pane/crostini','cost':'€€','gf':True},
@@ -234,7 +235,7 @@ map_points = {
     'd4': [{'name':'Reykjavík','lat':64.1466,'lon':-21.9426}, {'name':'Seljalandsfoss','lat':63.6156,'lon':-19.9886}, {'name':'Skógafoss','lat':63.5321,'lon':-19.5116}, {'name':'Dyrhólaey','lat':63.4033,'lon':-19.1250}, {'name':'Reynisfjara','lat':63.4038,'lon':-19.0428}, {'name':'Víkurkirkja','lat':63.4193,'lon':-19.0058}],
     'd5': [{'name':'Vík','lat':63.4186,'lon':-19.0060}, {'name':'Jökulsárlón','lat':64.0784,'lon':-16.2300}, {'name':'Diamond Beach','lat':64.0645,'lon':-16.1809}, {'name':'Fjaðrárgljúfur','lat':63.7722,'lon':-18.1725}, {'name':'Vík','lat':63.4186,'lon':-19.0060}],
     'd6': [{'name':'Vík','lat':63.4186,'lon':-19.0060}, {'name':'Kerið','lat':64.0410,'lon':-20.8834}, {'name':'Flúðir','lat':64.1372,'lon':-20.3033}, {'name':'Secret Lagoon','lat':64.1306,'lon':-20.2989}],
-    'd7': [{'name':'Flúðir','lat':64.1372,'lon':-20.3033}, {'name':'Geysir','lat':64.3128,'lon':-20.3009}, {'name':'Gullfoss','lat':64.3271,'lon':-20.1199}, {'name':'Faxi','lat':64.1197,'lon':-20.2394}, {'name':'Flúðir','lat':64.1372,'lon':-20.3033}],
+    'd7': [{'name':'Flúðir','lat':64.1372,'lon':-20.3033}, {'name':'Geysir','lat':64.3128,'lon':-20.3009}, {'name':'Gullfoss','lat':64.3271,'lon':-20.1199}, {'name':'Faxi','lat':64.1197,'lon':-20.2394}, {'name':'Efstidalur II','lat':64.2567,'lon':-20.5029}, {'name':'Flúðir','lat':64.1372,'lon':-20.3033}],
     'd8': [{'name':'Flúðir','lat':64.1372,'lon':-20.3033}, {'name':'Aeroporto Keflavík','lat':63.9850,'lon':-22.6056}]
 }
 
