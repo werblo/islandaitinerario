@@ -88,8 +88,12 @@ days = [
     {'meal':'Cena','place':'Gló, Laugavegur','note':'Cucina salutista, piatti glútenlaus segnalati in menu','cost':'€€','gf':True}
   ],
   'accommodation':{'name':'46heima Boutique Apartments','detail':'Laugavegur 46, Reykjavík · 3 notti · check-in dalle 15:00','url':'https://www.booking.com/hotel/is/46heima-apartments.en-gb.html'},
-  'tips':"Giornata di arrivo tranquilla: sistematevi con calma e fate un po' di spesa in un Bónus per i giorni successivi. Avrete un paio di soste alle terme nel resto del viaggio, più economiche e meno turistiche della Blue Lagoon. Parcheggio: l'appartamento non ne ha uno incluso e Laugavegur è zona P1 (~650 ISK/h, max 3h consecutive). Dato che userete l'auto quasi ogni giorno (probabile gita a Reykjanes il Giorno 2, sicuramente Þingvellir/Fontana il Giorno 3), l'auto resta ferma solo di notte, non giorni interi: conviene la zona P2 verso Hlemmur/Rauðarárstígur (~230 ISK/h, senza limite di 3h) piuttosto che il garage Stjörnuport, che non ha tariffa giornaliera (190 ISK la prima ora, poi 140 ISK/h senza tetto massimo). Parcheggio gratis dalle 21:00 alle 9:00 nei feriali e sabato, e prima delle 10:00/dopo le 21:00 la domenica (orari da riconfermare su reykjavik.is/en/parking vicino alla partenza, sono stati estesi di recente).",
-  'culture':"Reykjavík ha una storia più antica di quanto sembri: fondata nell'874 d.C. da Ingólfur Arnarson, primo colono vichingo dell'isola, deve il nome — \"baia dei fumi\" — al vapore geotermico che i primi coloni scambiarono per fumo di incendi. La Hallgrímskirkja che vedrete oggi non è un caso: il suo profilo a colonne è un omaggio diretto alle colonne di basalto che modellano le coste islandesi, le stesse che troverete tra qualche giorno a Reynisfjara. Passeggiando da Laugavegur al porto vecchio, fino al Sun Voyager sul lungomare, si attraversano più di mille anni di storia in mezz'ora a piedi."
+  'tips':"Giornata di arrivo tranquilla: sistematevi con calma e fate un po' di spesa in un Bónus per i giorni successivi. Avrete un paio di soste alle terme nel resto del viaggio, più economiche e meno turistiche della Blue Lagoon. Parcheggio: l'appartamento non ne ha uno incluso e Laugavegur è zona P1 (~650 ISK/h, max 3h consecutive), gratis dalle 21:00 alle 9:00 nei feriali/sabato e prima delle 10:00/dopo le 21:00 la domenica (orari da riconfermare su reykjavik.is/en/parking vicino alla partenza). Strategia notte per notte: 15 e 16 novembre parcheggiate in zona P2 verso Hlemmur/Rauðarárstígur (~230 ISK/h, senza limite di 3h, più economica se rientrate prima delle 21:00); la notte del 17 invece va bene direttamente P1 sotto casa, perché quella sera rientrerete da Fontana dopo le 21:00 (quando è già gratis anche lì) e ripartirete presto il mattino dopo per la Costa Sud.",
+  'culture':"Reykjavík ha una storia più antica di quanto sembri: fondata nell'874 d.C. da Ingólfur Arnarson, primo colono vichingo dell'isola, deve il nome — \"baia dei fumi\" — al vapore geotermico che i primi coloni scambiarono per fumo di incendi. La Hallgrímskirkja che vedrete oggi non è un caso: il suo profilo a colonne è un omaggio diretto alle colonne di basalto che modellano le coste islandesi, le stesse che troverete tra qualche giorno a Reynisfjara. Passeggiando da Laugavegur al porto vecchio, fino al Sun Voyager sul lungomare, si attraversano più di mille anni di storia in mezz'ora a piedi.",
+  'parking_nav':[
+    {'label':'Naviga verso zona P2 (15-16 nov)','query':'Rauðarárstígur Reykjavik'},
+    {'label':'Naviga verso zona P1 (17 nov)','query':'Laugavegur 46 Reykjavik'}
+  ]
  },
  {'id':'d2','num':2,'dateISO':'2026-11-16','dateLabel':'Lun 16 nov','title':'Reykjavík: cultura e Reykjanes','locKey':'reykjavik',
   'legs':[],
@@ -145,7 +149,7 @@ days = [
     {'meal':'Pranzo','place':'Picnic a Skógar','note':'Porta snack dal Bónus di Reykjavík','cost':'€','gf':True},
     {'meal':'Cena','place':'Suður-Vík Restaurant','note':'Menu con opzioni glútenlaus indicate','cost':'€€','gf':True}
   ],
-  'accommodation':{'name':'Hotel Burfell','detail':'Vík í Mýrdal · 2 notti','url':'https://hotelburfell.is/'},
+  'accommodation':{'name':'Hotel Burfell','detail':'Vík í Mýrdal · 2 notti · parcheggio gratuito incluso','url':'https://hotelburfell.is/'},
   'tips':'Il 18 novembre a Vík il sole tramonta verso le 16:15 (molto prima di quanto sembri): Dyrhólaey e Reynisfjara vanno viste per bene entro quell\'ora, la Víkurkirkja invece va benissimo proprio al tramonto/appena dopo, dato che è a due passi dal centro del paese e non richiede tempo di guida extra.',
   'culture':"Oggi si passa dalle cascate alla costa vulcanica. Skógafoss, 60 metri di salto, nasconde secondo la leggenda un forziere vichingo dietro le sue acque. A Reynisfjara la sabbia nera è lava basaltica frantumata da millenni di oceano, e le pareti a colonne esagonali sono le stesse che hanno ispirato l'architettura della Hallgrímskirkja. Al largo, i faraglioni Reynisdrangar sarebbero — dice la leggenda — due troll pietrificati dall'alba mentre trascinavano a riva una nave: attenzione alle onde anomale, il mare qui non scherza. Dyrhólaey, il promontorio con l'arco di roccia, nacque da un'eruzione sottomarina durante l'ultima glaciazione. Vík, il villaggio più a sud dell'isola, vive all'ombra del vulcano Katla, sepolto sotto il ghiacciaio Mýrdalsjökull — e la sua chiesetta rossa e bianca, arroccata sulla collina, era il punto di raccolta designato per gli abitanti in caso di eruzione improvvisa."
  },
@@ -184,7 +188,7 @@ days = [
     {'meal':'Pranzo','place':'Selfoss (pranzo al sacco o supermercato locale)','note':'Ultima città con supermercati grandi prima di Flúðir, sulla strada da Vík','cost':'€','gf':True},
     {'meal':'Cena','place':'Cucina alla guesthouse o Restaurant Grund','note':'Verifica il menu glútenlaus in loco','cost':'€€','gf':True}
   ],
-  'accommodation':{'name':'The Hill Guesthouse','detail':'Flúðir · 2 notti','url':'https://thehillhotel.is/guesthouse-fludir/'},
+  'accommodation':{'name':'The Hill Guesthouse','detail':'Flúðir · 2 notti · parcheggio gratuito incluso','url':'https://thehillhotel.is/guesthouse-fludir/'},
   'tips':'Prenota la Secret Lagoon in anticipo online: gli slot serali si esauriscono. A novembre lo slot più tardo disponibile è 17:30, non più tardi.',
   'culture':"Kerið è un cratere vulcanico di circa 3000 anni, insolito nel colore: la roccia è ricca di scoria rossastra invece del solito basalto nero, e sul fondo si è formato un piccolo lago verde-azzurro alimentato dalla falda. A Flúðir vi aspetta la Secret Lagoon, la piscina geotermica più antica dell'isola: costruita nel 1891 come prima piscina pubblica islandese, oggi resta piccola e informale rispetto alla Blue Lagoon, con l'acqua che sgorga naturalmente a circa 38-40°C da una sorgente a pochi passi dalla vasca."
  },
@@ -565,8 +569,15 @@ def render_day_section(day):
         acc_name_html = e(acc["name"])
         if acc.get('url'):
             acc_name_html = f'<a href="{e(acc["url"])}" target="_blank" rel="noopener">{acc_name_html}</a>'
+        parking_nav_html = ''
+        if day.get('parking_nav'):
+            links = ''.join(
+                f'<a class="act-link act-link--nav" href="https://www.google.com/maps/search/?api=1&query={urllib.parse.quote(p["query"])}" target="_blank" rel="noopener">{e(p["label"])} ↗</a>'
+                for p in day['parking_nav']
+            )
+            parking_nav_html = f'<div class="acc-parking-nav">{links}</div>'
         acc_html = (f'<div class="acc-card"><div class="acc-name">Alloggio: {acc_name_html}</div>'
-                    f'<div class="acc-detail">{e(acc["detail"])}</div></div>')
+                    f'<div class="acc-detail">{e(acc["detail"])}</div>{parking_nav_html}</div>')
     tips_html = ''
     if day.get('tips'):
         tips_html = f'<div class="tip-card"><strong>Consiglio:</strong> {e(day["tips"])}</div>'
@@ -878,6 +889,8 @@ main {{ max-width:820px; margin:0 auto; padding:20px 20px 70px; display:flex; fl
 .acc-name a {{ color:inherit; text-decoration:underline; text-underline-offset:2px; }}
 .acc-name a:hover {{ color:var(--amber); }}
 .acc-detail {{ color:#c7ccd2; margin-top:2px; }}
+.acc-parking-nav {{ display:flex; flex-wrap:wrap; gap:4px 16px; margin-top:8px; }}
+.acc-parking-nav .act-link {{ margin:0; color:#8fd6cd; }}
 
 .tip-card {{ background:var(--amber-soft); border:1px solid var(--amber-soft-border); border-radius:8px; padding:12px 14px; font-size:13px; line-height:1.6; color:#5c3a1f; }}
 
