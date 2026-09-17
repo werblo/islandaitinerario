@@ -629,7 +629,7 @@ days_sections_html = ''.join(render_day_section(d) for d in days)
 storia_html = f'''
 <section class="page-view" id="view-storia" hidden>
   <div class="day-head">
-    <div class="day-date">Infarinatura generale</div>
+    <div class="day-date"><span class="rune-mark">ᚨ</span>Infarinatura generale<span class="rune-mark">ᚾ</span></div>
     <div class="day-title"><span class="rune-mark">ᛋ</span>Storia dell'Islanda<span class="rune-mark">ᛁ</span></div>
   </div>
   {photo_slot('storia-hero.jpg', "Storia dell'Islanda", 'photo-slot--hero', 'saga')}
@@ -637,7 +637,7 @@ storia_html = f'''
   <div class="panel">
     <div class="panel-title"><span class="rune-mark">ᛒ</span>Un'isola giovanissima</div>
     <div class="rune-rule"></div>
-    <p class="line">L'Islanda entra nella storia scritta molto tardi rispetto al resto d'Europa: solo nell'<strong>874 d.C.</strong> il norvegese Ingólfur Arnarson fonda il primo insediamento permanente, proprio dove oggi sorge Reykjavík. Secondo l'usanza vichinga, aveva lanciato in mare i pilastri del suo trono cerimoniale e costruito casa dove le correnti li avevano portati a riva. Nei decenni successivi arrivano altre migliaia di coloni, soprattutto dalla Norvegia, insieme a genti e schiavi dalle isole britanniche: da questo mix nasce la popolazione islandese.</p>
+    <p class="line">Prima ancora dei coloni veri e propri, intorno all'<strong>868 d.C.</strong> arriva il navigatore norvegese <strong>Hrafna-Flóki Vilgerðarson</strong> ("Flóki dei corvi", dai tre corvi che portava con sé per trovare la rotta). Dopo un inverno durissimo passato a osservare i fiordi pieni di ghiaccio alla deriva, se ne va deluso e ribattezza l'isola <strong>Ísland</strong>, "terra di ghiaccio" — il nome che porta ancora oggi. L'Islanda entra nella storia scritta molto tardi rispetto al resto d'Europa: solo nell'<strong>874 d.C.</strong> il norvegese Ingólfur Arnarson fonda il primo insediamento permanente, proprio dove oggi sorge Reykjavík. Secondo l'usanza vichinga, aveva lanciato in mare i pilastri del suo trono cerimoniale e costruito casa dove le correnti li avevano portati a riva. Nei decenni successivi arrivano altre migliaia di coloni, soprattutto dalla Norvegia, insieme a genti e schiavi dalle isole britanniche: da questo mix nasce la popolazione islandese.</p>
   </div>
 
   <div class="panel">
@@ -773,10 +773,10 @@ main {{ max-width:820px; margin:0 auto; padding:20px 20px 70px; display:flex; fl
 
 .aurora-panel {{ background:var(--navy); border-radius:8px; padding:18px 20px; }}
 .aurora-panel .panel-title {{ color:#8fd6cd; }}
-.aurora-panel p {{ color:#c7ccd2; }}
-.kp-row {{ display:flex; flex-direction:column; align-items:center; text-align:center; gap:4px; margin-top:10px; }}
-.kp-big {{ font-family:'Cinzel',serif; font-weight:600; font-size:30px; color:#faf5ea; white-space:nowrap; }}
-.kp-status {{ font-size:13px; color:#c7ccd2; max-width:280px; }}
+.aurora-panel p {{ color:#9aa4ad; font-size:13px; }}
+.kp-row {{ display:flex; flex-direction:column; align-items:center; text-align:center; gap:6px; margin:14px 0 16px; }}
+.kp-big {{ font-family:'Cinzel',serif; font-weight:600; font-size:52px; color:#faf5ea; white-space:nowrap; line-height:1; }}
+.kp-status {{ font-size:14px; color:#c7ccd2; max-width:280px; }}
 
 .fx-row {{ display:flex; align-items:flex-end; gap:10px; }}
 .fx-field {{ flex:1; display:flex; flex-direction:column; gap:4px; }}
@@ -902,8 +902,8 @@ main {{ max-width:820px; margin:0 auto; padding:20px 20px 70px; display:flex; fl
 
   <div class="aurora-panel">
     <div class="panel-title">Aurora boreale — ora</div>
-    <p>Indice geomagnetico Kp attuale (NOAA), aggiornato in tempo reale se sei online. Non è una previsione per le date del viaggio, ma dà l'idea dell'attività del momento.</p>
     <div class="kp-row"><div class="kp-big" id="kp-value">…</div><div class="kp-status" id="kp-status">Caricamento…</div></div>
+    <p>Indice geomagnetico Kp attuale (NOAA), aggiornato in tempo reale se sei online. Non è una previsione per le date del viaggio, ma dà l'idea dell'attività del momento.</p>
     <div class="more">Più vicino alla partenza, controlla <a href="https://en.vedur.is/weather/forecasts/aurora/" target="_blank" rel="noopener">vedur.is/aurora</a> per la previsione reale sulle vostre date e sul cielo sereno.</div>
   </div>
 
