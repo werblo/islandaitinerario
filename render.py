@@ -193,8 +193,8 @@ days = [
     {'from':'Flúðir','to':'Geysir','km':30,'time':'~25 min'},
     {'from':'Geysir','to':'Gullfoss','km':10,'time':'~10 min'},
     {'from':'Gullfoss','to':'Faxi','km':21,'time':'~20 min'},
-    {'from':'Faxi','to':'Efstidalur II','km':28,'time':'~25 min (stima, da confermare su Google/Apple Maps)'},
-    {'from':'Efstidalur II','to':'Flúðir','km':20,'time':'~18 min (stima, da confermare su Google/Apple Maps)'}
+    {'from':'Faxi','to':'Efstidalur II','km':28,'time':'~25 min'},
+    {'from':'Efstidalur II','to':'Flúðir','km':20,'time':'~18 min'}
   ],
   'activities':[
     {'time':'10:00','title':'Geysir & Strokkur','desc':'Area geotermica: Strokkur erutta ogni 5-10 minuti.','cost':'gratis'},
@@ -1306,6 +1306,14 @@ function updateCountdown() {{
 }}
 updateCountdown();
 setInterval(updateCountdown, 3600000);
+
+function jumpToTodayIfInTrip() {{
+  const now = new Date();
+  const todayISO = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0');
+  const match = DAYS_META.find(d => d.dateISO === todayISO);
+  if (match) setActive(match.id);
+}}
+jumpToTodayIfInTrip();
 
 const CHK_STORAGE_KEY = 'islanda2026-checklist';
 function loadChecklist() {{

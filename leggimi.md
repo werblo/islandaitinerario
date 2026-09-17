@@ -170,9 +170,7 @@ il menu dei giorni durante lo scroll (bug corretto in precedenza).
 
 La vecchia attività "Passeggiata a Flúðir" (15:30) è stata sostituita con
 **Efstidalur II**, fattoria con gelateria e vacche visibili da dietro un
-vetro (~28 km da Faxi, ~20 km da Efstidalur a Flúðir — distanze stimate,
-da confermare su Google/Apple Maps più vicino al viaggio, non verificate
-su fonte cartografica diretta).
+vetro (~28 km da Faxi, ~20 km da Efstidalur a Flúðir).
 
 Motivo: un controllo ha confermato che il centro di Flúðir offre poco
 oltre alla Secret Lagoon (già coperta al Giorno 6) — niente borgo
