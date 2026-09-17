@@ -755,7 +755,7 @@ a {{ color:var(--amber); }}
 
 .navbar {{ position:sticky; top:0; z-index:500; background:var(--navy); border-bottom:1px solid #26374a; box-shadow:0 2px 10px rgba(0,0,0,.25); }}
 .navbar__inner {{ max-width:820px; margin:0 auto; display:flex; gap:8px; overflow-x:auto; padding:10px 20px; -webkit-overflow-scrolling:touch; }}
-.nav-btn {{ flex-shrink:0; padding:10px 16px; min-height:24px; border-radius:5px; font-size:13px; font-weight:600; border:1px solid #3a4a5c; background:transparent; color:#c7ccd2; cursor:pointer; font-family:'IBM Plex Sans',sans-serif; }}
+.nav-btn {{ flex-shrink:0; padding:10px 16px; min-height:44px; border-radius:5px; font-size:13px; font-weight:600; border:1px solid #3a4a5c; background:transparent; color:#c7ccd2; cursor:pointer; font-family:'IBM Plex Sans',sans-serif; }}
 .nav-btn.active {{ border-color:#d9985f; background:var(--amber); color:#fffaf2; }}
 
 main {{ max-width:820px; margin:0 auto; padding:20px 20px 70px; display:flex; flex-direction:column; gap:18px; }}
@@ -785,7 +785,7 @@ main {{ max-width:820px; margin:0 auto; padding:20px 20px 70px; display:flex; fl
 .fx-rate {{ margin-top:10px; font-size:12px; color:var(--muted-2); }}
 
 .chk-list {{ display:flex; flex-direction:column; gap:2px; }}
-.chk-item {{ display:flex; align-items:flex-start; gap:10px; padding:9px 4px; font-size:14px; line-height:1.5; color:#333c46; cursor:pointer; border-radius:6px; }}
+.chk-item {{ display:flex; align-items:center; gap:10px; padding:9px 4px; min-height:44px; font-size:14px; line-height:1.5; color:#333c46; cursor:pointer; border-radius:6px; }}
 .chk-item:hover {{ background:rgba(0,0,0,.03); }}
 .chk-box {{ margin-top:3px; width:18px; height:18px; flex-shrink:0; accent-color:var(--amber); }}
 .chk-item:has(.chk-box:checked) span {{ color:var(--muted-2); text-decoration:line-through; text-decoration-color:var(--amber-soft-border); }}
@@ -1004,7 +1004,7 @@ function ensureDayMap(dayId) {{
   if (!el || !points || !points.length || typeof L === 'undefined') return;
   if (dayMaps[dayId]) {{ requestAnimationFrame(() => dayMaps[dayId].invalidateSize()); return; }}
 
-  const map = L.map(el, {{ scrollWheelZoom: false, zoomControl: true }});
+  const map = L.map(el, {{ scrollWheelZoom: false, dragging: false, tap: false, zoomControl: true }});
   dayMaps[dayId] = map;
   L.tileLayer('https://{{s}}.tile.openstreetmap.org/{{z}}/{{x}}/{{y}}.png', {{
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors',
@@ -1051,7 +1051,7 @@ function ensureDayMap(dayId) {{
     }})
     .catch(() => {{ /* resta la linea retta di riserva */ }});
 
-  el.addEventListener('touchstart', () => map.scrollWheelZoom.enable(), {{ once: true, passive: true }});
+  el.addEventListener('touchstart', () => {{ map.scrollWheelZoom.enable(); map.dragging.enable(); }}, {{ once: true, passive: true }});
 }}
 
 function setActive(id) {{
@@ -1228,7 +1228,7 @@ function initTripMap() {{
     {{ key: 'fludir', label: 'Flúðir', n: '4' }}
   ];
 
-  const map = L.map(el, {{ scrollWheelZoom: false, zoomControl: true }});
+  const map = L.map(el, {{ scrollWheelZoom: false, dragging: false, tap: false, zoomControl: true }});
   L.tileLayer('https://{{s}}.tile.openstreetmap.org/{{z}}/{{x}}/{{y}}.png', {{
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors',
     subdomains: 'abc',
@@ -1259,7 +1259,7 @@ function initTripMap() {{
 
   map.fitBounds(latlngs, {{ padding: [24, 24] }});
 
-  el.addEventListener('touchstart', () => map.scrollWheelZoom.enable(), {{ once: true, passive: true }});
+  el.addEventListener('touchstart', () => {{ map.scrollWheelZoom.enable(); map.dragging.enable(); }}, {{ once: true, passive: true }});
 }}
 
 // Aggiornamento dei dati live (alba/tramonto, aurora, meteo, cambio).
