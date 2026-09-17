@@ -630,34 +630,34 @@ storia_html = f'''
 <section class="page-view" id="view-storia" hidden>
   <div class="day-head">
     <div class="day-date">Infarinatura generale</div>
-    <div class="day-title">Storia dell'Islanda</div>
+    <div class="day-title"><span class="rune-mark">ᛋ</span>Storia dell'Islanda<span class="rune-mark">ᛁ</span></div>
   </div>
   {photo_slot('storia-hero.jpg', "Storia dell'Islanda", 'photo-slot--hero', 'saga')}
 
   <div class="panel">
-    <div class="panel-title">Un'isola giovanissima</div>
+    <div class="panel-title"><span class="rune-mark">ᛒ</span>Un'isola giovanissima</div>
     <div class="rune-rule"></div>
     <p class="line">L'Islanda entra nella storia scritta molto tardi rispetto al resto d'Europa: solo nell'<strong>874 d.C.</strong> il norvegese Ingólfur Arnarson fonda il primo insediamento permanente, proprio dove oggi sorge Reykjavík. Secondo l'usanza vichinga, aveva lanciato in mare i pilastri del suo trono cerimoniale e costruito casa dove le correnti li avevano portati a riva. Nei decenni successivi arrivano altre migliaia di coloni, soprattutto dalla Norvegia, insieme a genti e schiavi dalle isole britanniche: da questo mix nasce la popolazione islandese.</p>
   </div>
 
   <div class="panel">
-    <div class="panel-title">Dal primo parlamento all'indipendenza</div>
+    <div class="panel-title"><span class="rune-mark">ᛏ</span>Dal primo parlamento all'indipendenza</div>
     <div class="rune-rule"></div>
     <p class="line">Nel <strong>930 d.C.</strong>, a Þingvellir, i capi dell'isola fondano l'<strong>Alþingi</strong>: un'assemblea annuale all'aperto per fare leggi e giudicare le liti, una delle istituzioni parlamentari più antiche ancora esistenti al mondo. È l'epoca del cosiddetto Commonwealth islandese, senza re né esercito centrale. Nel 1262, dilaniata da faide interne, l'isola giura fedeltà al re di Norvegia; nel 1380 passa sotto la corona danese insieme alla Norvegia. Bisogna aspettare il <strong>1º dicembre 1918</strong> per un regno autonomo (ma ancora legato alla Danimarca), e il <strong>17 giugno 1944</strong> per la Repubblica islandese piena, proclamata con il 97% dei consensi mentre la Danimarca era sotto occupazione tedesca.</p>
   </div>
 
   <div class="culture-card">
-    <div class="culture-card__label">{f'<svg viewBox="0 0 64 56" xmlns="http://www.w3.org/2000/svg">{icon_svg("saga")}</svg>'}Le saghe e una lingua rimasta ferma nel tempo</div>
+    <div class="culture-card__label">{f'<svg viewBox="0 0 64 56" xmlns="http://www.w3.org/2000/svg">{icon_svg("saga")}</svg>'}<span class="rune-mark">ᚱ</span>Le saghe e una lingua rimasta ferma nel tempo</div>
     <p>Preparatevi a un piccolo miracolo linguistico: l'islandese di oggi è così vicino al norreno medievale che un lettore islandese può ancora leggere le saghe scritte otto secoli fa, senza traduzione — un lusso che i cugini scandinavi hanno perso da tempo. Altrettanto insolito è il sistema dei nomi: niente cognomi di famiglia, solo patronimici o matronimici (un Jónsson è "figlio di Jón"), tanto che l'elenco telefonico islandese è ordinato per nome di battesimo. La popolazione resta minuscola, poco più di 380.000 persone su un'isola grande quanto il Portogallo, con un effetto collaterale gradito: zero zanzare. Gli alberi invece scarseggiano, abbattuti in gran parte dai primi coloni per legna e pascoli.</p>
   </div>
 
   <div class="culture-card">
-    <div class="culture-card__label">{f'<svg viewBox="0 0 64 56" xmlns="http://www.w3.org/2000/svg">{icon_svg("saga")}</svg>'}Troll, elfi e le luci del cielo</div>
+    <div class="culture-card__label">{f'<svg viewBox="0 0 64 56" xmlns="http://www.w3.org/2000/svg">{icon_svg("saga")}</svg>'}<span class="rune-mark">ᛟ</span>Troll, elfi e le luci del cielo</div>
     <p>La tradizione islandese abbonda di creature che spiegano il paesaggio prima ancora della geologia. I <strong>troll</strong> vivono nelle scogliere e nelle montagne ma temono la luce del sole: chi viene sorpreso all'alba resta pietrificato per sempre — da qui nascono formazioni come i faraglioni di Reynisfjara, che vedrete il Giorno 4. Accanto a loro vive un popolo più discreto, gli <strong>Huldufólk</strong> ("il popolo nascosto"): elfi che abitano rocce e colline e si mostrano solo quando lo scelgono loro. La credenza è ancora abbastanza radicata che alcuni progetti stradali islandesi siano stati deviati proprio per non disturbarli.</p>
   </div>
 
   <div class="panel">
-    <div class="panel-title">Il paese del fuoco sotto il ghiaccio</div>
+    <div class="panel-title"><span class="rune-mark">ᚲ</span>Il paese del fuoco sotto il ghiaccio</div>
     <div class="rune-rule"></div>
     <p class="line">L'Islanda siede a cavallo della dorsale medio-atlantica, il punto dove le placche nordamericana ed eurasiatica si allontanano di circa 2 cm l'anno: la vedrete a occhio nudo a Þingvellir il Giorno 3. Questa posizione rende l'isola una delle zone vulcaniche più attive del pianeta, con oltre 30 sistemi vulcanici attivi. È lo stesso fuoco sotterraneo, imbrigliato, a rendere l'Islanda quasi autosufficiente: circa il 85% dell'energia del paese viene da fonti rinnovabili, soprattutto geotermia e idroelettrico — le stesse sorgenti calde che userete a Fontana e alla Secret Lagoon.</p>
   </div>
@@ -745,6 +745,7 @@ a {{ color:var(--amber); }}
 ::-webkit-scrollbar {{ height:6px; width:6px; }}
 ::-webkit-scrollbar-thumb {{ background:#c9c0ac; border-radius:4px; }}
 .rune-rule {{ height:1px; background:linear-gradient(90deg,transparent,#c9b98f,transparent); position:relative; margin:4px 0 14px; }}
+.rune-mark {{ color:var(--amber); font-weight:400; margin:0 7px; opacity:.75; }}
 .rune-rule::after {{ content:''; position:absolute; left:50%; top:50%; width:6px; height:6px; background:var(--amber); transform:translate(-50%,-50%) rotate(45deg); }}
 
 .hero {{ position:relative; overflow:hidden; background:linear-gradient(160deg,var(--navy),var(--navy-2)); border-bottom:3px solid var(--amber); }}
@@ -773,9 +774,9 @@ main {{ max-width:820px; margin:0 auto; padding:20px 20px 70px; display:flex; fl
 .aurora-panel {{ background:var(--navy); border-radius:8px; padding:18px 20px; }}
 .aurora-panel .panel-title {{ color:#8fd6cd; }}
 .aurora-panel p {{ color:#c7ccd2; }}
-.kp-row {{ display:flex; align-items:baseline; gap:10px; margin-top:6px; }}
-.kp-big {{ font-family:'Cinzel',serif; font-weight:600; font-size:30px; color:#faf5ea; }}
-.kp-status {{ font-size:13px; color:#c7ccd2; }}
+.kp-row {{ display:flex; flex-direction:column; align-items:center; text-align:center; gap:4px; margin-top:10px; }}
+.kp-big {{ font-family:'Cinzel',serif; font-weight:600; font-size:30px; color:#faf5ea; white-space:nowrap; }}
+.kp-status {{ font-size:13px; color:#c7ccd2; max-width:280px; }}
 
 .fx-row {{ display:flex; align-items:flex-end; gap:10px; }}
 .fx-field {{ flex:1; display:flex; flex-direction:column; gap:4px; }}
