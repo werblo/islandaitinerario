@@ -170,7 +170,8 @@ il menu dei giorni durante lo scroll (bug corretto in precedenza).
 
 La vecchia attività "Passeggiata a Flúðir" (15:30) è stata sostituita con
 **Efstidalur II**, fattoria con gelateria e vacche visibili da dietro un
-vetro (~28 km da Faxi, ~20 km da Efstidalur a Flúðir).
+vetro (~9 km da Faxi, ~20 km da Efstidalur a Flúðir — corretto da un
+refuso nelle coordinate di Faxi, vedi sezione 9).
 
 Motivo: un controllo ha confermato che il centro di Flúðir offre poco
 oltre alla Secret Lagoon (già coperta al Giorno 6) — niente borgo
@@ -186,7 +187,44 @@ ISK contro 4500 ISK). Non inserita nell'itinerario perché la Secret
 Lagoon è già prenotata e pagata; resta un'opzione da considerare per un
 eventuale viaggio futuro.
 
-## 8. Struttura delle tab
+## 9. Correzioni distanze e funzionalità aggiunte (settembre 2026)
+
+Un debug incrociato con più controlli indipendenti (haversine + verifica
+web) ha trovato due errori reali:
+
+- **Coordinate di Faxi sbagliate** in `map_points['d7']` da tempo
+  (puntavano vicino a Flúðir invece che al vero Faxi vicino a Reykholt).
+  Questo aveva reso "impossibile" per errore la distanza Gullfoss→Faxi
+  (in realtà corretta, 21 km) e sballata la tappa Faxi→Efstidalur II
+  (28 km/25 min errati, corretto a 9 km/12 min con le coordinate giuste).
+- **Jökulsárlón→Fjaðrárgljúfur davvero impossibile**: dichiarata 100 km
+  ma con un pavimento a linea d'aria di 100.9 km. Corretta a 130 km/~1h50
+  (verificato via Kirkjubæjarklaustur come riferimento), con l'attività
+  Fjaðrárgljúfur del Giorno 5 spostata da 14:30 a 15:00 e il totale
+  km/giorno aggiornato nei tips (~370 → ~395 km).
+
+Corretta anche un'incoerenza testuale: l'energia rinnovabile islandese
+era indicata come "quasi 100%" (Giorno 8) e "85%" (tab Storia) senza
+spiegare la differenza — ora è chiaro che il 100% riguarda la sola
+elettricità, l'85% il consumo energetico totale (riscaldamento,
+industria, trasporti inclusi).
+
+**Nuove funzionalità:**
+- L'app salta automaticamente alla tab del giorno corrente se aperta
+  tra il 15 e il 22 novembre 2026 (testato con Chromium/Playwright
+  simulando diverse date).
+- Ogni attività con una tappa reale ha un link **"Naviga"** che apre
+  Google Maps sulle coordinate esatte (21 attività su 8 giorni,
+  escluse quelle logistiche come check-in/check-out/ritiro auto).
+- Un pulsante flottante (FAB) per il cambio Euro/Corona è visibile su
+  tutte le tab tranne Info (dove il convertitore è già un pannello),
+  con un link rapido a road.is per lo stato delle strade.
+- Rune vichinghe decorative (Futhark) nella sola tab Storia, e un
+  paragrafo su Hrafna-Flóki Vilgerðarson, il navigatore che diede il
+  nome "Ísland" all'isola prima della colonizzazione di Ingólfur
+  Arnarson.
+
+## 10. Struttura delle tab
 
 - **Info** — countdown, aurora boreale in tempo reale, mappa del viaggio,
   cambio EUR/ISK, riepilogo volo/auto, budget, sicurezza, alloggi, numeri
