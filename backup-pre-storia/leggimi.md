@@ -171,7 +171,7 @@ il menu dei giorni durante lo scroll (bug corretto in precedenza).
 La vecchia attività "Passeggiata a Flúðir" (15:30) è stata sostituita con
 **Efstidalur II**, fattoria con gelateria e vacche visibili da dietro un
 vetro (~9 km da Faxi, ~20 km da Efstidalur a Flúðir — corretto da un
-refuso nelle coordinate di Faxi, vedi sezione 9).
+refuso nelle coordinate di Faxi, vedi sezione 8).
 
 Motivo: un controllo ha confermato che il centro di Flúðir offre poco
 oltre alla Secret Lagoon (già coperta al Giorno 6) — niente borgo
@@ -187,7 +187,7 @@ ISK contro 4500 ISK). Non inserita nell'itinerario perché la Secret
 Lagoon è già prenotata e pagata; resta un'opzione da considerare per un
 eventuale viaggio futuro.
 
-## 9. Correzioni distanze e funzionalità aggiunte (settembre 2026)
+## 8. Correzioni distanze e funzionalità aggiunte (settembre 2026)
 
 Un debug incrociato con più controlli indipendenti (haversine + verifica
 web) ha trovato due errori reali:
@@ -224,7 +224,7 @@ industria, trasporti inclusi).
   nome "Ísland" all'isola prima della colonizzazione di Ingólfur
   Arnarson.
 
-## 10. Struttura delle tab
+## 9. Struttura delle tab
 
 - **Info** — countdown, aurora boreale in tempo reale, mappa del viaggio,
   cambio EUR/ISK, riepilogo volo/auto, budget, sicurezza, alloggi, numeri
