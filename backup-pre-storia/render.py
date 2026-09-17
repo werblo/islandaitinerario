@@ -152,21 +152,21 @@ days = [
  {'id':'d5','num':5,'dateISO':'2026-11-19','dateLabel':'Gio 19 nov','title':'Escursione a Jökulsárlón','locKey':'vik',
   'legs':[
     {'from':'Vík','to':'Jökulsárlón','km':192,'time':'~2h45 (diretto, oltre Fjaðrárgljúfur senza fermarsi)'},
-    {'from':'Jökulsárlón','to':'Fjaðrárgljúfur','km':100,'time':'~1h15 (sulla via del ritorno)'},
+    {'from':'Jökulsárlón','to':'Fjaðrárgljúfur','km':130,'time':'~1h50 (sulla via del ritorno)'},
     {'from':'Fjaðrárgljúfur','to':'Vík','km':72,'time':'~55 min'}
   ],
   'activities':[
     {'time':'08:00','title':'Partenza presto','desc':'Giornata lunga di guida: partire con il buio è normale in novembre, il sole sorge solo verso le 9:50.','cost':None},
     {'time':'10:45','title':'Jökulsárlón Glacier Lagoon','desc':'Laguna glaciale con iceberg alla deriva verso il mare.','cost':'gratis (parcheggio a pagamento)'},
     {'time':'12:15','title':'Diamond Beach','desc':'Spiaggia nera di fronte alla laguna dove i blocchi di ghiaccio si arenano.','cost':'gratis','link':'https://perlan.is/articles/diamond-beach-iceland'},
-    {'time':'14:30','title':'Fjaðrárgljúfur','desc':"Canyon serpeggiante con pareti muschiose, punti panoramici accessibili a piedi. Visitato sulla via del ritorno apposta: con la luce del primo mattino (alba verso le 9:50) si vedrebbe pochissimo.",'cost':'gratis'}
+    {'time':'15:00','title':'Fjaðrárgljúfur','desc':"Canyon serpeggiante con pareti muschiose, punti panoramici accessibili a piedi. Visitato sulla via del ritorno apposta: con la luce del primo mattino (alba verso le 9:50) si vedrebbe pochissimo.",'cost':'gratis'}
   ],
   'food':[
     {'meal':'Pranzo','place':'Kaffi Jökulsárlón o pranzo al sacco','note':'Zuppe spesso senza glutine, conferma con lo staff','cost':'€€','gf':True},
     {'meal':'Cena','place':'Ströndin Bistro, Vík','note':'','cost':'€€','gf':True}
   ],
   'accommodation':{'name':'Hotel Burfell','detail':'2ª notte a Vík','url':'https://hotelburfell.is/'},
-  'tips':"~370 km andata/ritorno da Vík: con brutto tempo valuta di fermarti solo a Jökulsárlón/Diamond Beach, tagliando Fjaðrárgljúfur. Il giro è organizzato per arrivare a Jökulsárlón e Diamond Beach con il sole già alto, e vedere Fjaðrárgljúfur nel primo pomeriggio con luce piena.",
+  'tips':"~395 km andata/ritorno da Vík: con brutto tempo valuta di fermarti solo a Jökulsárlón/Diamond Beach, tagliando Fjaðrárgljúfur. Il giro è organizzato per arrivare a Jökulsárlón e Diamond Beach con il sole già alto, e vedere Fjaðrárgljúfur nel tardo pomeriggio con ancora buona luce prima del tramonto (16:10).",
   'culture':"Giornata dedicata al ghiaccio. A Jökulsárlón la laguna esiste solo da un secolo: il Vatnajökull, il ghiacciaio più esteso d'Europa, si è ritirato rapidamente da inizio '900 lasciando dietro di sé questo bacino pieno di iceberg alla deriva verso il mare. Quelli che si arenano sulla sabbia nera di Diamond Beach, levigati e trasparenti, possono contenere ghiaccio compresso da centinaia o migliaia di anni. Sulla via del ritorno, il canyon di Fjaðrárgljúfur, scavato da un fiume glaciale in circa due milioni di anni, è diventato famoso di recente anche grazie a un video musicale di Justin Bieber."
  },
  {'id':'d6','num':6,'dateISO':'2026-11-20','dateLabel':'Ven 20 nov','title':'Vík → Flúðir','locKey':'fludir',
@@ -193,7 +193,7 @@ days = [
     {'from':'Flúðir','to':'Geysir','km':30,'time':'~25 min'},
     {'from':'Geysir','to':'Gullfoss','km':10,'time':'~10 min'},
     {'from':'Gullfoss','to':'Faxi','km':21,'time':'~20 min'},
-    {'from':'Faxi','to':'Efstidalur II','km':28,'time':'~25 min'},
+    {'from':'Faxi','to':'Efstidalur II','km':9,'time':'~12 min'},
     {'from':'Efstidalur II','to':'Flúðir','km':20,'time':'~18 min'}
   ],
   'activities':[
@@ -235,7 +235,7 @@ map_points = {
     'd4': [{'name':'Reykjavík','lat':64.1466,'lon':-21.9426}, {'name':'Seljalandsfoss','lat':63.6156,'lon':-19.9886}, {'name':'Skógafoss','lat':63.5321,'lon':-19.5116}, {'name':'Dyrhólaey','lat':63.4033,'lon':-19.1250}, {'name':'Reynisfjara','lat':63.4038,'lon':-19.0428}, {'name':'Víkurkirkja','lat':63.4193,'lon':-19.0058}],
     'd5': [{'name':'Vík','lat':63.4186,'lon':-19.0060}, {'name':'Jökulsárlón','lat':64.0784,'lon':-16.2300}, {'name':'Diamond Beach','lat':64.0645,'lon':-16.1809}, {'name':'Fjaðrárgljúfur','lat':63.7722,'lon':-18.1725}, {'name':'Vík','lat':63.4186,'lon':-19.0060}],
     'd6': [{'name':'Vík','lat':63.4186,'lon':-19.0060}, {'name':'Kerið','lat':64.0410,'lon':-20.8834}, {'name':'Flúðir','lat':64.1372,'lon':-20.3033}, {'name':'Secret Lagoon','lat':64.1306,'lon':-20.2989}],
-    'd7': [{'name':'Flúðir','lat':64.1372,'lon':-20.3033}, {'name':'Geysir','lat':64.3128,'lon':-20.3009}, {'name':'Gullfoss','lat':64.3271,'lon':-20.1199}, {'name':'Faxi','lat':64.1197,'lon':-20.2394}, {'name':'Efstidalur II','lat':64.2567,'lon':-20.5029}, {'name':'Flúðir','lat':64.1372,'lon':-20.3033}],
+    'd7': [{'name':'Flúðir','lat':64.1372,'lon':-20.3033}, {'name':'Geysir','lat':64.3128,'lon':-20.3009}, {'name':'Gullfoss','lat':64.3271,'lon':-20.1199}, {'name':'Faxi','lat':64.2266,'lon':-20.3402}, {'name':'Efstidalur II','lat':64.2567,'lon':-20.5029}, {'name':'Flúðir','lat':64.1372,'lon':-20.3033}],
     'd8': [{'name':'Flúðir','lat':64.1372,'lon':-20.3033}, {'name':'Aeroporto Keflavík','lat':63.9850,'lon':-22.6056}]
 }
 
@@ -659,7 +659,7 @@ storia_html = f'''
   <div class="panel">
     <div class="panel-title"><span class="rune-mark">ᚲ</span>Il paese del fuoco sotto il ghiaccio</div>
     <div class="rune-rule"></div>
-    <p class="line">L'Islanda siede a cavallo della dorsale medio-atlantica, il punto dove le placche nordamericana ed eurasiatica si allontanano di circa 2 cm l'anno: la vedrete a occhio nudo a Þingvellir il Giorno 3. Questa posizione rende l'isola una delle zone vulcaniche più attive del pianeta, con oltre 30 sistemi vulcanici attivi. È lo stesso fuoco sotterraneo, imbrigliato, a rendere l'Islanda quasi autosufficiente: circa il 85% dell'energia del paese viene da fonti rinnovabili, soprattutto geotermia e idroelettrico — le stesse sorgenti calde che userete a Fontana e alla Secret Lagoon.</p>
+    <p class="line">L'Islanda siede a cavallo della dorsale medio-atlantica, il punto dove le placche nordamericana ed eurasiatica si allontanano di circa 2 cm l'anno: la vedrete a occhio nudo a Þingvellir il Giorno 3. Questa posizione rende l'isola una delle zone vulcaniche più attive del pianeta, con oltre 30 sistemi vulcanici attivi. È lo stesso fuoco sotterraneo, imbrigliato, a rendere l'Islanda quasi autosufficiente: circa l'85% del consumo energetico totale del paese (riscaldamento, industria e trasporti inclusi) viene da fonti rinnovabili, soprattutto geotermia e idroelettrico — la sola elettricità è quasi al 100% rinnovabile. Le stesse sorgenti calde che userete a Fontana e alla Secret Lagoon.</p>
   </div>
 </section>'''
 
@@ -778,6 +778,11 @@ main {{ max-width:820px; margin:0 auto; padding:20px 20px 70px; display:flex; fl
 .kp-big {{ font-family:'Cinzel',serif; font-weight:600; font-size:52px; color:#faf5ea; white-space:nowrap; line-height:1; }}
 .kp-status {{ font-size:14px; color:#c7ccd2; max-width:280px; }}
 
+.fab-fx-btn {{ position:fixed; right:16px; bottom:16px; z-index:400; width:52px; height:52px; border-radius:50%; border:none; background:var(--navy); color:#f2ede2; font-family:'IBM Plex Sans',sans-serif; font-size:12px; font-weight:700; box-shadow:0 4px 14px rgba(0,0,0,.3); cursor:pointer; }}
+.fab-fx-btn:active {{ transform:scale(0.94); }}
+.fab-fx-popup {{ position:fixed; right:16px; bottom:78px; z-index:400; width:min(260px, calc(100vw - 32px)); background:var(--panel); border:1px solid var(--panel-border); border-radius:10px; padding:14px 16px; box-shadow:0 8px 24px rgba(0,0,0,.3); }}
+.fab-fx-popup__head {{ display:flex; align-items:center; justify-content:space-between; font-family:'Cinzel',serif; font-weight:600; font-size:13px; letter-spacing:.04em; text-transform:uppercase; color:#2c3c4d; margin-bottom:10px; }}
+.fab-fx-close {{ border:none; background:transparent; font-size:20px; line-height:1; color:#7c8794; cursor:pointer; padding:0 4px; min-height:auto; }}
 .fx-row {{ display:flex; align-items:flex-end; gap:10px; }}
 .fx-field {{ flex:1; display:flex; flex-direction:column; gap:4px; }}
 .fx-field label {{ font-size:11px; font-weight:600; letter-spacing:.04em; text-transform:uppercase; color:var(--muted-2); }}
@@ -988,6 +993,26 @@ main {{ max-width:820px; margin:0 auto; padding:20px 20px 70px; display:flex; fl
 
 </main>
 
+<button id="fab-fx-btn" class="fab-fx-btn" aria-label="Cambio Euro / Corona islandese" title="Cambio Euro / Corona islandese">€↔kr</button>
+<div id="fab-fx-popup" class="fab-fx-popup" hidden>
+  <div class="fab-fx-popup__head">
+    <span>Cambio rapido</span>
+    <button id="fab-fx-close" class="fab-fx-close" aria-label="Chiudi">&times;</button>
+  </div>
+  <div class="fx-row">
+    <div class="fx-field">
+      <label for="fab-fx-eur">Euro (EUR)</label>
+      <input type="number" id="fab-fx-eur" inputmode="decimal" value="10" min="0" step="1">
+    </div>
+    <div class="fx-arrow">&harr;</div>
+    <div class="fx-field">
+      <label for="fab-fx-isk">Corone (ISK)</label>
+      <input type="number" id="fab-fx-isk" inputmode="decimal" value="0" min="0" step="1">
+    </div>
+  </div>
+  <div class="fx-rate" id="fab-fx-rate-label">1 € &asymp; … ISK</div>
+</div>
+
 <script>
 const SEASONAL = {seasonal_js};
 const LOCATIONS = {locations_js};
@@ -1173,10 +1198,11 @@ async function fetchKp() {{
 
 const FX_FALLBACK_RATE = 145.5; // stima approssimativa EUR->ISK, usata se offline
 let fxRate = FX_FALLBACK_RATE;
+const FX_PAIRS = [['fx-eur', 'fx-isk'], ['fab-fx-eur', 'fab-fx-isk']];
 
-function fxUpdateFrom(source) {{
-  const eurEl = document.getElementById('fx-eur');
-  const iskEl = document.getElementById('fx-isk');
+function fxUpdateFrom(source, eurId, iskId) {{
+  const eurEl = document.getElementById(eurId);
+  const iskEl = document.getElementById(iskId);
   if (!eurEl || !iskEl) return;
   if (source === 'eur') {{
     const eur = parseFloat(eurEl.value);
@@ -1187,18 +1213,25 @@ function fxUpdateFrom(source) {{
   }}
 }}
 
+function fxUpdateAll(source) {{
+  FX_PAIRS.forEach(([eurId, iskId]) => fxUpdateFrom(source, eurId, iskId));
+}}
+
 function fxSetup() {{
-  const eurEl = document.getElementById('fx-eur');
-  const iskEl = document.getElementById('fx-isk');
-  if (!eurEl || !iskEl) return;
-  eurEl.addEventListener('input', () => fxUpdateFrom('eur'));
-  iskEl.addEventListener('input', () => fxUpdateFrom('isk'));
-  fxUpdateFrom('eur');
+  FX_PAIRS.forEach(([eurId, iskId]) => {{
+    const eurEl = document.getElementById(eurId);
+    const iskEl = document.getElementById(iskId);
+    if (!eurEl || !iskEl) return;
+    eurEl.addEventListener('input', () => fxUpdateFrom('eur', eurId, iskId));
+    iskEl.addEventListener('input', () => fxUpdateFrom('isk', eurId, iskId));
+  }});
+  fxUpdateAll('eur');
 }}
 fxSetup();
 
 async function fetchFxRate() {{
   const label = document.getElementById('fx-rate-label');
+  const fabLabel = document.getElementById('fab-fx-rate-label');
   // La BCE (e quindi Frankfurter, che ne replica i tassi) non pubblica un
   // cambio per la corona islandese: usiamo open.er-api.com, gratuita e
   // senza chiave, che copre l'ISK.
@@ -1210,14 +1243,29 @@ async function fetchFxRate() {{
       const when = json.time_last_update_utc ? new Date(json.time_last_update_utc) : new Date();
       const hh = String(when.getHours()).padStart(2, '0') + ':' + String(when.getMinutes()).padStart(2, '0');
       if (label) label.textContent = '1 € \\u2248 ' + fxRate.toFixed(1) + ' ISK \\u00b7 aggiornato alle ' + hh;
-      fxUpdateFrom('eur');
+      if (fabLabel) fabLabel.textContent = '1 € \\u2248 ' + fxRate.toFixed(1) + ' ISK';
+      fxUpdateAll('eur');
       return;
     }}
     throw new Error('no rate');
   }} catch (e) {{
     if (label) label.textContent = '1 € \\u2248 ' + FX_FALLBACK_RATE.toFixed(1) + ' ISK \\u00b7 stima offline, verifica il tasso reale prima di partire';
+    if (fabLabel) fabLabel.textContent = '1 € \\u2248 ' + FX_FALLBACK_RATE.toFixed(1) + ' ISK (stima offline)';
   }}
 }}
+
+function fabFxSetup() {{
+  const btn = document.getElementById('fab-fx-btn');
+  const popup = document.getElementById('fab-fx-popup');
+  const closeBtn = document.getElementById('fab-fx-close');
+  if (!btn || !popup) return;
+  btn.addEventListener('click', () => {{ popup.hidden = !popup.hidden; }});
+  if (closeBtn) closeBtn.addEventListener('click', () => {{ popup.hidden = true; }});
+  document.addEventListener('click', (e) => {{
+    if (!popup.hidden && !popup.contains(e.target) && e.target !== btn) popup.hidden = true;
+  }});
+}}
+fabFxSetup();
 
 function initTripMap() {{
   const el = document.getElementById('trip-map');
