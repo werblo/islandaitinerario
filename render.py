@@ -81,7 +81,7 @@ days = [
   'activities':[
     {'time':'11:00','title':'Ritiro auto 4x4','desc':'FairCar, Bogatröð 1, Keflavík. Portare patente, carta di credito intestata al conducente e voucher stampato o digitale.','cost':None},
     {'time':'15:00','title':'Check-in appartamento','desc':"46heima Boutique Apartments, Laugavegur 46. Codice d'accesso via email prima dell'arrivo.",'cost':None},
-    {'time':'16:30','title':'Passeggiata nel centro','desc':'Laugavegur, Hallgrímskirkja (belvedere sulla torre), porto vecchio, Sun Voyager.','cost':'gratis'}
+    {'time':'16:30','title':'Passeggiata nel centro','desc':'Laugavegur, Hallgrímskirkja (belvedere sulla torre), porto vecchio, Sun Voyager.','cost':'gratis','lat':64.1466,'lon':-21.9426}
   ],
   'food':[
     {'meal':'Pranzo','place':'Bónus (supermercato) o hot dog da Bæjarins Beztu','note':'Per il senza glutine, chiedi il würstel senza pane','cost':'€','gf':True},
@@ -94,10 +94,10 @@ days = [
  {'id':'d2','num':2,'dateISO':'2026-11-16','dateLabel':'Lun 16 nov','title':'Reykjavík: cultura e Reykjanes','locKey':'reykjavik',
   'legs':[],
   'activities':[
-    {'time':'10:00','title':'Perlan','desc':'Museo con grotta di ghiaccio artificiale e vista panoramica a 360° sulla città.','cost':'€€ ~4900 ISK / ~34€','link':'https://perlan.is/en'},
-    {'time':'12:30','title':'Harpa & porto vecchio','desc':'Sala concerti in vetro iridescente, passeggiata sul lungomare.','cost':'gratis','link':'https://www.harpa.is/en/'},
-    {'time':'14:00','title':'National Museum of Iceland (facoltativo, in città)','desc':'Storia e cultura islandese dagli insediamenti vichinghi a oggi.','cost':'€ ~2900 ISK / ~20€','link':'https://www.thjodminjasafn.is/english'},
-    {'time':'14:00','title':'Reykjanes (facoltativo, mezza giornata fuori città)','desc':"Ponte tra i continenti, Gunnuhver (la pozza di fango più grande d'Islanda) e il faro di Reykjanesviti. ~45 min di guida a tratta, paesaggio lunare e vulcanico diverso da tutto il resto del viaggio. Zona geologicamente molto attiva: verificate lo stato di accesso il giorno stesso su visitreykjanes.is.",'cost':'gratis','link':'https://www.visitreykjanes.is/en/'}
+    {'time':'10:00','title':'Perlan','desc':'Museo con grotta di ghiaccio artificiale e vista panoramica a 360° sulla città.','cost':'€€ ~4900 ISK / ~34€','link':'https://perlan.is/en','lat':64.1289,'lon':-21.9147},
+    {'time':'12:30','title':'Harpa & porto vecchio','desc':'Sala concerti in vetro iridescente, passeggiata sul lungomare.','cost':'gratis','link':'https://www.harpa.is/en/','lat':64.1500,'lon':-21.9326},
+    {'time':'14:00','title':'National Museum of Iceland (facoltativo, in città)','desc':'Storia e cultura islandese dagli insediamenti vichinghi a oggi.','cost':'€ ~2900 ISK / ~20€','link':'https://www.thjodminjasafn.is/english','lat':64.1417,'lon':-21.9530},
+    {'time':'14:00','title':'Reykjanes (facoltativo, mezza giornata fuori città)','desc':"Ponte tra i continenti, Gunnuhver (la pozza di fango più grande d'Islanda) e il faro di Reykjanesviti. ~45 min di guida a tratta, paesaggio lunare e vulcanico diverso da tutto il resto del viaggio. Zona geologicamente molto attiva: verificate lo stato di accesso il giorno stesso su visitreykjanes.is.",'cost':'gratis','link':'https://www.visitreykjanes.is/en/','lat':63.8181,'lon':-22.6994}
   ],
   'food':[
     {'meal':'Pranzo','place':'Hlemmur Mathöll','note':'Più stand con piatti glútenlaus','cost':'€€','gf':True},
@@ -114,8 +114,8 @@ days = [
     {'from':'Laugarvatn','to':'Reykjavík','km':80,'time':'~1h05'}
   ],
   'activities':[
-    {'time':'10:00','title':'Þingvellir National Park','desc':'Faglia tra le placche nordamericana ed euroasiatica, sito del primo parlamento islandese (Unesco).','cost':'gratis (parcheggio ~1000 ISK / ~7€)','link':'https://www.thingvellir.is/en/'},
-    {'time':'15:30','title':'Fontana Geothermal Baths (facoltativo, di sera)','desc':"Terme geotermiche sul lago di Laugarvatn, sulla strada del ritorno verso Reykjavík: piscine a cielo aperto e sauna a vapore naturale. Se il cielo è sereno vale la pena restare fino a tardi, quasi in chiusura (21:00), con più possibilità di vedere l'aurora rispetto a rientrare subito in città.",'cost':'€€ ~50€/persona','link':'https://fontana.is/'}
+    {'time':'10:00','title':'Þingvellir National Park','desc':'Faglia tra le placche nordamericana ed euroasiatica, sito del primo parlamento islandese (Unesco).','cost':'gratis (parcheggio ~1000 ISK / ~7€)','link':'https://www.thingvellir.is/en/','lat':64.2559,'lon':-21.1297},
+    {'time':'15:30','title':'Fontana Geothermal Baths (facoltativo, di sera)','desc':"Terme geotermiche sul lago di Laugarvatn, sulla strada del ritorno verso Reykjavík: piscine a cielo aperto e sauna a vapore naturale. Se il cielo è sereno vale la pena restare fino a tardi, quasi in chiusura (21:00), con più possibilità di vedere l'aurora rispetto a rientrare subito in città.",'cost':'€€ ~50€/persona','link':'https://fontana.is/','lat':64.2019,'lon':-20.7357}
   ],
   'food':[
     {'meal':'Pranzo','place':'Pranzo al sacco / Bónus','note':'Porta qualcosa dal Bónus di Reykjavík, comodo per una sosta veloce vicino a Þingvellir','cost':'€','gf':True},
@@ -135,11 +135,11 @@ days = [
   ],
   'activities':[
     {'time':'09:30','title':'Check-out appartamento','desc':'','cost':None},
-    {'time':'11:30','title':'Seljalandsfoss','desc':"Cascata che si può costeggiare sul retro (in inverno spesso ghiacciata, occhio al sentiero). A 10 min a piedi c'è Gljúfrabúi, cascata nascosta in un canyon.",'cost':'gratis','link':'https://it.wikipedia.org/wiki/Seljalandsfoss'},
-    {'time':'13:15','title':'Skógafoss','desc':"Una delle cascate più imponenti d'Islanda, 60m, scalinata panoramica in cima.",'cost':'gratis','link':'https://it.wikipedia.org/wiki/Skogafoss'},
-    {'time':'14:45','title':'Dyrhólaey','desc':'Promontorio con arco di roccia e vista su Reynisfjara. Da vedere con un po\' di luce ancora buona: il tramonto qui è verso le 16:15.','cost':'gratis'},
-    {'time':'15:30','title':'Reynisfjara','desc':'Spiaggia di sabbia nera con colonne basaltiche e i faraglioni di Reynisdrangar. Attenzione alle onde anomale, non voltare le spalle al mare.','cost':'gratis'},
-    {'time':'16:15','title':'Víkurkirkja','desc':"La chiesetta bianca dal tetto rosso su per la collina di Vík, tra le più fotografate d'Islanda: da lassù la vista abbraccia il villaggio, la spiaggia nera e i faraglioni di Reynisdrangar sullo sfondo. Ultima tappa apposta: proprio all'ora del tramonto puo' regalare una luce spettacolare.",'cost':'gratis'}
+    {'time':'11:30','title':'Seljalandsfoss','desc':"Cascata che si può costeggiare sul retro (in inverno spesso ghiacciata, occhio al sentiero). A 10 min a piedi c'è Gljúfrabúi, cascata nascosta in un canyon.",'cost':'gratis','link':'https://it.wikipedia.org/wiki/Seljalandsfoss','lat':63.6156,'lon':-19.9886},
+    {'time':'13:15','title':'Skógafoss','desc':"Una delle cascate più imponenti d'Islanda, 60m, scalinata panoramica in cima.",'cost':'gratis','link':'https://it.wikipedia.org/wiki/Skogafoss','lat':63.5321,'lon':-19.5116},
+    {'time':'14:45','title':'Dyrhólaey','desc':'Promontorio con arco di roccia e vista su Reynisfjara. Da vedere con un po\' di luce ancora buona: il tramonto qui è verso le 16:15.','cost':'gratis','lat':63.4033,'lon':-19.1250},
+    {'time':'15:30','title':'Reynisfjara','desc':'Spiaggia di sabbia nera con colonne basaltiche e i faraglioni di Reynisdrangar. Attenzione alle onde anomale, non voltare le spalle al mare.','cost':'gratis','lat':63.4038,'lon':-19.0428},
+    {'time':'16:15','title':'Víkurkirkja','desc':"La chiesetta bianca dal tetto rosso su per la collina di Vík, tra le più fotografate d'Islanda: da lassù la vista abbraccia il villaggio, la spiaggia nera e i faraglioni di Reynisdrangar sullo sfondo. Ultima tappa apposta: proprio all'ora del tramonto puo' regalare una luce spettacolare.",'cost':'gratis','lat':63.4193,'lon':-19.0058}
   ],
   'food':[
     {'meal':'Pranzo','place':'Picnic a Skógar','note':'Porta snack dal Bónus di Reykjavík','cost':'€','gf':True},
@@ -157,9 +157,9 @@ days = [
   ],
   'activities':[
     {'time':'08:00','title':'Partenza presto','desc':'Giornata lunga di guida: partire con il buio è normale in novembre, il sole sorge solo verso le 9:50.','cost':None},
-    {'time':'10:45','title':'Jökulsárlón Glacier Lagoon','desc':'Laguna glaciale con iceberg alla deriva verso il mare.','cost':'gratis (parcheggio a pagamento)'},
-    {'time':'12:15','title':'Diamond Beach','desc':'Spiaggia nera di fronte alla laguna dove i blocchi di ghiaccio si arenano.','cost':'gratis','link':'https://perlan.is/articles/diamond-beach-iceland'},
-    {'time':'15:00','title':'Fjaðrárgljúfur','desc':"Canyon serpeggiante con pareti muschiose, punti panoramici accessibili a piedi. Visitato sulla via del ritorno apposta: con la luce del primo mattino (alba verso le 9:50) si vedrebbe pochissimo.",'cost':'gratis'}
+    {'time':'10:45','title':'Jökulsárlón Glacier Lagoon','desc':'Laguna glaciale con iceberg alla deriva verso il mare.','cost':'gratis (parcheggio a pagamento)','lat':64.0784,'lon':-16.2300},
+    {'time':'12:15','title':'Diamond Beach','desc':'Spiaggia nera di fronte alla laguna dove i blocchi di ghiaccio si arenano.','cost':'gratis','link':'https://perlan.is/articles/diamond-beach-iceland','lat':64.0645,'lon':-16.1809},
+    {'time':'15:00','title':'Fjaðrárgljúfur','desc':"Canyon serpeggiante con pareti muschiose, punti panoramici accessibili a piedi. Visitato sulla via del ritorno apposta: con la luce del primo mattino (alba verso le 9:50) si vedrebbe pochissimo.",'cost':'gratis','lat':63.7722,'lon':-18.1725}
   ],
   'food':[
     {'meal':'Pranzo','place':'Kaffi Jökulsárlón o pranzo al sacco','note':'Zuppe spesso senza glutine, conferma con lo staff','cost':'€€','gf':True},
@@ -176,9 +176,9 @@ days = [
   ],
   'activities':[
     {'time':'10:00','title':'Check-out Hotel Burfell','desc':'','cost':None},
-    {'time':'12:30','title':'Kerið','desc':'Cratere vulcanico con un lago sul fondo, percorribile a piedi in 15-20 min.','cost':'€ ~400 ISK / ~3€','link':'https://kerid.is/'},
+    {'time':'12:30','title':'Kerið','desc':'Cratere vulcanico con un lago sul fondo, percorribile a piedi in 15-20 min.','cost':'€ ~400 ISK / ~3€','link':'https://kerid.is/','lat':64.0410,'lon':-20.8834},
     {'time':'15:30','title':'Check-in The Hill Guesthouse','desc':'Flúðir','cost':None},
-    {'time':'17:30','title':'Secret Lagoon','desc':"La piscina geotermica più antica d'Islanda, meno turistica ed economica della Blue Lagoon. Il sole è già tramontato da un'ora e mezza, quindi ottima per provare a scorgere l'aurora dall'acqua calda.",'cost':'€ ~4500 ISK / ~31€ a persona, prenotare online','link':'https://secretlagoon.is/'}
+    {'time':'17:30','title':'Secret Lagoon','desc':"La piscina geotermica più antica d'Islanda, meno turistica ed economica della Blue Lagoon. Il sole è già tramontato da un'ora e mezza, quindi ottima per provare a scorgere l'aurora dall'acqua calda.",'cost':'€ ~4500 ISK / ~31€ a persona, prenotare online','link':'https://secretlagoon.is/','lat':64.1306,'lon':-20.2989}
   ],
   'food':[
     {'meal':'Pranzo','place':'Selfoss (pranzo al sacco o supermercato locale)','note':'Ultima città con supermercati grandi prima di Flúðir, sulla strada da Vík','cost':'€','gf':True},
@@ -197,10 +197,10 @@ days = [
     {'from':'Efstidalur II','to':'Flúðir','km':20,'time':'~18 min'}
   ],
   'activities':[
-    {'time':'10:00','title':'Geysir & Strokkur','desc':'Area geotermica: Strokkur erutta ogni 5-10 minuti.','cost':'gratis'},
-    {'time':'11:30','title':'Gullfoss','desc':"Cascata a doppio salto, spettacolare anche d'inverno con il ghiaccio sulle rocce.",'cost':'gratis','link':'https://it.wikipedia.org/wiki/Gullfoss'},
-    {'time':'14:00','title':'Faxi','desc':'Cascata piccola e tranquilla vicino a Flúðir, poco turistica.','cost':'gratis','link':'https://it.wikipedia.org/wiki/Faxi'},
-    {'time':'15:30','title':'Efstidalur II','desc':"Fattoria con gelateria e vacche visibili da dietro un vetro, ambiente al caldo e informale. Sosta comoda per il buio che cala presto in questo periodo, prima del rientro a Flúðir.",'cost':'€ gelato/spuntino a parte'}
+    {'time':'10:00','title':'Geysir & Strokkur','desc':'Area geotermica: Strokkur erutta ogni 5-10 minuti.','cost':'gratis','lat':64.3128,'lon':-20.3009},
+    {'time':'11:30','title':'Gullfoss','desc':"Cascata a doppio salto, spettacolare anche d'inverno con il ghiaccio sulle rocce.",'cost':'gratis','link':'https://it.wikipedia.org/wiki/Gullfoss','lat':64.3271,'lon':-20.1199},
+    {'time':'14:00','title':'Faxi','desc':'Cascata piccola e tranquilla vicino a Flúðir, poco turistica.','cost':'gratis','link':'https://it.wikipedia.org/wiki/Faxi','lat':64.2266,'lon':-20.3402},
+    {'time':'15:30','title':'Efstidalur II','desc':"Fattoria con gelateria e vacche visibili da dietro un vetro, ambiente al caldo e informale. Sosta comoda per il buio che cala presto in questo periodo, prima del rientro a Flúðir.",'cost':'€ gelato/spuntino a parte','lat':64.2567,'lon':-20.5029}
   ],
   'food':[
     {'meal':'Pranzo','place':'Friðheimar, Reykholt','note':'Famosa zuppa di pomodoro in serra, sulla strada per Geysir; chiedi la versione senza pane/crostini','cost':'€€','gf':True},
@@ -425,17 +425,22 @@ def render_activity(day_id, idx, act):
         img_html = photo_slot(fname, act['title'], 'photo-slot--thumb', guess_icon(act['title']))
     cost_html = f'<div class="act-cost">{e(act["cost"])}</div>' if act.get('cost') else ''
     desc_html = f'<div class="act-desc">{e(act["desc"])}</div>' if act.get('desc') else ''
-    link_html = ''
     if act.get('link'):
         title_html = (f'<a class="act-title act-title--link" href="{e(act["link"])}" '
                        f'target="_blank" rel="noopener">{e(act["title"])} <span class="act-title-arrow">\u2197</span></a>')
-        link_html = (f'<a class="act-link" href="{e(act["link"])}" target="_blank" rel="noopener">'
-                     f'Scopri di più \u2197</a>')
     else:
         title_html = f'<div class="act-title">{e(act["title"])}</div>'
+    links_html = ''
+    if act.get('link'):
+        links_html += (f'<a class="act-link" href="{e(act["link"])}" target="_blank" rel="noopener">'
+                        f'Scopri di più \u2197</a>')
+    if act.get('lat') is not None and act.get('lon') is not None:
+        maps_url = f'https://www.google.com/maps/search/?api=1&query={act["lat"]},{act["lon"]}'
+        links_html += (f'<a class="act-link act-link--nav" href="{e(maps_url)}" target="_blank" rel="noopener">'
+                        f'Naviga \u2197</a>')
     return (f'<div class="act-card">{img_html}<div class="act-body">'
             f'<div class="act-top">{title_html}'
-            f'<div class="act-time">{e(act["time"])}</div></div>{desc_html}{cost_html}{link_html}</div></div>')
+            f'<div class="act-time">{e(act["time"])}</div></div>{desc_html}{cost_html}{links_html}</div></div>')
 
 def render_food(f):
     note = f'<div class="food-note">{e(f["note"])}</div>' if f.get('note') else ''
@@ -783,6 +788,9 @@ main {{ max-width:820px; margin:0 auto; padding:20px 20px 70px; display:flex; fl
 .fab-fx-popup {{ position:fixed; right:16px; bottom:78px; z-index:400; width:min(260px, calc(100vw - 32px)); background:var(--panel); border:1px solid var(--panel-border); border-radius:10px; padding:14px 16px; box-shadow:0 8px 24px rgba(0,0,0,.3); }}
 .fab-fx-popup__head {{ display:flex; align-items:center; justify-content:space-between; font-family:'Cinzel',serif; font-weight:600; font-size:13px; letter-spacing:.04em; text-transform:uppercase; color:#2c3c4d; margin-bottom:10px; }}
 .fab-fx-close {{ border:none; background:transparent; font-size:20px; line-height:1; color:#7c8794; cursor:pointer; padding:0 4px; min-height:auto; }}
+.fab-fx-quick {{ display:flex; flex-direction:column; gap:6px; margin-top:12px; padding-top:12px; border-top:1px solid var(--panel-border); }}
+.fab-fx-quick__btn {{ font-size:12.5px; font-weight:600; color:var(--navy); text-decoration:none; }}
+.fab-fx-quick__btn:hover {{ text-decoration:underline; }}
 .fx-row {{ display:flex; align-items:flex-end; gap:10px; }}
 .fx-field {{ flex:1; display:flex; flex-direction:column; gap:4px; }}
 .fx-field label {{ font-size:11px; font-weight:600; letter-spacing:.04em; text-transform:uppercase; color:var(--muted-2); }}
@@ -855,7 +863,8 @@ main {{ max-width:820px; margin:0 auto; padding:20px 20px 70px; display:flex; fl
 .act-time {{ font-size:12px; color:#7c8794; white-space:nowrap; }}
 .act-desc {{ font-size:13px; color:#3a4351; margin-top:6px; line-height:1.6; }}
 .act-cost {{ display:inline-block; margin-top:8px; background:var(--amber-soft); border:1px solid var(--amber-soft-border); border-radius:5px; padding:3px 9px; font-size:12px; color:#5c3a1f; }}
-.act-link {{ display:block; margin-top:8px; font-size:12.5px; font-weight:600; color:var(--navy); text-decoration:none; }}
+.act-link {{ display:inline-block; margin-top:8px; margin-right:14px; font-size:12.5px; font-weight:600; color:var(--navy); text-decoration:none; }}
+.act-link--nav {{ color:#3d8f8a; }}
 .act-link:hover {{ text-decoration:underline; }}
 
 .food-card {{ background:var(--panel); border:1px solid var(--panel-border); border-radius:6px; padding:12px 14px; font-size:13px; }}
@@ -993,7 +1002,7 @@ main {{ max-width:820px; margin:0 auto; padding:20px 20px 70px; display:flex; fl
 
 </main>
 
-<button id="fab-fx-btn" class="fab-fx-btn" aria-label="Cambio Euro / Corona islandese" title="Cambio Euro / Corona islandese">€↔kr</button>
+<button id="fab-fx-btn" class="fab-fx-btn" aria-label="Cambio Euro / Corona islandese" title="Cambio Euro / Corona islandese" hidden>€↔kr</button>
 <div id="fab-fx-popup" class="fab-fx-popup" hidden>
   <div class="fab-fx-popup__head">
     <span>Cambio rapido</span>
@@ -1011,6 +1020,9 @@ main {{ max-width:820px; margin:0 auto; padding:20px 20px 70px; display:flex; fl
     </div>
   </div>
   <div class="fx-rate" id="fab-fx-rate-label">1 € &asymp; … ISK</div>
+  <div class="fab-fx-quick">
+    <a href="https://road.is" target="_blank" rel="noopener" class="fab-fx-quick__btn">Stato strade (road.is)</a>
+  </div>
 </div>
 
 <script>
@@ -1085,6 +1097,10 @@ function setActive(id) {{
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.toggle('active', b.dataset.nav === id));
   document.querySelectorAll('.page-view').forEach(el => {{ el.hidden = el.id !== 'view-' + id; }});
   if (DAYS_META.some(d => d.id === id)) ensureDayMap(id);
+  const fabBtn = document.getElementById('fab-fx-btn');
+  const fabPopup = document.getElementById('fab-fx-popup');
+  if (fabBtn) fabBtn.hidden = id === 'info';
+  if (fabPopup && id === 'info') fabPopup.hidden = true;
   window.scrollTo({{ top: 0, behavior: 'instant' in window ? 'instant' : 'auto' }});
 }}
 document.querySelectorAll('.nav-btn').forEach(btn => {{
