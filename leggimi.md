@@ -214,8 +214,11 @@ industria, trasporti inclusi).
   tra il 15 e il 22 novembre 2026 (testato con Chromium/Playwright
   simulando diverse date).
 - Ogni attività con una tappa reale ha un link **"Naviga"** che apre
-  Google Maps sulle coordinate esatte (21 attività su 8 giorni,
-  escluse quelle logistiche come check-in/check-out/ritiro auto).
+  Google Maps (22 attività su 8 giorni, incluso il ritiro/riconsegna
+  auto FairCar). Usa una **ricerca testuale** (es. "Skógafoss parking",
+  "Laugarvatn Fontana") invece di coordinate fisse: Google Maps trova
+  da solo il pin più preciso su parcheggio/struttura reale, verificato
+  via web search per ognuna delle 22 query.
 - Un pulsante flottante (FAB) per il cambio Euro/Corona è visibile su
   tutte le tab tranne Info (dove il convertitore è già un pannello),
   con un link rapido a road.is per lo stato delle strade.
@@ -224,7 +227,29 @@ industria, trasporti inclusi).
   nome "Ísland" all'isola prima della colonizzazione di Ingólfur
   Arnarson.
 
-## 9. Struttura delle tab
+## 9. Parcheggi
+
+Ogni giorno con un pernottamento (Giorni 1-7) ha una sezione parcheggio
+sotto "Alloggio", con link "Naviga" diretti:
+
+- **Reykjavík (Giorni 1-3)**: l'appartamento 46heima non ha parcheggio
+  incluso ed è in zona P1 (~650 ISK/h, max 3h consecutive, gratis
+  21:00-9:00 nei feriali/sabato e prima delle 10:00/dopo le 21:00 la
+  domenica — orari da riconfermare su reykjavik.is/en/parking vicino
+  alla partenza). Strategia notte per notte: zona P2 verso
+  Hlemmur/Rauðarárstígur (~230 ISK/h, senza limite di 3h) il 15 e 16
+  novembre; P1 direttamente sotto casa il 17, perché quella sera si
+  rientra da Fontana dopo le 21:00 (già gratis anche lì).
+- **Hotel Burfell (Giorni 4-5)** e **The Hill Guesthouse (Giorni 6-7)**:
+  parcheggio gratuito incluso, confermato via web search.
+- La maggior parte delle tappe turistiche lungo il percorso (Þingvellir,
+  Seljalandsfoss, Skógafoss, Dyrhólaey, Reynisfjara, Jökulsárlón/Diamond
+  Beach, Fjaðrárgljúfur, Geysir) ha un parcheggio a pagamento a sé
+  (500-1000 ISK circa, spesso tramite l'app Parka con lettura targa) —
+  si paga sempre con carta, l'Islanda è quasi cashless anche ai
+  distributori dei parcheggi.
+
+## 10. Struttura delle tab
 
 - **Info** — countdown, aurora boreale in tempo reale, mappa del viaggio,
   cambio EUR/ISK, riepilogo volo/auto, budget, sicurezza, alloggi, numeri
