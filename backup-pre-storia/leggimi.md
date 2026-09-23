@@ -118,32 +118,18 @@ cartella `backup-pre-storia/` con la stessa copia di `render.py`,
 `index.html`, `sw.js` e `leggimi.md`: serve come punto di ripristino noto
 se una modifica successiva rompe qualcosa.
 
-## 5. Prenotazioni confermate
+## 5. Prenotazioni
 
-Entrambe le soste terme in programma sono state prenotate direttamente sui
-siti ufficiali (inizio settembre 2026):
+Entrambe le soste terme in programma (Fontana al Giorno 3, Secret Lagoon al
+Giorno 6) sono prenotate. I voucher **non** stanno in questo repository,
+che è pubblico: sono conservati solo fuori da GitHub (telefono/Drive).
+Non aggiungere mai al repo voucher, conferme di prenotazione o altri
+documenti con dati personali: tutto ciò che viene committato qui è
+leggibile da chiunque.
 
-- **Giorno 3 (17 novembre)** — Comfort Admission x2, 15:30. Voucher salvato
-  in `segreto/day3-voucher.pdf` (non collegato da nessuna parte nell'app:
-  navigando il sito non compare mai — resta comunque tecnicamente
-  raggiungibile su GitHub da chi conoscesse il percorso esatto, dato che
-  il repository non è cifrato).
-- **Giorno 6 (20 novembre)** — Secret Lagoon, 2 adulti, 17:30 (lo slot
-  serale più tardo disponibile a novembre: chiusura ~20:00). Voucher
-  salvato in `segreto/day6-voucher.pdf`, stessa nota di sopra.
-
-Il regalo di compleanno (17 settembre 2026) è stato consegnato: il nome
-"Fontana" è stato ripristinato ovunque nell'app (titolo/descrizione Giorno 3,
-checklist, box culture, tab Storia), non serve più tenerlo mascherato.
-Restano comunque salvati in `segreto/` anche i voucher "regalo" senza prezzi
-(`day3-voucher-regalo.pdf`, `day6-voucher-regalo.pdf`, `voucher-regalo.pdf`
-con entrambi i voucher originali uniti e i dati di pagamento rimossi
-davvero dal contenuto, non solo coperti visivamente).
-
-Durante la prenotazione reale sono emerse due correzioni ai dati già in
-`render.py`, poi applicate: l'orario della Secret Lagoon (19:00 → 17:30,
-il sito non offriva slot più tardi) e il prezzo (allineato al valore
-pagato realmente, 4500 ISK/persona).
+Durante la prenotazione sono emerse due correzioni ai dati in `render.py`,
+poi applicate: l'orario della Secret Lagoon (19:00 → 17:30, il sito non
+offriva slot più tardi) e il prezzo (4500 ISK/persona).
 
 ## 6. Mappe e fix mobile (settembre 2026)
 
