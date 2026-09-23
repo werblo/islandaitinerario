@@ -568,7 +568,7 @@ def render_day_section(day):
   </div>
   {photo_slot(hero_fname, day['title'], 'photo-slot--hero', HERO_ICON.get(day['id'], 'village'))}
   <div class="map-frame"><div class="day-map" id="day-map-{day['id']}" role="region" aria-label="Mappa del percorso del giorno {day['num']}"></div></div>
-  <div class="line" style="margin:6px 0 0;font-size:0.75rem;color:#5c6a78;">Mappa reale (OpenStreetMap) — zoomabile e trascinabile. Percorso stradale indicativo (disponibile anche offline); per la navigazione vera usa Google Maps offline.</div>
+  <div class="line" style="margin:6px 0 0;font-size:0.8125rem;color:#5c6a78;">Mappa reale (OpenStreetMap) — zoomabile e trascinabile. Percorso stradale indicativo (disponibile anche offline); per la navigazione vera usa Google Maps offline.</div>
   <div class="grid2">
     <div class="info-card">
       <div class="info-card__label">Meteo · {e(locations[day['locKey']]['name'])}</div>
@@ -849,17 +849,17 @@ a {{ color:var(--amber-2); }}
 main {{ max-width:820px; margin:0 auto; padding:20px 20px 70px; display:flex; flex-direction:column; gap:18px; }}
 .panel {{ background:var(--panel); border:1px solid var(--panel-border); border-radius:8px; padding:18px 20px; }}
 .panel-title {{ font-family:'Cinzel',serif; font-weight:600; font-size:0.9375rem; letter-spacing:.06em; text-transform:uppercase; color:#2c3c4d; margin-bottom:4px; }}
-.panel p, .panel div.line {{ font-size:0.875rem; line-height:1.8; color:#333c46; }}
-.warn-box {{ margin-top:12px; background:var(--amber-soft); border:1px solid var(--amber-soft-border); border-radius:6px; padding:12px 14px; font-size:0.8125rem; line-height:1.6; color:#5c3a1f; }}
-.stay-row {{ border-top:1px solid #e4ddcb; padding-top:10px; font-size:0.875rem; }}
+.panel p, .panel div.line {{ font-size:0.96875rem; line-height:1.8; color:#333c46; }}
+.warn-box {{ margin-top:12px; background:var(--amber-soft); border:1px solid var(--amber-soft-border); border-radius:6px; padding:12px 14px; font-size:0.9375rem; line-height:1.6; color:#5c3a1f; }}
+.stay-row {{ border-top:1px solid #e4ddcb; padding-top:10px; font-size:0.96875rem; }}
 .stay-row:first-child {{ border-top:none; padding-top:0; }}
 .stay-name {{ font-weight:600; color:#28323e; }}
-.stay-detail {{ color:#576270; font-size:0.8125rem; margin-top:2px; }}
+.stay-detail {{ color:#576270; font-size:0.9375rem; margin-top:2px; }}
 .stack {{ display:flex; flex-direction:column; gap:10px; }}
 
 .aurora-panel {{ background:var(--navy); border-radius:8px; padding:18px 20px; }}
 .aurora-panel .panel-title {{ color:#8fd6cd; }}
-.aurora-panel p {{ color:#9aa4ad; font-size:0.8125rem; }}
+.aurora-panel p {{ color:#9aa4ad; font-size:0.9375rem; }}
 .kp-row {{ display:flex; flex-direction:column; align-items:center; text-align:center; gap:6px; margin:14px 0 16px; }}
 .kp-big {{ font-family:'Cinzel',serif; font-weight:600; font-size:3.25rem; color:#faf5ea; white-space:nowrap; line-height:1; }}
 .kp-status {{ font-size:0.875rem; color:#c7ccd2; max-width:280px; }}
@@ -868,36 +868,36 @@ main {{ max-width:820px; margin:0 auto; padding:20px 20px 70px; display:flex; fl
 .aurora-tonight__verdict--buone {{ color:#8fd6cd; }}
 .aurora-tonight__verdict--scarse {{ color:#e8c48f; }}
 .aurora-tonight__verdict--nulle {{ color:#c7ccd2; }}
-.aurora-tonight__detail {{ font-size:0.8125rem; color:#c7ccd2; margin-top:4px; line-height:1.5; }}
-.aurora-tonight__days {{ font-size:0.78125rem; color:#9aa4ad; margin-top:6px; }}
-.aurora-tonight__src {{ font-size:0.71875rem; color:#9aa4ad; margin-top:6px; }}
+.aurora-tonight__detail {{ font-size:0.9375rem; color:#c7ccd2; margin-top:4px; line-height:1.5; }}
+.aurora-tonight__days {{ font-size:0.84375rem; color:#9aa4ad; margin-top:6px; }}
+.aurora-tonight__src {{ font-size:0.78125rem; color:#9aa4ad; margin-top:6px; }}
 
 .fab-fx-btn {{ position:fixed; right:16px; bottom:16px; z-index:400; width:52px; height:52px; border-radius:50%; border:none; background:var(--navy); color:#f2ede2; font-family:'IBM Plex Sans',sans-serif; font-size:0.75rem; font-weight:700; box-shadow:0 4px 14px rgba(0,0,0,.3); cursor:pointer; }}
 .fab-fx-btn:active {{ transform:scale(0.94); }}
 .fab-fx-popup {{ position:fixed; right:16px; bottom:78px; z-index:400; width:min(260px, calc(100vw - 32px)); background:var(--panel); border:1px solid var(--panel-border); border-radius:10px; padding:14px 16px; box-shadow:0 8px 24px rgba(0,0,0,.3); }}
-.fab-fx-popup__head {{ display:flex; align-items:center; justify-content:space-between; font-family:'Cinzel',serif; font-weight:600; font-size:0.8125rem; letter-spacing:.04em; text-transform:uppercase; color:#2c3c4d; margin-bottom:10px; }}
+.fab-fx-popup__head {{ display:flex; align-items:center; justify-content:space-between; font-family:'Cinzel',serif; font-weight:600; font-size:0.9375rem; letter-spacing:.04em; text-transform:uppercase; color:#2c3c4d; margin-bottom:10px; }}
 .fab-fx-close {{ border:none; background:transparent; font-size:1.25rem; line-height:1; color:#5c6a78; cursor:pointer; padding:0 4px; min-height:auto; }}
 .fab-fx-quick {{ display:flex; flex-direction:column; gap:6px; margin-top:12px; padding-top:12px; border-top:1px solid var(--panel-border); }}
-.fab-fx-quick__btn {{ font-size:0.78125rem; font-weight:600; color:var(--navy); text-decoration:none; }}
+.fab-fx-quick__btn {{ font-size:0.84375rem; font-weight:600; color:var(--navy); text-decoration:none; }}
 .fab-fx-quick__btn:hover {{ text-decoration:underline; }}
 .fx-row {{ display:flex; align-items:flex-end; gap:10px; }}
 .fx-field {{ flex:1; display:flex; flex-direction:column; gap:4px; }}
-.fx-field label {{ font-size:0.6875rem; font-weight:600; letter-spacing:.04em; text-transform:uppercase; color:var(--muted-2); }}
+.fx-field label {{ font-size:0.75rem; font-weight:600; letter-spacing:.04em; text-transform:uppercase; color:var(--muted-2); }}
 .fx-field input {{ font-family:'IBM Plex Sans',sans-serif; font-size:1rem; font-weight:600; color:var(--ink); background:var(--paper); border:1px solid var(--panel-border); border-radius:6px; padding:9px 10px; width:100%; }}
 .fx-field input:focus-visible {{ outline:2px solid var(--amber); outline-offset:1px; }}
 .fx-arrow {{ font-size:0.9375rem; color:var(--muted-2); padding-bottom:10px; }}
-.fx-rate {{ margin-top:10px; font-size:0.75rem; color:var(--muted-2); }}
+.fx-rate {{ margin-top:10px; font-size:0.8125rem; color:var(--muted-2); }}
 
 .chk-list {{ display:flex; flex-direction:column; gap:2px; }}
-.chk-item {{ display:flex; align-items:center; gap:10px; padding:9px 4px; min-height:44px; font-size:0.875rem; line-height:1.5; color:#333c46; cursor:pointer; border-radius:6px; }}
+.chk-item {{ display:flex; align-items:center; gap:10px; padding:9px 4px; min-height:44px; font-size:0.96875rem; line-height:1.5; color:#333c46; cursor:pointer; border-radius:6px; }}
 .chk-item:hover {{ background:rgba(0,0,0,.03); }}
 .chk-box {{ margin-top:3px; width:18px; height:18px; flex-shrink:0; accent-color:var(--amber); }}
 .chk-item:has(.chk-box:checked) span {{ color:var(--muted-2); text-decoration:line-through; text-decoration-color:var(--amber-soft-border); }}
 
 .countdown-banner {{ background:transparent; text-align:center; padding:14px 20px 6px; margin-top:4px; }}
 .countdown-banner__big {{ font-family:'Cinzel',serif; font-weight:600; font-size:1.625rem; color:var(--navy); }}
-.countdown-banner__sub {{ font-size:0.75rem; color:#5c6a78; margin-top:4px; }}
-.aurora-panel .more {{ font-size:0.8125rem; line-height:1.6; margin-top:10px; color:#c7ccd2; }}
+.countdown-banner__sub {{ font-size:0.8125rem; color:#5c6a78; margin-top:4px; }}
+.aurora-panel .more {{ font-size:0.9375rem; line-height:1.6; margin-top:10px; color:#c7ccd2; }}
 .aurora-panel .more a {{ color:#8fd6cd; }}
 
 .photo-slot {{ position:relative; overflow:hidden; background:linear-gradient(135deg,var(--bg1,#3a2f22),var(--bg2,#5c4a33)); border-radius:8px; }}
@@ -917,7 +917,7 @@ main {{ max-width:820px; margin:0 auto; padding:20px 20px 70px; display:flex; fl
 .photo-slot--cover .photo-slot__ph span {{ display:none; }}
 .photo-slot--cover .photo-slot__icon {{ width:110px; height:86px; }}
 
-.day-head .day-date {{ font-size:0.75rem; color:var(--amber); font-weight:700; text-transform:uppercase; letter-spacing:.08em; }}
+.day-head .day-date {{ font-size:0.8125rem; color:var(--amber); font-weight:700; text-transform:uppercase; letter-spacing:.08em; }}
 .day-head .day-title {{ font-family:'Cinzel',serif; font-weight:600; font-size:1.5625rem; margin-top:6px; color:#1f2c39; letter-spacing:.005em; }}
 
 .map-frame {{ position:relative; isolation:isolate; z-index:0; border-radius:8px; overflow:hidden; border:2px solid var(--navy); box-shadow:0 4px 16px rgba(0,0,0,.12); line-height:0; height:260px; }}
@@ -927,54 +927,54 @@ main {{ max-width:820px; margin:0 auto; padding:20px 20px 70px; display:flex; fl
 .grid2 {{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }}
 .offline-bar {{ height:8px; margin-top:12px; border-radius:4px; background:var(--panel-border); overflow:hidden; }}
 .offline-bar__fill {{ height:100%; width:0; background:var(--amber); transition:width .2s; }}
-.offline-status {{ margin-top:8px; font-size:0.78125rem; color:#5c6a78; min-height:1em; }}
+.offline-status {{ margin-top:8px; font-size:0.84375rem; color:#5c6a78; min-height:1em; }}
 .offline-status--ok {{ color:#2c6b3f; font-weight:600; }}
-.offline-btn {{ margin-top:10px; min-height:44px; padding:0 18px; border:none; border-radius:8px; background:var(--navy); color:#f2ede2; font-family:'IBM Plex Sans',sans-serif; font-size:0.8125rem; font-weight:700; cursor:pointer; }}
+.offline-btn {{ margin-top:10px; min-height:44px; padding:0 18px; border:none; border-radius:8px; background:var(--navy); color:#f2ede2; font-family:'IBM Plex Sans',sans-serif; font-size:0.9375rem; font-weight:700; cursor:pointer; }}
 .offline-btn:disabled {{ opacity:.6; cursor:default; }}
-.app-toast {{ position:fixed; left:50%; bottom:80px; transform:translateX(-50%); z-index:450; background:var(--navy); color:#f2ede2; font-size:0.78125rem; font-weight:600; padding:8px 14px; border-radius:8px; box-shadow:0 4px 14px rgba(0,0,0,.3); opacity:0; transition:opacity .3s; pointer-events:none; }}
+.app-toast {{ position:fixed; left:50%; bottom:80px; transform:translateX(-50%); z-index:450; background:var(--navy); color:#f2ede2; font-size:0.84375rem; font-weight:600; padding:8px 14px; border-radius:8px; box-shadow:0 4px 14px rgba(0,0,0,.3); opacity:0; transition:opacity .3s; pointer-events:none; }}
 .app-toast--show {{ opacity:.95; }}
 .info-card {{ background:var(--panel); border:1px solid var(--panel-border); border-radius:8px; padding:16px; }}
-.info-card__label {{ font-size:0.6875rem; font-weight:700; text-transform:uppercase; letter-spacing:.06em; color:#5a6675; margin-bottom:8px; }}
+.info-card__label {{ font-size:0.75rem; font-weight:700; text-transform:uppercase; letter-spacing:.06em; color:#5a6675; margin-bottom:8px; }}
 .info-card__big {{ font-family:'Cinzel',serif; font-weight:600; font-size:1.25rem; color:#28323e; }}
-.info-card__sub {{ font-size:0.8125rem; color:#3a4351; margin-top:4px; }}
-.info-card__source {{ font-size:0.6875rem; color:#5c6a78; margin-top:8px; }}
-.sun-line {{ font-size:0.875rem; line-height:1.7; color:#28323e; }}
+.info-card__sub {{ font-size:0.9375rem; color:#3a4351; margin-top:4px; }}
+.info-card__source {{ font-size:0.75rem; color:#5c6a78; margin-top:8px; }}
+.sun-line {{ font-size:0.96875rem; line-height:1.7; color:#28323e; }}
 
-.aurora-note {{ background:var(--teal-soft); border:1px solid var(--teal-border); border-radius:8px; padding:14px 16px; font-size:0.8125rem; line-height:1.6; color:#1e3038; }}
+.aurora-note {{ background:var(--teal-soft); border:1px solid var(--teal-border); border-radius:8px; padding:14px 16px; font-size:0.9375rem; line-height:1.6; color:#1e3038; }}
 .aurora-note strong {{ color:var(--teal); }}
 
 .section-title {{ font-family:'Cinzel',serif; font-weight:600; font-size:1rem; margin-bottom:8px; color:#2c3c4d; letter-spacing:.02em; }}
 
-.leg {{ background:var(--panel); border:1px solid var(--panel-border); border-left:3px solid var(--amber); border-radius:6px; padding:12px 14px; font-size:0.8125rem; }}
+.leg {{ background:var(--panel); border:1px solid var(--panel-border); border-left:3px solid var(--amber); border-radius:6px; padding:12px 14px; font-size:0.9375rem; }}
 .leg-route {{ font-weight:600; color:#28323e; }}
 .leg-meta {{ color:#576270; margin-top:2px; }}
 .leg-note {{ color:#3a4351; margin-top:4px; }}
 .leg-links {{ display:flex; flex-wrap:wrap; gap:8px; margin:8px 0 10px; }}
-.leg-link {{ display:inline-flex; align-items:center; min-height:32px; padding:6px 10px; border-radius:6px; background:rgba(92,106,120,.08); border:1px solid rgba(92,106,120,.25); color:#5c6a78; font-size:0.71875rem; font-weight:600; text-decoration:none; letter-spacing:.01em; }}
+.leg-link {{ display:inline-flex; align-items:center; min-height:32px; padding:6px 10px; border-radius:6px; background:rgba(92,106,120,.08); border:1px solid rgba(92,106,120,.25); color:#5c6a78; font-size:0.78125rem; font-weight:600; text-decoration:none; letter-spacing:.01em; }}
 .leg-link:hover, .leg-link:focus-visible {{ color:var(--teal); border-color:var(--teal-border); background:var(--teal-soft); }}
 @media (max-width:400px) {{ .leg-link {{ min-height:44px; padding:0 12px; }} }}
 
 .act-card {{ background:var(--panel); border:1px solid var(--panel-border); border-radius:8px; padding:14px 16px; display:flex; gap:14px; }}
 .act-body {{ flex:1; min-width:0; }}
 .act-top {{ display:flex; justify-content:space-between; gap:10px; align-items:baseline; }}
-.act-title {{ font-weight:600; font-size:0.875rem; color:#1f2c39; }}
+.act-title {{ font-weight:600; font-size:0.96875rem; color:#1f2c39; }}
 .act-title--link {{ text-decoration:none; border-bottom:1px dashed var(--navy); padding-bottom:1px; }}
 .act-title--link:hover {{ border-bottom-style:solid; }}
-.act-title-arrow {{ font-weight:400; color:var(--amber); font-size:0.75rem; }}
-.act-time {{ font-size:0.75rem; color:#5c6a78; white-space:nowrap; }}
-.act-desc {{ font-size:0.8125rem; color:#3a4351; margin-top:6px; line-height:1.6; }}
-.act-cost {{ display:inline-block; margin-top:8px; background:var(--amber-soft); border:1px solid var(--amber-soft-border); border-radius:5px; padding:3px 9px; font-size:0.75rem; color:#5c3a1f; }}
-.act-link {{ display:inline-block; margin-top:8px; margin-right:14px; font-size:0.78125rem; font-weight:600; color:var(--navy); text-decoration:none; }}
+.act-title-arrow {{ font-weight:400; color:var(--amber); font-size:0.8125rem; }}
+.act-time {{ font-size:0.8125rem; color:#5c6a78; white-space:nowrap; }}
+.act-desc {{ font-size:0.9375rem; color:#3a4351; margin-top:6px; line-height:1.6; }}
+.act-cost {{ display:inline-block; margin-top:8px; background:var(--amber-soft); border:1px solid var(--amber-soft-border); border-radius:5px; padding:3px 9px; font-size:0.8125rem; color:#5c3a1f; }}
+.act-link {{ display:inline-block; margin-top:8px; margin-right:14px; font-size:0.84375rem; font-weight:600; color:var(--navy); text-decoration:none; }}
 .act-link--nav {{ color:#3d8f8a; }}
 .act-link:hover {{ text-decoration:underline; }}
 
-.food-card {{ background:var(--panel); border:1px solid var(--panel-border); border-radius:6px; padding:12px 14px; font-size:0.8125rem; }}
+.food-card {{ background:var(--panel); border:1px solid var(--panel-border); border-radius:6px; padding:12px 14px; font-size:0.9375rem; }}
 .food-top {{ display:flex; justify-content:space-between; gap:10px; color:#28323e; }}
 .food-cost {{ color:#5c6a78; white-space:nowrap; }}
 .food-note {{ color:#4a5361; margin-top:4px; }}
-.gf-badge {{ display:inline-block; margin-top:6px; background:var(--green-soft); border:1px solid var(--green-border); border-radius:5px; padding:2px 8px; font-size:0.6875rem; color:var(--green-text); }}
+.gf-badge {{ display:inline-block; margin-top:6px; background:var(--green-soft); border:1px solid var(--green-border); border-radius:5px; padding:2px 8px; font-size:0.75rem; color:var(--green-text); }}
 
-.acc-card {{ background:var(--navy); border-radius:8px; padding:14px 16px; font-size:0.8125rem; }}
+.acc-card {{ background:var(--navy); border-radius:8px; padding:14px 16px; font-size:0.9375rem; }}
 .acc-name {{ font-weight:600; color:#f2ede2; }}
 .acc-name a {{ color:inherit; text-decoration:underline; text-underline-offset:2px; }}
 .acc-name a:hover {{ color:var(--amber); }}
@@ -982,16 +982,16 @@ main {{ max-width:820px; margin:0 auto; padding:20px 20px 70px; display:flex; fl
 .acc-parking-nav {{ display:flex; flex-wrap:wrap; gap:4px 16px; margin-top:8px; }}
 .acc-parking-nav .act-link {{ margin:0; color:#8fd6cd; }}
 
-.tip-card {{ background:var(--amber-soft); border:1px solid var(--amber-soft-border); border-radius:8px; padding:12px 14px; font-size:0.8125rem; line-height:1.6; color:#5c3a1f; }}
+.tip-card {{ background:var(--amber-soft); border:1px solid var(--amber-soft-border); border-radius:8px; padding:12px 14px; font-size:0.9375rem; line-height:1.6; color:#5c3a1f; }}
 
 .culture-card {{ background:var(--teal-soft); border:1px solid var(--teal-border); border-radius:8px; padding:14px 16px; }}
-.culture-card__label {{ font-family:'Cinzel',serif; font-weight:600; font-size:0.8125rem; letter-spacing:.03em; color:var(--teal); margin-bottom:6px; display:flex; align-items:center; gap:6px; }}
+.culture-card__label {{ font-family:'Cinzel',serif; font-weight:600; font-size:0.9375rem; letter-spacing:.03em; color:var(--teal); margin-bottom:6px; display:flex; align-items:center; gap:6px; }}
 .culture-card__label svg {{ width:15px; height:15px; flex-shrink:0; }}
-.culture-card p {{ margin:0; font-size:0.84375rem; line-height:1.65; color:#22404a; }}
+.culture-card p {{ margin:0; font-size:0.9375rem; line-height:1.65; color:#22404a; }}
 
 .section {{ display:flex; flex-direction:column; gap:8px; }}
 
-.install-hint {{ font-size:0.75rem; color:#5c6a78; text-align:center; padding:6px 20px 0; }}
+.install-hint {{ font-size:0.8125rem; color:#5c6a78; text-align:center; padding:6px 20px 0; }}
 </style>
 <link rel="stylesheet" href="vendor/leaflet/leaflet.css"/>
 <script src="vendor/leaflet/leaflet.js"></script>
@@ -1035,7 +1035,7 @@ main {{ max-width:820px; margin:0 auto; padding:20px 20px 70px; display:flex; fl
     <div class="panel-title">Mappa del viaggio</div>
     <div class="rune-rule"></div>
     <div id="trip-map" role="region" aria-label="Mappa del viaggio" style="position:relative;isolation:isolate;z-index:0;height:260px;border-radius:8px;overflow:hidden;border:2px solid var(--navy);box-shadow:0 4px 16px rgba(0,0,0,.12);background:#e4e6e3;"></div>
-    <div class="line" style="margin-top:10px;font-size:0.75rem;color:#5c6a78;">Mappa reale (OpenStreetMap) — zoomabile e trascinabile. Tocca un marker per il nome della tappa. Per la navigazione stradale vera e propria usa Google Maps offline.</div>
+    <div class="line" style="margin-top:10px;font-size:0.8125rem;color:#5c6a78;">Mappa reale (OpenStreetMap) — zoomabile e trascinabile. Tocca un marker per il nome della tappa. Per la navigazione stradale vera e propria usa Google Maps offline.</div>
   </div>
 
   <div class="panel">
@@ -1109,7 +1109,7 @@ main {{ max-width:820px; margin:0 auto; padding:20px 20px 70px; display:flex; fl
     <div class="line">• <strong>46heima / Heimaleiga (Reykjavík, Giorni 1-3):</strong> <a href="tel:+3544494900">+354 449 4900</a></div>
     <div class="line">• <strong>Hótel Búrfell (Vík, Giorni 4-5):</strong> <a href="tel:+3544874660">+354 487 4660</a></div>
     <div class="line">• <strong>The Hill Hotel (Flúðir, Giorni 6-7):</strong> <a href="tel:+3544864430">+354 486 4430</a></div>
-    <div class="line" style="margin-top:6px;font-size:0.75rem;color:#5c6a78;">Numeri trovati via ricerca online, non verificati con una chiamata diretta: ricontrollateli nelle email di conferma prima di partire.</div>
+    <div class="line" style="margin-top:6px;font-size:0.8125rem;color:#5c6a78;">Numeri trovati via ricerca online, non verificati con una chiamata diretta: ricontrollateli nelle email di conferma prima di partire.</div>
   </div>
 </section>
 
