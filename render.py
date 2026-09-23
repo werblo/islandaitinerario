@@ -84,19 +84,24 @@ days = [
   ]
  },
  {'id':'d2','num':2,'dateISO':'2026-11-16','dateLabel':'Lun 16 nov','title':'Reykjavík: cultura e Reykjanes','locKey':'reykjavik',
-  'legs':[],
+  'legs':[
+    {'from':'Reykjavík','to':'Ponte tra i continenti','km':60,'time':'~50 min','note':'Via Keflavík e Hafnir (strade 41, 44 e 425).'},
+    {'from':'Ponte tra i continenti','to':'Gunnuhver','km':9,'time':'~12 min'},
+    {'from':'Gunnuhver','to':'Reykjanesviti','km':2,'time':'~5 min'},
+    {'from':'Reykjanesviti','to':'Reykjavík','km':72,'time':'~1h05','note':'Rientro dalla stessa strada via Keflavík: Grindavík e la strada 43 possono essere chiuse per l\'attività vulcanica.'}
+  ],
   'activities':[
     {'time':'10:00','title':'Perlan','desc':'Museo con grotta di ghiaccio artificiale e vista panoramica a 360° sulla città.','cost':'€€ ~4900 ISK / ~34€','link':'https://perlan.is/en','nav':'Perlan Reykjavik parking'},
     {'time':'12:30','title':'Harpa & porto vecchio','desc':'Sala concerti in vetro iridescente, passeggiata sul lungomare.','cost':'gratis','link':'https://www.harpa.is/en/','nav':'Harpa Reykjavik parking'},
-    {'time':'14:00','title':'National Museum of Iceland (facoltativo, in città)','desc':'Storia e cultura islandese dagli insediamenti vichinghi a oggi.','cost':'€ ~2900 ISK / ~20€','link':'https://www.thjodminjasafn.is/english','nav':'National Museum of Iceland parking'},
-    {'time':'14:00','title':'Reykjanes (facoltativo, mezza giornata fuori città)','desc':"Ponte tra i continenti, Gunnuhver (la pozza di fango più grande d'Islanda) e il faro di Reykjanesviti. ~45 min di guida a tratta, paesaggio lunare e vulcanico diverso da tutto il resto del viaggio. Zona geologicamente molto attiva: verificate lo stato di accesso il giorno stesso su visitreykjanes.is.",'cost':'gratis','link':'https://www.visitreykjanes.is/en/','nav':'Gunnuhver hot springs parking'}
+    {'time':'14:00','title':'Reykjanes (mezza giornata fuori città)','desc':"Ponte tra i continenti, Gunnuhver (la pozza di fango più grande d'Islanda) e il faro di Reykjanesviti. ~50 min di guida all'andata e ~1h al ritorno, paesaggio lunare e vulcanico diverso da tutto il resto del viaggio. Partite entro le 14:00 per avere luce fino al tramonto (~16:20). Zona geologicamente molto attiva e Grindavík chiusa: andata e ritorno passano da Keflavík e Hafnir (strada 425); verificate lo stato di accesso il giorno stesso su visitreykjanes.is.",'cost':'gratis','link':'https://www.visitreykjanes.is/en/','nav':'Gunnuhver hot springs parking'},
+    {'time':'14:00','title':'National Museum of Iceland (facoltativo, se il meteo è brutto)','desc':'Alternativa a Reykjanes in caso di maltempo: storia e cultura islandese dagli insediamenti vichinghi a oggi, al coperto e in città.','cost':'€ ~2900 ISK / ~20€','link':'https://www.thjodminjasafn.is/english','nav':'National Museum of Iceland parking'}
   ],
   'food':[
     {'meal':'Pranzo','place':'Hlemmur Mathöll','note':'Più stand con piatti glútenlaus','cost':'€€','gf':True},
     {'meal':'Cena','place':'Sushi Social o cucina in appartamento','note':'Menu con opzioni senza glutine indicate','cost':'€€€','gf':True}
   ],
   'accommodation':{'name':'46heima Boutique Apartments','detail':'2ª notte a Reykjavík','url':'https://www.booking.com/hotel/is/46heima-apartments.en-gb.html'},
-  'tips':"Giornata cuscinetto: se il meteo è brutto, si può invertire con il Giorno 3. Nel pomeriggio scegliete: Museo se preferite restare in città con calma, Reykjanes se volete uscire a vedere un paesaggio diverso.",
+  'tips':"Nel pomeriggio si va a Reykjanes (~145 km in tutto tra andata, tappe e ritorno). Se il meteo è brutto, al posto di Reykjanes c'è il National Museum, al coperto in città; in alternativa si può invertire la giornata con il Giorno 3.",
   'culture':"Il Perlan racconta la geologia islandese da dentro una grotta di ghiaccio artificiale, costruito sopra sei enormi serbatoi che ancora oggi riscaldano Reykjavík con l'acqua calda del sottosuolo. L'Harpa, sala concerti dalla facciata a nido d'ape ispirata alle colonne di basalto, è diventata il simbolo della rinascita della città dopo la crisi finanziaria del 2008. Al National Museum si ripercorre la storia islandese dai primi coloni vichinghi a oggi. Se scegliete invece Reykjanes, camminerete letteralmente tra due continenti sul Bridge Between Continents, un ponte pedonale sulla stessa faglia di Þingvellir. Qui la terra non è statica: dopo quasi 800 anni di quiete, dal 2021 il vulcanismo è tornato con eruzioni vicino a Grindavík, l'ultima tra il 2023 e il 2024. Vedrete il Gunnuhver, la pozza di fango più grande d'Islanda, e il Reykjanesviti, il faro più antico della nazione — tutto dentro un UNESCO Global Geopark dove la terra si sta ancora formando.",
   'parking_nav':[
     {'label':'Naviga verso zona P2 (per questa notte)','query':'Rauðarárstígur Reykjavik'}
@@ -240,7 +245,7 @@ days = [
 
 map_points = {
     'd1': [{'name':'Aeroporto Keflavík','lat':63.9850,'lon':-22.6056}, {'name':'Reykjavík','lat':64.1466,'lon':-21.9426}],
-    'd2': [{'name':'Perlan','lat':64.1289,'lon':-21.9147}, {'name':'Harpa','lat':64.1500,'lon':-21.9326}, {'name':'National Museum','lat':64.1417,'lon':-21.9530}, {'name':'Bridge Between Continents (facolt.)','lat':63.8697,'lon':-22.6764}, {'name':'Gunnuhver (facolt.)','lat':63.8181,'lon':-22.6994}, {'name':'Reykjanesviti (facolt.)','lat':63.8156,'lon':-22.6913}],
+    'd2': [{'name':'Perlan','lat':64.1289,'lon':-21.9147}, {'name':'Harpa','lat':64.1500,'lon':-21.9326}, {'name':'National Museum (facolt., se piove)','lat':64.1417,'lon':-21.9530}, {'name':'Bridge Between Continents','lat':63.8697,'lon':-22.6764}, {'name':'Gunnuhver','lat':63.8181,'lon':-22.6994}, {'name':'Reykjanesviti','lat':63.8156,'lon':-22.6913}],
     'd3': [{'name':'Reykjavík','lat':64.1466,'lon':-21.9426}, {'name':'Þingvellir','lat':64.2559,'lon':-21.1297}, {'name':'Laugarvatn','lat':64.2019,'lon':-20.7357}, {'name':'Reykjavík','lat':64.1466,'lon':-21.9426}],
     'd4': [{'name':'Reykjavík','lat':64.1466,'lon':-21.9426}, {'name':'Seljalandsfoss','lat':63.6156,'lon':-19.9886}, {'name':'Skógafoss','lat':63.5321,'lon':-19.5116}, {'name':'Dyrhólaey','lat':63.4033,'lon':-19.1250}, {'name':'Reynisfjara','lat':63.4038,'lon':-19.0428}, {'name':'Víkurkirkja','lat':63.4193,'lon':-19.0058}],
     'd5': [{'name':'Vík','lat':63.4186,'lon':-19.0060}, {'name':'Jökulsárlón','lat':64.0784,'lon':-16.2300}, {'name':'Diamond Beach','lat':64.0645,'lon':-16.1809}, {'name':'Fjaðrárgljúfur','lat':63.7722,'lon':-18.1725}, {'name':'Vík','lat':63.4186,'lon':-19.0060}],
