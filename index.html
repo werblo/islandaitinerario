@@ -120,6 +120,14 @@ main { max-width:820px; margin:0 auto; padding:20px 20px 70px; display:flex; fle
 .day-map { width:100%; height:100%; background:#e4e6e3; }
 
 .grid2 { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.offline-bar { height:8px; margin-top:12px; border-radius:4px; background:var(--panel-border); overflow:hidden; }
+.offline-bar__fill { height:100%; width:0; background:var(--amber); transition:width .2s; }
+.offline-status { margin-top:8px; font-size:12.5px; color:#5c6a78; min-height:1em; }
+.offline-status--ok { color:#2c6b3f; font-weight:600; }
+.offline-btn { margin-top:10px; min-height:44px; padding:0 18px; border:none; border-radius:8px; background:var(--navy); color:#f2ede2; font-family:'IBM Plex Sans',sans-serif; font-size:13px; font-weight:700; cursor:pointer; }
+.offline-btn:disabled { opacity:.6; cursor:default; }
+.app-toast { position:fixed; left:50%; bottom:80px; transform:translateX(-50%); z-index:450; background:var(--navy); color:#f2ede2; font-size:12.5px; font-weight:600; padding:8px 14px; border-radius:8px; box-shadow:0 4px 14px rgba(0,0,0,.3); opacity:0; transition:opacity .3s; pointer-events:none; }
+.app-toast--show { opacity:.95; }
 .info-card { background:var(--panel); border:1px solid var(--panel-border); border-radius:8px; padding:16px; }
 .info-card__label { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.06em; color:#5a6675; margin-bottom:8px; }
 .info-card__big { font-family:'Cinzel',serif; font-weight:600; font-size:20px; color:#28323e; }
@@ -175,8 +183,8 @@ main { max-width:820px; margin:0 auto; padding:20px 20px 70px; display:flex; fle
 .section { display:flex; flex-direction:column; gap:8px; }
 
 .install-hint { font-size:12px; color:#7c8794; text-align:center; padding:6px 20px 0; }</style>
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<link rel="stylesheet" href="vendor/leaflet/leaflet.css"/>
+<script src="vendor/leaflet/leaflet.js"></script>
 </head>
 <body>
 
@@ -212,6 +220,15 @@ main { max-width:820px; margin:0 auto; padding:20px 20px 70px; display:flex; fle
     <div class="rune-rule"></div>
     <div id="trip-map" style="position:relative;isolation:isolate;z-index:0;height:260px;border-radius:8px;overflow:hidden;border:2px solid var(--navy);box-shadow:0 4px 16px rgba(0,0,0,.12);background:#e4e6e3;"></div>
     <div class="line" style="margin-top:10px;font-size:12px;color:#7c8794;">Mappa reale (OpenStreetMap) — zoomabile e trascinabile. Tocca un marker per il nome della tappa. Per la navigazione stradale vera e propria usa Google Maps offline.</div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-title">Prepara offline</div>
+    <div class="rune-rule"></div>
+    <div class="line">Salva sul telefono foto, percorsi e mappe lungo tutto il tragitto del viaggio (circa 1.051 riquadri di mappa, ~17 MB), così l'app funziona anche senza rete. Fallo con il Wi-Fi prima di partire, su entrambi i telefoni.</div>
+    <div class="offline-bar" id="offline-bar" hidden><div class="offline-bar__fill" id="offline-fill"></div></div>
+    <div class="offline-status" id="offline-status"></div>
+    <button type="button" class="offline-btn" id="offline-btn">Prepara offline</button>
   </div>
 
   <div class="panel">
@@ -288,7 +305,7 @@ main { max-width:820px; margin:0 auto; padding:20px 20px 70px; display:flex; fle
   </div>
   <div class="photo-slot photo-slot--hero" data-photo="d1-hero.jpg" style="--bg1:#1b2c40;--bg2:#28405c"><img src="images/d1-hero.jpg" alt="Arrivo &amp; Reykjavík" loading="lazy" onerror="this.parentElement.classList.add('photo-slot--empty')"><div class="photo-slot__ph"><svg viewBox="0 0 64 56" class="photo-slot__icon"><path d="M8 40 L46 20 L58 22 L48 30 L34 30 L26 40 L20 38 L24 30 L14 32 Z" fill="#d9985f"/><path d="M4 44 L16 41 M4 50 L18 46" stroke="#f2ede2" stroke-width="1.6" opacity="0.5"/></svg><span>Arrivo &amp; Reykjavík</span></div></div>
   <div class="map-frame"><div class="day-map" id="day-map-d1"></div></div>
-  <div class="line" style="margin:6px 0 0;font-size:12px;color:#7c8794;">Mappa reale (OpenStreetMap) — zoomabile e trascinabile. Percorso stradale indicativo (calcolato online); per la navigazione vera usa Google Maps offline.</div>
+  <div class="line" style="margin:6px 0 0;font-size:12px;color:#7c8794;">Mappa reale (OpenStreetMap) — zoomabile e trascinabile. Percorso stradale indicativo (disponibile anche offline); per la navigazione vera usa Google Maps offline.</div>
   <div class="grid2">
     <div class="info-card">
       <div class="info-card__label">Meteo · Reykjavík</div>
@@ -323,7 +340,7 @@ main { max-width:820px; margin:0 auto; padding:20px 20px 70px; display:flex; fle
   </div>
   <div class="photo-slot photo-slot--hero" data-photo="d2-hero.jpg" style="--bg1:#1b2c40;--bg2:#2c4560"><img src="images/d2-hero.jpg" alt="Reykjavík: cultura e Reykjanes" loading="lazy" onerror="this.parentElement.classList.add('photo-slot--empty')"><div class="photo-slot__ph"><svg viewBox="0 0 64 56" class="photo-slot__icon"><rect x="12" y="34" width="40" height="16" fill="#f2ede2" opacity="0.85"/><path d="M14 34 A18 18 0 0 1 50 34 Z" fill="#d9985f"/><path d="M20 34 L20 20 M28 34 L28 15 M36 34 L36 15 M44 34 L44 20" stroke="#1b2c40" stroke-width="1.4" opacity="0.5"/></svg><span>Reykjavík: cultura e Reykjanes</span></div></div>
   <div class="map-frame"><div class="day-map" id="day-map-d2"></div></div>
-  <div class="line" style="margin:6px 0 0;font-size:12px;color:#7c8794;">Mappa reale (OpenStreetMap) — zoomabile e trascinabile. Percorso stradale indicativo (calcolato online); per la navigazione vera usa Google Maps offline.</div>
+  <div class="line" style="margin:6px 0 0;font-size:12px;color:#7c8794;">Mappa reale (OpenStreetMap) — zoomabile e trascinabile. Percorso stradale indicativo (disponibile anche offline); per la navigazione vera usa Google Maps offline.</div>
   <div class="grid2">
     <div class="info-card">
       <div class="info-card__label">Meteo · Reykjavík</div>
@@ -358,7 +375,7 @@ main { max-width:820px; margin:0 auto; padding:20px 20px 70px; display:flex; fle
   </div>
   <div class="photo-slot photo-slot--hero" data-photo="d3-hero.jpg" style="--bg1:#22344a;--bg2:#33506b"><img src="images/d3-hero.jpg" alt="Þingvellir &amp; relax serale" loading="lazy" onerror="this.parentElement.classList.add('photo-slot--empty')"><div class="photo-slot__ph"><svg viewBox="0 0 64 56" class="photo-slot__icon"><polygon points="6,8 26,14 22,52 4,52" fill="#f2ede2" opacity="0.85"/><polygon points="38,14 58,8 60,52 42,52" fill="#f2ede2" opacity="0.65"/><path d="M27 12 L24 52 M37 13 L40 52" stroke="#8fd6cd" stroke-width="2"/></svg><span>Þingvellir &amp; relax serale</span></div></div>
   <div class="map-frame"><div class="day-map" id="day-map-d3"></div></div>
-  <div class="line" style="margin:6px 0 0;font-size:12px;color:#7c8794;">Mappa reale (OpenStreetMap) — zoomabile e trascinabile. Percorso stradale indicativo (calcolato online); per la navigazione vera usa Google Maps offline.</div>
+  <div class="line" style="margin:6px 0 0;font-size:12px;color:#7c8794;">Mappa reale (OpenStreetMap) — zoomabile e trascinabile. Percorso stradale indicativo (disponibile anche offline); per la navigazione vera usa Google Maps offline.</div>
   <div class="grid2">
     <div class="info-card">
       <div class="info-card__label">Meteo · Reykjavík</div>
@@ -393,7 +410,7 @@ main { max-width:820px; margin:0 auto; padding:20px 20px 70px; display:flex; fle
   </div>
   <div class="photo-slot photo-slot--hero" data-photo="d4-hero.jpg" style="--bg1:#20242c;--bg2:#333a46"><img src="images/d4-hero.jpg" alt="Reykjavík → Vík: Costa Sud" loading="lazy" onerror="this.parentElement.classList.add('photo-slot--empty')"><div class="photo-slot__ph"><svg viewBox="0 0 64 56" class="photo-slot__icon"><polygon points="2,52 6,26 18,14 26,24 22,52" fill="#d9985f" opacity="0.7"/><polygon points="10,40 17,32 24,40 17,48" fill="#f2ede2" opacity="0.85"/><polygon points="22,42 29,34 36,42 29,50" fill="#f2ede2" opacity="0.7"/><path d="M2 50 Q30 44 62 50" stroke="#8fd6cd" stroke-width="2.5" fill="none"/><path d="M38 52 Q48 46 60 52" stroke="#8fd6cd" stroke-width="1.6" fill="none" opacity="0.6"/></svg><span>Reykjavík → Vík: Costa Sud</span></div></div>
   <div class="map-frame"><div class="day-map" id="day-map-d4"></div></div>
-  <div class="line" style="margin:6px 0 0;font-size:12px;color:#7c8794;">Mappa reale (OpenStreetMap) — zoomabile e trascinabile. Percorso stradale indicativo (calcolato online); per la navigazione vera usa Google Maps offline.</div>
+  <div class="line" style="margin:6px 0 0;font-size:12px;color:#7c8794;">Mappa reale (OpenStreetMap) — zoomabile e trascinabile. Percorso stradale indicativo (disponibile anche offline); per la navigazione vera usa Google Maps offline.</div>
   <div class="grid2">
     <div class="info-card">
       <div class="info-card__label">Meteo · Vík í Mýrdal</div>
@@ -428,7 +445,7 @@ main { max-width:820px; margin:0 auto; padding:20px 20px 70px; display:flex; fle
   </div>
   <div class="photo-slot photo-slot--hero" data-photo="d5-hero.jpg" style="--bg1:#1f3a4a;--bg2:#2e5a6e"><img src="images/d5-hero.jpg" alt="Escursione a Jökulsárlón" loading="lazy" onerror="this.parentElement.classList.add('photo-slot--empty')"><div class="photo-slot__ph"><svg viewBox="0 0 64 56" class="photo-slot__icon"><path d="M2 46 Q30 40 60 46" stroke="#8fd6cd" stroke-width="2.5" fill="none"/><polygon points="10,46 18,24 28,46" fill="#f2ede2" opacity="0.9"/><polygon points="24,46 36,18 50,46" fill="#f2ede2" opacity="0.7"/><polygon points="42,46 50,30 58,46" fill="#f2ede2" opacity="0.55"/></svg><span>Escursione a Jökulsárlón</span></div></div>
   <div class="map-frame"><div class="day-map" id="day-map-d5"></div></div>
-  <div class="line" style="margin:6px 0 0;font-size:12px;color:#7c8794;">Mappa reale (OpenStreetMap) — zoomabile e trascinabile. Percorso stradale indicativo (calcolato online); per la navigazione vera usa Google Maps offline.</div>
+  <div class="line" style="margin:6px 0 0;font-size:12px;color:#7c8794;">Mappa reale (OpenStreetMap) — zoomabile e trascinabile. Percorso stradale indicativo (disponibile anche offline); per la navigazione vera usa Google Maps offline.</div>
   <div class="grid2">
     <div class="info-card">
       <div class="info-card__label">Meteo · Vík í Mýrdal</div>
@@ -463,7 +480,7 @@ main { max-width:820px; margin:0 auto; padding:20px 20px 70px; display:flex; fle
   </div>
   <div class="photo-slot photo-slot--hero" data-photo="d6-hero.jpg" style="--bg1:#33291f;--bg2:#5c4830"><img src="images/d6-hero.jpg" alt="Vík → Flúðir" loading="lazy" onerror="this.parentElement.classList.add('photo-slot--empty')"><div class="photo-slot__ph"><svg viewBox="0 0 64 56" class="photo-slot__icon"><ellipse cx="31" cy="30" rx="27" ry="18" fill="none" stroke="#d9985f" stroke-width="4"/><ellipse cx="31" cy="32" rx="15" ry="9" fill="#8fd6cd" opacity="0.7"/></svg><span>Vík → Flúðir</span></div></div>
   <div class="map-frame"><div class="day-map" id="day-map-d6"></div></div>
-  <div class="line" style="margin:6px 0 0;font-size:12px;color:#7c8794;">Mappa reale (OpenStreetMap) — zoomabile e trascinabile. Percorso stradale indicativo (calcolato online); per la navigazione vera usa Google Maps offline.</div>
+  <div class="line" style="margin:6px 0 0;font-size:12px;color:#7c8794;">Mappa reale (OpenStreetMap) — zoomabile e trascinabile. Percorso stradale indicativo (disponibile anche offline); per la navigazione vera usa Google Maps offline.</div>
   <div class="grid2">
     <div class="info-card">
       <div class="info-card__label">Meteo · Flúðir</div>
@@ -498,7 +515,7 @@ main { max-width:820px; margin:0 auto; padding:20px 20px 70px; display:flex; fle
   </div>
   <div class="photo-slot photo-slot--hero" data-photo="d7-hero.jpg" style="--bg1:#2c4a55;--bg2:#3d6470"><img src="images/d7-hero.jpg" alt="Geysir &amp; Gullfoss e sorgenti calde" loading="lazy" onerror="this.parentElement.classList.add('photo-slot--empty')"><div class="photo-slot__ph"><svg viewBox="0 0 64 56" class="photo-slot__icon"><ellipse cx="16" cy="44" rx="16" ry="10" fill="#d9985f" opacity="0.4"/><ellipse cx="48" cy="18" rx="16" ry="10" fill="#d9985f" opacity="0.4"/><path d="M4 40 Q20 30 32 32 T58 20" stroke="#8fd6cd" stroke-width="3" fill="none" stroke-linecap="round"/><path d="M26 30 Q29 24 26 18" stroke="#f2ede2" stroke-width="1.4" fill="none" opacity="0.6"/></svg><span>Geysir &amp; Gullfoss e sorgenti calde</span></div></div>
   <div class="map-frame"><div class="day-map" id="day-map-d7"></div></div>
-  <div class="line" style="margin:6px 0 0;font-size:12px;color:#7c8794;">Mappa reale (OpenStreetMap) — zoomabile e trascinabile. Percorso stradale indicativo (calcolato online); per la navigazione vera usa Google Maps offline.</div>
+  <div class="line" style="margin:6px 0 0;font-size:12px;color:#7c8794;">Mappa reale (OpenStreetMap) — zoomabile e trascinabile. Percorso stradale indicativo (disponibile anche offline); per la navigazione vera usa Google Maps offline.</div>
   <div class="grid2">
     <div class="info-card">
       <div class="info-card__label">Meteo · Flúðir</div>
@@ -533,7 +550,7 @@ main { max-width:820px; margin:0 auto; padding:20px 20px 70px; display:flex; fle
   </div>
   <div class="photo-slot photo-slot--hero" data-photo="d8-hero.jpg" style="--bg1:#1b2c40;--bg2:#28405c"><img src="images/d8-hero.jpg" alt="Flúðir → Keflavík → Volo di ritorno" loading="lazy" onerror="this.parentElement.classList.add('photo-slot--empty')"><div class="photo-slot__ph"><svg viewBox="0 0 64 56" class="photo-slot__icon"><path d="M8 40 L46 20 L58 22 L48 30 L34 30 L26 40 L20 38 L24 30 L14 32 Z" fill="#d9985f"/><path d="M4 44 L16 41 M4 50 L18 46" stroke="#f2ede2" stroke-width="1.6" opacity="0.5"/></svg><span>Flúðir → Keflavík → Volo di ritorno</span></div></div>
   <div class="map-frame"><div class="day-map" id="day-map-d8"></div></div>
-  <div class="line" style="margin:6px 0 0;font-size:12px;color:#7c8794;">Mappa reale (OpenStreetMap) — zoomabile e trascinabile. Percorso stradale indicativo (calcolato online); per la navigazione vera usa Google Maps offline.</div>
+  <div class="line" style="margin:6px 0 0;font-size:12px;color:#7c8794;">Mappa reale (OpenStreetMap) — zoomabile e trascinabile. Percorso stradale indicativo (disponibile anche offline); per la navigazione vera usa Google Maps offline.</div>
   <div class="grid2">
     <div class="info-card">
       <div class="info-card__label">Meteo · Keflavík</div>
@@ -648,7 +665,9 @@ main { max-width:820px; margin:0 auto; padding:20px 20px 70px; display:flex; fle
 const SEASONAL = {"reykjavik": {"tmax": 4, "tmin": -1, "desc": "Nuvoloso, rovesci di pioggia/neve frequenti", "wind": "moderato-forte"}, "vik": {"tmax": 5, "tmin": 0, "desc": "Molto piovoso, tipico della costa sud", "wind": "forte, zona esposta"}, "fludir": {"tmax": 3, "tmin": -3, "desc": "Più freddo, neve possibile in quota", "wind": "moderato"}, "keflavik": {"tmax": 4, "tmin": -1, "desc": "Piovoso e ventoso, zona costiera aperta", "wind": "forte"}};
 const LOCATIONS = {"reykjavik": {"name": "Reykjavík", "lat": 64.1466, "lon": -21.9426}, "vik": {"name": "Vík í Mýrdal", "lat": 63.4186, "lon": -19.006}, "fludir": {"name": "Flúðir", "lat": 64.1372, "lon": -20.3033}, "keflavik": {"name": "Keflavík", "lat": 63.985, "lon": -22.6056}};
 const DAY_ROUTES = {"d1": [{"name": "Aeroporto Keflavík", "lat": 63.985, "lon": -22.6056}, {"name": "Reykjavík", "lat": 64.1466, "lon": -21.9426}], "d2": [{"name": "Perlan", "lat": 64.1289, "lon": -21.9147}, {"name": "Harpa", "lat": 64.15, "lon": -21.9326}, {"name": "National Museum", "lat": 64.1417, "lon": -21.953}, {"name": "Bridge Between Continents (facolt.)", "lat": 63.8697, "lon": -22.6764}, {"name": "Gunnuhver (facolt.)", "lat": 63.8181, "lon": -22.6994}, {"name": "Reykjanesviti (facolt.)", "lat": 63.8156, "lon": -22.6913}], "d3": [{"name": "Reykjavík", "lat": 64.1466, "lon": -21.9426}, {"name": "Þingvellir", "lat": 64.2559, "lon": -21.1297}, {"name": "Laugarvatn", "lat": 64.2019, "lon": -20.7357}, {"name": "Reykjavík", "lat": 64.1466, "lon": -21.9426}], "d4": [{"name": "Reykjavík", "lat": 64.1466, "lon": -21.9426}, {"name": "Seljalandsfoss", "lat": 63.6156, "lon": -19.9886}, {"name": "Skógafoss", "lat": 63.5321, "lon": -19.5116}, {"name": "Dyrhólaey", "lat": 63.4033, "lon": -19.125}, {"name": "Reynisfjara", "lat": 63.4038, "lon": -19.0428}, {"name": "Víkurkirkja", "lat": 63.4193, "lon": -19.0058}], "d5": [{"name": "Vík", "lat": 63.4186, "lon": -19.006}, {"name": "Jökulsárlón", "lat": 64.0784, "lon": -16.23}, {"name": "Diamond Beach", "lat": 64.0645, "lon": -16.1809}, {"name": "Fjaðrárgljúfur", "lat": 63.7722, "lon": -18.1725}, {"name": "Vík", "lat": 63.4186, "lon": -19.006}], "d6": [{"name": "Vík", "lat": 63.4186, "lon": -19.006}, {"name": "Kerið", "lat": 64.041, "lon": -20.8834}, {"name": "Flúðir", "lat": 64.1372, "lon": -20.3033}, {"name": "Secret Lagoon", "lat": 64.1306, "lon": -20.2989}], "d7": [{"name": "Flúðir", "lat": 64.1372, "lon": -20.3033}, {"name": "Geysir", "lat": 64.3128, "lon": -20.3009}, {"name": "Gullfoss", "lat": 64.3271, "lon": -20.1199}, {"name": "Faxi", "lat": 64.2266, "lon": -20.3402}, {"name": "Efstidalur II", "lat": 64.2567, "lon": -20.5029}, {"name": "Flúðir", "lat": 64.1372, "lon": -20.3033}], "d8": [{"name": "Flúðir", "lat": 64.1372, "lon": -20.3033}, {"name": "Aeroporto Keflavík", "lat": 63.985, "lon": -22.6056}]};
-const SUN_FALLBACK = {"d1": {"sunrise": "09:57", "sunset": "16:26", "daylight": "6h 29m"}, "d2": {"sunrise": "10:00", "sunset": "16:23", "daylight": "6h 23m"}, "d3": {"sunrise": "10:03", "sunset": "16:21", "daylight": "6h 17m"}, "d4": {"sunrise": "09:48", "sunset": "16:13", "daylight": "6h 25m"}, "d5": {"sunrise": "09:51", "sunset": "16:10", "daylight": "6h 19m"}, "d6": {"sunrise": "09:54", "sunset": "16:08", "daylight": "6h 14m"}, "d7": {"sunrise": "10:09", "sunset": "16:03", "daylight": "5h 54m"}, "d8": {"sunrise": "10:12", "sunset": "16:01", "daylight": "5h 49m"}};
+const DAY_GEOMETRY = {};
+const OFFLINE_TILES = ["6/27/17","6/28/16","6/28/17","6/29/17","7/55/34","7/56/33","7/56/34","7/57/34","7/58/34","8/111/68","8/112/67","8/112/68","8/113/67","8/113/68","8/114/68","8/114/69","8/115/68","8/116/68","9/222/135","9/222/136","9/222/137","9/222/138","9/223/135","9/223/136","9/223/137","9/223/138","9/224/134","9/224/135","9/224/136","9/224/137","9/224/138","9/225/134","9/225/135","9/225/136","9/225/137","9/225/138","9/226/134","9/226/135","9/226/136","9/226/137","9/226/138","9/227/134","9/227/135","9/227/136","9/227/137","9/227/138","9/227/139","9/228/134","9/228/135","9/228/136","9/228/137","9/228/138","9/228/139","9/229/136","9/229/137","9/229/138","9/229/139","9/230/135","9/230/136","9/230/137","9/230/138","9/230/139","9/231/135","9/231/136","9/231/137","9/231/138","9/232/135","9/232/136","9/232/137","9/232/138","9/233/135","9/233/136","9/233/137","10/446/272","10/446/273","10/446/274","10/446/275","10/447/271","10/447/272","10/447/273","10/447/274","10/447/275","10/448/271","10/448/272","10/448/273","10/448/274","10/448/275","10/449/270","10/449/271","10/449/272","10/449/273","10/449/274","10/450/270","10/450/271","10/450/272","10/450/273","10/450/274","10/451/270","10/451/271","10/451/272","10/451/273","10/451/274","10/451/275","10/452/270","10/452/271","10/452/272","10/452/273","10/452/274","10/452/275","10/453/269","10/453/270","10/453/271","10/453/272","10/453/273","10/453/274","10/453/275","10/453/276","10/454/269","10/454/270","10/454/271","10/454/272","10/454/273","10/454/274","10/454/275","10/454/276","10/455/269","10/455/270","10/455/271","10/455/272","10/455/273","10/455/274","10/455/275","10/455/276","10/455/277","10/456/273","10/456/274","10/456/275","10/456/276","10/456/277","10/457/274","10/457/275","10/457/276","10/457/277","10/458/274","10/458/275","10/458/276","10/458/277","10/459/273","10/459/274","10/459/275","10/459/276","10/459/277","10/460/273","10/460/274","10/460/275","10/460/276","10/460/277","10/461/272","10/461/273","10/461/274","10/461/275","10/461/276","10/462/272","10/462/273","10/462/274","10/462/275","10/462/276","10/463/272","10/463/273","10/463/274","10/463/275","10/464/271","10/464/272","10/464/273","10/464/274","10/464/275","10/465/271","10/465/272","10/465/273","10/465/274","10/466/271","10/466/272","10/466/273","11/893/546","11/893/547","11/893/548","11/893/549","11/894/545","11/894/546","11/894/547","11/894/548","11/894/549","11/895/544","11/895/545","11/895/546","11/895/547","11/895/548","11/895/549","11/896/543","11/896/544","11/896/545","11/896/546","11/896/547","11/896/548","11/897/543","11/897/544","11/897/545","11/897/546","11/897/547","11/898/543","11/898/544","11/898/545","11/898/546","11/898/547","11/899/542","11/899/543","11/899/544","11/899/545","11/899/546","11/900/542","11/900/543","11/900/544","11/900/545","11/900/546","11/900/547","11/901/542","11/901/543","11/901/544","11/901/545","11/901/546","11/901/547","11/902/541","11/902/542","11/902/543","11/902/544","11/902/545","11/902/546","11/902/547","11/902/548","11/903/541","11/903/542","11/903/543","11/903/544","11/903/545","11/903/546","11/903/547","11/903/548","11/904/541","11/904/542","11/904/543","11/904/544","11/904/545","11/904/546","11/904/547","11/904/548","11/904/549","11/905/541","11/905/542","11/905/543","11/905/544","11/905/545","11/905/546","11/905/547","11/905/548","11/905/549","11/906/541","11/906/542","11/906/543","11/906/544","11/906/545","11/906/546","11/906/547","11/906/548","11/906/549","11/906/550","11/907/541","11/907/542","11/907/543","11/907/544","11/907/545","11/907/546","11/907/547","11/907/548","11/907/549","11/907/550","11/907/551","11/908/540","11/908/541","11/908/542","11/908/543","11/908/544","11/908/545","11/908/546","11/908/547","11/908/548","11/908/549","11/908/550","11/908/551","11/909/540","11/909/541","11/909/542","11/909/543","11/909/544","11/909/545","11/909/546","11/909/547","11/909/548","11/909/549","11/909/550","11/909/551","11/909/552","11/910/540","11/910/541","11/910/542","11/910/543","11/910/547","11/910/548","11/910/549","11/910/550","11/910/551","11/910/552","11/911/548","11/911/549","11/911/550","11/911/551","11/911/552","11/911/553","11/912/549","11/912/550","11/912/551","11/912/552","11/912/553","11/913/549","11/913/550","11/913/551","11/913/552","11/913/553","11/913/554","11/914/550","11/914/551","11/914/552","11/914/553","11/914/554","11/915/551","11/915/552","11/915/553","11/915/554","11/916/550","11/916/551","11/916/552","11/916/553","11/916/554","11/917/549","11/917/550","11/917/551","11/917/552","11/917/553","11/917/554","11/918/548","11/918/549","11/918/550","11/918/551","11/918/552","11/918/553","11/919/548","11/919/549","11/919/550","11/919/551","11/919/552","11/919/553","11/920/547","11/920/548","11/920/549","11/920/550","11/920/551","11/920/552","11/921/547","11/921/548","11/921/549","11/921/550","11/921/551","11/921/552","11/922/547","11/922/548","11/922/549","11/922/550","11/922/551","11/923/546","11/923/547","11/923/548","11/923/549","11/923/550","11/923/551","11/924/546","11/924/547","11/924/548","11/924/549","11/924/550","11/925/546","11/925/547","11/925/548","11/925/549","11/925/550","11/926/545","11/926/546","11/926/547","11/926/548","11/926/549","11/927/545","11/927/546","11/927/547","11/927/548","11/927/549","11/928/545","11/928/546","11/928/547","11/928/548","11/929/544","11/929/545","11/929/546","11/929/547","11/929/548","11/930/544","11/930/545","11/930/546","11/930/547","11/931/544","11/931/545","11/931/546","11/932/544","11/932/545","11/932/546","12/1788/1094","12/1788/1095","12/1788/1096","12/1788/1097","12/1788/1098","12/1789/1091","12/1789/1092","12/1789/1093","12/1789/1094","12/1789/1095","12/1789/1096","12/1789/1097","12/1789/1098","12/1790/1091","12/1790/1092","12/1790/1093","12/1790/1094","12/1790/1095","12/1790/1096","12/1790/1097","12/1790/1098","12/1791/1090","12/1791/1091","12/1791/1092","12/1791/1093","12/1791/1094","12/1791/1095","12/1791/1096","12/1792/1090","12/1792/1091","12/1792/1092","12/1792/1093","12/1792/1094","12/1792/1095","12/1793/1089","12/1793/1090","12/1793/1091","12/1793/1092","12/1793/1093","12/1793/1094","12/1794/1088","12/1794/1089","12/1794/1090","12/1794/1091","12/1794/1092","12/1794/1093","12/1794/1094","12/1795/1088","12/1795/1089","12/1795/1090","12/1795/1091","12/1795/1092","12/1795/1093","12/1796/1087","12/1796/1088","12/1796/1089","12/1796/1090","12/1796/1091","12/1796/1092","12/1796/1093","12/1797/1087","12/1797/1088","12/1797/1089","12/1797/1090","12/1797/1091","12/1797/1092","12/1798/1087","12/1798/1088","12/1798/1089","12/1798/1090","12/1798/1091","12/1798/1092","12/1799/1086","12/1799/1087","12/1799/1088","12/1799/1089","12/1799/1090","12/1799/1091","12/1799/1092","12/1800/1086","12/1800/1087","12/1800/1088","12/1800/1089","12/1800/1090","12/1800/1091","12/1800/1092","12/1801/1086","12/1801/1087","12/1801/1088","12/1801/1089","12/1801/1090","12/1801/1091","12/1801/1092","12/1802/1085","12/1802/1086","12/1802/1087","12/1802/1088","12/1802/1089","12/1802/1090","12/1802/1091","12/1802/1092","12/1802/1093","12/1803/1085","12/1803/1086","12/1803/1087","12/1803/1088","12/1803/1089","12/1803/1090","12/1803/1091","12/1803/1092","12/1803/1093","12/1804/1085","12/1804/1086","12/1804/1087","12/1804/1088","12/1804/1089","12/1804/1090","12/1804/1091","12/1804/1092","12/1804/1093","12/1804/1094","12/1805/1084","12/1805/1085","12/1805/1086","12/1805/1087","12/1805/1088","12/1805/1089","12/1805/1090","12/1805/1091","12/1805/1092","12/1805/1093","12/1805/1094","12/1806/1084","12/1806/1085","12/1806/1086","12/1806/1087","12/1806/1088","12/1806/1089","12/1806/1090","12/1806/1091","12/1806/1092","12/1806/1093","12/1806/1094","12/1806/1095","12/1807/1084","12/1807/1085","12/1807/1086","12/1807/1087","12/1807/1088","12/1807/1089","12/1807/1090","12/1807/1091","12/1807/1092","12/1807/1093","12/1807/1094","12/1807/1095","12/1807/1096","12/1808/1084","12/1808/1085","12/1808/1086","12/1808/1087","12/1808/1088","12/1808/1089","12/1808/1090","12/1808/1091","12/1808/1093","12/1808/1094","12/1808/1095","12/1808/1096","12/1809/1084","12/1809/1085","12/1809/1086","12/1809/1087","12/1809/1088","12/1809/1089","12/1809/1090","12/1809/1091","12/1809/1092","12/1809/1093","12/1809/1094","12/1809/1095","12/1809/1096","12/1809/1097","12/1810/1085","12/1810/1086","12/1810/1087","12/1810/1088","12/1810/1089","12/1810/1090","12/1810/1091","12/1810/1092","12/1810/1093","12/1810/1094","12/1810/1095","12/1810/1096","12/1810/1097","12/1810/1098","12/1811/1085","12/1811/1086","12/1811/1087","12/1811/1088","12/1811/1089","12/1811/1090","12/1811/1091","12/1811/1092","12/1811/1093","12/1811/1094","12/1811/1095","12/1811/1096","12/1811/1097","12/1811/1098","12/1812/1085","12/1812/1086","12/1812/1087","12/1812/1088","12/1812/1089","12/1812/1090","12/1812/1091","12/1812/1092","12/1812/1093","12/1812/1094","12/1812/1095","12/1812/1096","12/1812/1097","12/1812/1098","12/1812/1099","12/1813/1084","12/1813/1085","12/1813/1086","12/1813/1087","12/1813/1088","12/1813/1089","12/1813/1090","12/1813/1091","12/1813/1092","12/1813/1093","12/1813/1094","12/1813/1095","12/1813/1096","12/1813/1097","12/1813/1098","12/1813/1099","12/1814/1084","12/1814/1085","12/1814/1086","12/1814/1087","12/1814/1088","12/1814/1089","12/1814/1090","12/1814/1091","12/1814/1092","12/1814/1093","12/1814/1094","12/1814/1095","12/1814/1096","12/1814/1097","12/1814/1098","12/1814/1099","12/1814/1100","12/1815/1084","12/1815/1085","12/1815/1086","12/1815/1087","12/1815/1088","12/1815/1089","12/1815/1090","12/1815/1093","12/1815/1094","12/1815/1095","12/1815/1096","12/1815/1097","12/1815/1098","12/1815/1099","12/1815/1100","12/1816/1083","12/1816/1084","12/1816/1085","12/1816/1086","12/1816/1087","12/1816/1088","12/1816/1089","12/1816/1090","12/1816/1093","12/1816/1094","12/1816/1095","12/1816/1096","12/1816/1097","12/1816/1098","12/1816/1099","12/1816/1100","12/1816/1101","12/1817/1082","12/1817/1083","12/1817/1084","12/1817/1085","12/1817/1086","12/1817/1087","12/1817/1088","12/1817/1089","12/1817/1090","12/1817/1094","12/1817/1095","12/1817/1096","12/1817/1097","12/1817/1098","12/1817/1099","12/1817/1100","12/1817/1101","12/1817/1102","12/1818/1082","12/1818/1083","12/1818/1084","12/1818/1085","12/1818/1086","12/1818/1087","12/1818/1088","12/1818/1089","12/1818/1095","12/1818/1096","12/1818/1097","12/1818/1098","12/1818/1099","12/1818/1100","12/1818/1101","12/1818/1102","12/1819/1082","12/1819/1083","12/1819/1084","12/1819/1085","12/1819/1096","12/1819/1097","12/1819/1098","12/1819/1099","12/1819/1100","12/1819/1101","12/1819/1102","12/1819/1103","12/1820/1082","12/1820/1083","12/1820/1084","12/1820/1096","12/1820/1097","12/1820/1098","12/1820/1099","12/1820/1100","12/1820/1101","12/1820/1102","12/1820/1103","12/1821/1097","12/1821/1098","12/1821/1099","12/1821/1100","12/1821/1101","12/1821/1102","12/1821/1103","12/1821/1104","12/1822/1098","12/1822/1099","12/1822/1100","12/1822/1101","12/1822/1102","12/1822/1103","12/1822/1104","12/1823/1099","12/1823/1100","12/1823/1101","12/1823/1102","12/1823/1103","12/1823/1104","12/1823/1105","12/1824/1099","12/1824/1100","12/1824/1101","12/1824/1102","12/1824/1103","12/1824/1104","12/1824/1105","12/1825/1100","12/1825/1101","12/1825/1102","12/1825/1103","12/1825/1104","12/1825/1105","12/1825/1106","12/1826/1101","12/1826/1102","12/1826/1103","12/1826/1104","12/1826/1105","12/1826/1106","12/1827/1102","12/1827/1103","12/1827/1104","12/1827/1105","12/1827/1106","12/1827/1107","12/1828/1102","12/1828/1103","12/1828/1104","12/1828/1105","12/1828/1106","12/1828/1107","12/1828/1108","12/1829/1103","12/1829/1104","12/1829/1105","12/1829/1106","12/1829/1107","12/1829/1108","12/1830/1104","12/1830/1105","12/1830/1106","12/1830/1107","12/1830/1108","12/1831/1105","12/1831/1106","12/1831/1107","12/1831/1108","12/1832/1104","12/1832/1105","12/1832/1106","12/1832/1107","12/1832/1108","12/1833/1103","12/1833/1104","12/1833/1105","12/1833/1106","12/1833/1107","12/1833/1108","12/1834/1102","12/1834/1103","12/1834/1104","12/1834/1105","12/1834/1106","12/1834/1107","12/1835/1101","12/1835/1102","12/1835/1103","12/1835/1104","12/1835/1105","12/1835/1106","12/1835/1107","12/1836/1100","12/1836/1101","12/1836/1102","12/1836/1103","12/1836/1104","12/1836/1105","12/1836/1106","12/1837/1099","12/1837/1100","12/1837/1101","12/1837/1102","12/1837/1103","12/1837/1104","12/1837/1105","12/1837/1106","12/1838/1098","12/1838/1099","12/1838/1100","12/1838/1101","12/1838/1102","12/1838/1103","12/1838/1104","12/1838/1105","12/1839/1097","12/1839/1098","12/1839/1099","12/1839/1100","12/1839/1101","12/1839/1102","12/1839/1103","12/1839/1104","12/1840/1097","12/1840/1098","12/1840/1099","12/1840/1100","12/1840/1101","12/1840/1102","12/1840/1103","12/1840/1104","12/1841/1096","12/1841/1097","12/1841/1098","12/1841/1099","12/1841/1100","12/1841/1101","12/1841/1102","12/1841/1103","12/1842/1096","12/1842/1097","12/1842/1098","12/1842/1099","12/1842/1100","12/1842/1101","12/1842/1102","12/1842/1103","12/1843/1096","12/1843/1097","12/1843/1098","12/1843/1099","12/1843/1100","12/1843/1101","12/1843/1102","12/1844/1095","12/1844/1096","12/1844/1097","12/1844/1098","12/1844/1099","12/1844/1100","12/1844/1101","12/1844/1102","12/1845/1095","12/1845/1096","12/1845/1097","12/1845/1098","12/1845/1099","12/1845/1100","12/1845/1101","12/1846/1095","12/1846/1096","12/1846/1097","12/1846/1098","12/1846/1099","12/1846/1100","12/1846/1101","12/1847/1094","12/1847/1095","12/1847/1096","12/1847/1097","12/1847/1098","12/1847/1099","12/1847/1100","12/1848/1094","12/1848/1095","12/1848/1096","12/1848/1097","12/1848/1098","12/1848/1099","12/1848/1100","12/1849/1094","12/1849/1095","12/1849/1096","12/1849/1097","12/1849/1098","12/1849/1099","12/1850/1093","12/1850/1094","12/1850/1095","12/1850/1096","12/1850/1097","12/1850/1098","12/1850/1099","12/1851/1093","12/1851/1094","12/1851/1095","12/1851/1096","12/1851/1097","12/1851/1098","12/1852/1093","12/1852/1094","12/1852/1095","12/1852/1096","12/1852/1097","12/1853/1092","12/1853/1093","12/1853/1094","12/1853/1095","12/1853/1096","12/1853/1097","12/1854/1092","12/1854/1093","12/1854/1094","12/1854/1095","12/1854/1096","12/1855/1092","12/1855/1093","12/1855/1094","12/1855/1095","12/1855/1096","12/1856/1091","12/1856/1092","12/1856/1093","12/1856/1094","12/1856/1095","12/1857/1091","12/1857/1092","12/1857/1093","12/1857/1094","12/1857/1095","12/1858/1091","12/1858/1092","12/1858/1093","12/1858/1094","12/1859/1090","12/1859/1091","12/1859/1092","12/1859/1093","12/1859/1094","12/1860/1090","12/1860/1091","12/1860/1092","12/1860/1093","12/1861/1089","12/1861/1090","12/1861/1091","12/1861/1092","12/1861/1093","12/1862/1089","12/1862/1090","12/1862/1091","12/1862/1092","12/1863/1089","12/1863/1090","12/1863/1091","12/1863/1092","12/1864/1089","12/1864/1090","12/1864/1091"];
+const APP_VERSION = 'b6933974104a';
 const DAYS_META = [{"id": "d1", "dateISO": "2026-11-15", "locKey": "reykjavik"}, {"id": "d2", "dateISO": "2026-11-16", "locKey": "reykjavik"}, {"id": "d3", "dateISO": "2026-11-17", "locKey": "reykjavik"}, {"id": "d4", "dateISO": "2026-11-18", "locKey": "vik"}, {"id": "d5", "dateISO": "2026-11-19", "locKey": "vik"}, {"id": "d6", "dateISO": "2026-11-20", "locKey": "fludir"}, {"id": "d7", "dateISO": "2026-11-21", "locKey": "fludir"}, {"id": "d8", "dateISO": "2026-11-22", "locKey": "keflavik"}];
 const WEATHER_CODES = {0:'Sereno',1:'Prevalentemente sereno',2:'Parzialmente nuvoloso',3:'Nuvoloso',45:'Nebbia',48:'Nebbia con brina',51:'Pioviggine leggera',53:'Pioviggine',55:'Pioviggine intensa',56:'Pioviggine gelata',57:'Pioviggine gelata intensa',61:'Pioggia leggera',63:'Pioggia',65:'Pioggia intensa',66:'Pioggia gelata',67:'Pioggia gelata intensa',71:'Neve leggera',73:'Neve',75:'Neve intensa',77:'Granelli di neve',80:'Rovesci leggeri',81:'Rovesci',82:'Rovesci forti',85:'Rovesci di neve leggeri',86:'Rovesci di neve forti',95:'Temporale'};
 
@@ -695,6 +714,18 @@ function ensureDayMap(dayId) {
 
   map.fitBounds(latlngs, { padding: [24, 24] });
 
+  const ROUTE_STYLE = { color: '#d9985f', weight: 4, opacity: 0.9, lineCap: 'round' };
+  if (DAY_GEOMETRY[dayId]) {
+    // percorso stradale precalcolato (routes.json): disponibile anche offline
+    L.polyline(DAY_GEOMETRY[dayId], ROUTE_STYLE).addTo(map);
+  } else {
+    drawRouteLive(map, points, latlngs, ROUTE_STYLE);
+  }
+
+  el.addEventListener('touchstart', () => { map.scrollWheelZoom.enable(); map.dragging.enable(); }, { once: true, passive: true });
+}
+
+function drawRouteLive(map, points, latlngs, routeStyle) {
   const fallback = L.polyline(latlngs, { color: '#4f8fa8', weight: 3, dashArray: '1,9', lineCap: 'round', opacity: 0.9 }).addTo(map);
 
   const coordStr = points.map(p => p.lon + ',' + p.lat).join(';');
@@ -705,11 +736,9 @@ function ensureDayMap(dayId) {
       if (!route) return;
       const coords = route.geometry.coordinates.map(c => [c[1], c[0]]);
       map.removeLayer(fallback);
-      L.polyline(coords, { color: '#d9985f', weight: 4, opacity: 0.9, lineCap: 'round' }).addTo(map);
+      L.polyline(coords, routeStyle).addTo(map);
     })
     .catch(() => { /* resta la linea retta di riserva */ });
-
-  el.addEventListener('touchstart', () => { map.scrollWheelZoom.enable(); map.dragging.enable(); }, { once: true, passive: true });
 }
 
 function setActive(id) {
@@ -757,11 +786,8 @@ function renderWeatherAndSun() {
     if (descEl) descEl.textContent = w.desc;
     if (srcEl) srcEl.textContent = w.source;
 
-    const live = state.sun[day.id];
-    const fb = SUN_FALLBACK[day.id];
-    const sr = live ? live.sunrise : fb.sunrise;
-    const ss = live ? live.sunset : fb.sunset;
-    const dl = live ? live.daylight : fb.daylight + ' (stima)';
+    const sun = state.sun[day.id] || { sunrise: '—', sunset: '—', daylight: '—' };
+    const sr = sun.sunrise, ss = sun.sunset, dl = sun.daylight;
     const srEl = document.querySelector('[data-sunrise="' + day.id + '"]');
     const ssEl = document.querySelector('[data-sunset="' + day.id + '"]');
     const dlEl = document.querySelector('[data-daylight="' + day.id + '"]');
@@ -775,6 +801,7 @@ function renderWeatherAndSun() {
     }
   });
 }
+computeAllSun();
 renderWeatherAndSun();
 
 async function fetchAllWeather() {
@@ -789,24 +816,57 @@ async function fetchAllWeather() {
   }
 }
 
-async function fetchAllSun() {
-  for (const day of DAYS_META) {
-    const loc = LOCATIONS[day.locKey];
-    try {
-      const url = 'https://api.sunrise-sunset.org/json?lat=' + loc.lat + '&lng=' + loc.lon + '&date=' + day.dateISO + '&formatted=0';
-      const res = await fetch(url);
-      const json = await res.json();
-      if (json && json.results) {
-        const sr = new Date(json.results.sunrise);
-        const ss = new Date(json.results.sunset);
-        const fmt = d => String(d.getUTCHours()).padStart(2,'0') + ':' + String(d.getUTCMinutes()).padStart(2,'0');
-        const lenSec = json.results.day_length;
-        const h = Math.floor(lenSec/3600), m = Math.round((lenSec%3600)/60);
-        state.sun[day.id] = { sunrise: fmt(sr), sunset: fmt(ss), daylight: h + 'h ' + String(m).padStart(2,'0') + 'm' };
-        renderWeatherAndSun();
-      }
-    } catch (e) { /* resta sulla stima calcolata offline */ }
+// Alba e tramonto calcolati in locale (algoritmo NOAA, come sunrise-sunset.org):
+// nessuna rete, funziona offline. Restituisce i minuti dalla mezzanotte UTC,
+// che in Islanda coincide con l'ora locale (niente ora legale).
+function sunEventsUTC(dateISO, lat, lon) {
+  const rad = Math.PI / 180;
+  const [Y, M, D] = dateISO.split('-').map(Number);
+  const jdNoon = Date.UTC(Y, M - 1, D, 12) / 86400000 + 2440587.5;
+  function solar(jd) {
+    const T = (jd - 2451545) / 36525;
+    const L0 = (280.46646 + T * (36000.76983 + T * 0.0003032)) % 360;
+    const Ma = 357.52911 + T * (35999.05029 - 0.0001537 * T);
+    const ecc = 0.016708634 - T * (0.000042037 + 0.0000001267 * T);
+    const C = Math.sin(Ma * rad) * (1.914602 - T * (0.004817 + 0.000014 * T))
+            + Math.sin(2 * Ma * rad) * (0.019993 - 0.000101 * T) + Math.sin(3 * Ma * rad) * 0.000289;
+    const omega = 125.04 - 1934.136 * T;
+    const lambda = L0 + C - 0.00569 - 0.00478 * Math.sin(omega * rad);
+    const eps = 23 + (26 + (21.448 - T * (46.815 + T * (0.00059 - T * 0.001813))) / 60) / 60 + 0.00256 * Math.cos(omega * rad);
+    const decl = Math.asin(Math.sin(eps * rad) * Math.sin(lambda * rad)) / rad;
+    const y = Math.tan(eps * rad / 2) ** 2;
+    const eqTime = 4 / rad * (y * Math.sin(2 * L0 * rad) - 2 * ecc * Math.sin(Ma * rad)
+      + 4 * ecc * y * Math.sin(Ma * rad) * Math.cos(2 * L0 * rad)
+      - 0.5 * y * y * Math.sin(4 * L0 * rad) - 1.25 * ecc * ecc * Math.sin(2 * Ma * rad));
+    return { decl, eqTime };
   }
+  function event(rising) {
+    let minutes = 720;
+    for (let i = 0; i < 3; i++) {
+      const { decl, eqTime } = solar(jdNoon - 0.5 + minutes / 1440);
+      const cosH = (Math.cos(90.833 * rad) - Math.sin(lat * rad) * Math.sin(decl * rad))
+                 / (Math.cos(lat * rad) * Math.cos(decl * rad));
+      if (cosH > 1 || cosH < -1) return null;
+      const H = Math.acos(cosH) / rad * (rising ? 1 : -1);
+      minutes = 720 - 4 * (lon + H) - eqTime;
+    }
+    return minutes;
+  }
+  return { sunrise: event(true), sunset: event(false) };
+}
+
+function computeAllSun() {
+  const hhmm = m => String(Math.floor(m / 60)).padStart(2, '0') + ':' + String(Math.floor(m % 60)).padStart(2, '0');
+  DAYS_META.forEach(day => {
+    const loc = LOCATIONS[day.locKey];
+    const ev = sunEventsUTC(day.dateISO, loc.lat, loc.lon);
+    if (ev.sunrise === null || ev.sunset === null) return;
+    const len = Math.round(ev.sunset - ev.sunrise);
+    state.sun[day.id] = {
+      sunrise: hhmm(ev.sunrise), sunset: hhmm(ev.sunset),
+      daylight: Math.floor(len / 60) + 'h ' + String(len % 60).padStart(2, '0') + 'm'
+    };
+  });
 }
 
 async function fetchKp() {
@@ -947,7 +1007,7 @@ function initTripMap() {
   el.addEventListener('touchstart', () => { map.scrollWheelZoom.enable(); map.dragging.enable(); }, { once: true, passive: true });
 }
 
-// Aggiornamento dei dati live (alba/tramonto, aurora, meteo, cambio).
+// Aggiornamento dei dati live (aurora, meteo, cambio).
 // Le fetch vengono tentate sempre: se sei offline il service worker
 // risponde con l'ultimo dato valido salvato in cache.
 let lastLiveRefresh = 0;
@@ -955,7 +1015,6 @@ function refreshLiveData(force) {
   const now = Date.now();
   if (!force && now - lastLiveRefresh < 60000) return;
   lastLiveRefresh = now;
-  fetchAllSun();
   fetchKp();
   fetchAllWeather();
   fetchFxRate();
@@ -1039,9 +1098,131 @@ setupChecklist();
 refreshLiveData(true);
 initTripMap();
 
+// ---------- Offline: pacchetto completo e aggiornamenti ----------
+const APP_CACHE = 'islanda-2026-app-' + APP_VERSION;
+const TILE_CACHE = 'islanda-2026-tiles';
+const OFFLINE_KEY = 'islanda2026-offline';
+const VERSION_KEY = 'islanda2026-version';
+
+function showToast(msg) {
+  const t = document.createElement('div');
+  t.className = 'app-toast';
+  t.setAttribute('role', 'status');
+  t.textContent = msg;
+  document.body.appendChild(t);
+  requestAnimationFrame(() => t.classList.add('app-toast--show'));
+  setTimeout(() => { t.classList.remove('app-toast--show'); setTimeout(() => t.remove(), 400); }, 3500);
+}
+
+(function announceUpdate() {
+  try {
+    const prev = localStorage.getItem(VERSION_KEY);
+    if (prev && prev !== APP_VERSION) showToast('Contenuti aggiornati');
+    localStorage.setItem(VERSION_KEY, APP_VERSION);
+  } catch (e) { /* storage non disponibile */ }
+})();
+
+function fmtWhen(iso) {
+  const d = new Date(iso);
+  return String(d.getDate()).padStart(2, '0') + '/' + String(d.getMonth() + 1).padStart(2, '0')
+       + ' alle ' + String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
+}
+
+async function showOfflineState() {
+  const status = document.getElementById('offline-status');
+  if (!status) return;
+  let saved = null;
+  try { saved = JSON.parse(localStorage.getItem(OFFLINE_KEY) || 'null'); } catch (e) {}
+  if (saved && saved.tiles === OFFLINE_TILES.length) {
+    let used = '';
+    try {
+      const est = await navigator.storage.estimate();
+      used = ' · spazio usato ~' + Math.round(est.usage / 1048576) + ' MB';
+    } catch (e) {}
+    status.textContent = '\u2713 Pronto per l\u2019offline · preparato il ' + fmtWhen(saved.at) + used;
+    status.classList.add('offline-status--ok');
+  } else if (saved) {
+    status.textContent = 'Il percorso è cambiato dall\u2019ultima preparazione: ripeti per aggiornare le mappe.';
+  }
+}
+
+async function prepareOffline() {
+  const btn = document.getElementById('offline-btn');
+  const bar = document.getElementById('offline-bar');
+  const fill = document.getElementById('offline-fill');
+  const status = document.getElementById('offline-status');
+  status.classList.remove('offline-status--ok');
+  if (!('caches' in window)) { status.textContent = 'Questo browser non permette di salvare i contenuti offline.'; return; }
+  if (!navigator.onLine) { status.textContent = 'Serve una connessione (meglio Wi-Fi) per scaricare i contenuti.'; return; }
+  btn.disabled = true;
+  bar.hidden = false;
+  try { if (navigator.storage && navigator.storage.persist) await navigator.storage.persist(); } catch (e) {}
+
+  const appCache = await caches.open(APP_CACHE);
+  const tileCache = await caches.open(TILE_CACHE);
+  const photos = [...new Set([...document.querySelectorAll('[data-photo]')].map(el => 'images/' + el.dataset.photo))];
+  const jobs = photos.map(u => ({ url: u, cache: appCache, optional: true }))
+    .concat(OFFLINE_TILES.map(t => ({ url: 'https://tile.openstreetmap.org/' + t + '.png', cache: tileCache, optional: false })));
+  let done = 0, failed = 0, next = 0;
+
+  async function run(job) {
+    try {
+      if (!(await job.cache.match(job.url, { ignoreSearch: true }))) {
+        const res = await fetch(job.url, { mode: 'cors' });
+        if (res.ok) await job.cache.put(job.url, res);
+        else if (!job.optional) failed++;   // una foto non ancora caricata (404) non è un errore
+      }
+    } catch (e) { failed++; }
+    done++;
+    fill.style.width = Math.round(done / jobs.length * 100) + '%';
+    status.textContent = 'Scaricamento… ' + done + ' di ' + jobs.length;
+  }
+  // al massimo 2 richieste alla volta, come chiede la policy dei tile OpenStreetMap
+  await Promise.all([0, 1].map(async () => { while (next < jobs.length) await run(jobs[next++]); }));
+
+  btn.disabled = false;
+  if (failed) {
+    status.textContent = failed + ' elementi non scaricati: riprova con una connessione migliore (quelli già salvati restano).';
+    return;
+  }
+  try { localStorage.setItem(OFFLINE_KEY, JSON.stringify({ at: new Date().toISOString(), tiles: OFFLINE_TILES.length })); } catch (e) {}
+  bar.hidden = true;
+  showOfflineState();
+}
+
+(function setupOffline() {
+  const btn = document.getElementById('offline-btn');
+  if (btn) btn.addEventListener('click', prepareOffline);
+  showOfflineState();
+})();
+
 if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('sw.js').catch(() => {});
+  // Una nuova versione si scarica in background e si applica solo quando
+  // l'app non è in uso: appena riaperta o mentre è in background.
+  const hadController = !!navigator.serviceWorker.controller;
+  const openedAt = Date.now();
+  let reloadPending = false;
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    if (!hadController) return;   // prima installazione: niente da ricaricare
+    if (document.visibilityState === 'hidden' || Date.now() - openedAt < 10000) location.reload();
+    else reloadPending = true;    // la stai usando: si ricarica quando esci dall'app
+  });
+  window.addEventListener('load', async () => {
+    let reg;
+    try { reg = await navigator.serviceWorker.register('sw.js'); } catch (e) { return; }
+    const applyUpdate = () => {
+      if (reg.waiting && navigator.serviceWorker.controller) reg.waiting.postMessage('skipWaiting');
+    };
+    applyUpdate();
+    let lastCheck = Date.now();
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'hidden') {
+        if (reloadPending) location.reload(); else applyUpdate();
+      } else if (navigator.onLine && Date.now() - lastCheck > 3600000) {
+        lastCheck = Date.now();
+        reg.update().catch(() => {});
+      }
+    });
   });
 }
 </script>

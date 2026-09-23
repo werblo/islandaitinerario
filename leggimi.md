@@ -79,9 +79,10 @@ Da telefono, una volta pubblicato il sito:
 - **iPhone (Safari):** apri il link → icona Condividi → "Aggiungi a Home"
 
 Da quel momento l'icona sarà sulla home come un'app vera, e dopo la prima
-apertura online funzionerà anche offline (le mappe restano visibili solo
-per le zone già caricate mentre eri online; il resto — meteo, aurora,
-cambio valuta — mostra l'ultimo dato salvato).
+apertura online funzionerà anche offline: foto, percorsi, alba/tramonto
+sempre; le mappe lungo tutto il tragitto dopo aver premuto "Prepara
+offline" nella tab Info (vedi sezione 11); meteo, aurora e cambio valuta
+mostrano l'ultimo dato salvato.
 
 ## 3. Aggiornare i contenuti in futuro
 
@@ -247,3 +248,49 @@ sotto "Alloggio", con link "Naviga" diretti:
 - **Checklist** — documenti, abbigliamento, tecnologia, con caselle
   spuntabili salvate sul telefono (localStorage) e contatore di
   avanzamento.
+
+## 11. Aggiornamento settembre 2026 (23/09)
+
+### Dati sensibili rimossi
+I voucher che stavano in `segreto/` sono stati tolti dal repository e da
+tutta la cronologia git (riscritta con `git filter-repo`; nei commit
+l'email personale è stata sostituita con l'indirizzo "noreply" di GitHub).
+Una copia completa del repository com'era prima, voucher inclusi, è
+conservata solo in locale (backup scaricato il 23/09). Il repository è
+pubblico: non aggiungere mai file con dati personali.
+
+### Offline completo
+- **Tutto in cache all'installazione**: pagina, Leaflet (ora nel repo in
+  `vendor/leaflet/`, non più da unpkg) e tutte le foto usate.
+- **Versione automatica**: `render.py` calcola un'impronta (hash) di
+  pagina, foto, percorsi e file statici e la scrive in `sw.js` (generato
+  da `sw-template.js`: **non modificare `sw.js` a mano**). Ogni modifica
+  pubblicata cambia l'impronta e i telefoni scaricano la nuova versione da
+  soli.
+- **Aggiornamento senza interruzioni**: con internet la nuova versione si
+  scarica in background e si applica alla riapertura dell'app (o quando
+  la metti in background), con un avviso discreto "Contenuti aggiornati".
+  Una foto sostituita con lo stesso nome si aggiorna comunque.
+- **Alba/tramonto** calcolati in locale (algoritmo NOAA), niente più
+  chiamate a sunrise-sunset.org. Correzione emersa: i vecchi valori di
+  riserva del Giorno 6 e del Giorno 8 erano calcolati per Vík e Flúðir
+  invece che per Flúðir e Keflavík.
+- **Pulsante "Prepara offline"** (tab Info): salva foto e ~1.050 riquadri
+  di mappa (~17 MB) lungo un corridoio stretto attorno al percorso, zoom
+  6-12, massimo 2 download alla volta (tile usage policy OSM). Da fare
+  con il Wi-Fi prima di partire, su entrambi i telefoni. Ingrandendo oltre
+  lo zoom 12 senza rete la mappa resta grigia.
+- **Spazio**: il pacchetto totale resta sotto i 30 MB, ben dentro i limiti
+  di Android (Chrome) e iPhone (Safari). Su iPhone i dati offline restano
+  al sicuro se l'app è **aggiunta alla schermata Home**; da Safari normale
+  iOS può cancellarli dopo alcune settimane di non utilizzo.
+
+### Percorsi mappa precalcolati
+Il percorso stradale di ogni giorno non si calcola più al momento
+(server demo OSRM), ma una volta sola e resta dentro la pagina, così
+funziona offline. Si aggiorna dalla tab **Actions** di GitHub →
+**"Aggiorna percorsi mappa"** → **Run workflow**: l'azione scarica i
+percorsi (`tools/fetch_routes.py` → `routes.json`), rigenera `index.html` e
+pubblica. **Va rilanciata ogni volta che cambiano le tappe** in
+`map_points`: finché non lo fai, il giorno modificato torna al calcolo
+online (con la linea tratteggiata di riserva se sei offline).

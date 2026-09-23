@@ -1,4 +1,4 @@
-import json, html, math, urllib.parse
+import json, html, math, re, urllib.parse
 
 with open('cinzel.b64') as f:
     cinzel_b64 = f.read().strip()
@@ -22,18 +22,6 @@ seasonal = {
     'vik': {'tmax': 5, 'tmin': 0, 'desc': 'Molto piovoso, tipico della costa sud', 'wind': 'forte, zona esposta'},
     'fludir': {'tmax': 3, 'tmin': -3, 'desc': 'Più freddo, neve possibile in quota', 'wind': 'moderato'},
     'keflavik': {'tmax': 4, 'tmin': -1, 'desc': 'Piovoso e ventoso, zona costiera aperta', 'wind': 'forte'}
-}
-
-# Alba/tramonto precalcolati (astral, Nov 2026) — fallback quando si è offline
-sun_fallback = {
-    'd1': {'sunrise': '09:57', 'sunset': '16:26', 'daylight': '6h 29m'},
-    'd2': {'sunrise': '10:00', 'sunset': '16:23', 'daylight': '6h 23m'},
-    'd3': {'sunrise': '10:03', 'sunset': '16:21', 'daylight': '6h 17m'},
-    'd4': {'sunrise': '09:48', 'sunset': '16:13', 'daylight': '6h 25m'},
-    'd5': {'sunrise': '09:51', 'sunset': '16:10', 'daylight': '6h 19m'},
-    'd6': {'sunrise': '09:54', 'sunset': '16:08', 'daylight': '6h 14m'},
-    'd7': {'sunrise': '10:09', 'sunset': '16:03', 'daylight': '5h 54m'},
-    'd8': {'sunrise': '10:12', 'sunset': '16:01', 'daylight': '5h 49m'},
 }
 
 checklist_groups = [
@@ -616,7 +604,7 @@ def render_day_section(day):
   </div>
   {photo_slot(hero_fname, day['title'], 'photo-slot--hero', HERO_ICON.get(day['id'], 'village'))}
   <div class="map-frame"><div class="day-map" id="day-map-{day['id']}"></div></div>
-  <div class="line" style="margin:6px 0 0;font-size:12px;color:#7c8794;">Mappa reale (OpenStreetMap) — zoomabile e trascinabile. Percorso stradale indicativo (calcolato online); per la navigazione vera usa Google Maps offline.</div>
+  <div class="line" style="margin:6px 0 0;font-size:12px;color:#7c8794;">Mappa reale (OpenStreetMap) — zoomabile e trascinabile. Percorso stradale indicativo (disponibile anche offline); per la navigazione vera usa Google Maps offline.</div>
   <div class="grid2">
     <div class="info-card">
       <div class="info-card__label">Meteo · {e(locations[day['locKey']]['name'])}</div>
@@ -732,7 +720,6 @@ checklist_html = f'''
   </div>
 </section>'''
 
-sun_fallback_js = json.dumps(sun_fallback, ensure_ascii=False)
 seasonal_js = json.dumps(seasonal, ensure_ascii=False)
 locations_js = json.dumps(locations, ensure_ascii=False)
 day_routes_js = json.dumps(map_points, ensure_ascii=False)
@@ -740,6 +727,90 @@ days_meta_js = json.dumps(
     [{'id': d['id'], 'dateISO': d['dateISO'], 'locKey': d['locKey']} for d in days],
     ensure_ascii=False
 )
+
+# ------------------------------------------------------------
+# Percorsi stradali precalcolati (routes.json, prodotto dall'azione
+# GitHub "Aggiorna percorsi mappa"). Un giorno viene incorporato solo se
+# le sue tappe coincidono ancora con quelle usate per il calcolo:
+# altrimenti la pagina torna al calcolo OSRM al volo.
+# ------------------------------------------------------------
+def _simplify(pts, tol):
+    # Douglas-Peucker: toglie i punti che non cambiano il disegno (tol in gradi)
+    if len(pts) < 3:
+        return pts
+    keep = [False] * len(pts)
+    keep[0] = keep[-1] = True
+    stack = [(0, len(pts) - 1)]
+    while stack:
+        a, b = stack.pop()
+        (ax, ay), (bx, by) = pts[a], pts[b]
+        dx, dy = bx - ax, by - ay
+        norm = math.hypot(dx, dy)
+        best, idx = 0.0, -1
+        for i in range(a + 1, b):
+            px, py = pts[i]
+            # giri ad anello (partenza = arrivo): distanza dal punto, non dalla retta
+            d = abs(dy * (px - ax) - dx * (py - ay)) / norm if norm else math.hypot(px - ax, py - ay)
+            if d > best:
+                best, idx = d, i
+        if best > tol and idx > 0:
+            keep[idx] = True
+            stack += [(a, idx), (idx, b)]
+    return [p for p, k in zip(pts, keep) if k]
+
+
+def _coord_str(points):
+    return ';'.join(f"{p['lon']},{p['lat']}" for p in points)
+
+
+try:
+    with open('routes.json', encoding='utf-8') as f:
+        _routes_raw = json.load(f)
+except FileNotFoundError:
+    _routes_raw = {}
+
+day_geometry = {}
+for _day_id, _points in map_points.items():
+    _r = _routes_raw.get(_day_id)
+    if _r and _r.get('coords') == _coord_str(_points):
+        _latlon = [[round(c[1], 5), round(c[0], 5)] for c in _r['geometry']]
+        day_geometry[_day_id] = _simplify(_latlon, 0.00003)
+day_geometry_js = json.dumps(day_geometry, separators=(',', ':'))
+
+
+# ------------------------------------------------------------
+# Tile OpenStreetMap per "Prepara offline": solo un corridoio stretto
+# attorno ai percorsi, a zoom limitati (tile usage policy OSM).
+# ------------------------------------------------------------
+def _tile_xy(lat, lon, z):
+    n = 2 ** z
+    x = int((lon + 180) / 360 * n)
+    y = int((1 - math.asinh(math.tan(math.radians(lat))) / math.pi) / 2 * n)
+    return x, y
+
+
+def _corridor_tiles():
+    lines = []
+    for _day_id, _points in map_points.items():
+        lines.append(day_geometry.get(_day_id) or [[p['lat'], p['lon']] for p in _points])
+    tiles = set()
+    for z in range(6, 13):
+        buf = 1 if z >= 9 else 0
+        for line in lines:
+            for (la1, lo1), (la2, lo2) in zip(line, line[1:] or line):
+                steps = max(1, int(max(abs(la2 - la1), abs(lo2 - lo1)) * 2 ** z / 90))
+                for s in range(steps + 1):
+                    x, y = _tile_xy(la1 + (la2 - la1) * s / steps, lo1 + (lo2 - lo1) * s / steps, z)
+                    for ddx in range(-buf, buf + 1):
+                        for ddy in range(-buf, buf + 1):
+                            tiles.add(f'{z}/{x + ddx}/{y + ddy}')
+    return sorted(tiles, key=lambda t: [int(v) for v in t.split('/')])
+
+
+offline_tiles = _corridor_tiles()
+offline_tiles_js = json.dumps(offline_tiles, separators=(',', ':'))
+offline_tiles_label = f'{len(offline_tiles):,}'.replace(',', '.')
+offline_mb = max(1, round(len(offline_tiles) * 0.016))
 
 WEATHER_CODES_JS = """{0:'Sereno',1:'Prevalentemente sereno',2:'Parzialmente nuvoloso',3:'Nuvoloso',45:'Nebbia',48:'Nebbia con brina',51:'Pioviggine leggera',53:'Pioviggine',55:'Pioviggine intensa',56:'Pioviggine gelata',57:'Pioviggine gelata intensa',61:'Pioggia leggera',63:'Pioggia',65:'Pioggia intensa',66:'Pioggia gelata',67:'Pioggia gelata intensa',71:'Neve leggera',73:'Neve',75:'Neve intensa',77:'Granelli di neve',80:'Rovesci leggeri',81:'Rovesci',82:'Rovesci forti',85:'Rovesci di neve leggeri',86:'Rovesci di neve forti',95:'Temporale'}"""
 
@@ -865,6 +936,14 @@ main {{ max-width:820px; margin:0 auto; padding:20px 20px 70px; display:flex; fl
 .day-map {{ width:100%; height:100%; background:#e4e6e3; }}
 
 .grid2 {{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }}
+.offline-bar {{ height:8px; margin-top:12px; border-radius:4px; background:var(--panel-border); overflow:hidden; }}
+.offline-bar__fill {{ height:100%; width:0; background:var(--amber); transition:width .2s; }}
+.offline-status {{ margin-top:8px; font-size:12.5px; color:#5c6a78; min-height:1em; }}
+.offline-status--ok {{ color:#2c6b3f; font-weight:600; }}
+.offline-btn {{ margin-top:10px; min-height:44px; padding:0 18px; border:none; border-radius:8px; background:var(--navy); color:#f2ede2; font-family:'IBM Plex Sans',sans-serif; font-size:13px; font-weight:700; cursor:pointer; }}
+.offline-btn:disabled {{ opacity:.6; cursor:default; }}
+.app-toast {{ position:fixed; left:50%; bottom:80px; transform:translateX(-50%); z-index:450; background:var(--navy); color:#f2ede2; font-size:12.5px; font-weight:600; padding:8px 14px; border-radius:8px; box-shadow:0 4px 14px rgba(0,0,0,.3); opacity:0; transition:opacity .3s; pointer-events:none; }}
+.app-toast--show {{ opacity:.95; }}
 .info-card {{ background:var(--panel); border:1px solid var(--panel-border); border-radius:8px; padding:16px; }}
 .info-card__label {{ font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.06em; color:#5a6675; margin-bottom:8px; }}
 .info-card__big {{ font-family:'Cinzel',serif; font-weight:600; font-size:20px; color:#28323e; }}
@@ -920,8 +999,8 @@ main {{ max-width:820px; margin:0 auto; padding:20px 20px 70px; display:flex; fl
 .section {{ display:flex; flex-direction:column; gap:8px; }}
 
 .install-hint {{ font-size:12px; color:#7c8794; text-align:center; padding:6px 20px 0; }}</style>
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<link rel="stylesheet" href="vendor/leaflet/leaflet.css"/>
+<script src="vendor/leaflet/leaflet.js"></script>
 </head>
 <body>
 
@@ -957,6 +1036,15 @@ main {{ max-width:820px; margin:0 auto; padding:20px 20px 70px; display:flex; fl
     <div class="rune-rule"></div>
     <div id="trip-map" style="position:relative;isolation:isolate;z-index:0;height:260px;border-radius:8px;overflow:hidden;border:2px solid var(--navy);box-shadow:0 4px 16px rgba(0,0,0,.12);background:#e4e6e3;"></div>
     <div class="line" style="margin-top:10px;font-size:12px;color:#7c8794;">Mappa reale (OpenStreetMap) — zoomabile e trascinabile. Tocca un marker per il nome della tappa. Per la navigazione stradale vera e propria usa Google Maps offline.</div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-title">Prepara offline</div>
+    <div class="rune-rule"></div>
+    <div class="line">Salva sul telefono foto, percorsi e mappe lungo tutto il tragitto del viaggio (circa {offline_tiles_label} riquadri di mappa, ~{offline_mb} MB), così l'app funziona anche senza rete. Fallo con il Wi-Fi prima di partire, su entrambi i telefoni.</div>
+    <div class="offline-bar" id="offline-bar" hidden><div class="offline-bar__fill" id="offline-fill"></div></div>
+    <div class="offline-status" id="offline-status"></div>
+    <button type="button" class="offline-btn" id="offline-btn">Prepara offline</button>
   </div>
 
   <div class="panel">
@@ -1060,7 +1148,9 @@ main {{ max-width:820px; margin:0 auto; padding:20px 20px 70px; display:flex; fl
 const SEASONAL = {seasonal_js};
 const LOCATIONS = {locations_js};
 const DAY_ROUTES = {day_routes_js};
-const SUN_FALLBACK = {sun_fallback_js};
+const DAY_GEOMETRY = {day_geometry_js};
+const OFFLINE_TILES = {offline_tiles_js};
+const APP_VERSION = '__APP_VERSION__';
 const DAYS_META = {days_meta_js};
 const WEATHER_CODES = {WEATHER_CODES_JS};
 
@@ -1107,6 +1197,18 @@ function ensureDayMap(dayId) {{
 
   map.fitBounds(latlngs, {{ padding: [24, 24] }});
 
+  const ROUTE_STYLE = {{ color: '#d9985f', weight: 4, opacity: 0.9, lineCap: 'round' }};
+  if (DAY_GEOMETRY[dayId]) {{
+    // percorso stradale precalcolato (routes.json): disponibile anche offline
+    L.polyline(DAY_GEOMETRY[dayId], ROUTE_STYLE).addTo(map);
+  }} else {{
+    drawRouteLive(map, points, latlngs, ROUTE_STYLE);
+  }}
+
+  el.addEventListener('touchstart', () => {{ map.scrollWheelZoom.enable(); map.dragging.enable(); }}, {{ once: true, passive: true }});
+}}
+
+function drawRouteLive(map, points, latlngs, routeStyle) {{
   const fallback = L.polyline(latlngs, {{ color: '#4f8fa8', weight: 3, dashArray: '1,9', lineCap: 'round', opacity: 0.9 }}).addTo(map);
 
   const coordStr = points.map(p => p.lon + ',' + p.lat).join(';');
@@ -1117,11 +1219,9 @@ function ensureDayMap(dayId) {{
       if (!route) return;
       const coords = route.geometry.coordinates.map(c => [c[1], c[0]]);
       map.removeLayer(fallback);
-      L.polyline(coords, {{ color: '#d9985f', weight: 4, opacity: 0.9, lineCap: 'round' }}).addTo(map);
+      L.polyline(coords, routeStyle).addTo(map);
     }})
     .catch(() => {{ /* resta la linea retta di riserva */ }});
-
-  el.addEventListener('touchstart', () => {{ map.scrollWheelZoom.enable(); map.dragging.enable(); }}, {{ once: true, passive: true }});
 }}
 
 function setActive(id) {{
@@ -1169,11 +1269,8 @@ function renderWeatherAndSun() {{
     if (descEl) descEl.textContent = w.desc;
     if (srcEl) srcEl.textContent = w.source;
 
-    const live = state.sun[day.id];
-    const fb = SUN_FALLBACK[day.id];
-    const sr = live ? live.sunrise : fb.sunrise;
-    const ss = live ? live.sunset : fb.sunset;
-    const dl = live ? live.daylight : fb.daylight + ' (stima)';
+    const sun = state.sun[day.id] || {{ sunrise: '—', sunset: '—', daylight: '—' }};
+    const sr = sun.sunrise, ss = sun.sunset, dl = sun.daylight;
     const srEl = document.querySelector('[data-sunrise="' + day.id + '"]');
     const ssEl = document.querySelector('[data-sunset="' + day.id + '"]');
     const dlEl = document.querySelector('[data-daylight="' + day.id + '"]');
@@ -1187,6 +1284,7 @@ function renderWeatherAndSun() {{
     }}
   }});
 }}
+computeAllSun();
 renderWeatherAndSun();
 
 async function fetchAllWeather() {{
@@ -1201,24 +1299,57 @@ async function fetchAllWeather() {{
   }}
 }}
 
-async function fetchAllSun() {{
-  for (const day of DAYS_META) {{
-    const loc = LOCATIONS[day.locKey];
-    try {{
-      const url = 'https://api.sunrise-sunset.org/json?lat=' + loc.lat + '&lng=' + loc.lon + '&date=' + day.dateISO + '&formatted=0';
-      const res = await fetch(url);
-      const json = await res.json();
-      if (json && json.results) {{
-        const sr = new Date(json.results.sunrise);
-        const ss = new Date(json.results.sunset);
-        const fmt = d => String(d.getUTCHours()).padStart(2,'0') + ':' + String(d.getUTCMinutes()).padStart(2,'0');
-        const lenSec = json.results.day_length;
-        const h = Math.floor(lenSec/3600), m = Math.round((lenSec%3600)/60);
-        state.sun[day.id] = {{ sunrise: fmt(sr), sunset: fmt(ss), daylight: h + 'h ' + String(m).padStart(2,'0') + 'm' }};
-        renderWeatherAndSun();
-      }}
-    }} catch (e) {{ /* resta sulla stima calcolata offline */ }}
+// Alba e tramonto calcolati in locale (algoritmo NOAA, come sunrise-sunset.org):
+// nessuna rete, funziona offline. Restituisce i minuti dalla mezzanotte UTC,
+// che in Islanda coincide con l'ora locale (niente ora legale).
+function sunEventsUTC(dateISO, lat, lon) {{
+  const rad = Math.PI / 180;
+  const [Y, M, D] = dateISO.split('-').map(Number);
+  const jdNoon = Date.UTC(Y, M - 1, D, 12) / 86400000 + 2440587.5;
+  function solar(jd) {{
+    const T = (jd - 2451545) / 36525;
+    const L0 = (280.46646 + T * (36000.76983 + T * 0.0003032)) % 360;
+    const Ma = 357.52911 + T * (35999.05029 - 0.0001537 * T);
+    const ecc = 0.016708634 - T * (0.000042037 + 0.0000001267 * T);
+    const C = Math.sin(Ma * rad) * (1.914602 - T * (0.004817 + 0.000014 * T))
+            + Math.sin(2 * Ma * rad) * (0.019993 - 0.000101 * T) + Math.sin(3 * Ma * rad) * 0.000289;
+    const omega = 125.04 - 1934.136 * T;
+    const lambda = L0 + C - 0.00569 - 0.00478 * Math.sin(omega * rad);
+    const eps = 23 + (26 + (21.448 - T * (46.815 + T * (0.00059 - T * 0.001813))) / 60) / 60 + 0.00256 * Math.cos(omega * rad);
+    const decl = Math.asin(Math.sin(eps * rad) * Math.sin(lambda * rad)) / rad;
+    const y = Math.tan(eps * rad / 2) ** 2;
+    const eqTime = 4 / rad * (y * Math.sin(2 * L0 * rad) - 2 * ecc * Math.sin(Ma * rad)
+      + 4 * ecc * y * Math.sin(Ma * rad) * Math.cos(2 * L0 * rad)
+      - 0.5 * y * y * Math.sin(4 * L0 * rad) - 1.25 * ecc * ecc * Math.sin(2 * Ma * rad));
+    return {{ decl, eqTime }};
   }}
+  function event(rising) {{
+    let minutes = 720;
+    for (let i = 0; i < 3; i++) {{
+      const {{ decl, eqTime }} = solar(jdNoon - 0.5 + minutes / 1440);
+      const cosH = (Math.cos(90.833 * rad) - Math.sin(lat * rad) * Math.sin(decl * rad))
+                 / (Math.cos(lat * rad) * Math.cos(decl * rad));
+      if (cosH > 1 || cosH < -1) return null;
+      const H = Math.acos(cosH) / rad * (rising ? 1 : -1);
+      minutes = 720 - 4 * (lon + H) - eqTime;
+    }}
+    return minutes;
+  }}
+  return {{ sunrise: event(true), sunset: event(false) }};
+}}
+
+function computeAllSun() {{
+  const hhmm = m => String(Math.floor(m / 60)).padStart(2, '0') + ':' + String(Math.floor(m % 60)).padStart(2, '0');
+  DAYS_META.forEach(day => {{
+    const loc = LOCATIONS[day.locKey];
+    const ev = sunEventsUTC(day.dateISO, loc.lat, loc.lon);
+    if (ev.sunrise === null || ev.sunset === null) return;
+    const len = Math.round(ev.sunset - ev.sunrise);
+    state.sun[day.id] = {{
+      sunrise: hhmm(ev.sunrise), sunset: hhmm(ev.sunset),
+      daylight: Math.floor(len / 60) + 'h ' + String(len % 60).padStart(2, '0') + 'm'
+    }};
+  }});
 }}
 
 async function fetchKp() {{
@@ -1359,7 +1490,7 @@ function initTripMap() {{
   el.addEventListener('touchstart', () => {{ map.scrollWheelZoom.enable(); map.dragging.enable(); }}, {{ once: true, passive: true }});
 }}
 
-// Aggiornamento dei dati live (alba/tramonto, aurora, meteo, cambio).
+// Aggiornamento dei dati live (aurora, meteo, cambio).
 // Le fetch vengono tentate sempre: se sei offline il service worker
 // risponde con l'ultimo dato valido salvato in cache.
 let lastLiveRefresh = 0;
@@ -1367,7 +1498,6 @@ function refreshLiveData(force) {{
   const now = Date.now();
   if (!force && now - lastLiveRefresh < 60000) return;
   lastLiveRefresh = now;
-  fetchAllSun();
   fetchKp();
   fetchAllWeather();
   fetchFxRate();
@@ -1451,9 +1581,131 @@ setupChecklist();
 refreshLiveData(true);
 initTripMap();
 
+// ---------- Offline: pacchetto completo e aggiornamenti ----------
+const APP_CACHE = 'islanda-2026-app-' + APP_VERSION;
+const TILE_CACHE = 'islanda-2026-tiles';
+const OFFLINE_KEY = 'islanda2026-offline';
+const VERSION_KEY = 'islanda2026-version';
+
+function showToast(msg) {{
+  const t = document.createElement('div');
+  t.className = 'app-toast';
+  t.setAttribute('role', 'status');
+  t.textContent = msg;
+  document.body.appendChild(t);
+  requestAnimationFrame(() => t.classList.add('app-toast--show'));
+  setTimeout(() => {{ t.classList.remove('app-toast--show'); setTimeout(() => t.remove(), 400); }}, 3500);
+}}
+
+(function announceUpdate() {{
+  try {{
+    const prev = localStorage.getItem(VERSION_KEY);
+    if (prev && prev !== APP_VERSION) showToast('Contenuti aggiornati');
+    localStorage.setItem(VERSION_KEY, APP_VERSION);
+  }} catch (e) {{ /* storage non disponibile */ }}
+}})();
+
+function fmtWhen(iso) {{
+  const d = new Date(iso);
+  return String(d.getDate()).padStart(2, '0') + '/' + String(d.getMonth() + 1).padStart(2, '0')
+       + ' alle ' + String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
+}}
+
+async function showOfflineState() {{
+  const status = document.getElementById('offline-status');
+  if (!status) return;
+  let saved = null;
+  try {{ saved = JSON.parse(localStorage.getItem(OFFLINE_KEY) || 'null'); }} catch (e) {{}}
+  if (saved && saved.tiles === OFFLINE_TILES.length) {{
+    let used = '';
+    try {{
+      const est = await navigator.storage.estimate();
+      used = ' · spazio usato ~' + Math.round(est.usage / 1048576) + ' MB';
+    }} catch (e) {{}}
+    status.textContent = '\\u2713 Pronto per l\\u2019offline · preparato il ' + fmtWhen(saved.at) + used;
+    status.classList.add('offline-status--ok');
+  }} else if (saved) {{
+    status.textContent = 'Il percorso è cambiato dall\\u2019ultima preparazione: ripeti per aggiornare le mappe.';
+  }}
+}}
+
+async function prepareOffline() {{
+  const btn = document.getElementById('offline-btn');
+  const bar = document.getElementById('offline-bar');
+  const fill = document.getElementById('offline-fill');
+  const status = document.getElementById('offline-status');
+  status.classList.remove('offline-status--ok');
+  if (!('caches' in window)) {{ status.textContent = 'Questo browser non permette di salvare i contenuti offline.'; return; }}
+  if (!navigator.onLine) {{ status.textContent = 'Serve una connessione (meglio Wi-Fi) per scaricare i contenuti.'; return; }}
+  btn.disabled = true;
+  bar.hidden = false;
+  try {{ if (navigator.storage && navigator.storage.persist) await navigator.storage.persist(); }} catch (e) {{}}
+
+  const appCache = await caches.open(APP_CACHE);
+  const tileCache = await caches.open(TILE_CACHE);
+  const photos = [...new Set([...document.querySelectorAll('[data-photo]')].map(el => 'images/' + el.dataset.photo))];
+  const jobs = photos.map(u => ({{ url: u, cache: appCache, optional: true }}))
+    .concat(OFFLINE_TILES.map(t => ({{ url: 'https://tile.openstreetmap.org/' + t + '.png', cache: tileCache, optional: false }})));
+  let done = 0, failed = 0, next = 0;
+
+  async function run(job) {{
+    try {{
+      if (!(await job.cache.match(job.url, {{ ignoreSearch: true }}))) {{
+        const res = await fetch(job.url, {{ mode: 'cors' }});
+        if (res.ok) await job.cache.put(job.url, res);
+        else if (!job.optional) failed++;   // una foto non ancora caricata (404) non è un errore
+      }}
+    }} catch (e) {{ failed++; }}
+    done++;
+    fill.style.width = Math.round(done / jobs.length * 100) + '%';
+    status.textContent = 'Scaricamento… ' + done + ' di ' + jobs.length;
+  }}
+  // al massimo 2 richieste alla volta, come chiede la policy dei tile OpenStreetMap
+  await Promise.all([0, 1].map(async () => {{ while (next < jobs.length) await run(jobs[next++]); }}));
+
+  btn.disabled = false;
+  if (failed) {{
+    status.textContent = failed + ' elementi non scaricati: riprova con una connessione migliore (quelli già salvati restano).';
+    return;
+  }}
+  try {{ localStorage.setItem(OFFLINE_KEY, JSON.stringify({{ at: new Date().toISOString(), tiles: OFFLINE_TILES.length }})); }} catch (e) {{}}
+  bar.hidden = true;
+  showOfflineState();
+}}
+
+(function setupOffline() {{
+  const btn = document.getElementById('offline-btn');
+  if (btn) btn.addEventListener('click', prepareOffline);
+  showOfflineState();
+}})();
+
 if ('serviceWorker' in navigator) {{
-  window.addEventListener('load', () => {{
-    navigator.serviceWorker.register('sw.js').catch(() => {{}});
+  // Una nuova versione si scarica in background e si applica solo quando
+  // l'app non è in uso: appena riaperta o mentre è in background.
+  const hadController = !!navigator.serviceWorker.controller;
+  const openedAt = Date.now();
+  let reloadPending = false;
+  navigator.serviceWorker.addEventListener('controllerchange', () => {{
+    if (!hadController) return;   // prima installazione: niente da ricaricare
+    if (document.visibilityState === 'hidden' || Date.now() - openedAt < 10000) location.reload();
+    else reloadPending = true;    // la stai usando: si ricarica quando esci dall'app
+  }});
+  window.addEventListener('load', async () => {{
+    let reg;
+    try {{ reg = await navigator.serviceWorker.register('sw.js'); }} catch (e) {{ return; }}
+    const applyUpdate = () => {{
+      if (reg.waiting && navigator.serviceWorker.controller) reg.waiting.postMessage('skipWaiting');
+    }};
+    applyUpdate();
+    let lastCheck = Date.now();
+    document.addEventListener('visibilitychange', () => {{
+      if (document.visibilityState === 'hidden') {{
+        if (reloadPending) location.reload(); else applyUpdate();
+      }} else if (navigator.onLine && Date.now() - lastCheck > 3600000) {{
+        lastCheck = Date.now();
+        reg.update().catch(() => {{}});
+      }}
+    }});
   }});
 }}
 </script>
@@ -1461,7 +1713,41 @@ if ('serviceWorker' in navigator) {{
 </html>
 '''
 
+# ------------------------------------------------------------
+# Versione automatica: hash di pagina, foto, percorsi e file statici.
+# Qualunque modifica pubblicata cambia CACHE_NAME in sw.js, e il
+# telefono scarica la nuova versione da solo.
+# ------------------------------------------------------------
+import hashlib, os
+
+photo_files = sorted({p for p in re.findall(r'data-photo="([^"]+)"', html_out)
+                      if os.path.isfile(os.path.join('images', p))})
+STATIC_FILES = ['manifest.json', 'icons/icon-180.png', 'icons/icon-192.png', 'icons/icon-512.png',
+                'icons/icon-192-maskable.png', 'icons/icon-512-maskable.png',
+                'vendor/leaflet/leaflet.js', 'vendor/leaflet/leaflet.css',
+                'vendor/leaflet/images/layers.png', 'vendor/leaflet/images/layers-2x.png']
+SW_TEMPLATE = open('sw-template.js', encoding='utf-8').read()
+
+_h = hashlib.sha256()
+for _chunk in [html_out.encode('utf-8'), SW_TEMPLATE.encode('utf-8'), json.dumps(_routes_raw, sort_keys=True).encode()]:
+    _h.update(_chunk)
+for _path in STATIC_FILES + ['images/' + p for p in photo_files]:
+    _h.update(_path.encode())
+    with open(_path, 'rb') as f:
+        _h.update(f.read())
+app_version = _h.hexdigest()[:12]
+
+html_out = html_out.replace('__APP_VERSION__', app_version)
+precache = ['./', 'index.html'] + STATIC_FILES + ['images/' + p for p in photo_files]
+sw_out = (SW_TEMPLATE
+          .replace('__APP_VERSION__', app_version)
+          .replace('__PRECACHE__', json.dumps(precache, ensure_ascii=False, indent=2)))
+
 with open('index.html', 'w', encoding='utf-8') as f:
     f.write(html_out)
+with open('sw.js', 'w', encoding='utf-8') as f:
+    f.write(sw_out)
 
-print('index.html written,', len(html_out), 'bytes')
+print('index.html written,', len(html_out), 'bytes · versione', app_version,
+      '· foto in precache', len(photo_files), '· percorsi incorporati', len(day_geometry),
+      '· tile offline', len(offline_tiles))
