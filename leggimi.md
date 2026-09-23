@@ -20,6 +20,7 @@ d2-reykjanes.jpg                            → Reykjanes
 
 d3-hero.jpg                                 → Þingvellir & relax serale
 d3-thingvellir-national-park.jpg            → Þingvellir
+d3-passeggiata-sul-lago-laugarvatn.jpg      → Passeggiata sul lago Laugarvatn
 d3-fontana-geothermal-baths.jpg             → Fontana Geothermal Baths
 
 d4-hero.jpg                                 → Costa Sud
@@ -530,3 +531,10 @@ percorso già calcolato resta valido.
   luce (alba verso le 10:05).
 - **Foto**: `render.py` cancella da `images/web/` i WebP delle foto non più
   usate.
+
+### Giorno 3: tabella di marcia per Fontana
+Le terme di Fontana sono prenotate alle 15:30. Il Giorno 3 ora ha una
+tabella di marcia nel consiglio del giorno (Þingvellir 10:30-13:30,
+Laugarvatn verso le 13:50) e una nuova attività alle 14:15: passeggiata
+sulla riva del lago Laugarvatn accanto a Fontana. Foto attesa:
+`d3-passeggiata-sul-lago-laugarvatn.jpg`.
