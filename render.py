@@ -101,7 +101,7 @@ days = [
     {'meal':'Cena','place':'Sushi Social o cucina in appartamento','note':'Menu con opzioni senza glutine indicate','cost':'€€€','gf':True}
   ],
   'accommodation':{'name':'46heima Boutique Apartments','detail':'2ª notte a Reykjavík','url':'https://www.booking.com/hotel/is/46heima-apartments.en-gb.html'},
-  'tips':"Nel pomeriggio si va a Reykjanes (~145 km in tutto tra andata, tappe e ritorno). Se il meteo è brutto, al posto di Reykjanes c'è il National Museum, al coperto in città; in alternativa si può invertire la giornata con il Giorno 3.",
+  'tips':"Nel pomeriggio si va a Reykjanes (~135 km in tutto tra andata, tappe e ritorno). Se il meteo è brutto, al posto di Reykjanes c'è il National Museum, al coperto in città; in alternativa si può invertire la giornata con il Giorno 3.",
   'culture':"Il Perlan racconta la geologia islandese da dentro una grotta di ghiaccio artificiale, costruito sopra sei enormi serbatoi che ancora oggi riscaldano Reykjavík con l'acqua calda del sottosuolo. L'Harpa, sala concerti dalla facciata a nido d'ape ispirata alle colonne di basalto, è diventata il simbolo della rinascita della città dopo la crisi finanziaria del 2008. Al National Museum si ripercorre la storia islandese dai primi coloni vichinghi a oggi. Se scegliete invece Reykjanes, camminerete letteralmente tra due continenti sul Bridge Between Continents, un ponte pedonale sulla stessa faglia di Þingvellir. Qui la terra non è statica: dopo quasi 800 anni di quiete, dal 2021 il vulcanismo è tornato con eruzioni vicino a Grindavík, l'ultima tra il 2023 e il 2024. Vedrete il Gunnuhver, la pozza di fango più grande d'Islanda, e il Reykjanesviti, il faro più antico della nazione — tutto dentro un UNESCO Global Geopark dove la terra si sta ancora formando.",
   'parking_nav':[
     {'label':'Naviga verso zona P2 (per questa notte)','query':'Rauðarárstígur Reykjavik'}
@@ -123,7 +123,7 @@ days = [
     {'meal':'Cena','place':'Hlemmur Mathöll, Reykjavík','note':'Food hall con vari stand (aperto fino alle 23:00), alcuni segnalano opzioni senza glutine. Se rientrate tardi in serata, come piano B ci sono minimarket 10-11 aperti 24/7 o Hagkaup (Skeifan, 24h)','cost':'€€','gf':True}
   ],
   'accommodation':{'name':'46heima Boutique Apartments','detail':'Ultima notte a Reykjavík · check-out domani 09:30-10:00','url':'https://www.booking.com/hotel/is/46heima-apartments.en-gb.html'},
-  'tips':"Giornata più leggera (~150 km totali) e volutamente rilassante: è l'ultima notte a Reykjavík prima dei due giorni più intensi del viaggio (Costa Sud e Jökulsárlón). Tabella di marcia per non perdere le terme prenotate alle 15:30: partenza da Reykjavík verso le 9:45, Þingvellir dalle 10:30 alle 13:30, Laugarvatn verso le 13:50, pranzo e passeggiata sul lago dalle 14:15, alla reception di Fontana alle 15:15. Geysir e Gullfoss li vedrete il Giorno 7 da Flúðir, molto più vicini da lì che da Reykjavík. Se restate fino a tardi la sera, il rientro a Reykjavík (~1h05 da Laugarvatn) va messo in conto: con cielo sereno può valerne la pena per l'aurora. Hlemmur Mathöll chiude alle 23:00, quindi arrivando entro le 22:00 circa siete ancora in tempo per cena; se fate più tardi, ripiegate su un minimarket 10-11 (24/7) o Hagkaup senza stress.",
+  'tips':"Giornata più leggera (~160 km totali) e volutamente rilassante: è l'ultima notte a Reykjavík prima dei due giorni più intensi del viaggio (Costa Sud e Jökulsárlón). Tabella di marcia per non perdere le terme prenotate alle 15:30: partenza da Reykjavík verso le 9:45, Þingvellir dalle 10:30 alle 13:30, Laugarvatn verso le 14:05 (~35 min di strada), pranzo e passeggiata sul lago dalle 14:15, alla reception di Fontana alle 15:15. Geysir e Gullfoss li vedrete il Giorno 7 da Flúðir, molto più vicini da lì che da Reykjavík. Se restate fino a tardi la sera, il rientro a Reykjavík (~1h05 da Laugarvatn) va messo in conto: con cielo sereno può valerne la pena per l'aurora. Hlemmur Mathöll chiude alle 23:00, quindi arrivando entro le 22:00 circa siete ancora in tempo per cena; se fate più tardi, ripiegate su un minimarket 10-11 (24/7) o Hagkaup senza stress.",
   'culture':"A Þingvellir camminerete letteralmente tra due continenti: la faglia che attraversa il parco segna il punto in cui le placche nordamericana ed eurasiatica si allontanano di circa 2 cm l'anno. Qui, nel 930 d.C., nacque l'Alþingi, tra i più antichi parlamenti al mondo ancora in vita — la culla della democrazia islandese che riprenderete più avanti nella tab Storia. Poco più a sud, sul lago di Laugarvatn, la Fontana sfrutta la stessa energia del sottosuolo che alimenta Þingvellir e Geysir.",
   'parking_nav':[
     {'label':'Naviga verso zona P1 (rientro tardi da Fontana, già gratis dopo le 21:00)','query':'Laugavegur 46 Reykjavik'}
@@ -139,7 +139,7 @@ days = [
   ],
   'activities':[
     {'time':'09:30','title':'Check-out appartamento','desc':'','cost':None},
-    {'time':'11:30','title':'Seljalandsfoss','desc':"Cascata che si può costeggiare sul retro (in inverno spesso ghiacciata, occhio al sentiero). A 10 min a piedi c'è Gljúfrabúi, cascata nascosta in un canyon.",'cost':'gratis','link':'https://it.wikipedia.org/wiki/Seljalandsfoss','nav':'Seljalandsfoss parking'},
+    {'time':'11:45','title':'Seljalandsfoss','desc':"Cascata che si può costeggiare sul retro (in inverno spesso ghiacciata, occhio al sentiero). A 10 min a piedi c'è Gljúfrabúi, cascata nascosta in un canyon.",'cost':'gratis','link':'https://it.wikipedia.org/wiki/Seljalandsfoss','nav':'Seljalandsfoss parking'},
     {'time':'13:15','title':'Skógafoss','desc':"Una delle cascate più imponenti d'Islanda, 60m, scalinata panoramica in cima.",'cost':'gratis','link':'https://it.wikipedia.org/wiki/Skogafoss','nav':'Skógafoss parking'},
     {'time':'14:45','title':'Dyrhólaey','desc':'Promontorio con arco di roccia e vista su Reynisfjara. Da vedere con un po\' di luce ancora buona: il tramonto qui è verso le 16:15.','cost':'gratis','nav':'Dyrhólaey parking'},
     {'time':'15:30','title':'Reynisfjara','desc':'Spiaggia di sabbia nera con colonne basaltiche e i faraglioni di Reynisdrangar. Attenzione alle onde anomale, non voltare le spalle al mare.','cost':'gratis','nav':'Reynisfjara Black Sand Beach parking'},
@@ -164,7 +164,7 @@ days = [
   ],
   'activities':[
     {'time':'08:00','title':'Partenza presto','desc':'Giornata lunga di guida: partire con il buio è normale in novembre, il sole sorge solo verso le 9:50.','cost':None},
-    {'time':'10:45','title':'Jökulsárlón Glacier Lagoon','desc':'Laguna glaciale con iceberg alla deriva verso il mare.','cost':'gratis (parcheggio a pagamento)','nav':'Jökulsárlón Glacier Lagoon parking'},
+    {'time':'11:00','title':'Jökulsárlón Glacier Lagoon','desc':'Laguna glaciale con iceberg alla deriva verso il mare.','cost':'gratis (parcheggio a pagamento)','nav':'Jökulsárlón Glacier Lagoon parking'},
     {'time':'12:15','title':'Diamond Beach','desc':'Spiaggia nera di fronte alla laguna dove i blocchi di ghiaccio si arenano.','cost':'gratis','link':'https://perlan.is/articles/diamond-beach-iceland','nav':'Diamond Beach Iceland parking'},
     {'time':'15:00','title':'Fjaðrárgljúfur','desc':"Canyon serpeggiante con pareti muschiose, punti panoramici accessibili a piedi. Visitato sulla via del ritorno apposta: con la luce del primo mattino (alba verso le 9:50) si vedrebbe pochissimo.",'cost':'gratis','nav':'Fjaðrárgljúfur canyon parking'}
   ],
@@ -173,7 +173,7 @@ days = [
     {'meal':'Cena','place':'Ströndin Bistro, Vík','note':'','cost':'€€','gf':True}
   ],
   'accommodation':{'name':'Hotel Burfell','detail':'2ª notte a Vík','url':'https://hotelburfell.is/'},
-  'tips':"~395 km andata/ritorno da Vík: con brutto tempo valuta di fermarti solo a Jökulsárlón/Diamond Beach, tagliando Fjaðrárgljúfur. Il giro è organizzato per arrivare a Jökulsárlón e Diamond Beach con il sole già alto, e vedere Fjaðrárgljúfur nel tardo pomeriggio con ancora buona luce prima del tramonto (16:10).",
+  'tips':"~390 km andata/ritorno da Vík: con brutto tempo valuta di fermarti solo a Jökulsárlón/Diamond Beach, tagliando Fjaðrárgljúfur. Il giro è organizzato per arrivare a Jökulsárlón e Diamond Beach con il sole già alto, e vedere Fjaðrárgljúfur nel tardo pomeriggio con ancora buona luce prima del tramonto (16:10).",
   'culture':"Giornata dedicata al ghiaccio. A Jökulsárlón la laguna esiste solo da un secolo: il Vatnajökull, il ghiacciaio più esteso d'Europa, si è ritirato rapidamente da inizio '900 lasciando dietro di sé questo bacino pieno di iceberg alla deriva verso il mare. Quelli che si arenano sulla sabbia nera di Diamond Beach, levigati e trasparenti, possono contenere ghiaccio compresso da centinaia o migliaia di anni. Sulla via del ritorno, il canyon di Fjaðrárgljúfur, scavato da un fiume glaciale in circa due milioni di anni, è diventato famoso di recente anche grazie a un video musicale di Justin Bieber.",
   'parking_nav':[
     {'label':'Naviga verso il parcheggio dell\'hotel (gratuito)','query':'Hotel Burfell Vík Iceland'}
@@ -480,7 +480,8 @@ def leg_values(day_id, i, leg):
     r = (_routes_raw.get('_legs') or {}).get(day_id) or []
     if i < len(r) and 'km' in r[i] and r[i].get('from') == leg['from'] and r[i].get('to') == leg['to']:
         suffix = leg['time'][leg['time'].index(' ('):] if ' (' in leg['time'] else ''
-        return round(r[i]['km']), _fmt_minutes(r[i]['min']) + suffix
+        km = r[i]['km']
+        return ('meno di 1' if km < 1 else round(km)), _fmt_minutes(r[i]['min']) + suffix
     return leg['km'], leg['time']
 
 
