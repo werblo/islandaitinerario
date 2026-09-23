@@ -422,17 +422,16 @@ def photo_slot(filename, label, css_class, icon_key='village'):
             f'<div class="photo-slot__ph"><svg viewBox="0 0 64 56" class="photo-slot__icon" aria-hidden="true">{inner}</svg>'
             f'<span>{e(label)}</span></div></div>')
 
-ROAD_COND_URL = 'https://umferdin.is/en'
-VEDUR_WARN_URL = 'https://en.vedur.is/alerts'
+# Safetravel (soccorso islandese ICE-SAR): strade (Vegagerðin) e allerte meteo
+# (Veðurstofan) sulla stessa mappa, per tutta l'Islanda.
+CONDITIONS_URL = 'https://safetravel.is/conditions'
 
 def render_leg(leg):
     note = f'<div class="leg-note">{e(leg["note"])}</div>' if leg.get('note') else ''
     route_label = f'{e(leg["from"])} → {e(leg["to"])}'
-    road_label = f'Stato delle strade {e(leg["from"])} → {e(leg["to"])} su umferdin.is (Vegagerðin, road.is)'
-    weather_label = f'Allerte vento e meteo {e(leg["from"])} → {e(leg["to"])} su vedur.is'
+    cond_label = f'Stato delle strade e allerte meteo {e(leg["from"])} → {e(leg["to"])} su safetravel.is'
     links = (f'<div class="leg-links">'
-             f'<a href="{ROAD_COND_URL}" target="_blank" rel="noopener" class="leg-link" aria-label="{road_label}">Strade ↗</a>'
-             f'<a href="{VEDUR_WARN_URL}" target="_blank" rel="noopener" class="leg-link" aria-label="{weather_label}">Allerte meteo ↗</a>'
+             f'<a href="{CONDITIONS_URL}" target="_blank" rel="noopener" class="leg-link" aria-label="{cond_label}">Strade e meteo ↗</a>'
              f'</div>')
     return (f'<div class="leg"><div class="leg-route">{route_label}</div>'
             f'<div class="leg-meta">{leg["km"]} km · {e(leg["time"])}</div>{note}{links}</div>')
@@ -1345,9 +1344,10 @@ function renderWeatherAndSun() {{
 
     const auroraEl = document.querySelector('[data-aurora="' + day.id + '"]');
     if (auroraEl) {{
-      auroraEl.innerHTML = '<strong>Aurora:</strong> Buio da ' + ss + ' a ' + sr + ' del giorno dopo — finestra ampia. Novembre è piena stagione aurora: serve cielo sereno e attività geomagnetica. Controlla vedur.is/aurora nei giorni prima.';
+      auroraEl.innerHTML = '<strong>Aurora:</strong> Buio da ' + ss + ' a ' + sr + ' del giorno dopo — finestra ampia. Novembre è piena stagione aurora: serve cielo sereno e attività geomagnetica. Controlla vedur.is/aurora nei giorni prima.<span data-aurora-live="' + day.id + '"></span>';
     }}
   }});
+  if (auroraReady) renderAurora();   // il box aurora dei giorni è appena stato riscritto
 }}
 computeAllSun();
 renderWeatherAndSun();
@@ -1487,10 +1487,11 @@ async function fetchKpForecast() {{
   renderAurora();
 }}
 
-function tonightPlace(now) {{
-  const iso = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0');
-  const day = DAYS_META.find(d => d.dateISO === iso && d.id !== 'd8');
-  return day ? {{ key: day.locKey, inTrip: true }} : {{ key: 'reykjavik', inTrip: false }};
+// Dove si dorme la notte che inizia in una certa data: durante il viaggio l'alloggio
+// di quel giorno, prima e dopo Reykjavík (dati reali, non un esempio).
+function nightPlaceKey(dateISO) {{
+  const day = DAYS_META.find(d => d.dateISO === dateISO && d.id !== 'd8');
+  return day ? day.locKey : 'reykjavik';
 }}
 
 function kpFactor(kp) {{
@@ -1502,27 +1503,16 @@ function kpFactor(kp) {{
   return 0.15;
 }}
 
-function renderAurora() {{
-  const verdictEl = document.getElementById('aurora-verdict');
-  if (!verdictEl) return;
-  const detailEl = document.getElementById('aurora-detail');
-  const daysEl = document.getElementById('aurora-days');
-  const srcEl = document.getElementById('aurora-src');
-  const data = auroraLoad();
-  const now = new Date();
-  const place = tonightPlace(now);
-  const loc = LOCATIONS[place.key];
+// Stima per la notte che inizia alle 12 UTC di startMs: ore di buio astronomico,
+// Kp previsto per ogni ora e nuvolosità oraria del luogo.
+function nightEstimate(startMs, placeKey, data) {{
+  const loc = LOCATIONS[placeKey];
   const kpRows = data.kp || [];
-  const clouds = (data.clouds || {{}})[place.key];
-  const hh = d => String(d.getUTCHours()).padStart(2, '0') + ':00';
-
-  // la notte "di stasera": dalle 12 UTC di oggi alle 12 di domani (prima delle 10 è ancora la notte in corso)
-  const start = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), 12));
-  if (now.getUTCHours() < 10) start.setUTCDate(start.getUTCDate() - 1);
+  const clouds = (data.clouds || {{}})[placeKey];
   const hours = [];
   for (let i = 0; i < 24; i++) {{
-    const t = new Date(start.getTime() + i * 3600000);
-    if (sunAltitude(new Date(t.getTime() + 1800000), loc.lat, loc.lon) >= -18) continue;   // non è buio astronomico
+    const t = new Date(startMs + i * 3600000);
+    if (sunAltitude(new Date(t.getTime() + 1800000), loc.lat, loc.lon) >= -18) continue;
     const row = kpRows.find(r => t.getTime() >= r.t && t.getTime() < r.t + 3 * 3600000);
     let cloud = null;
     if (clouds && clouds.time) {{
@@ -1531,61 +1521,93 @@ function renderAurora() {{
     }}
     hours.push({{ t, kp: row ? row.kp : null, cloud }});
   }}
-
-  const place_ = place.inTrip ? loc.name : 'Reykjavík (esempio, il viaggio non è ancora iniziato)';
   const withKp = hours.filter(h => h.kp !== null);
-  verdictEl.className = 'aurora-tonight__verdict';
-  if (!hours.length) {{
-    verdictEl.textContent = 'Stasera a ' + place_ + ': niente buio astronomico';
-    detailEl.textContent = '';
-  }} else if (!withKp.length) {{
-    verdictEl.textContent = 'Stasera a ' + place_ + ': previsione non disponibile';
-    detailEl.textContent = navigator.onLine ? 'Dati NOAA non ancora ricevuti.' : 'Serve una connessione per scaricare la previsione.';
-  }} else {{
-    const hasClouds = withKp.some(h => h.cloud !== null);
-    withKp.forEach(h => {{ h.score = kpFactor(h.kp) * (h.cloud === null ? (hasClouds ? 0.5 : 1) : (100 - h.cloud) / 100); }});
-    const best = Math.max(...withKp.map(h => h.score));
-    const level = best >= 0.45 ? 'buone' : best >= 0.2 ? 'scarse' : 'nulle';
-    verdictEl.textContent = 'Stasera a ' + place_ + ': ' + level + ' probabilità';
-    verdictEl.classList.add('aurora-tonight__verdict--' + level);
-    // fasce orarie migliori: ore consecutive vicine al massimo
-    const good = withKp.filter(h => h.score >= Math.max(0.2, best * 0.8));
-    const windows = [];
-    good.forEach(h => {{
-      const last = windows[windows.length - 1];
-      if (last && h.t - last.end === 0) last.end = new Date(h.t.getTime() + 3600000);
-      else windows.push({{ from: h.t, end: new Date(h.t.getTime() + 3600000) }});
-    }});
-    const kpMax = Math.max(...withKp.map(h => h.kp));
-    const cl = withKp.filter(h => h.cloud !== null).map(h => h.cloud);
-    const parts = [];
-    if (level !== 'nulle' && windows.length) parts.push('meglio ' + windows.slice(0, 2).map(w => hh(w.from) + '–' + hh(w.end)).join(' e '));
-    parts.push('Kp previsto fino a ' + kpMax.toFixed(1).replace('.0', ''));
-    parts.push(cl.length ? 'nuvole ' + Math.min(...cl) + '–' + Math.max(...cl) + '%' : 'nuvole non disponibili');
-    parts.push('buio ' + hh(hours[0].t) + '–' + hh(new Date(hours[hours.length - 1].t.getTime() + 3600000)) + ' (ora islandese)');
-    detailEl.textContent = parts.join(' · ');
-  }}
-
-  // Kp massimo previsto per i prossimi giorni
-  const todayStart = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate());
-  const byDay = {{}};
-  kpRows.filter(r => r.t >= todayStart).forEach(r => {{
-    const k = new Date(r.t).toISOString().slice(0, 10);
-    byDay[k] = Math.max(byDay[k] || 0, r.kp);
+  const est = {{ loc, hours, withKp, level: null }};
+  if (!withKp.length) return est;
+  const hasClouds = withKp.some(h => h.cloud !== null);
+  withKp.forEach(h => {{ h.score = kpFactor(h.kp) * (h.cloud === null ? (hasClouds ? 0.5 : 1) : (100 - h.cloud) / 100); }});
+  const best = Math.max(...withKp.map(h => h.score));
+  est.level = best >= 0.45 ? 'buone' : best >= 0.2 ? 'scarse' : 'nulle';
+  est.kpMax = Math.max(...withKp.map(h => h.kp));
+  est.clouds = withKp.filter(h => h.cloud !== null).map(h => h.cloud);
+  // fasce orarie migliori: ore consecutive vicine al massimo
+  est.windows = [];
+  withKp.filter(h => h.score >= Math.max(0.2, best * 0.8)).forEach(h => {{
+    const last = est.windows[est.windows.length - 1];
+    if (last && h.t - last.end === 0) last.end = new Date(h.t.getTime() + 3600000);
+    else est.windows.push({{ from: h.t, end: new Date(h.t.getTime() + 3600000) }});
   }});
-  const dn = ['dom', 'lun', 'mar', 'mer', 'gio', 'ven', 'sab'];
-  const days = Object.keys(byDay).sort().slice(0, 3);
-  daysEl.textContent = days.length ? 'Kp massimo previsto: ' + days.map(k => dn[new Date(k + 'T12:00:00Z').getUTCDay()] + ' ' + byDay[k].toFixed(1).replace('.0', '')).join(' · ') : '';
-
-  if (data.kpAt) {{
-    const when = new Date(data.kpAt);
-    const t = String(when.getHours()).padStart(2, '0') + ':' + String(when.getMinutes()).padStart(2, '0');
-    const d = String(when.getDate()).padStart(2, '0') + '/' + String(when.getMonth() + 1).padStart(2, '0');
-    srcEl.textContent = navigator.onLine ? 'Aggiornato alle ' + t : 'Ultimo dato salvato il ' + d + ' alle ' + t + ' · sei offline';
-  }} else {{
-    srcEl.textContent = '';
-  }}
+  return est;
 }}
+
+const AU_HH = d => String(d.getUTCHours()).padStart(2, '0') + ':00';
+const AU_DAYNAMES = ['dom', 'lun', 'mar', 'mer', 'gio', 'ven', 'sab'];
+function auroraWindowsText(est) {{
+  return est.windows.slice(0, 2).map(w => AU_HH(w.from) + '–' + AU_HH(w.end)).join(' e ');
+}}
+
+function renderAurora() {{
+  const verdictEl = document.getElementById('aurora-verdict');
+  const data = auroraLoad();
+  const now = new Date();
+  // la notte "di stasera" inizia alle 12 UTC di oggi (prima delle 10 è ancora la notte in corso)
+  const start = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), 12) - (now.getUTCHours() < 10 ? 86400000 : 0);
+  const isoOf = ms => new Date(ms).toISOString().slice(0, 10);
+
+  if (verdictEl) {{
+    const detailEl = document.getElementById('aurora-detail');
+    const daysEl = document.getElementById('aurora-days');
+    const srcEl = document.getElementById('aurora-src');
+    const est = nightEstimate(start, nightPlaceKey(isoOf(start)), data);
+    verdictEl.className = 'aurora-tonight__verdict';
+    if (!est.hours.length) {{
+      verdictEl.textContent = 'Stasera a ' + est.loc.name + ': niente buio astronomico';
+      detailEl.textContent = '';
+    }} else if (!est.level) {{
+      verdictEl.textContent = 'Stasera a ' + est.loc.name + ': previsione non disponibile';
+      detailEl.textContent = navigator.onLine ? 'Dati NOAA non ancora ricevuti.' : 'Serve una connessione per scaricare la previsione.';
+    }} else {{
+      verdictEl.textContent = 'Stasera a ' + est.loc.name + ': ' + est.level + ' probabilità';
+      verdictEl.classList.add('aurora-tonight__verdict--' + est.level);
+      const parts = [];
+      if (est.level !== 'nulle' && est.windows.length) parts.push('meglio ' + auroraWindowsText(est));
+      parts.push('Kp previsto fino a ' + est.kpMax.toFixed(1).replace('.0', ''));
+      parts.push(est.clouds.length ? 'nuvole ' + Math.min(...est.clouds) + '–' + Math.max(...est.clouds) + '%' : 'nuvole non disponibili');
+      parts.push('buio ' + AU_HH(est.hours[0].t) + '–' + AU_HH(new Date(est.hours[est.hours.length - 1].t.getTime() + 3600000)) + ' (ora islandese)');
+      detailEl.textContent = parts.join(' · ');
+    }}
+    // le due notti successive, ognuna nel suo luogo
+    const next = [1, 2].map(n => {{
+      const ms = start + n * 86400000;
+      const e = nightEstimate(ms, nightPlaceKey(isoOf(ms)), data);
+      const dn = AU_DAYNAMES[new Date(ms).getUTCDay()];
+      return e.level ? dn + ' a ' + e.loc.name + ': ' + e.level : null;
+    }}).filter(Boolean);
+    daysEl.textContent = next.length ? 'Prossime notti: ' + next.join(' · ') : '';
+    if (data.kpAt) {{
+      const when = new Date(data.kpAt);
+      const t = String(when.getHours()).padStart(2, '0') + ':' + String(when.getMinutes()).padStart(2, '0');
+      const d = String(when.getDate()).padStart(2, '0') + '/' + String(when.getMonth() + 1).padStart(2, '0');
+      srcEl.textContent = navigator.onLine ? 'Aggiornato alle ' + t : 'Ultimo dato salvato il ' + d + ' alle ' + t + ' · sei offline';
+    }} else {{
+      srcEl.textContent = '';
+    }}
+  }}
+
+  // nelle tab dei giorni: stima per quella notte, appena la previsione copre la data
+  DAYS_META.forEach(day => {{
+    const el = document.querySelector('[data-aurora-live="' + day.id + '"]');
+    if (!el) return;
+    const [Y, M, D] = day.dateISO.split('-').map(Number);
+    const e = day.id === 'd8' ? {{}} : nightEstimate(Date.UTC(Y, M - 1, D, 12), day.locKey, data);
+    el.textContent = e.level
+      ? ' Previsione per questa notte: ' + e.level + ' probabilità' + (e.level !== 'nulle' && e.windows.length ? ', meglio ' + auroraWindowsText(e) : '') + '.'
+      : '';
+  }});
+}}
+
+var auroraReady = true;   // var: all'avvio vale ancora undefined, prima di queste definizioni
+renderAurora();
 
 const FX_FALLBACK_RATE = 145.5; // stima approssimativa EUR->ISK, usata se offline
 let fxRate = FX_FALLBACK_RATE;
@@ -1915,6 +1937,7 @@ if ('serviceWorker' in navigator) {{
   window.addEventListener('load', async () => {{
     let reg;
     try {{ reg = await navigator.serviceWorker.register('sw.js'); }} catch (e) {{ return; }}
+    if (!reg) return;   // service worker non disponibile (es. bloccato dal browser)
     const applyUpdate = () => {{
       if (reg.waiting && navigator.serviceWorker.controller) reg.waiting.postMessage('skipWaiting');
     }};

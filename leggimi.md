@@ -390,25 +390,27 @@ orientarsi meglio nella pagina.
 
 ### Indice aurora
 Nella tab Info, sotto il Kp attuale (che resta in evidenza), c'è la stima
-**"Stasera: buone / scarse / nulle probabilità"** con le fasce orarie
-migliori. Combina tre cose, per l'alloggio della notte (prima del viaggio
-usa Reykjavík come esempio):
+**"Stasera a …: buone / scarse / nulle probabilità"** con le fasce orarie
+migliori, e sotto quella delle **due notti successive**. La località
+segue il viaggio notte per notte: prima della partenza è Reykjavík (dati
+reali di oggi), durante il viaggio è l'alloggio di quella notte
+(Reykjavík, poi Vík, poi Flúðir). La stima combina:
 - il **Kp previsto** a intervalli di 3 ore (NOAA, fino a 3 giorni);
 - la **copertura nuvolosa oraria** (Open-Meteo, lo stesso servizio del
   meteo);
 - il **buio astronomico** (sole sotto -18°), calcolato in locale.
-Sotto compare anche il Kp massimo previsto per i prossimi giorni. Offline
-si vede l'ultimo dato salvato, con data e ora in cui è stato scaricato.
+Anche nel box aurora di ogni giorno compare la stima per quella notte,
+appena la previsione arriva a coprirla (circa 3 giorni prima). Offline si
+vede l'ultimo dato salvato, con data e ora in cui è stato scaricato.
 La stima è indicativa: in Islanda l'aurora si vede spesso già con Kp 2-3
 se il cielo è sereno.
 
 ### Strade e meteo per tappa
 Nella sezione "Spostamenti in auto" di ogni giorno, sotto ogni tratta
-(da → a, km, tempo) ci sono due piccoli link: "Strade ↗" apre la mappa in
-tempo reale dello stato delle strade della Vegagerðin (umferdin.is, lo
-stesso servizio di road.is) e "Allerte meteo ↗" apre gli avvisi
-vento/meteo dell'Ufficio meteorologico islandese (en.vedur.is/alerts).
-Entrambe le pagine coprono tutta l'Islanda, con le zone sulla mappa.
-Sono volutamente piccoli e grigi, ben distinti dai pulsanti "Naviga",
-che restano invariati. Compaiono solo nei giorni con
+(da → a, km, tempo) c'è un piccolo link "Strade e meteo ↗" che apre
+[safetravel.is/conditions](https://safetravel.is/conditions): la mappa
+ufficiale di Safetravel (soccorso islandese) con lo stato delle strade
+(dati Vegagerðin) e le allerte vento/meteo (dati Veðurstofan) insieme, per
+tutta l'Islanda. È volutamente piccolo e grigio, ben distinto dai
+pulsanti "Naviga", che restano invariati. Compaiono solo nei giorni con
 spostamenti in auto.
