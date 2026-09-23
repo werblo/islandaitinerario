@@ -901,6 +901,14 @@ main {{ max-width:820px; margin:0 auto; padding:20px 20px 70px; display:flex; fl
 .kp-row {{ display:flex; flex-direction:column; align-items:center; text-align:center; gap:6px; margin:14px 0 16px; }}
 .kp-big {{ font-family:'Cinzel',serif; font-weight:600; font-size:52px; color:#faf5ea; white-space:nowrap; line-height:1; }}
 .kp-status {{ font-size:14px; color:#c7ccd2; max-width:280px; }}
+.aurora-tonight {{ border-top:1px solid #26374a; border-bottom:1px solid #26374a; padding:12px 0; margin-bottom:12px; text-align:center; }}
+.aurora-tonight__verdict {{ font-family:'Cinzel',serif; font-weight:600; font-size:18px; color:#faf5ea; }}
+.aurora-tonight__verdict--buone {{ color:#8fd6cd; }}
+.aurora-tonight__verdict--scarse {{ color:#e8c48f; }}
+.aurora-tonight__verdict--nulle {{ color:#c7ccd2; }}
+.aurora-tonight__detail {{ font-size:13px; color:#c7ccd2; margin-top:4px; line-height:1.5; }}
+.aurora-tonight__days {{ font-size:12.5px; color:#9aa4ad; margin-top:6px; }}
+.aurora-tonight__src {{ font-size:11.5px; color:#9aa4ad; margin-top:6px; }}
 
 .fab-fx-btn {{ position:fixed; right:16px; bottom:16px; z-index:400; width:52px; height:52px; border-radius:50%; border:none; background:var(--navy); color:#f2ede2; font-family:'IBM Plex Sans',sans-serif; font-size:12px; font-weight:700; box-shadow:0 4px 14px rgba(0,0,0,.3); cursor:pointer; }}
 .fab-fx-btn:active {{ transform:scale(0.94); }}
@@ -1046,7 +1054,13 @@ main {{ max-width:820px; margin:0 auto; padding:20px 20px 70px; display:flex; fl
   <div class="aurora-panel">
     <div class="panel-title">Aurora boreale — ora</div>
     <div class="kp-row"><div class="kp-big" id="kp-value">…</div><div class="kp-status" id="kp-status">Caricamento…</div></div>
-    <p>Indice geomagnetico Kp attuale (NOAA), aggiornato in tempo reale se sei online. Non è una previsione per le date del viaggio, ma dà l'idea dell'attività del momento.</p>
+    <div class="aurora-tonight" aria-live="polite">
+      <div class="aurora-tonight__verdict" id="aurora-verdict">Stasera: calcolo…</div>
+      <div class="aurora-tonight__detail" id="aurora-detail"></div>
+      <div class="aurora-tonight__days" id="aurora-days"></div>
+      <div class="aurora-tonight__src" id="aurora-src"></div>
+    </div>
+    <p>Indice geomagnetico Kp attuale (NOAA), aggiornato in tempo reale se sei online. La stima di stasera combina Kp previsto (NOAA), copertura nuvolosa oraria (Open-Meteo) e buio astronomico per l'alloggio della notte.</p>
     <div class="more">Più vicino alla partenza, controlla <a href="https://en.vedur.is/weather/forecasts/aurora/" target="_blank" rel="noopener">vedur.is/aurora</a> per la previsione reale sulle vostre date e sul cielo sereno.</div>
   </div>
 
@@ -1328,10 +1342,11 @@ async function fetchAllWeather() {{
   for (const key of Object.keys(LOCATIONS)) {{
     const loc = LOCATIONS[key];
     try {{
-      const url = 'https://api.open-meteo.com/v1/forecast?latitude=' + loc.lat + '&longitude=' + loc.lon + '&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=UTC&forecast_days=16';
+      const url = 'https://api.open-meteo.com/v1/forecast?latitude=' + loc.lat + '&longitude=' + loc.lon + '&daily=weathercode,temperature_2m_max,temperature_2m_min&hourly=cloud_cover&timezone=UTC&forecast_days=16';
       const res = await fetch(url);
       const json = await res.json();
       if (json && json.daily) {{ state.weather[key] = json.daily; renderWeatherAndSun(); }}
+      if (json && json.hourly && navigator.onLine) auroraSave({{ clouds: {{ [key]: json.hourly }} }});
     }} catch (e) {{ /* resta sulla stima stagionale */ }}
   }}
 }}
@@ -1339,27 +1354,41 @@ async function fetchAllWeather() {{
 // Alba e tramonto calcolati in locale (algoritmo NOAA, come sunrise-sunset.org):
 // nessuna rete, funziona offline. Restituisce i minuti dalla mezzanotte UTC,
 // che in Islanda coincide con l'ora locale (niente ora legale).
+// Parametri solari (algoritmo NOAA) per un giorno giuliano: declinazione ed equazione del tempo.
+function solarParams(jd) {{
+  const rad = Math.PI / 180;
+  const T = (jd - 2451545) / 36525;
+  const L0 = (280.46646 + T * (36000.76983 + T * 0.0003032)) % 360;
+  const Ma = 357.52911 + T * (35999.05029 - 0.0001537 * T);
+  const ecc = 0.016708634 - T * (0.000042037 + 0.0000001267 * T);
+  const C = Math.sin(Ma * rad) * (1.914602 - T * (0.004817 + 0.000014 * T))
+          + Math.sin(2 * Ma * rad) * (0.019993 - 0.000101 * T) + Math.sin(3 * Ma * rad) * 0.000289;
+  const omega = 125.04 - 1934.136 * T;
+  const lambda = L0 + C - 0.00569 - 0.00478 * Math.sin(omega * rad);
+  const eps = 23 + (26 + (21.448 - T * (46.815 + T * (0.00059 - T * 0.001813))) / 60) / 60 + 0.00256 * Math.cos(omega * rad);
+  const decl = Math.asin(Math.sin(eps * rad) * Math.sin(lambda * rad)) / rad;
+  const y = Math.tan(eps * rad / 2) ** 2;
+  const eqTime = 4 / rad * (y * Math.sin(2 * L0 * rad) - 2 * ecc * Math.sin(Ma * rad)
+    + 4 * ecc * y * Math.sin(Ma * rad) * Math.cos(2 * L0 * rad)
+    - 0.5 * y * y * Math.sin(4 * L0 * rad) - 1.25 * ecc * ecc * Math.sin(2 * Ma * rad));
+  return {{ decl, eqTime }};
+}}
+
+// Altezza del sole sull'orizzonte (gradi) in un istante: sotto -18° è buio astronomico.
+function sunAltitude(date, lat, lon) {{
+  const rad = Math.PI / 180;
+  const {{ decl, eqTime }} = solarParams(date.getTime() / 86400000 + 2440587.5);
+  const minutes = date.getUTCHours() * 60 + date.getUTCMinutes();
+  const ha = ((minutes + eqTime + 4 * lon + 1440) % 1440) / 4 - 180;
+  const cosZ = Math.sin(lat * rad) * Math.sin(decl * rad) + Math.cos(lat * rad) * Math.cos(decl * rad) * Math.cos(ha * rad);
+  return 90 - Math.acos(Math.max(-1, Math.min(1, cosZ))) / rad;
+}}
+
 function sunEventsUTC(dateISO, lat, lon) {{
   const rad = Math.PI / 180;
   const [Y, M, D] = dateISO.split('-').map(Number);
   const jdNoon = Date.UTC(Y, M - 1, D, 12) / 86400000 + 2440587.5;
-  function solar(jd) {{
-    const T = (jd - 2451545) / 36525;
-    const L0 = (280.46646 + T * (36000.76983 + T * 0.0003032)) % 360;
-    const Ma = 357.52911 + T * (35999.05029 - 0.0001537 * T);
-    const ecc = 0.016708634 - T * (0.000042037 + 0.0000001267 * T);
-    const C = Math.sin(Ma * rad) * (1.914602 - T * (0.004817 + 0.000014 * T))
-            + Math.sin(2 * Ma * rad) * (0.019993 - 0.000101 * T) + Math.sin(3 * Ma * rad) * 0.000289;
-    const omega = 125.04 - 1934.136 * T;
-    const lambda = L0 + C - 0.00569 - 0.00478 * Math.sin(omega * rad);
-    const eps = 23 + (26 + (21.448 - T * (46.815 + T * (0.00059 - T * 0.001813))) / 60) / 60 + 0.00256 * Math.cos(omega * rad);
-    const decl = Math.asin(Math.sin(eps * rad) * Math.sin(lambda * rad)) / rad;
-    const y = Math.tan(eps * rad / 2) ** 2;
-    const eqTime = 4 / rad * (y * Math.sin(2 * L0 * rad) - 2 * ecc * Math.sin(Ma * rad)
-      + 4 * ecc * y * Math.sin(Ma * rad) * Math.cos(2 * L0 * rad)
-      - 0.5 * y * y * Math.sin(4 * L0 * rad) - 1.25 * ecc * ecc * Math.sin(2 * Ma * rad));
-    return {{ decl, eqTime }};
-  }}
+  const solar = solarParams;
   function event(rising) {{
     let minutes = 720;
     for (let i = 0; i < 3; i++) {{
@@ -1409,6 +1438,139 @@ async function fetchKp() {{
     kpText = 'Dato non disponibile offline';
   }}
   document.getElementById('kp-status').textContent = kpText;
+}}
+
+// ---------- Aurora: stima per stasera (Kp previsto + nuvole + buio) ----------
+const AURORA_KEY = 'islanda2026-aurora';
+function auroraLoad() {{
+  try {{ return JSON.parse(localStorage.getItem(AURORA_KEY) || 'null') || {{ clouds: {{}} }}; }} catch (e) {{ return {{ clouds: {{}} }}; }}
+}}
+// Salva solo dati ricevuti online, con l'ora: offline si mostra l'ultimo dato e quando è stato preso.
+function auroraSave(part) {{
+  const d = auroraLoad();
+  if (part.kp) {{ d.kp = part.kp; d.kpAt = new Date().toISOString(); }}
+  if (part.clouds) {{ d.clouds = Object.assign(d.clouds || {{}}, part.clouds); d.cloudsAt = new Date().toISOString(); }}
+  try {{ localStorage.setItem(AURORA_KEY, JSON.stringify(d)); }} catch (e) {{}}
+  renderAurora();
+}}
+
+function parseKpForecast(json) {{
+  // formato NOAA a righe ([intestazione], [time_tag, kp, observed, scala]) oppure a oggetti
+  const rows = Array.isArray(json[0])
+    ? json.slice(1).map(r => ({{ t: r[0], kp: parseFloat(r[1]) }}))
+    : json.map(o => ({{ t: o.time_tag, kp: parseFloat(o.kp !== undefined ? o.kp : o.Kp) }}));
+  return rows.filter(r => r.t && isFinite(r.kp))
+    .map(r => ({{ t: Date.parse(String(r.t).replace(' ', 'T') + (/Z|[+-]\d\d:?\d\d$/.test(r.t) ? '' : 'Z')), kp: r.kp }}))
+    .filter(r => isFinite(r.t));
+}}
+
+async function fetchKpForecast() {{
+  try {{
+    const res = await fetch('https://services.swpc.noaa.gov/products/noaa-planetary-k-index-forecast.json');
+    const rows = parseKpForecast(await res.json());
+    if (rows.length && navigator.onLine) auroraSave({{ kp: rows }});
+  }} catch (e) {{ /* resta l'ultimo dato salvato */ }}
+  renderAurora();
+}}
+
+function tonightPlace(now) {{
+  const iso = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0');
+  const day = DAYS_META.find(d => d.dateISO === iso && d.id !== 'd8');
+  return day ? {{ key: day.locKey, inTrip: true }} : {{ key: 'reykjavik', inTrip: false }};
+}}
+
+function kpFactor(kp) {{
+  // alle latitudini islandesi l'aurora si vede spesso già con Kp 2-3
+  if (kp >= 5) return 1;
+  if (kp >= 4) return 0.85;
+  if (kp >= 3) return 0.65;
+  if (kp >= 2) return 0.4;
+  return 0.15;
+}}
+
+function renderAurora() {{
+  const verdictEl = document.getElementById('aurora-verdict');
+  if (!verdictEl) return;
+  const detailEl = document.getElementById('aurora-detail');
+  const daysEl = document.getElementById('aurora-days');
+  const srcEl = document.getElementById('aurora-src');
+  const data = auroraLoad();
+  const now = new Date();
+  const place = tonightPlace(now);
+  const loc = LOCATIONS[place.key];
+  const kpRows = data.kp || [];
+  const clouds = (data.clouds || {{}})[place.key];
+  const hh = d => String(d.getUTCHours()).padStart(2, '0') + ':00';
+
+  // la notte "di stasera": dalle 12 UTC di oggi alle 12 di domani (prima delle 10 è ancora la notte in corso)
+  const start = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), 12));
+  if (now.getUTCHours() < 10) start.setUTCDate(start.getUTCDate() - 1);
+  const hours = [];
+  for (let i = 0; i < 24; i++) {{
+    const t = new Date(start.getTime() + i * 3600000);
+    if (sunAltitude(new Date(t.getTime() + 1800000), loc.lat, loc.lon) >= -18) continue;   // non è buio astronomico
+    const row = kpRows.find(r => t.getTime() >= r.t && t.getTime() < r.t + 3 * 3600000);
+    let cloud = null;
+    if (clouds && clouds.time) {{
+      const idx = clouds.time.indexOf(t.toISOString().slice(0, 13) + ':00');
+      if (idx >= 0) cloud = clouds.cloud_cover[idx];
+    }}
+    hours.push({{ t, kp: row ? row.kp : null, cloud }});
+  }}
+
+  const place_ = place.inTrip ? loc.name : 'Reykjavík (esempio, il viaggio non è ancora iniziato)';
+  const withKp = hours.filter(h => h.kp !== null);
+  verdictEl.className = 'aurora-tonight__verdict';
+  if (!hours.length) {{
+    verdictEl.textContent = 'Stasera a ' + place_ + ': niente buio astronomico';
+    detailEl.textContent = '';
+  }} else if (!withKp.length) {{
+    verdictEl.textContent = 'Stasera a ' + place_ + ': previsione non disponibile';
+    detailEl.textContent = navigator.onLine ? 'Dati NOAA non ancora ricevuti.' : 'Serve una connessione per scaricare la previsione.';
+  }} else {{
+    const hasClouds = withKp.some(h => h.cloud !== null);
+    withKp.forEach(h => {{ h.score = kpFactor(h.kp) * (h.cloud === null ? (hasClouds ? 0.5 : 1) : (100 - h.cloud) / 100); }});
+    const best = Math.max(...withKp.map(h => h.score));
+    const level = best >= 0.45 ? 'buone' : best >= 0.2 ? 'scarse' : 'nulle';
+    verdictEl.textContent = 'Stasera a ' + place_ + ': ' + level + ' probabilità';
+    verdictEl.classList.add('aurora-tonight__verdict--' + level);
+    // fasce orarie migliori: ore consecutive vicine al massimo
+    const good = withKp.filter(h => h.score >= Math.max(0.2, best * 0.8));
+    const windows = [];
+    good.forEach(h => {{
+      const last = windows[windows.length - 1];
+      if (last && h.t - last.end === 0) last.end = new Date(h.t.getTime() + 3600000);
+      else windows.push({{ from: h.t, end: new Date(h.t.getTime() + 3600000) }});
+    }});
+    const kpMax = Math.max(...withKp.map(h => h.kp));
+    const cl = withKp.filter(h => h.cloud !== null).map(h => h.cloud);
+    const parts = [];
+    if (level !== 'nulle' && windows.length) parts.push('meglio ' + windows.slice(0, 2).map(w => hh(w.from) + '–' + hh(w.end)).join(' e '));
+    parts.push('Kp previsto fino a ' + kpMax.toFixed(1).replace('.0', ''));
+    parts.push(cl.length ? 'nuvole ' + Math.min(...cl) + '–' + Math.max(...cl) + '%' : 'nuvole non disponibili');
+    parts.push('buio ' + hh(hours[0].t) + '–' + hh(new Date(hours[hours.length - 1].t.getTime() + 3600000)) + ' (ora islandese)');
+    detailEl.textContent = parts.join(' · ');
+  }}
+
+  // Kp massimo previsto per i prossimi giorni
+  const todayStart = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate());
+  const byDay = {{}};
+  kpRows.filter(r => r.t >= todayStart).forEach(r => {{
+    const k = new Date(r.t).toISOString().slice(0, 10);
+    byDay[k] = Math.max(byDay[k] || 0, r.kp);
+  }});
+  const dn = ['dom', 'lun', 'mar', 'mer', 'gio', 'ven', 'sab'];
+  const days = Object.keys(byDay).sort().slice(0, 3);
+  daysEl.textContent = days.length ? 'Kp massimo previsto: ' + days.map(k => dn[new Date(k + 'T12:00:00Z').getUTCDay()] + ' ' + byDay[k].toFixed(1).replace('.0', '')).join(' · ') : '';
+
+  if (data.kpAt) {{
+    const when = new Date(data.kpAt);
+    const t = String(when.getHours()).padStart(2, '0') + ':' + String(when.getMinutes()).padStart(2, '0');
+    const d = String(when.getDate()).padStart(2, '0') + '/' + String(when.getMonth() + 1).padStart(2, '0');
+    srcEl.textContent = navigator.onLine ? 'Aggiornato alle ' + t : 'Ultimo dato salvato il ' + d + ' alle ' + t + ' · sei offline';
+  }} else {{
+    srcEl.textContent = '';
+  }}
 }}
 
 const FX_FALLBACK_RATE = 145.5; // stima approssimativa EUR->ISK, usata se offline
@@ -1541,6 +1703,7 @@ function refreshLiveData(force) {{
   if (!force && now - lastLiveRefresh < 60000) return;
   lastLiveRefresh = now;
   fetchKp();
+  fetchKpForecast();
   fetchAllWeather();
   fetchFxRate();
 }}
