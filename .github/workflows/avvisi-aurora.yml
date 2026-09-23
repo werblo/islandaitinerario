@@ -1,0 +1,52 @@
+name: Avvisi aurora
+
+# Ogni 30 minuti nelle notti del viaggio (orari UTC = ora islandese):
+# 16:00-23:30 dal 15 al 21 novembre e 00:00-03:30 dal 16 al 22 novembre.
+# Lo script non fa niente fuori dalle date del viaggio.
+# A mano (tab Actions -> "Avvisi aurora" -> Run workflow): "prova" manda
+# subito una notifica di prova a tutti i telefoni iscritti.
+on:
+  schedule:
+    - cron: '*/30 16-23 15-21 11 *'
+    - cron: '*/30 0-3 16-22 11 *'
+  workflow_dispatch:
+    inputs:
+      modalita:
+        description: 'prova = notifica subito · controllo = come di notte'
+        type: choice
+        options: [prova, controllo]
+        default: prova
+
+permissions:
+  contents: read
+
+concurrency:
+  group: avvisi-aurora
+
+jobs:
+  aurora:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install pywebpush==2.5.0
+      # avvisi già inviati per notte (al massimo uno per tipo): cache, niente commit nel repo
+      - uses: actions/cache/restore@v4
+        with:
+          path: .aurora-state
+          key: aurora-state-${{ github.run_id }}
+          restore-keys: aurora-state-
+      - name: Controlla l'aurora e manda gli avvisi
+        run: python tools/aurora_alert.py
+        env:
+          AURORA_MODE: ${{ inputs.modalita || 'controllo' }}
+          VAPID_PRIVATE_KEY: ${{ secrets.VAPID_PRIVATE_KEY }}
+          AURORA_SUBSCRIPTIONS: ${{ secrets.AURORA_SUBSCRIPTIONS }}
+      - uses: actions/cache/save@v4
+        if: always() && hashFiles('.aurora-state/state.json') != ''
+        with:
+          path: .aurora-state
+          key: aurora-state-${{ github.run_id }}
