@@ -437,6 +437,25 @@ def render_leg(leg):
     return (f'<div class="leg"><div class="leg-route">{route_label}</div>'
             f'<div class="leg-meta">{leg["km"]} km · {e(leg["time"])}</div>{note}</div>')
 
+def render_diary_row(day_id, slug):
+    stars = ''.join(
+        f'<button type="button" class="diary-star" data-diary-val="{v}" aria-pressed="false" aria-label="Voto {v} su 5">{v}</button>'
+        for v in range(1, 6)
+    )
+    return (f'<details class="diary" data-diary-day="{e(day_id)}" data-diary-slug="{e(slug)}">'
+            f'<summary class="diary-summary">✎ Diario</summary>'
+            f'<div class="diary-body">'
+            f'<textarea class="diary-note" rows="2" placeholder="Scrivi una nota…" aria-label="Nota diario"></textarea>'
+            f'<div class="diary-rating" role="group" aria-label="Voto da 1 a 5">{stars}</div>'
+            f'</div></details>')
+
+def render_diary_day_panel(day_id):
+    return (f'<div class="panel diario-daypanel">'
+            f'<div class="panel-title">Diario della giornata</div>'
+            f'<div class="rune-rule"></div>'
+            f'{render_diary_row(day_id, "giorno")}'
+            f'</div>')
+
 def render_activity(day_id, idx, act):
 
     has_img = not is_logistics(act['title']) and act['title'].strip()
@@ -459,9 +478,11 @@ def render_activity(day_id, idx, act):
         maps_url = 'https://www.google.com/maps/search/?api=1&query=' + urllib.parse.quote(act['nav'])
         links_html += (f'<a class="act-link act-link--nav" href="{e(maps_url)}" target="_blank" rel="noopener">'
                         f'Naviga \u2197</a>')
+    act_slug = slugify(act['title']) if act.get('title', '').strip() else f'attivita-{idx}'
+    diary_html = render_diary_row(day_id, act_slug)
     return (f'<div class="act-card">{img_html}<div class="act-body">'
             f'<div class="act-top">{title_html}'
-            f'<div class="act-time">{e(act["time"])}</div></div>{desc_html}{cost_html}{links_html}</div></div>')
+            f'<div class="act-time">{e(act["time"])}</div></div>{desc_html}{cost_html}{links_html}{diary_html}</div></div>')
 
 def render_food(f):
     note = f'<div class="food-note">{e(f["note"])}</div>' if f.get('note') else ''
@@ -643,6 +664,7 @@ def render_day_section(day):
   </div>
   {acc_html}
   {tips_html}
+  {render_diary_day_panel(day['id'])}
 </section>'''
 
 stays_html = ''.join(
@@ -674,6 +696,7 @@ for d in days:
     nav_items.append(_tab_btn(d['id'], e(label), aria_label, False))
 nav_items.append(_tab_btn('storia', 'Storia', 'Storia dell\'Islanda', False))
 nav_items.append(_tab_btn('checklist', 'Checklist', 'Checklist', False))
+nav_items.append(_tab_btn('diario', 'Diario', 'Diario del viaggio', False))
 nav_html = ''.join(nav_items)
 
 days_sections_html = ''.join(render_day_section(d) for d in days)
@@ -749,6 +772,605 @@ checklist_html = f'''
     <strong>Colonnine di benzina:</strong> in Islanda sono quasi tutte self-service e chiedono una carta con PIN attivo (niente carte prepagate senza PIN o solo contactless). Se avete una carta di credito o debito normale con PIN funziona senza problemi — verificate solo di avere il PIN a mente prima di partire.
   </div>
 </section>'''
+
+diario_html = '''
+<section class="page-view" id="view-diario" role="tabpanel" aria-labelledby="tab-diario" hidden>
+  <div class="day-head">
+    <div class="day-date">Ricordi del viaggio</div>
+    <div class="day-title">Diario</div>
+  </div>
+
+  <div class="panel diario-noprint">
+    <div class="panel-title">Chi scrive</div>
+    <div class="rune-rule"></div>
+    <div class="line" id="diario-author-line">Nessuno ancora selezionato</div>
+    <button type="button" class="offline-btn" id="diario-author-change">Cambia chi scrive</button>
+  </div>
+
+  <div class="panel diario-noprint">
+    <div class="panel-title">Sincronizzazione</div>
+    <div class="rune-rule"></div>
+    <div class="line" id="diario-sync-status" aria-live="polite">Non collegata</div>
+    <div id="diario-sync-setup">
+      <label class="line" for="diario-token-input" style="display:block;margin-top:10px;">Token GitHub (permesso Gists: read and write)</label>
+      <input type="password" id="diario-token-input" autocomplete="off" class="diario-token-input">
+      <div class="diario-btn-row">
+        <button type="button" class="offline-btn" id="diario-sync-connect">Collega</button>
+        <button type="button" class="offline-btn" id="diario-sync-disconnect">Scollega</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel diario-noprint">
+    <div class="panel-title">Esporta &amp; importa</div>
+    <div class="rune-rule"></div>
+    <div class="diario-btn-row">
+      <button type="button" class="offline-btn" id="diario-export-txt">Esporta testo</button>
+      <button type="button" class="offline-btn" id="diario-print">Stampa / PDF</button>
+      <button type="button" class="offline-btn" id="diario-export-json">Esporta file per l'altro telefono</button>
+      <label class="offline-btn diario-file-label" for="diario-import-input">Importa file</label>
+      <input type="file" id="diario-import-input" accept=".json,application/json" style="display:none;">
+    </div>
+    <div class="line" id="diario-import-msg" aria-live="polite"></div>
+  </div>
+
+  <div class="panel" id="diario-summary-panel">
+    <div class="panel-title">Voci del diario</div>
+    <div class="rune-rule"></div>
+    <div id="diario-summary"><div class="line">Caricamento…</div></div>
+  </div>
+</section>'''
+
+diario_author_modal_html = '''
+<div id="diario-author-modal" class="diario-modal-overlay" hidden role="dialog" aria-modal="true" aria-labelledby="diario-author-modal-title">
+  <div class="diario-modal">
+    <div class="panel-title" id="diario-author-modal-title">Chi scrive nel diario?</div>
+    <div class="rune-rule"></div>
+    <div class="line">Scegli il tuo nome su questo telefono (puoi cambiarlo dopo nella tab Diario).</div>
+    <div class="diario-btn-row" style="margin-top:14px;">
+      <button type="button" class="offline-btn diario-author-pick" data-author="Michele">Michele</button>
+      <button type="button" class="offline-btn diario-author-pick" data-author="Federica">Federica</button>
+    </div>
+  </div>
+</div>'''
+
+diario_css = '''
+.diary { margin-top:10px; border-top:1px dashed var(--panel-border); padding-top:8px; }
+.diary-summary { list-style:none; cursor:pointer; font-size:11.5px; font-weight:600; color:#8a93a0; user-select:none; }
+.diary-summary::-webkit-details-marker { display:none; }
+.diary-summary::before { content:'\\25B8\\00A0'; }
+.diary[open] > .diary-summary::before { content:'\\25BE\\00A0'; }
+.diary-body { margin-top:8px; display:flex; flex-direction:column; gap:8px; }
+.diary-note { width:100%; min-height:56px; font-family:'IBM Plex Sans',sans-serif; font-size:13.5px; line-height:1.5; color:var(--ink); background:var(--paper); border:1px solid var(--panel-border); border-radius:6px; padding:8px 10px; resize:vertical; box-sizing:border-box; }
+.diary-note:focus-visible { outline:2px solid var(--amber); outline-offset:1px; }
+.diary-rating { display:flex; gap:6px; flex-wrap:wrap; }
+.diary-star { min-width:44px; min-height:44px; border:1px solid var(--panel-border); border-radius:6px; background:var(--panel); color:var(--navy); font-family:'IBM Plex Sans',sans-serif; font-weight:700; font-size:14px; cursor:pointer; }
+.diary-star[aria-pressed="true"] { background:var(--amber); border-color:var(--amber-2); color:#fffaf2; }
+.diary-daypanel { margin-top:14px; }
+.diario-btn-row { display:flex; gap:10px; flex-wrap:wrap; margin-top:10px; }
+.diario-file-label { display:inline-flex; align-items:center; cursor:pointer; }
+.diario-token-input { width:100%; box-sizing:border-box; font-family:'IBM Plex Sans',sans-serif; font-size:16px; padding:9px 10px; border:1px solid var(--panel-border); border-radius:6px; background:var(--paper); color:var(--ink); margin-top:6px; }
+.diario-token-input:focus-visible { outline:2px solid var(--amber); outline-offset:1px; }
+.diario-day-block { margin-bottom:16px; }
+.diario-day-block:last-child { margin-bottom:0; }
+.diario-day-title { font-family:'Cinzel',serif; font-weight:600; font-size:13.5px; color:var(--navy); margin-bottom:6px; }
+.diario-entry { background:var(--paper); border:1px solid var(--panel-border); border-radius:6px; padding:10px 12px; margin-bottom:8px; font-size:13px; line-height:1.55; }
+.diario-entry:last-child { margin-bottom:0; }
+.diario-entry__head { display:flex; justify-content:space-between; gap:10px; font-weight:700; color:var(--navy); margin-bottom:4px; }
+.diario-entry__note { white-space:pre-wrap; }
+.diario-modal-overlay { position:fixed; inset:0; z-index:900; background:rgba(16,29,45,.72); display:flex; align-items:center; justify-content:center; padding:20px; }
+.diario-modal-overlay[hidden] { display:none; }
+.diario-modal { background:var(--panel); border:1px solid var(--panel-border); border-radius:10px; padding:20px; max-width:340px; width:100%; }
+@media print {
+  body * { visibility:hidden; }
+  .navbar, .hero, .fab-fx-btn, .fab-fx-popup, .diario-modal-overlay { display:none !important; }
+  #view-diario, #view-diario * { visibility:visible; }
+  .diario-noprint { display:none !important; }
+  #view-diario { position:absolute; left:0; top:0; width:100%; }
+}
+'''
+
+diario_js = r'''
+// ---------- Diario del viaggio ----------
+(function () {
+  const DIARY_KEY = 'islanda2026-diario';
+  const AUTHOR_KEY = 'islanda2026-diario-author';
+  const SYNC_KEY = 'islanda2026-diario-sync';
+  const AUTHORS = ['Michele', 'Federica'];
+
+  function loadDiary() {
+    try {
+      const raw = localStorage.getItem(DIARY_KEY);
+      const data = raw ? JSON.parse(raw) : null;
+      if (data && data.entries) return data;
+    } catch (e) { /* ignore */ }
+    return { version: 1, entries: {} };
+  }
+  function saveDiary(data) {
+    try { localStorage.setItem(DIARY_KEY, JSON.stringify(data)); } catch (e) { /* storage non disponibile */ }
+  }
+  function getAuthor() {
+    try { return localStorage.getItem(AUTHOR_KEY) || ''; } catch (e) { return ''; }
+  }
+  function setAuthor(name) {
+    try { localStorage.setItem(AUTHOR_KEY, name); } catch (e) { /* ignore */ }
+  }
+  function loadSync() {
+    try {
+      const raw = localStorage.getItem(SYNC_KEY);
+      return raw ? JSON.parse(raw) : {};
+    } catch (e) { return {}; }
+  }
+  function saveSync(s) {
+    try { localStorage.setItem(SYNC_KEY, JSON.stringify(s)); } catch (e) { /* ignore */ }
+  }
+
+  function entryKey(day, slug) { return day + ':' + slug; }
+
+  function setEntry(day, slug, author, patch) {
+    const data = loadDiary();
+    const key = entryKey(day, slug);
+    if (!data.entries[key]) data.entries[key] = {};
+    if (!data.entries[key][author]) data.entries[key][author] = {};
+    Object.assign(data.entries[key][author], patch, { at: new Date().toISOString() });
+    saveDiary(data);
+    renderDiarySummary();
+    scheduleSync();
+  }
+
+  // ---------- Autore ----------
+  const modal = document.getElementById('diario-author-modal');
+  function ensureAuthor(cb) {
+    const a = getAuthor();
+    if (a) { cb(a); return; }
+    if (!modal) { cb('Michele'); return; }
+    modal.hidden = false;
+    const handler = (ev) => {
+      const btn = ev.target.closest('.diario-author-pick');
+      if (!btn) return;
+      setAuthor(btn.dataset.author);
+      modal.hidden = true;
+      modal.removeEventListener('click', handler);
+      updateAuthorLine();
+      cb(btn.dataset.author);
+    };
+    modal.addEventListener('click', handler);
+  }
+  function updateAuthorLine() {
+    const el = document.getElementById('diario-author-line');
+    if (!el) return;
+    const a = getAuthor();
+    el.textContent = a ? ('Scrivi come: ' + a) : 'Nessuno ancora selezionato';
+  }
+  const changeBtn = document.getElementById('diario-author-change');
+  if (changeBtn) changeBtn.addEventListener('click', () => {
+    if (!modal) return;
+    modal.hidden = false;
+    const handler = (ev) => {
+      const btn = ev.target.closest('.diario-author-pick');
+      if (!btn) return;
+      setAuthor(btn.dataset.author);
+      modal.hidden = true;
+      modal.removeEventListener('click', handler);
+      updateAuthorLine();
+      renderDiarySummary();
+    };
+    modal.addEventListener('click', handler);
+  });
+  updateAuthorLine();
+
+  // ---------- Righe diario (attività + giorno) ----------
+  let noteTimer = null;
+  function wireDiaryRow(el) {
+    const day = el.dataset.diaryDay;
+    const slug = el.dataset.diarySlug;
+    const key = entryKey(day, slug);
+    const textarea = el.querySelector('.diary-note');
+    const stars = Array.from(el.querySelectorAll('.diary-star'));
+    const summary = el.querySelector('.diary-summary');
+
+    function refresh() {
+      const data = loadDiary();
+      const author = getAuthor();
+      const mine = author && data.entries[key] && data.entries[key][author] ? data.entries[key][author] : {};
+      if (textarea && document.activeElement !== textarea) textarea.value = mine.note || '';
+      const voto = mine.voto || 0;
+      stars.forEach((s) => {
+        const v = Number(s.dataset.diaryVal);
+        s.setAttribute('aria-pressed', v === voto ? 'true' : 'false');
+      });
+      if (summary) {
+        let label = '✎ Diario';
+        if (voto || (mine.note && mine.note.trim())) {
+          label += ' ·';
+          if (voto) label += ' ★' + voto;
+          if (mine.note && mine.note.trim()) label += ' · nota';
+        }
+        summary.textContent = label;
+      }
+    }
+
+    el.addEventListener('toggle', () => { if (el.open) ensureAuthor(() => {}); });
+    if (textarea) {
+      textarea.addEventListener('input', () => {
+        ensureAuthor((author) => {
+          clearTimeout(noteTimer);
+          noteTimer = setTimeout(() => { setEntry(day, slug, author, { note: textarea.value }); refresh(); }, 400);
+        });
+      });
+    }
+    stars.forEach((s) => {
+      s.addEventListener('click', () => {
+        ensureAuthor((author) => {
+          const v = Number(s.dataset.diaryVal);
+          const data = loadDiary();
+          const cur = data.entries[entryKey(day, slug)];
+          const already = cur && cur[author] && cur[author].voto === v;
+          setEntry(day, slug, author, { voto: already ? 0 : v });
+          refresh();
+        });
+      });
+    });
+    refresh();
+    el._diaryRefresh = refresh;
+  }
+  document.querySelectorAll('.diary[data-diary-day]').forEach(wireDiaryRow);
+
+  function refreshAllDiaryRows() {
+    document.querySelectorAll('.diary[data-diary-day]').forEach((el) => { if (el._diaryRefresh) el._diaryRefresh(); });
+  }
+
+  // ---------- Riepilogo ----------
+  function dayLabelFor(id) {
+    const meta = (typeof DAYS_META !== 'undefined') ? DAYS_META.find((d) => d.id === id) : null;
+    const btn = document.getElementById('tab-' + id);
+    return btn ? btn.textContent : (meta ? id : id);
+  }
+  function escapeAttr(s) { return s; }
+  function renderDiarySummary() {
+    const container = document.getElementById('diario-summary');
+    if (!container) return;
+    const data = loadDiary();
+    const byDay = {};
+    Object.keys(data.entries).forEach((key) => {
+      const [day, slug] = key.split(':');
+      const authors = data.entries[key];
+      const hasContent = AUTHORS.some((a) => authors[a] && ((authors[a].note && authors[a].note.trim()) || authors[a].voto));
+      if (!hasContent) return;
+      if (!byDay[day]) byDay[day] = [];
+      byDay[day].push({ slug, authors });
+    });
+    const dayIds = (typeof DAYS_META !== 'undefined' ? DAYS_META.map((d) => d.id) : Object.keys(byDay));
+    container.textContent = '';
+    let any = false;
+    dayIds.forEach((dayId) => {
+      const items = byDay[dayId];
+      if (!items || !items.length) return;
+      any = true;
+      const block = document.createElement('div');
+      block.className = 'diario-day-block';
+      const title = document.createElement('div');
+      title.className = 'diario-day-title';
+      const dayBtn = document.getElementById('tab-' + dayId);
+      let votes = [];
+      title.textContent = (dayBtn ? dayBtn.textContent : dayId);
+      block.appendChild(title);
+      items.forEach((item) => {
+        AUTHORS.forEach((author) => {
+          const e2 = item.authors[author];
+          if (!e2 || (!(e2.note && e2.note.trim()) && !e2.voto)) return;
+          if (e2.voto) votes.push(e2.voto);
+          const row = document.createElement('div');
+          row.className = 'diario-entry';
+          const head = document.createElement('div');
+          head.className = 'diario-entry__head';
+          const who = document.createElement('span');
+          who.textContent = author + (item.slug === 'giorno' ? ' — giornata' : '');
+          const vote = document.createElement('span');
+          vote.textContent = e2.voto ? ('★ ' + e2.voto + '/5') : '';
+          head.appendChild(who); head.appendChild(vote);
+          row.appendChild(head);
+          if (e2.note && e2.note.trim()) {
+            const note = document.createElement('div');
+            note.className = 'diario-entry__note';
+            note.textContent = e2.note;
+            row.appendChild(note);
+          }
+          block.appendChild(row);
+        });
+      });
+      if (votes.length) {
+        const avg = document.createElement('div');
+        avg.className = 'line';
+        avg.style.marginTop = '4px';
+        avg.textContent = 'Voto medio della giornata: ' + (votes.reduce((a, b) => a + b, 0) / votes.length).toFixed(1) + '/5';
+        block.appendChild(avg);
+      }
+      container.appendChild(block);
+    });
+    if (!any) {
+      const empty = document.createElement('div');
+      empty.className = 'line';
+      empty.textContent = 'Il diario è ancora vuoto: aprite "✎ Diario" sotto un\'attività o a fine giornata per lasciare una nota o un voto.';
+      container.appendChild(empty);
+    }
+  }
+  renderDiarySummary();
+
+  // ---------- Esportazione testo ----------
+  function buildDiaryText() {
+    const data = loadDiary();
+    let out = 'Diario del viaggio in Islanda 2026\n\n';
+    const dayIds = (typeof DAYS_META !== 'undefined' ? DAYS_META.map((d) => d.id) : []);
+    dayIds.forEach((dayId) => {
+      const rows = Object.keys(data.entries).filter((k) => k.split(':')[0] === dayId);
+      const withContent = rows.filter((k) => AUTHORS.some((a) => data.entries[k][a] && ((data.entries[k][a].note && data.entries[k][a].note.trim()) || data.entries[k][a].voto)));
+      if (!withContent.length) return;
+      const dayBtn = document.getElementById('tab-' + dayId);
+      out += '== ' + (dayBtn ? dayBtn.textContent : dayId) + ' ==\n';
+      withContent.forEach((k) => {
+        const slug = k.split(':')[1];
+        AUTHORS.forEach((author) => {
+          const e2 = data.entries[k][author];
+          if (!e2 || (!(e2.note && e2.note.trim()) && !e2.voto)) return;
+          out += '- ' + (slug === 'giorno' ? 'Giornata' : slug) + ' (' + author + ')';
+          if (e2.voto) out += ' ★' + e2.voto + '/5';
+          out += '\n';
+          if (e2.note && e2.note.trim()) out += '  ' + e2.note.trim() + '\n';
+        });
+      });
+      out += '\n';
+    });
+    return out;
+  }
+  const exportTxtBtn = document.getElementById('diario-export-txt');
+  if (exportTxtBtn) exportTxtBtn.addEventListener('click', async () => {
+    const text = buildDiaryText();
+    const file = new File([text], 'diario-islanda-2026.txt', { type: 'text/plain' });
+    if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+      try { await navigator.share({ files: [file], title: 'Diario Islanda 2026' }); return; } catch (e) { /* utente ha annullato o non supportato, procedi col download */ }
+    }
+    const url = URL.createObjectURL(file);
+    const a = document.createElement('a');
+    a.href = url; a.download = 'diario-islanda-2026.txt';
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 2000);
+  });
+
+  const printBtn = document.getElementById('diario-print');
+  if (printBtn) printBtn.addEventListener('click', () => {
+    if (typeof setActive === 'function') setActive('diario');
+    setTimeout(() => window.print(), 50);
+  });
+
+  const exportJsonBtn = document.getElementById('diario-export-json');
+  if (exportJsonBtn) exportJsonBtn.addEventListener('click', () => {
+    const data = loadDiary();
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = 'diario-islanda-2026-' + (getAuthor() || 'esportato') + '.json';
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 2000);
+  });
+
+  function mergeEntries(local, incoming) {
+    let imported = {};
+    Object.keys(incoming || {}).forEach((key) => {
+      const authors = incoming[key];
+      if (!authors || typeof authors !== 'object') return;
+      Object.keys(authors).forEach((author) => {
+        const e2 = authors[author];
+        if (!e2 || typeof e2 !== 'object') return;
+        if (!local[key]) local[key] = {};
+        const cur = local[key][author];
+        if (!cur || !cur.at || (e2.at && new Date(e2.at) > new Date(cur.at))) {
+          local[key][author] = { note: e2.note || '', voto: e2.voto || 0, at: e2.at || new Date().toISOString() };
+          imported[author] = (imported[author] || 0) + 1;
+        }
+      });
+    });
+    return imported;
+  }
+
+  const importInput = document.getElementById('diario-import-input');
+  const importMsg = document.getElementById('diario-import-msg');
+  if (importInput) importInput.addEventListener('change', () => {
+    const file = importInput.files && importInput.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        const incoming = JSON.parse(String(reader.result));
+        if (!incoming || typeof incoming !== 'object' || !incoming.entries) throw new Error('formato non valido');
+        const data = loadDiary();
+        const imported = mergeEntries(data.entries, incoming.entries);
+        saveDiary(data);
+        refreshAllDiaryRows();
+        renderDiarySummary();
+        scheduleSync();
+        const parts = Object.keys(imported).map((a) => 'Importate ' + imported[a] + ' voci di ' + a);
+        if (importMsg) importMsg.textContent = parts.length ? parts.join(' — ') : 'Nessuna voce nuova da importare.';
+      } catch (e) {
+        if (importMsg) importMsg.textContent = 'File non valido: impossibile leggere questo diario.';
+      }
+      importInput.value = '';
+    };
+    reader.onerror = () => { if (importMsg) importMsg.textContent = 'Impossibile leggere il file.'; };
+    reader.readAsText(file);
+  });
+
+  // ---------- Sincronizzazione con GitHub Gist ----------
+  const GIST_DESC = 'islanda-2026-diario';
+  const API = 'https://api.github.com';
+  let syncTimer = null;
+
+  function ghHeaders(token) {
+    return {
+      'Authorization': 'Bearer ' + token,
+      'Accept': 'application/vnd.github+json',
+      'X-GitHub-Api-Version': '2022-11-28'
+    };
+  }
+
+  function setSyncStatus(text) {
+    const el = document.getElementById('diario-sync-status');
+    if (el) el.textContent = text;
+  }
+
+  function fmtTime(d) {
+    return String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
+  }
+
+  async function findOrCreateGist(token) {
+    let page = 1;
+    while (page <= 10) {
+      const res = await fetch(API + '/gists?per_page=100&page=' + page, { headers: ghHeaders(token) });
+      if (res.status === 401) throw { code: 401 };
+      if (res.status === 403 || res.status === 404) throw { code: res.status };
+      if (!res.ok) throw { code: res.status };
+      const list = await res.json();
+      const found = list.find((g) => g.description === GIST_DESC);
+      if (found) return found.id;
+      if (list.length < 100) break;
+      page++;
+    }
+    const createRes = await fetch(API + '/gists', {
+      method: 'POST',
+      headers: ghHeaders(token),
+      body: JSON.stringify({
+        description: GIST_DESC,
+        public: false,
+        files: { 'LEGGIMI.txt': { content: 'Diario del viaggio in Islanda 2026, sincronizzato dalla webapp.' } }
+      })
+    });
+    if (createRes.status === 401) throw { code: 401 };
+    if (createRes.status === 403 || createRes.status === 404) throw { code: createRes.status };
+    if (!createRes.ok) throw { code: createRes.status };
+    const created = await createRes.json();
+    return created.id;
+  }
+
+  async function fetchGistEntries(token, gistId) {
+    const res = await fetch(API + '/gists/' + gistId, { headers: ghHeaders(token) });
+    if (res.status === 401) throw { code: 401 };
+    if (res.status === 403 || res.status === 404) throw { code: res.status };
+    if (!res.ok) throw { code: res.status };
+    const gist = await res.json();
+    const merged = {};
+    for (const fname of Object.keys(gist.files || {})) {
+      if (!/^diario-.*\.json$/.test(fname)) continue;
+      let content = gist.files[fname].content;
+      if (gist.files[fname].truncated) {
+        const raw = await fetch(gist.files[fname].raw_url);
+        content = await raw.text();
+      }
+      try {
+        const parsed = JSON.parse(content);
+        Object.assign(merged, parsed.entries ? mergeGistInto(merged, parsed.entries) : {});
+      } catch (e) { /* file illeggibile, salta */ }
+    }
+    return merged;
+  }
+  function mergeGistInto(target, entries) {
+    mergeEntries(target, entries);
+    return target;
+  }
+
+  async function pushMine(token, gistId, author) {
+    const data = loadDiary();
+    const mine = {};
+    Object.keys(data.entries).forEach((key) => {
+      if (data.entries[key][author]) mine[key] = { [author]: data.entries[key][author] };
+    });
+    const payload = { version: 1, entries: mine };
+    const res = await fetch(API + '/gists/' + gistId, {
+      method: 'PATCH',
+      headers: ghHeaders(token),
+      body: JSON.stringify({ files: { ['diario-' + author + '.json']: { content: JSON.stringify(payload, null, 2) } } })
+    });
+    if (res.status === 401) throw { code: 401 };
+    if (res.status === 403 || res.status === 404) throw { code: res.status };
+    if (!res.ok) throw { code: res.status };
+  }
+
+  async function doSync() {
+    const sync = loadSync();
+    if (!sync.token || !sync.gistId) return;
+    const author = getAuthor();
+    if (!author) return;
+    if (!navigator.onLine) {
+      sync.pending = true; saveSync(sync);
+      setSyncStatus('In attesa di connessione');
+      return;
+    }
+    try {
+      const incoming = await fetchGistEntries(sync.token, sync.gistId);
+      const data = loadDiary();
+      mergeEntries(data.entries, incoming);
+      saveDiary(data);
+      await pushMine(sync.token, sync.gistId, author);
+      refreshAllDiaryRows();
+      renderDiarySummary();
+      sync.pending = false;
+      sync.lastSync = new Date().toISOString();
+      saveSync(sync);
+      setSyncStatus('Sincronizzato alle ' + fmtTime(new Date()));
+    } catch (err) {
+      if (err && err.code === 401) setSyncStatus('Token non valido o scaduto');
+      else if (err && (err.code === 403 || err.code === 404)) setSyncStatus('Permessi insufficienti (serve Gists: read and write)');
+      else { sync.pending = true; saveSync(sync); setSyncStatus('Offline: sincronizzo appena torna la connessione'); }
+    }
+  }
+  function scheduleSync() {
+    const sync = loadSync();
+    if (!sync.token || !sync.gistId) return;
+    clearTimeout(syncTimer);
+    syncTimer = setTimeout(doSync, 5000);
+  }
+
+  const connectBtn = document.getElementById('diario-sync-connect');
+  const disconnectBtn = document.getElementById('diario-sync-disconnect');
+  const tokenInput = document.getElementById('diario-token-input');
+
+  function refreshSyncUi() {
+    const sync = loadSync();
+    if (sync.token && sync.gistId) {
+      setSyncStatus(sync.pending ? 'In attesa di connessione' : (sync.lastSync ? 'Sincronizzato alle ' + fmtTime(new Date(sync.lastSync)) : 'Collegata'));
+    } else {
+      setSyncStatus('Non collegata');
+    }
+  }
+
+  if (connectBtn) connectBtn.addEventListener('click', async () => {
+    const token = tokenInput ? tokenInput.value.trim() : '';
+    if (!token) { setSyncStatus('Inserisci prima il token'); return; }
+    setSyncStatus('Connessione in corso…');
+    try {
+      const gistId = await findOrCreateGist(token);
+      const sync = { token, gistId, pending: false };
+      saveSync(sync);
+      if (tokenInput) tokenInput.value = '';
+      await doSync();
+      refreshSyncUi();
+    } catch (err) {
+      if (err && err.code === 401) setSyncStatus('Token non valido o scaduto');
+      else if (err && (err.code === 403 || err.code === 404)) setSyncStatus('Permessi insufficienti (serve Gists: read and write)');
+      else setSyncStatus('Offline: sincronizzo appena torna la connessione');
+    }
+  });
+  if (disconnectBtn) disconnectBtn.addEventListener('click', () => {
+    saveSync({});
+    if (tokenInput) tokenInput.value = '';
+    setSyncStatus('Non collegata');
+  });
+
+  refreshSyncUi();
+  window.addEventListener('online', doSync);
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) doSync(); });
+  setTimeout(doSync, 1500);
+})();
+'''
 
 seasonal_js = json.dumps(seasonal, ensure_ascii=False)
 locations_js = json.dumps(locations, ensure_ascii=False)
@@ -1040,7 +1662,8 @@ main {{ max-width:820px; margin:0 auto; padding:20px 20px 70px; display:flex; fl
 
 .section {{ display:flex; flex-direction:column; gap:8px; }}
 
-.install-hint {{ font-size:12px; color:#7c8794; text-align:center; padding:6px 20px 0; }}</style>
+.install-hint {{ font-size:12px; color:#7c8794; text-align:center; padding:6px 20px 0; }}
+{diario_css}</style>
 <link rel="stylesheet" href="vendor/leaflet/leaflet.css"/>
 <script src="vendor/leaflet/leaflet.js"></script>
 </head>
@@ -1167,7 +1790,11 @@ main {{ max-width:820px; margin:0 auto; padding:20px 20px 70px; display:flex; fl
 
 {checklist_html}
 
+{diario_html}
+
 </main>
+
+{diario_author_modal_html}
 
 <button id="fab-fx-btn" class="fab-fx-btn" aria-label="Convertitore euro-corone" title="Convertitore euro-corone" aria-expanded="false" aria-controls="fab-fx-popup" hidden>€↔kr</button>
 <div id="fab-fx-popup" class="fab-fx-popup" hidden>
@@ -1820,6 +2447,8 @@ function setupChecklist() {{
   updateChecklistProgress();
 }}
 setupChecklist();
+
+{diario_js}
 
 refreshLiveData(true);
 initTripMap();
