@@ -414,9 +414,10 @@ def guess_icon(title):
 def photo_slot(filename, label, css_class, icon_key='village'):
     bg1, bg2 = ICON_BG.get(icon_key, ('#3a2f22', '#5c4a33'))
     inner = icon_svg(icon_key)
+    webp_name = re.sub(r'\.jpg$', '.webp', filename)
     return (f'<div class="photo-slot {css_class}" data-photo="{e(filename)}" '
             f'style="--bg1:{bg1};--bg2:{bg2}">'
-            f'<img src="images/{filename}" alt="{e(label)}" loading="lazy" '
+            f'<img src="images/web/{webp_name}" alt="{e(label)}" loading="lazy" '
             f'onerror="this.parentElement.classList.add(\'photo-slot--empty\')">'
             f'<div class="photo-slot__ph"><svg viewBox="0 0 64 56" class="photo-slot__icon">{inner}</svg>'
             f'<span>{e(label)}</span></div></div>')
@@ -1643,7 +1644,7 @@ async function prepareOffline() {{
 
   const appCache = await caches.open(APP_CACHE);
   const tileCache = await caches.open(TILE_CACHE);
-  const photos = [...new Set([...document.querySelectorAll('[data-photo]')].map(el => 'images/' + el.dataset.photo))];
+  const photos = [...new Set([...document.querySelectorAll('[data-photo]')].map(el => 'images/web/' + el.dataset.photo.replace(/\.jpg$/, '.webp')))];
   const jobs = photos.map(u => ({{ url: u, cache: appCache, optional: true }}))
     .concat(OFFLINE_TILES.map(t => ({{ url: 'https://tile.openstreetmap.org/' + t + '.png', cache: tileCache, optional: false }})));
   let done = 0, failed = 0, next = 0;
@@ -1722,6 +1723,51 @@ import hashlib, os
 
 photo_files = sorted({p for p in re.findall(r'data-photo="([^"]+)"', html_out)
                       if os.path.isfile(os.path.join('images', p))})
+
+# ------------------------------------------------------------
+# Conversione automatica foto → WebP (images/web/), lato lungo max
+# 1200px, qualità 75 (per stare sui ~3 MB totali), orientamento EXIF. Riconverte solo se
+# il .jpg sorgente è cambiato (hash sha256 salvato in un manifest),
+# così due run consecutivi di render.py producono file identici.
+# ------------------------------------------------------------
+from PIL import Image, ImageOps
+
+WEBP_DIR = os.path.join('images', 'web')
+os.makedirs(WEBP_DIR, exist_ok=True)
+_manifest_path = os.path.join(WEBP_DIR, 'manifest.json')
+try:
+    with open(_manifest_path, encoding='utf-8') as f:
+        _webp_manifest = json.load(f)
+except (FileNotFoundError, json.JSONDecodeError):
+    _webp_manifest = {}
+
+_new_manifest = {}
+webp_files = []
+for _p in photo_files:
+    _src = os.path.join('images', _p)
+    with open(_src, 'rb') as f:
+        _src_bytes = f.read()
+    _src_hash = hashlib.sha256(_src_bytes).hexdigest()
+    _webp_name = re.sub(r'\.jpg$', '.webp', _p)
+    _webp_path = os.path.join(WEBP_DIR, _webp_name)
+    if _webp_manifest.get(_p) != _src_hash or not os.path.isfile(_webp_path):
+        _img = Image.open(_src)
+        _img = ImageOps.exif_transpose(_img)
+        _img = _img.convert('RGB')
+        _w, _h_ = _img.size
+        _long = max(_w, _h_)
+        if _long > 1200:
+            _scale = 1200 / _long
+            _img = _img.resize((max(1, round(_w * _scale)), max(1, round(_h_ * _scale))), Image.LANCZOS)
+        _img.save(_webp_path, 'WEBP', quality=75, method=6)
+    _new_manifest[_p] = _src_hash
+    webp_files.append('web/' + _webp_name)
+_webp_manifest = _new_manifest
+with open(_manifest_path, 'w', encoding='utf-8') as f:
+    json.dump(_webp_manifest, f, ensure_ascii=False, indent=2, sort_keys=True)
+    f.write('\n')
+webp_files = sorted(webp_files)
+
 STATIC_FILES = ['manifest.json', 'icons/icon-180.png', 'icons/icon-192.png', 'icons/icon-512.png',
                 'icons/icon-192-maskable.png', 'icons/icon-512-maskable.png',
                 'vendor/leaflet/leaflet.js', 'vendor/leaflet/leaflet.css',
@@ -1731,14 +1777,14 @@ SW_TEMPLATE = open('sw-template.js', encoding='utf-8').read()
 _h = hashlib.sha256()
 for _chunk in [html_out.encode('utf-8'), SW_TEMPLATE.encode('utf-8'), json.dumps(_routes_raw, sort_keys=True).encode()]:
     _h.update(_chunk)
-for _path in STATIC_FILES + ['images/' + p for p in photo_files]:
+for _path in STATIC_FILES + ['images/' + p for p in webp_files]:
     _h.update(_path.encode())
     with open(_path, 'rb') as f:
         _h.update(f.read())
 app_version = _h.hexdigest()[:12]
 
 html_out = html_out.replace('__APP_VERSION__', app_version)
-precache = ['./', 'index.html'] + STATIC_FILES + ['images/' + p for p in photo_files]
+precache = ['./', 'index.html'] + STATIC_FILES + ['images/' + p for p in webp_files]
 sw_out = (SW_TEMPLATE
           .replace('__APP_VERSION__', app_version)
           .replace('__PRECACHE__', json.dumps(precache, ensure_ascii=False, indent=2)))

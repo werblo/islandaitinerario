@@ -58,6 +58,9 @@ cambia di conseguenza (segue il titolo, in minuscolo e senza accenti).
 Se preferisci, mandami le foto in chat mano a mano che le hai e te le
 incorporo/rinomino io.
 
+Le foto restano .jpg come le metti tu: `render.py` le converte da solo in
+formato più leggero per il sito (vedi sezione 11).
+
 ## 2. Come funziona online (GitHub Pages)
 
 Il sito è pubblicato su **GitHub Pages** dal branch `main` di questo
@@ -275,8 +278,8 @@ pubblico: non aggiungere mai file con dati personali.
   chiamate a sunrise-sunset.org. Correzione emersa: i vecchi valori di
   riserva del Giorno 6 e del Giorno 8 erano calcolati per Vík e Flúðir
   invece che per Flúðir e Keflavík.
-- **Pulsante "Prepara offline"** (tab Info): salva foto e ~1.050 riquadri
-  di mappa (~17 MB) lungo un corridoio stretto attorno al percorso, zoom
+- **Pulsante "Prepara offline"** (tab Info): salva foto e circa un migliaio di riquadri
+  di mappa (~15 MB) lungo un corridoio stretto attorno al percorso, zoom
   6-12, massimo 2 download alla volta (tile usage policy OSM). Da fare
   con il Wi-Fi prima di partire, su entrambi i telefoni. Ingrandendo oltre
   lo zoom 12 senza rete la mappa resta grigia.
@@ -284,6 +287,22 @@ pubblico: non aggiungere mai file con dati personali.
   di Android (Chrome) e iPhone (Safari). Su iPhone i dati offline restano
   al sicuro se l'app è **aggiunta alla schermata Home**; da Safari normale
   iOS può cancellarli dopo alcune settimane di non utilizzo.
+
+### Immagini
+Le foto in `images/` restano .jpg (quelle che metti tu, sezione 1): a ogni
+`python3 render.py` vengono convertite in automatico in **WebP**, dentro
+`images/web/`, ridotte a un massimo di 1200px sul lato lungo e con
+l'orientamento corretto (le foto da telefono a volte sono ruotate solo nei
+metadati). Il sito carica sempre i .webp: più leggeri, stesso aspetto.
+Se una foto non cambia, non viene riconvertita (viene tenuto un piccolo
+elenco di controllo in `images/web/manifest.json`): questo rende il sito
+riproducibile, oltre a essere più veloce. Se il .jpg manca, resta il
+placeholder come prima.
+
+Le foto scattate ma non usate nell'itinerario (per esempio quando
+un'attività è stata sostituita) sono spostate in `images/archivio/`: restano
+nel repository come ricordo/scorta, ma non vengono convertite né incluse nel
+sito o nell'offline.
 
 ### Percorsi mappa precalcolati
 Il percorso stradale di ogni giorno non si calcola più al momento
