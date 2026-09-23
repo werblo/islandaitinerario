@@ -332,3 +332,58 @@ La cartella `backup-pre-storia/` (copie manuali di render.py, index.html,
 sw.js, leggimi.md, icone, font, immagini) è stata eliminata. Al suo posto
 c'è il tag git `v1-stabile`, creato su GitHub sulla versione stabile del
 23/09/2026. Vedi la sezione 4 per come si usa un tag.
+
+### Accessibilità
+Aggiunte "invisibili" (nessun pixel cambiato, verificato con screenshot
+prima/dopo): chi usa uno screen reader o solo la tastiera ora può
+orientarsi meglio nella pagina.
+- **Barra in alto (Info, giorni, Storia, Checklist)**: ora si comporta
+  come un vero elenco di schede ("tab") per la tastiera e per lo screen
+  reader. Con Tab ci si arriva una volta sola, poi con le frecce
+  sinistra/destra (e Home/End) ci si sposta tra le schede senza dover
+  premere Tab più volte; lo screen reader annuncia quale scheda è
+  selezionata. Ogni pulsante ha anche una descrizione più chiara di quella
+  scritta (es. "Giorno 1, domenica 15 novembre: Arrivo & Reykjavík" invece
+  di leggere solo "15 nov").
+- **Pulsante cambio valuta (€↔kr)**: ora annuncia se il popup è aperto o
+  chiuso, e si può chiudere anche con il tasto **Esc** (prima solo
+  cliccando fuori o sulla ×).
+- **Mappe**: i pulsanti +/- per zoomare ora hanno un titolo in italiano
+  ("Ingrandisci mappa" / "Riduci mappa") letto al passaggio del mouse o
+  dallo screen reader; la mappa stessa è annunciata come "Mappa del
+  percorso del giorno N" (o "Mappa del viaggio" nella tab Info). Nessun
+  cambiamento allo stile, ai percorsi o al comportamento al tocco.
+- **Checklist**: la riga "Quanto manca" ora viene letta automaticamente
+  dallo screen reader quando cambia (spuntando una casella).
+- **Prepara offline**: lo stato del download e la barra di avanzamento
+  sono ora letti automaticamente dallo screen reader mentre procedono.
+- **Icone decorative** (disegni SVG nei segnaposto foto e nelle schede
+  "Storia & curiosità"): nascoste allo screen reader, che quindi non
+  perde tempo a descriverle inutilmente (le foto vere hanno già una
+  descrizione testuale).
+
+**Verifiche fatte, non modifiche visibili applicate:**
+- **Contrasto colori**: alcuni testi grigi chiari su sfondo chiaro sono
+  sotto la soglia consigliata (AA, 4.5:1) e restano difficili da leggere
+  con lo schermo al minimo della luminosità. I principali, con una
+  proposta di colore più scuro (a parità di stile) da valutare in futuro:
+  - Testo grigio delle didascalie sotto le mappe e dello stato offline
+    (`#7c8794` su sfondo chiaro, rapporto ~3.1-3.4:1) → proposta `#5c6a78`
+    (già usato altrove nel sito, rapporto ~5:1).
+  - Link color ambra (`#b5673a`) su sfondo pagina chiaro (~3.6:1) →
+    proposta `#8f4d29` (già definito come `--amber-2`, rapporto più alto).
+  - Testo bianco caldo sul pulsante di scheda attiva (`#fffaf2` su
+    `#b5673a`, ~4.1:1, appena sotto soglia) → proposta scurire leggermente
+    lo sfondo attivo o schiarire il testo.
+- **Zoom testo**: con la pagina ingrandita al 200% su schermo 360×640
+  compare scorrimento orizzontale (il contenitore centrale ha una
+  larghezza massima fissa in px, non pensata per zoom estremi). I
+  font-size del sito sono quasi tutti in `px`, non in `rem`/`em`: questo
+  significa che l'impostazione "dimensione testo" di sistema di
+  Android/iOS (che di norma scala i `rem`) probabilmente non ha alcun
+  effetto sul testo di questa pagina. Proposta per il futuro: convertire i
+  font-size principali da `px` a `rem`.
+- **Tastiera**: verificato con test automatico che Tab raggiunge la barra
+  delle schede, le frecce/Home/End spostano il focus e attivano la
+  scheda, Invio/Spazio attivano il pulsante €↔kr, e il popup valuta è
+  raggiungibile e richiudibile (anche con Esc, aggiunto).

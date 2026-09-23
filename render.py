@@ -419,7 +419,7 @@ def photo_slot(filename, label, css_class, icon_key='village'):
             f'style="--bg1:{bg1};--bg2:{bg2}">'
             f'<img src="images/web/{webp_name}" alt="{e(label)}" loading="lazy" '
             f'onerror="this.parentElement.classList.add(\'photo-slot--empty\')">'
-            f'<div class="photo-slot__ph"><svg viewBox="0 0 64 56" class="photo-slot__icon">{inner}</svg>'
+            f'<div class="photo-slot__ph"><svg viewBox="0 0 64 56" class="photo-slot__icon" aria-hidden="true">{inner}</svg>'
             f'<span>{e(label)}</span></div></div>')
 
 def render_leg(leg):
@@ -591,20 +591,20 @@ def render_day_section(day):
 
     culture_html = ''
     if day.get('culture'):
-        culture_icon = f'<svg viewBox="0 0 64 56" xmlns="http://www.w3.org/2000/svg">{icon_svg("saga")}</svg>'
+        culture_icon = f'<svg viewBox="0 0 64 56" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">{icon_svg("saga")}</svg>'
         culture_html = (f'<div class="culture-card"><div class="culture-card__label">{culture_icon}Storia &amp; curiosità</div>'
                          f'<p>{e(day["culture"])}</p></div>')
 
     hero_fname = f"{day['id']}-hero.jpg"
 
     return f'''
-<section class="day-view page-view" id="view-{day['id']}" hidden>
+<section class="day-view page-view" id="view-{day['id']}" role="tabpanel" aria-labelledby="tab-{day['id']}" hidden>
   <div class="day-head">
     <div class="day-date">{e(day['dateLabel'])} · Giorno {day['num']}/8</div>
     <div class="day-title">{e(day['title'])}</div>
   </div>
   {photo_slot(hero_fname, day['title'], 'photo-slot--hero', HERO_ICON.get(day['id'], 'village'))}
-  <div class="map-frame"><div class="day-map" id="day-map-{day['id']}"></div></div>
+  <div class="map-frame"><div class="day-map" id="day-map-{day['id']}" role="region" aria-label="Mappa del percorso del giorno {day['num']}"></div></div>
   <div class="line" style="margin:6px 0 0;font-size:12px;color:#7c8794;">Mappa reale (OpenStreetMap) — zoomabile e trascinabile. Percorso stradale indicativo (disponibile anche offline); per la navigazione vera usa Google Maps offline.</div>
   <div class="grid2">
     <div class="info-card">
@@ -639,18 +639,36 @@ stays_html = ''.join(
     for s in stays
 )
 
-nav_items = ['<button class="nav-btn active" data-nav="info">Info</button>']
+DAY_WEEKDAYS_IT = {
+    'Dom': 'domenica', 'Lun': 'lunedì', 'Mar': 'martedì', 'Mer': 'mercoledì',
+    'Gio': 'giovedì', 'Ven': 'venerdì', 'Sab': 'sabato',
+}
+MONTHS_IT_GEN = {'nov': 'novembre'}
+
+def _tab_btn(nav_id, label, aria_label, active):
+    cls = 'nav-btn active' if active else 'nav-btn'
+    sel = 'true' if active else 'false'
+    tabindex = '0' if active else '-1'
+    return (f'<button class="{cls}" id="tab-{nav_id}" data-nav="{nav_id}" role="tab" '
+            f'aria-selected="{sel}" aria-controls="view-{nav_id}" tabindex="{tabindex}" '
+            f'aria-label="{e(aria_label)}">{label}</button>')
+
+nav_items = [_tab_btn('info', 'Info', 'Info', True)]
 for d in days:
-    label = d['dateLabel'].split(' ')[1] + ' ' + d['dateLabel'].split(' ')[2]
-    nav_items.append(f'<button class="nav-btn" data-nav="{d["id"]}">{e(label)}</button>')
-nav_items.append('<button class="nav-btn" data-nav="storia">Storia</button>')
-nav_items.append('<button class="nav-btn" data-nav="checklist">Checklist</button>')
+    parts = d['dateLabel'].split(' ')
+    label = parts[1] + ' ' + parts[2]
+    weekday_full = DAY_WEEKDAYS_IT.get(parts[0], parts[0])
+    month_full = MONTHS_IT_GEN.get(parts[2], parts[2])
+    aria_label = f"Giorno {d['num']}, {weekday_full} {parts[1]} {month_full}: {d['title']}"
+    nav_items.append(_tab_btn(d['id'], e(label), aria_label, False))
+nav_items.append(_tab_btn('storia', 'Storia', 'Storia dell\'Islanda', False))
+nav_items.append(_tab_btn('checklist', 'Checklist', 'Checklist', False))
 nav_html = ''.join(nav_items)
 
 days_sections_html = ''.join(render_day_section(d) for d in days)
 
 storia_html = f'''
-<section class="page-view" id="view-storia" hidden>
+<section class="page-view" id="view-storia" role="tabpanel" aria-labelledby="tab-storia" hidden>
   <div class="day-head">
     <div class="day-date"><span class="rune-mark">ᚨ</span>Infarinatura generale<span class="rune-mark">ᚾ</span></div>
     <div class="day-title"><span class="rune-mark">ᛋ</span>Storia dell'Islanda<span class="rune-mark">ᛁ</span></div>
@@ -670,12 +688,12 @@ storia_html = f'''
   </div>
 
   <div class="culture-card">
-    <div class="culture-card__label">{f'<svg viewBox="0 0 64 56" xmlns="http://www.w3.org/2000/svg">{icon_svg("saga")}</svg>'}<span class="rune-mark">ᚱ</span>Le saghe e una lingua rimasta ferma nel tempo</div>
+    <div class="culture-card__label">{f'<svg viewBox="0 0 64 56" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">{icon_svg("saga")}</svg>'}<span class="rune-mark">ᚱ</span>Le saghe e una lingua rimasta ferma nel tempo</div>
     <p>Preparatevi a un piccolo miracolo linguistico: l'islandese di oggi è così vicino al norreno medievale che un lettore islandese può ancora leggere le saghe scritte otto secoli fa, senza traduzione — un lusso che i cugini scandinavi hanno perso da tempo. Altrettanto insolito è il sistema dei nomi: niente cognomi di famiglia, solo patronimici o matronimici (un Jónsson è "figlio di Jón"), tanto che l'elenco telefonico islandese è ordinato per nome di battesimo. La popolazione resta minuscola, poco più di 380.000 persone su un'isola grande quanto il Portogallo, con un effetto collaterale gradito: zero zanzare. Gli alberi invece scarseggiano, abbattuti in gran parte dai primi coloni per legna e pascoli.</p>
   </div>
 
   <div class="culture-card">
-    <div class="culture-card__label">{f'<svg viewBox="0 0 64 56" xmlns="http://www.w3.org/2000/svg">{icon_svg("saga")}</svg>'}<span class="rune-mark">ᛟ</span>Troll, elfi e le luci del cielo</div>
+    <div class="culture-card__label">{f'<svg viewBox="0 0 64 56" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">{icon_svg("saga")}</svg>'}<span class="rune-mark">ᛟ</span>Troll, elfi e le luci del cielo</div>
     <p>La tradizione islandese abbonda di creature che spiegano il paesaggio prima ancora della geologia. I <strong>troll</strong> vivono nelle scogliere e nelle montagne ma temono la luce del sole: chi viene sorpreso all'alba resta pietrificato per sempre — da qui nascono formazioni come i faraglioni di Reynisfjara, che vedrete il Giorno 4. Accanto a loro vive un popolo più discreto, gli <strong>Huldufólk</strong> ("il popolo nascosto"): elfi che abitano rocce e colline e si mostrano solo quando lo scelgono loro. La credenza è ancora abbastanza radicata che alcuni progetti stradali islandesi siano stati deviati proprio per non disturbarli.</p>
   </div>
 
@@ -702,7 +720,7 @@ def render_checklist_group(group, group_idx):
 checklist_groups_html = ''.join(render_checklist_group(g, i) for i, g in enumerate(checklist_groups))
 
 checklist_html = f'''
-<section class="page-view" id="view-checklist" hidden>
+<section class="page-view" id="view-checklist" role="tabpanel" aria-labelledby="tab-checklist" hidden>
   <div class="day-head">
     <div class="day-date">Prima di partire</div>
     <div class="day-title">Checklist</div>
@@ -711,7 +729,7 @@ checklist_html = f'''
   <div class="panel">
     <div class="panel-title">Quanto manca</div>
     <div class="rune-rule"></div>
-    <div class="line" id="chk-progress">Caricamento…</div>
+    <div class="line" id="chk-progress" aria-live="polite">Caricamento…</div>
   </div>
 
   {checklist_groups_html}
@@ -1015,11 +1033,11 @@ main {{ max-width:820px; margin:0 auto; padding:20px 20px 70px; display:flex; fl
   </div>
 </div>
 
-<div class="navbar"><div class="navbar__inner">{nav_html}</div></div>
+<div class="navbar"><div class="navbar__inner" role="tablist" aria-label="Sezioni del viaggio">{nav_html}</div></div>
 
 <main>
 
-<section id="view-info" class="page-view">
+<section id="view-info" class="page-view" role="tabpanel" aria-labelledby="tab-info">
   <div class="countdown-banner">
     <div class="countdown-banner__big" id="countdown-big">…</div>
     <div class="countdown-banner__sub" id="countdown-sub"></div>
@@ -1035,7 +1053,7 @@ main {{ max-width:820px; margin:0 auto; padding:20px 20px 70px; display:flex; fl
   <div class="panel">
     <div class="panel-title">Mappa del viaggio</div>
     <div class="rune-rule"></div>
-    <div id="trip-map" style="position:relative;isolation:isolate;z-index:0;height:260px;border-radius:8px;overflow:hidden;border:2px solid var(--navy);box-shadow:0 4px 16px rgba(0,0,0,.12);background:#e4e6e3;"></div>
+    <div id="trip-map" role="region" aria-label="Mappa del viaggio" style="position:relative;isolation:isolate;z-index:0;height:260px;border-radius:8px;overflow:hidden;border:2px solid var(--navy);box-shadow:0 4px 16px rgba(0,0,0,.12);background:#e4e6e3;"></div>
     <div class="line" style="margin-top:10px;font-size:12px;color:#7c8794;">Mappa reale (OpenStreetMap) — zoomabile e trascinabile. Tocca un marker per il nome della tappa. Per la navigazione stradale vera e propria usa Google Maps offline.</div>
   </div>
 
@@ -1043,8 +1061,8 @@ main {{ max-width:820px; margin:0 auto; padding:20px 20px 70px; display:flex; fl
     <div class="panel-title">Prepara offline</div>
     <div class="rune-rule"></div>
     <div class="line">Salva sul telefono foto, percorsi e mappe lungo tutto il tragitto del viaggio (circa {offline_tiles_label} riquadri di mappa, ~{offline_mb} MB), così l'app funziona anche senza rete. Fallo con il Wi-Fi prima di partire, su entrambi i telefoni.</div>
-    <div class="offline-bar" id="offline-bar" hidden><div class="offline-bar__fill" id="offline-fill"></div></div>
-    <div class="offline-status" id="offline-status"></div>
+    <div class="offline-bar" id="offline-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" hidden><div class="offline-bar__fill" id="offline-fill"></div></div>
+    <div class="offline-status" id="offline-status" aria-live="polite"></div>
     <button type="button" class="offline-btn" id="offline-btn">Prepara offline</button>
   </div>
 
@@ -1122,7 +1140,7 @@ main {{ max-width:820px; margin:0 auto; padding:20px 20px 70px; display:flex; fl
 
 </main>
 
-<button id="fab-fx-btn" class="fab-fx-btn" aria-label="Cambio Euro / Corona islandese" title="Cambio Euro / Corona islandese" hidden>€↔kr</button>
+<button id="fab-fx-btn" class="fab-fx-btn" aria-label="Convertitore euro-corone" title="Convertitore euro-corone" aria-expanded="false" aria-controls="fab-fx-popup" hidden>€↔kr</button>
 <div id="fab-fx-popup" class="fab-fx-popup" hidden>
   <div class="fab-fx-popup__head">
     <span>Cambio rapido</span>
@@ -1165,7 +1183,8 @@ function ensureDayMap(dayId) {{
   if (!el || !points || !points.length || typeof L === 'undefined') return;
   if (dayMaps[dayId]) {{ requestAnimationFrame(() => dayMaps[dayId].invalidateSize()); return; }}
 
-  const map = L.map(el, {{ scrollWheelZoom: false, dragging: false, tap: false, zoomControl: true }});
+  const map = L.map(el, {{ scrollWheelZoom: false, dragging: false, tap: false, zoomControl: false }});
+  L.control.zoom({{ position: 'topleft', zoomInTitle: 'Ingrandisci mappa', zoomOutTitle: 'Riduci mappa' }}).addTo(map);
   dayMaps[dayId] = map;
   L.tileLayer('https://{{s}}.tile.openstreetmap.org/{{z}}/{{x}}/{{y}}.png', {{
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors',
@@ -1225,18 +1244,35 @@ function drawRouteLive(map, points, latlngs, routeStyle) {{
     .catch(() => {{ /* resta la linea retta di riserva */ }});
 }}
 
-function setActive(id) {{
-  document.querySelectorAll('.nav-btn').forEach(b => b.classList.toggle('active', b.dataset.nav === id));
+function setActive(id, moveFocus) {{
+  document.querySelectorAll('.nav-btn').forEach(b => {{
+    const isActive = b.dataset.nav === id;
+    b.classList.toggle('active', isActive);
+    b.setAttribute('aria-selected', isActive ? 'true' : 'false');
+    b.tabIndex = isActive ? 0 : -1;
+    if (isActive && moveFocus) b.focus();
+  }});
   document.querySelectorAll('.page-view').forEach(el => {{ el.hidden = el.id !== 'view-' + id; }});
   if (DAYS_META.some(d => d.id === id)) ensureDayMap(id);
   const fabBtn = document.getElementById('fab-fx-btn');
   const fabPopup = document.getElementById('fab-fx-popup');
   if (fabBtn) fabBtn.hidden = id === 'info';
-  if (fabPopup && id === 'info') fabPopup.hidden = true;
+  if (fabPopup && id === 'info') {{ fabPopup.hidden = true; if (fabBtn) fabBtn.setAttribute('aria-expanded', 'false'); }}
   window.scrollTo({{ top: 0, behavior: 'instant' in window ? 'instant' : 'auto' }});
 }}
+const navBtnList = () => Array.from(document.querySelectorAll('.nav-btn'));
 document.querySelectorAll('.nav-btn').forEach(btn => {{
   btn.addEventListener('click', () => setActive(btn.dataset.nav));
+  btn.addEventListener('keydown', (e) => {{
+    const list = navBtnList();
+    const i = list.indexOf(btn);
+    let next = -1;
+    if (e.key === 'ArrowRight') next = (i + 1) % list.length;
+    else if (e.key === 'ArrowLeft') next = (i - 1 + list.length) % list.length;
+    else if (e.key === 'Home') next = 0;
+    else if (e.key === 'End') next = list.length - 1;
+    if (next >= 0) {{ e.preventDefault(); setActive(list[next].dataset.nav, true); }}
+  }});
 }});
 
 function weatherFor(day) {{
@@ -1438,10 +1474,14 @@ function fabFxSetup() {{
   const popup = document.getElementById('fab-fx-popup');
   const closeBtn = document.getElementById('fab-fx-close');
   if (!btn || !popup) return;
-  btn.addEventListener('click', () => {{ popup.hidden = !popup.hidden; }});
-  if (closeBtn) closeBtn.addEventListener('click', () => {{ popup.hidden = true; }});
+  const setOpen = (open) => {{ popup.hidden = !open; btn.setAttribute('aria-expanded', open ? 'true' : 'false'); }};
+  btn.addEventListener('click', () => {{ setOpen(popup.hidden); }});
+  if (closeBtn) closeBtn.addEventListener('click', () => {{ setOpen(false); btn.focus(); }});
   document.addEventListener('click', (e) => {{
-    if (!popup.hidden && !popup.contains(e.target) && e.target !== btn) popup.hidden = true;
+    if (!popup.hidden && !popup.contains(e.target) && e.target !== btn) setOpen(false);
+  }});
+  document.addEventListener('keydown', (e) => {{
+    if (e.key === 'Escape' && !popup.hidden) {{ setOpen(false); btn.focus(); }}
   }});
 }}
 fabFxSetup();
@@ -1457,7 +1497,8 @@ function initTripMap() {{
     {{ key: 'fludir', label: 'Flúðir', n: '4' }}
   ];
 
-  const map = L.map(el, {{ scrollWheelZoom: false, dragging: false, tap: false, zoomControl: true }});
+  const map = L.map(el, {{ scrollWheelZoom: false, dragging: false, tap: false, zoomControl: false }});
+  L.control.zoom({{ position: 'topleft', zoomInTitle: 'Ingrandisci mappa', zoomOutTitle: 'Riduci mappa' }}).addTo(map);
   L.tileLayer('https://{{s}}.tile.openstreetmap.org/{{z}}/{{x}}/{{y}}.png', {{
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors',
     subdomains: 'abc',
@@ -1640,6 +1681,7 @@ async function prepareOffline() {{
   if (!navigator.onLine) {{ status.textContent = 'Serve una connessione (meglio Wi-Fi) per scaricare i contenuti.'; return; }}
   btn.disabled = true;
   bar.hidden = false;
+  bar.setAttribute('aria-valuenow', '0');
   try {{ if (navigator.storage && navigator.storage.persist) await navigator.storage.persist(); }} catch (e) {{}}
 
   const appCache = await caches.open(APP_CACHE);
@@ -1658,7 +1700,9 @@ async function prepareOffline() {{
       }}
     }} catch (e) {{ failed++; }}
     done++;
-    fill.style.width = Math.round(done / jobs.length * 100) + '%';
+    const pct = Math.round(done / jobs.length * 100);
+    fill.style.width = pct + '%';
+    bar.setAttribute('aria-valuenow', String(pct));
     status.textContent = 'Scaricamento… ' + done + ' di ' + jobs.length;
   }}
   // al massimo 2 richieste alla volta, come chiede la policy dei tile OpenStreetMap
