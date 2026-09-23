@@ -1,56 +1,12 @@
 // Generato da render.py a partire da sw-template.js: non modificare sw.js a mano.
-const VERSION = 'b6933974104a';
+const VERSION = '__APP_VERSION__';
 const APP_CACHE = 'islanda-2026-app-' + VERSION;
 const TILE_CACHE = 'islanda-2026-tiles';
 const LIVE_CACHE = 'islanda-2026-live';
 
 // Pagina, Leaflet, icone e tutte le foto usate dall'app: scaricati
 // all'installazione, così l'app funziona offline dalla prima apertura.
-const PRECACHE = [
-  "./",
-  "index.html",
-  "manifest.json",
-  "icons/icon-180.png",
-  "icons/icon-192.png",
-  "icons/icon-512.png",
-  "icons/icon-192-maskable.png",
-  "icons/icon-512-maskable.png",
-  "vendor/leaflet/leaflet.js",
-  "vendor/leaflet/leaflet.css",
-  "vendor/leaflet/images/layers.png",
-  "vendor/leaflet/images/layers-2x.png",
-  "images/cover.jpg",
-  "images/d1-hero.jpg",
-  "images/d1-passeggiata-nel-centro.jpg",
-  "images/d2-harpa-porto-vecchio.jpg",
-  "images/d2-hero.jpg",
-  "images/d2-national-museum-of-iceland.jpg",
-  "images/d2-perlan.jpg",
-  "images/d2-reykjanes.jpg",
-  "images/d3-fontana-geothermal-baths.jpg",
-  "images/d3-hero.jpg",
-  "images/d3-thingvellir-national-park.jpg",
-  "images/d4-dyrholaey.jpg",
-  "images/d4-hero.jpg",
-  "images/d4-reynisfjara.jpg",
-  "images/d4-seljalandsfoss.jpg",
-  "images/d4-skogafoss.jpg",
-  "images/d4-vikurkirkja.jpg",
-  "images/d5-diamond-beach.jpg",
-  "images/d5-fjadrargljufur.jpg",
-  "images/d5-hero.jpg",
-  "images/d5-jokulsarlon-glacier-lagoon.jpg",
-  "images/d6-hero.jpg",
-  "images/d6-kerid.jpg",
-  "images/d6-secret-lagoon.jpg",
-  "images/d7-efstidalur-ii.jpg",
-  "images/d7-faxi.jpg",
-  "images/d7-geysir-strokkur.jpg",
-  "images/d7-gullfoss.jpg",
-  "images/d7-hero.jpg",
-  "images/d8-hero.jpg",
-  "images/storia-hero.jpg"
-];
+const PRECACHE = __PRECACHE__;
 
 self.addEventListener('install', (event) => {
   // cache: 'reload' salta la cache HTTP del browser: si scarica davvero

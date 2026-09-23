@@ -1,0 +1,27 @@
+name: Aggiorna percorsi mappa
+
+# Avvio solo manuale: tab Actions -> "Aggiorna percorsi mappa" -> Run workflow.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  percorsi:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python tools/fetch_routes.py
+      - run: python render.py
+      - name: Salva i percorsi aggiornati
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add routes.json index.html sw.js
+          if git diff --cached --quiet; then echo "Nessuna modifica"; exit 0; fi
+          git commit -m "Aggiorna percorsi mappa (OSRM)"
+          git push
