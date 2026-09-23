@@ -496,3 +496,12 @@ Nessuno di questi file contiene mai il token.
 il diario locale su quel telefono si perde. Se avevate collegato la
 sincronizzazione, le note restano comunque salvate nel gist: basta
 ricollegare lo stesso token per ritrovarle.
+
+### Giorno 2: Reykjanes confermato
+Reykjanes (ponte tra i continenti, Gunnuhver, faro di Reykjanesviti) è
+ora l'attività del pomeriggio del 16 novembre, con le tratte in auto
+(~145 km in tutto). Il National Museum resta come alternativa se il meteo
+è brutto. Andata e ritorno passano da Keflavík e Hafnir (strada 425):
+Grindavík è chiusa e la strada 43 può chiudere per l'attività vulcanica.
+Le coordinate delle tappe sulla mappa non sono cambiate, quindi il
+percorso già calcolato resta valido.
