@@ -265,9 +265,6 @@ sotto "Alloggio", con link "Naviga" diretti:
 - **Checklist** — documenti, abbigliamento, tecnologia, con caselle
   spuntabili salvate sul telefono (localStorage) e contatore di
   avanzamento.
-- **Diario** — chi scrive, stato della sincronizzazione, esportazione e
-  importazione, e il riepilogo di tutte le note e i voti lasciati sotto
-  le attività e a fine giornata (vedi sezione 11, "Diario del viaggio").
 
 ## 11. Aggiornamento settembre 2026 (23/09)
 
@@ -420,83 +417,10 @@ piccoli e grigi, ben distinti dai pulsanti "Naviga", che restano
 invariati. Compaiono solo nei giorni con
 spostamenti in auto.
 
-### Diario del viaggio
-
-Sotto ogni attività, e a fine di ogni giornata, c'è una piccola riga
-richiudibile "✎ Diario": apritela per scrivere una nota e dare un voto da
-1 a 5. Si salva da sola, non c'è un pulsante "salva". Quando è chiusa, se
-avete scritto qualcosa, la riga lo dice in piccolo (es. "✎ Diario · ★4 ·
-nota"), altrimenti resta discreta e vuota.
-
-La prima volta che aprite un diario, il telefono vi chiede chi scrive
-("Michele" o "Federica"): si sceglie una volta sola per telefono, e si può
-cambiare in qualsiasi momento dalla tab **Diario**, in alto.
-
-La tab **Diario** raccoglie tutte le note e i voti, giorno per giorno, con
-il nome di chi ha scritto e il voto medio della giornata. Da lì si vede
-anche lo stato della sincronizzazione e ci sono i pulsanti di
-esportazione/importazione.
-
-**Come funziona la sincronizzazione automatica (facoltativa)**
-
-Per vedere sullo stesso diario quello che scrive l'altro telefono, serve
-collegare entrambi i telefoni a un **gist GitHub segreto** (un file di
-testo privato su GitHub, gratuito). Va fatto una sola volta per telefono,
-dalla tab Diario → Sincronizzazione:
-
-1. Andate su **github.com** → in alto a destra la vostra foto profilo →
-   **Settings** → in fondo al menu a sinistra **Developer settings** →
-   **Personal access tokens** → **Fine-grained tokens** → **Generate new
-   token**.
-2. Datele un nome a piacere (es. "Diario Islanda"), e come scadenza
-   scegliete una data comoda, ad esempio **fine dicembre 2026** (dopo il
-   viaggio non serve più, ma meglio avere un margine).
-3. In **"Repository access"** lasciate pure "Public Repositories" o "No
-   access": il token non serve per i repository, non date nessun permesso
-   sui repository.
-4. Scendete su **"Account permissions"**, cercate **"Gists"** e mettete
-   **"Read and write"**. Questo è l'unico permesso da dare.
-5. Confermate e **copiate il token** (comincia con `github_pat_...`):
-   viene mostrato una sola volta.
-6. Incollatelo nel campo "Token GitHub" della tab Diario →
-   Sincronizzazione, e premete **Collega**. Fatelo su **entrambi i
-   telefoni**, con **lo stesso token**.
-
-Da quel momento ogni telefono sincronizza da solo: dopo ogni modifica
-(circa 5 secondi dopo), all'apertura dell'app, quando tornate a
-guardarla, e quando torna la connessione. Ogni telefono scrive solo le
-proprie voci e legge quelle di entrambi, unendole senza mai cancellare
-quello che avete scritto in locale. In alto vedete lo stato:
-"Sincronizzato alle HH:MM", "In attesa di connessione" (offline: riprova
-da sola appena torna la rete), oppure un messaggio d'errore chiaro (token
-scaduto, permessi sbagliati).
-
-**Attenzione — importante**: il gist è "segreto" nel senso che non compare
-nelle ricerche e non è elencato pubblicamente, ma **non è privato**:
-chiunque abbia il link esatto del gist può leggerlo, anche senza account
-GitHub. Non condividete quel link con nessuno al di fuori di voi due.
-
-**Se perdete il token o volete revocarlo**: su github.com → Settings →
-Developer settings → Personal access tokens → Fine-grained tokens, trovate
-il token nell'elenco e potete cancellarlo (**Delete**) in qualsiasi
-momento: la sincronizzazione di quel telefono smette di funzionare finché
-non ne incollate uno nuovo. Il pulsante **Scollega**, nella tab Diario,
-cancella il token e lo stato di sincronizzazione solo da quel telefono
-(non tocca il gist né le note già scritte).
-
-**Il diario funziona anche senza sincronizzazione**: note e voti restano
-comunque salvati sul telefono. Per tenerli al sicuro o passarli all'altro
-telefono senza usare GitHub, usate in ogni momento, dalla tab Diario:
-"Esporta testo" (un file leggibile, anche da condividere), "Stampa / PDF"
-(per stampare o salvare il riepilogo), "Esporta file per l'altro
-telefono" (un file da mandare via email/chat e importare sull'altro
-telefono con "Importa file": le voci si uniscono, niente viene perso).
-Nessuno di questi file contiene mai il token.
-
-**Se cancellate i dati del sito dal browser** (o disinstallate l'app),
-il diario locale su quel telefono si perde. Se avevate collegato la
-sincronizzazione, le note restano comunque salvate nel gist: basta
-ricollegare lo stesso token per ritrovarle.
+### Diario del viaggio (rimosso)
+Il diario (note, voti e sincronizzazione su Gist) era stato aggiunto il
+23/09 e poi tolto su richiesta perché non serviva: niente tab Diario e
+nessun token da creare.
 
 ### Giorno 2: Reykjanes confermato
 Reykjanes (ponte tra i continenti, Gunnuhver, faro di Reykjanesviti) è
