@@ -401,3 +401,14 @@ Sotto compare anche il Kp massimo previsto per i prossimi giorni. Offline
 si vede l'ultimo dato salvato, con data e ora in cui è stato scaricato.
 La stima è indicativa: in Islanda l'aurora si vede spesso già con Kp 2-3
 se il cielo è sereno.
+
+### Strade e meteo per tappa
+Nella sezione "Spostamenti in auto" di ogni giorno, sotto ogni tratta
+(da → a, km, tempo) ci sono due piccoli link: "Strade ↗" apre la mappa in
+tempo reale dello stato delle strade della Vegagerðin (umferdin.is, lo
+stesso servizio di road.is) e "Allerte meteo ↗" apre gli avvisi
+vento/meteo dell'Ufficio meteorologico islandese (en.vedur.is/alerts).
+Entrambe le pagine coprono tutta l'Islanda, con le zone sulla mappa.
+Sono volutamente piccoli e grigi, ben distinti dai pulsanti "Naviga",
+che restano invariati. Compaiono solo nei giorni con
+spostamenti in auto.
