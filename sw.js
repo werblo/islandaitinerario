@@ -1,5 +1,5 @@
 // Generato da render.py a partire da sw-template.js: non modificare sw.js a mano.
-const VERSION = 'a7c89ad4c076';
+const VERSION = 'e89a532de2b5';
 const APP_CACHE = 'islanda-2026-app-' + VERSION;
 const TILE_CACHE = 'islanda-2026-tiles';
 const LIVE_CACHE = 'islanda-2026-live';
@@ -94,10 +94,6 @@ self.addEventListener('fetch', (event) => {
   const req = event.request;
   if (req.method !== 'GET') return;
   const url = new URL(req.url);
-
-  // Diario: richieste a api.github.com non vanno mai intercettate né
-  // messe in cache (dati privati/autenticati, sempre rete diretta).
-  if (url.hostname === 'api.github.com') return;
 
   // Tile della mappa: cache-first (restano visibili offline)
   if (url.hostname.endsWith('tile.openstreetmap.org')) {
