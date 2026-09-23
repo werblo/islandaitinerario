@@ -117,10 +117,23 @@ stessa verifica nel caso qualcosa cambi nei mesi prima del viaggio. Se
 si sposta o si inverte una tappa manualmente, vale la pena rifare almeno
 il controllo su `legs`/`map_points` di quel giorno.
 
-Dopo ogni modifica confermata come funzionante, si aggiorna anche la
-cartella `backup-pre-storia/` con la stessa copia di `render.py`,
-`index.html`, `sw.js` e `leggimi.md`: serve come punto di ripristino noto
-se una modifica successiva rompe qualcosa.
+I punti di ripristino sono **tag git**, non più una cartella copiata a
+mano. Un tag "fotografa" tutti i file del repository a un certo commit,
+con un nome facile da ricordare (per esempio `v1-stabile` = versione
+stabile del 23/09/2026, prima della pulizia del repo).
+
+Per recuperare una versione da un tag:
+- da GitHub: menu dei branch (in alto a sinistra sopra la lista file) →
+  scheda **"Tags"** → scegli il tag (es. `v1-stabile`) → vedi e scarichi i
+  file com'erano a quel punto;
+- da terminale, per riprendere un solo file: `git checkout v1-stabile --
+  render.py`.
+
+Per crearne uno nuovo dopo una modifica importante confermata come
+funzionante:
+- da GitHub: **Releases** → **"Draft a new release"** → **"Choose a
+  tag"** → scrivi il nome nuovo del tag → target `main` → **Publish**;
+- da terminale: `git tag nome-tag && git push origin nome-tag`.
 
 ## 5. Prenotazioni
 
@@ -313,3 +326,9 @@ percorsi (`tools/fetch_routes.py` → `routes.json`), rigenera `index.html` e
 pubblica. **Va rilanciata ogni volta che cambiano le tappe** in
 `map_points`: finché non lo fai, il giorno modificato torna al calcolo
 online (con la linea tratteggiata di riserva se sei offline).
+
+### Pulizia repo
+La cartella `backup-pre-storia/` (copie manuali di render.py, index.html,
+sw.js, leggimi.md, icone, font, immagini) è stata eliminata. Al suo posto
+c'è il tag git `v1-stabile`, creato su GitHub sulla versione stabile del
+23/09/2026. Vedi la sezione 4 per come si usa un tag.
