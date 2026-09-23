@@ -51,6 +51,10 @@ self.addEventListener('fetch', (event) => {
   if (req.method !== 'GET') return;
   const url = new URL(req.url);
 
+  // Diario: richieste a api.github.com non vanno mai intercettate né
+  // messe in cache (dati privati/autenticati, sempre rete diretta).
+  if (url.hostname === 'api.github.com') return;
+
   // Tile della mappa: cache-first (restano visibili offline)
   if (url.hostname.endsWith('tile.openstreetmap.org')) {
     const key = tileKey(url);
