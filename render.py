@@ -114,7 +114,7 @@ days = [
     {'from':'Laugarvatn','to':'Reykjavík','km':80,'time':'~1h05'}
   ],
   'activities':[
-    {'time':'10:00','title':'Þingvellir National Park','desc':'Faglia tra le placche nordamericana ed euroasiatica, sito del primo parlamento islandese (Unesco).','cost':'gratis (parcheggio ~1000 ISK / ~7€)','link':'https://www.thingvellir.is/en/','nav':'Þingvellir National Park P1 parking'},
+    {'time':'10:30','title':'Þingvellir National Park','desc':'Faglia tra le placche nordamericana ed euroasiatica, sito del primo parlamento islandese (Unesco).','cost':'gratis (parcheggio ~1000 ISK / ~7€)','link':'https://www.thingvellir.is/en/','nav':'Þingvellir National Park P1 parking'},
     {'time':'15:30','title':'Fontana Geothermal Baths (facoltativo, di sera)','desc':"Terme geotermiche sul lago di Laugarvatn, sulla strada del ritorno verso Reykjavík: piscine a cielo aperto e sauna a vapore naturale. Se il cielo è sereno vale la pena restare fino a tardi, quasi in chiusura (21:00), con più possibilità di vedere l'aurora rispetto a rientrare subito in città.",'cost':'€€ ~50€/persona','link':'https://fontana.is/','nav':'Laugarvatn Fontana'}
   ],
   'food':[
@@ -209,7 +209,7 @@ days = [
     {'from':'Efstidalur II','to':'Flúðir','km':20,'time':'~18 min'}
   ],
   'activities':[
-    {'time':'10:00','title':'Geysir & Strokkur','desc':'Area geotermica: Strokkur erutta ogni 5-10 minuti.','cost':'gratis','nav':'Geysir Geothermal Area parking'},
+    {'time':'10:30','title':'Geysir & Strokkur','desc':'Area geotermica: Strokkur erutta ogni 5-10 minuti.','cost':'gratis','nav':'Geysir Geothermal Area parking'},
     {'time':'11:30','title':'Gullfoss','desc':"Cascata a doppio salto, spettacolare anche d'inverno con il ghiaccio sulle rocce.",'cost':'gratis','link':'https://it.wikipedia.org/wiki/Gullfoss','nav':'Gullfoss waterfall parking'},
     {'time':'14:00','title':'Faxi','desc':'Cascata piccola e tranquilla vicino a Flúðir, poco turistica.','cost':'gratis','link':'https://it.wikipedia.org/wiki/Faxi','nav':'Faxi waterfall Iceland parking'},
     {'time':'15:30','title':'Efstidalur II','desc':"Fattoria con gelateria e vacche visibili da dietro un vetro, ambiente al caldo e informale. Sosta comoda per il buio che cala presto in questo periodo, prima del rientro a Flúðir.",'cost':'€ gelato/spuntino a parte','nav':'Efstidalur II Farm'}
@@ -243,9 +243,11 @@ days = [
  }
 ]
 
+# 'extra': True = tappa facoltativa: compare come segnaposto sulla mappa ma non
+# fa parte del percorso stradale.
 map_points = {
     'd1': [{'name':'Aeroporto Keflavík','lat':63.9850,'lon':-22.6056}, {'name':'Reykjavík','lat':64.1466,'lon':-21.9426}],
-    'd2': [{'name':'Perlan','lat':64.1289,'lon':-21.9147}, {'name':'Harpa','lat':64.1500,'lon':-21.9326}, {'name':'National Museum (facolt., se piove)','lat':64.1417,'lon':-21.9530}, {'name':'Bridge Between Continents','lat':63.8697,'lon':-22.6764}, {'name':'Gunnuhver','lat':63.8181,'lon':-22.6994}, {'name':'Reykjanesviti','lat':63.8156,'lon':-22.6913}],
+    'd2': [{'name':'Perlan','lat':64.1289,'lon':-21.9147}, {'name':'Harpa','lat':64.1500,'lon':-21.9326}, {'name':'Bridge Between Continents','lat':63.8697,'lon':-22.6764}, {'name':'Gunnuhver','lat':63.8181,'lon':-22.6994}, {'name':'Reykjanesviti','lat':63.8156,'lon':-22.6913}, {'name':'Reykjavík','lat':64.1466,'lon':-21.9426}, {'name':'National Museum (facoltativo, se piove)','lat':64.1417,'lon':-21.9530,'extra':True}],
     'd3': [{'name':'Reykjavík','lat':64.1466,'lon':-21.9426}, {'name':'Þingvellir','lat':64.2559,'lon':-21.1297}, {'name':'Laugarvatn','lat':64.2019,'lon':-20.7357}, {'name':'Reykjavík','lat':64.1466,'lon':-21.9426}],
     'd4': [{'name':'Reykjavík','lat':64.1466,'lon':-21.9426}, {'name':'Seljalandsfoss','lat':63.6156,'lon':-19.9886}, {'name':'Skógafoss','lat':63.5321,'lon':-19.5116}, {'name':'Dyrhólaey','lat':63.4033,'lon':-19.1250}, {'name':'Reynisfjara','lat':63.4038,'lon':-19.0428}, {'name':'Víkurkirkja','lat':63.4193,'lon':-19.0058}],
     'd5': [{'name':'Vík','lat':63.4186,'lon':-19.0060}, {'name':'Jökulsárlón','lat':64.0784,'lon':-16.2300}, {'name':'Diamond Beach','lat':64.0645,'lon':-16.1809}, {'name':'Fjaðrárgljúfur','lat':63.7722,'lon':-18.1725}, {'name':'Vík','lat':63.4186,'lon':-19.0060}],
@@ -266,6 +268,14 @@ def is_logistics(title):
 
 import unicodedata
 ICELANDIC_MAP = str.maketrans({'Þ':'Th','þ':'th','Ð':'D','ð':'d','Æ':'Ae','æ':'ae','Ö':'O','ö':'o'})
+# Percorsi e tratte calcolati con OSRM (azione GitHub "Aggiorna percorsi mappa").
+try:
+    with open('routes.json', encoding='utf-8') as f:
+        _routes_raw = json.load(f)
+except FileNotFoundError:
+    _routes_raw = {}
+
+
 def slugify(s):
     s = s.translate(ICELANDIC_MAP)
     s = unicodedata.normalize('NFKD', s).encode('ascii','ignore').decode('ascii')
@@ -436,11 +446,49 @@ LEG_LINKS_HTML = (f'<div class="leg-links">'
                   f'<a href="{VEDUR_ALERTS_URL}" target="_blank" rel="noopener" class="leg-link" aria-label="Allerte vento e meteo in Islanda, vedur.is">Allerte meteo ↗</a>'
                   f'</div>')
 
-def render_leg(leg):
+# Coordinate delle località citate nelle tratte (per calcolarne km e tempi con
+# OSRM): tappe della mappa, località principali e qualche nome alternativo.
+LEG_ALIASES = {
+    'Aeroporto di Keflavík': 'Aeroporto Keflavík',
+    'Keflavík': 'Aeroporto Keflavík',
+    'Ponte tra i continenti': 'Bridge Between Continents',
+    'Vík': 'Vík í Mýrdal',
+}
+
+
+def leg_place(name):
+    name = LEG_ALIASES.get(name, name)
+    for pts in map_points.values():
+        for p in pts:
+            if p['name'].split(' (')[0] == name:
+                return p['lat'], p['lon']
+    for loc in locations.values():
+        if loc['name'] == name:
+            return loc['lat'], loc['lon']
+    return None
+
+
+def _fmt_minutes(m):
+    m = max(5, int(round(m / 5.0)) * 5) if m >= 20 else max(1, int(round(m)))
+    return f'~{m} min' if m < 60 else f'~{m // 60}h{m % 60:02d}'
+
+
+def leg_values(day_id, i, leg):
+    """km e tempo della tratta: da routes.json (OSRM) se calcolati per le stesse
+    località, altrimenti i valori scritti a mano. Le note tra parentesi restano."""
+    r = (_routes_raw.get('_legs') or {}).get(day_id) or []
+    if i < len(r) and 'km' in r[i] and r[i].get('from') == leg['from'] and r[i].get('to') == leg['to']:
+        suffix = leg['time'][leg['time'].index(' ('):] if ' (' in leg['time'] else ''
+        return round(r[i]['km']), _fmt_minutes(r[i]['min']) + suffix
+    return leg['km'], leg['time']
+
+
+def render_leg(leg, day_id='', i=0):
     note = f'<div class="leg-note">{e(leg["note"])}</div>' if leg.get('note') else ''
     route_label = f'{e(leg["from"])} → {e(leg["to"])}'
+    km, time_ = leg_values(day_id, i, leg)
     return (f'<div class="leg"><div class="leg-route">{route_label}</div>'
-            f'<div class="leg-meta">{leg["km"]} km · {e(leg["time"])}</div>{note}</div>')
+            f'<div class="leg-meta">{km} km · {e(time_)}</div>{note}</div>')
 
 def render_diary_row(day_id, slug):
     stars = ''.join(
@@ -603,7 +651,7 @@ def render_day_section(day):
     legs_html = ''
     if day['legs']:
         legs_html = ('<div class="section"><div class="section-title">Spostamenti in auto</div>'
-                     '<div class="stack">' + ''.join(render_leg(l) for l in day['legs']) + '</div>'
+                     '<div class="stack">' + ''.join(render_leg(l, day['id'], i) for i, l in enumerate(day['legs'])) + '</div>'
                      + LEG_LINKS_HTML + '</div>')
     acts_html = ''.join(render_activity(day['id'], i, a) for i, a in enumerate(day['activities']))
     food_html = ''.join(render_food(f) for f in day['food'])
@@ -642,7 +690,7 @@ def render_day_section(day):
   </div>
   {photo_slot(hero_fname, day['title'], 'photo-slot--hero', HERO_ICON.get(day['id'], 'village'))}
   <div class="map-frame"><div class="day-map" id="day-map-{day['id']}" role="region" aria-label="Mappa del percorso del giorno {day['num']}"></div></div>
-  <div class="line" style="margin:6px 0 0;font-size:12px;color:#7c8794;">Mappa reale (OpenStreetMap) — zoomabile e trascinabile. Percorso stradale indicativo (disponibile anche offline); per la navigazione vera usa Google Maps offline.</div>
+  <div class="line" style="margin:6px 0 0;font-size:0.75rem;color:#5c6a78;">Mappa reale (OpenStreetMap) — zoomabile e trascinabile. Percorso stradale indicativo (disponibile anche offline); per la navigazione vera usa Google Maps offline.</div>
   <div class="grid2">
     <div class="info-card">
       <div class="info-card__label">Meteo · {e(locations[day['locKey']]['name'])}</div>
@@ -841,25 +889,25 @@ diario_author_modal_html = '''
 
 diario_css = '''
 .diary { margin-top:10px; border-top:1px dashed var(--panel-border); padding-top:8px; }
-.diary-summary { list-style:none; cursor:pointer; font-size:11.5px; font-weight:600; color:#8a93a0; user-select:none; }
+.diary-summary { list-style:none; cursor:pointer; font-size:0.71875rem; font-weight:600; color:#8a93a0; user-select:none; }
 .diary-summary::-webkit-details-marker { display:none; }
 .diary-summary::before { content:'\\25B8\\00A0'; }
 .diary[open] > .diary-summary::before { content:'\\25BE\\00A0'; }
 .diary-body { margin-top:8px; display:flex; flex-direction:column; gap:8px; }
-.diary-note { width:100%; min-height:56px; font-family:'IBM Plex Sans',sans-serif; font-size:13.5px; line-height:1.5; color:var(--ink); background:var(--paper); border:1px solid var(--panel-border); border-radius:6px; padding:8px 10px; resize:vertical; box-sizing:border-box; }
+.diary-note { width:100%; min-height:56px; font-family:'IBM Plex Sans',sans-serif; font-size:0.84375rem; line-height:1.5; color:var(--ink); background:var(--paper); border:1px solid var(--panel-border); border-radius:6px; padding:8px 10px; resize:vertical; box-sizing:border-box; }
 .diary-note:focus-visible { outline:2px solid var(--amber); outline-offset:1px; }
 .diary-rating { display:flex; gap:6px; flex-wrap:wrap; }
-.diary-star { min-width:44px; min-height:44px; border:1px solid var(--panel-border); border-radius:6px; background:var(--panel); color:var(--navy); font-family:'IBM Plex Sans',sans-serif; font-weight:700; font-size:14px; cursor:pointer; }
-.diary-star[aria-pressed="true"] { background:var(--amber); border-color:var(--amber-2); color:#fffaf2; }
+.diary-star { min-width:44px; min-height:44px; border:1px solid var(--panel-border); border-radius:6px; background:var(--panel); color:var(--navy); font-family:'IBM Plex Sans',sans-serif; font-weight:700; font-size:0.875rem; cursor:pointer; }
+.diary-star[aria-pressed="true"] { background:#a85d33; border-color:var(--amber-2); color:#fffaf2; }
 .diary-daypanel { margin-top:14px; }
 .diario-btn-row { display:flex; gap:10px; flex-wrap:wrap; margin-top:10px; }
 .diario-file-label { display:inline-flex; align-items:center; cursor:pointer; }
-.diario-token-input { width:100%; box-sizing:border-box; font-family:'IBM Plex Sans',sans-serif; font-size:16px; padding:9px 10px; border:1px solid var(--panel-border); border-radius:6px; background:var(--paper); color:var(--ink); margin-top:6px; }
+.diario-token-input { width:100%; box-sizing:border-box; font-family:'IBM Plex Sans',sans-serif; font-size:1rem; padding:9px 10px; border:1px solid var(--panel-border); border-radius:6px; background:var(--paper); color:var(--ink); margin-top:6px; }
 .diario-token-input:focus-visible { outline:2px solid var(--amber); outline-offset:1px; }
 .diario-day-block { margin-bottom:16px; }
 .diario-day-block:last-child { margin-bottom:0; }
-.diario-day-title { font-family:'Cinzel',serif; font-weight:600; font-size:13.5px; color:var(--navy); margin-bottom:6px; }
-.diario-entry { background:var(--paper); border:1px solid var(--panel-border); border-radius:6px; padding:10px 12px; margin-bottom:8px; font-size:13px; line-height:1.55; }
+.diario-day-title { font-family:'Cinzel',serif; font-weight:600; font-size:0.84375rem; color:var(--navy); margin-bottom:6px; }
+.diario-entry { background:var(--paper); border:1px solid var(--panel-border); border-radius:6px; padding:10px 12px; margin-bottom:8px; font-size:0.8125rem; line-height:1.55; }
 .diario-entry:last-child { margin-bottom:0; }
 .diario-entry__head { display:flex; justify-content:space-between; gap:10px; font-weight:700; color:var(--navy); margin-bottom:4px; }
 .diario-entry__note { white-space:pre-wrap; }
@@ -1416,15 +1464,14 @@ def _simplify(pts, tol):
     return [p for p, k in zip(pts, keep) if k]
 
 
+def route_points(points):
+    return [p for p in points if not p.get('extra')]
+
+
 def _coord_str(points):
-    return ';'.join(f"{p['lon']},{p['lat']}" for p in points)
+    return ';'.join(f"{p['lon']},{p['lat']}" for p in route_points(points))
 
 
-try:
-    with open('routes.json', encoding='utf-8') as f:
-        _routes_raw = json.load(f)
-except FileNotFoundError:
-    _routes_raw = {}
 
 day_geometry = {}
 for _day_id, _points in map_points.items():
@@ -1449,7 +1496,7 @@ def _tile_xy(lat, lon, z):
 def _corridor_tiles():
     lines = []
     for _day_id, _points in map_points.items():
-        lines.append(day_geometry.get(_day_id) or [[p['lat'], p['lon']] for p in _points])
+        lines.append(day_geometry.get(_day_id) or [[p['lat'], p['lon']] for p in route_points(_points)])
     tiles = set()
     for z in range(6, 13):
         buf = 1 if z >= 9 else 0
@@ -1499,11 +1546,11 @@ html_out = f'''<!DOCTYPE html>
   --amber-soft:#f0d9b8; --amber-soft-border:#d9b487;
   --teal:#2c4a55; --teal-soft:#dcecee; --teal-border:#8fb9bf;
   --green-soft:#dcefdd; --green-border:#8fc79a; --green-text:#2c6b3a;
-  --muted:#5a6675; --muted-2:#7c8794;
+  --muted:#5a6675; --muted-2:#5c6a78;
 }}
 * {{ box-sizing:border-box; }}
 body {{ margin:0; background:var(--paper); color:var(--ink); font-family:'IBM Plex Sans',-apple-system,sans-serif; -webkit-font-smoothing:antialiased; }}
-a {{ color:var(--amber); }}
+a {{ color:var(--amber-2); }}
 ::-webkit-scrollbar {{ height:6px; width:6px; }}
 ::-webkit-scrollbar-thumb {{ background:#c9c0ac; border-radius:4px; }}
 .rune-rule {{ height:1px; background:linear-gradient(90deg,transparent,#c9b98f,transparent); position:relative; margin:4px 0 14px; }}
@@ -1513,88 +1560,88 @@ a {{ color:var(--amber); }}
 .hero {{ position:relative; overflow:hidden; background:linear-gradient(160deg,var(--navy),var(--navy-2)); border-bottom:3px solid var(--amber); }}
 .hero__scrim {{ position:absolute; inset:0; background:linear-gradient(180deg,rgba(16,29,45,.15),rgba(12,20,32,.9)); }}
 .hero__inner {{ position:relative; max-width:820px; margin:0 auto; padding:30px 20px 18px; }}
-.hero__eyebrow {{ font-size:11px; font-weight:600; letter-spacing:.18em; text-transform:uppercase; color:#e0ab7f; margin-bottom:6px; }}
-.hero__title {{ font-family:'Cinzel',serif; font-weight:600; font-size:30px; line-height:1.15; color:#faf5ea; letter-spacing:.01em; }}
-.hero__sub {{ font-size:13px; color:#cfd3d8; margin-top:8px; }}
+.hero__eyebrow {{ font-size:0.6875rem; font-weight:600; letter-spacing:.18em; text-transform:uppercase; color:#e0ab7f; margin-bottom:6px; }}
+.hero__title {{ font-family:'Cinzel',serif; font-weight:600; font-size:1.875rem; line-height:1.15; color:#faf5ea; letter-spacing:.01em; }}
+.hero__sub {{ font-size:0.8125rem; color:#cfd3d8; margin-top:8px; }}
 
 .navbar {{ position:sticky; top:0; z-index:500; background:var(--navy); border-bottom:1px solid #26374a; box-shadow:0 2px 10px rgba(0,0,0,.25); }}
 .navbar__inner {{ max-width:820px; margin:0 auto; display:flex; gap:8px; overflow-x:auto; padding:10px 20px; -webkit-overflow-scrolling:touch; }}
-.nav-btn {{ flex-shrink:0; padding:10px 16px; min-height:44px; border-radius:5px; font-size:13px; font-weight:600; border:1px solid #3a4a5c; background:transparent; color:#c7ccd2; cursor:pointer; font-family:'IBM Plex Sans',sans-serif; }}
-.nav-btn.active {{ border-color:#d9985f; background:var(--amber); color:#fffaf2; }}
+.nav-btn {{ flex-shrink:0; padding:10px 16px; min-height:44px; border-radius:5px; font-size:0.8125rem; font-weight:600; border:1px solid #3a4a5c; background:transparent; color:#c7ccd2; cursor:pointer; font-family:'IBM Plex Sans',sans-serif; }}
+.nav-btn.active {{ border-color:#d9985f; background:#a85d33; color:#fffaf2; }}
 
 main {{ max-width:820px; margin:0 auto; padding:20px 20px 70px; display:flex; flex-direction:column; gap:18px; }}
 .panel {{ background:var(--panel); border:1px solid var(--panel-border); border-radius:8px; padding:18px 20px; }}
-.panel-title {{ font-family:'Cinzel',serif; font-weight:600; font-size:15px; letter-spacing:.06em; text-transform:uppercase; color:#2c3c4d; margin-bottom:4px; }}
-.panel p, .panel div.line {{ font-size:14px; line-height:1.8; color:#333c46; }}
-.warn-box {{ margin-top:12px; background:var(--amber-soft); border:1px solid var(--amber-soft-border); border-radius:6px; padding:12px 14px; font-size:13px; line-height:1.6; color:#5c3a1f; }}
-.stay-row {{ border-top:1px solid #e4ddcb; padding-top:10px; font-size:14px; }}
+.panel-title {{ font-family:'Cinzel',serif; font-weight:600; font-size:0.9375rem; letter-spacing:.06em; text-transform:uppercase; color:#2c3c4d; margin-bottom:4px; }}
+.panel p, .panel div.line {{ font-size:0.875rem; line-height:1.8; color:#333c46; }}
+.warn-box {{ margin-top:12px; background:var(--amber-soft); border:1px solid var(--amber-soft-border); border-radius:6px; padding:12px 14px; font-size:0.8125rem; line-height:1.6; color:#5c3a1f; }}
+.stay-row {{ border-top:1px solid #e4ddcb; padding-top:10px; font-size:0.875rem; }}
 .stay-row:first-child {{ border-top:none; padding-top:0; }}
 .stay-name {{ font-weight:600; color:#28323e; }}
-.stay-detail {{ color:#576270; font-size:13px; margin-top:2px; }}
+.stay-detail {{ color:#576270; font-size:0.8125rem; margin-top:2px; }}
 .stack {{ display:flex; flex-direction:column; gap:10px; }}
 
 .aurora-panel {{ background:var(--navy); border-radius:8px; padding:18px 20px; }}
 .aurora-panel .panel-title {{ color:#8fd6cd; }}
-.aurora-panel p {{ color:#9aa4ad; font-size:13px; }}
+.aurora-panel p {{ color:#9aa4ad; font-size:0.8125rem; }}
 .kp-row {{ display:flex; flex-direction:column; align-items:center; text-align:center; gap:6px; margin:14px 0 16px; }}
-.kp-big {{ font-family:'Cinzel',serif; font-weight:600; font-size:52px; color:#faf5ea; white-space:nowrap; line-height:1; }}
-.kp-status {{ font-size:14px; color:#c7ccd2; max-width:280px; }}
+.kp-big {{ font-family:'Cinzel',serif; font-weight:600; font-size:3.25rem; color:#faf5ea; white-space:nowrap; line-height:1; }}
+.kp-status {{ font-size:0.875rem; color:#c7ccd2; max-width:280px; }}
 .aurora-tonight {{ border-top:1px solid #26374a; border-bottom:1px solid #26374a; padding:12px 0; margin-bottom:12px; text-align:center; }}
-.aurora-tonight__verdict {{ font-family:'Cinzel',serif; font-weight:600; font-size:18px; color:#faf5ea; }}
+.aurora-tonight__verdict {{ font-family:'Cinzel',serif; font-weight:600; font-size:1.125rem; color:#faf5ea; }}
 .aurora-tonight__verdict--buone {{ color:#8fd6cd; }}
 .aurora-tonight__verdict--scarse {{ color:#e8c48f; }}
 .aurora-tonight__verdict--nulle {{ color:#c7ccd2; }}
-.aurora-tonight__detail {{ font-size:13px; color:#c7ccd2; margin-top:4px; line-height:1.5; }}
-.aurora-tonight__days {{ font-size:12.5px; color:#9aa4ad; margin-top:6px; }}
-.aurora-tonight__src {{ font-size:11.5px; color:#9aa4ad; margin-top:6px; }}
+.aurora-tonight__detail {{ font-size:0.8125rem; color:#c7ccd2; margin-top:4px; line-height:1.5; }}
+.aurora-tonight__days {{ font-size:0.78125rem; color:#9aa4ad; margin-top:6px; }}
+.aurora-tonight__src {{ font-size:0.71875rem; color:#9aa4ad; margin-top:6px; }}
 
-.fab-fx-btn {{ position:fixed; right:16px; bottom:16px; z-index:400; width:52px; height:52px; border-radius:50%; border:none; background:var(--navy); color:#f2ede2; font-family:'IBM Plex Sans',sans-serif; font-size:12px; font-weight:700; box-shadow:0 4px 14px rgba(0,0,0,.3); cursor:pointer; }}
+.fab-fx-btn {{ position:fixed; right:16px; bottom:16px; z-index:400; width:52px; height:52px; border-radius:50%; border:none; background:var(--navy); color:#f2ede2; font-family:'IBM Plex Sans',sans-serif; font-size:0.75rem; font-weight:700; box-shadow:0 4px 14px rgba(0,0,0,.3); cursor:pointer; }}
 .fab-fx-btn:active {{ transform:scale(0.94); }}
 .fab-fx-popup {{ position:fixed; right:16px; bottom:78px; z-index:400; width:min(260px, calc(100vw - 32px)); background:var(--panel); border:1px solid var(--panel-border); border-radius:10px; padding:14px 16px; box-shadow:0 8px 24px rgba(0,0,0,.3); }}
-.fab-fx-popup__head {{ display:flex; align-items:center; justify-content:space-between; font-family:'Cinzel',serif; font-weight:600; font-size:13px; letter-spacing:.04em; text-transform:uppercase; color:#2c3c4d; margin-bottom:10px; }}
-.fab-fx-close {{ border:none; background:transparent; font-size:20px; line-height:1; color:#7c8794; cursor:pointer; padding:0 4px; min-height:auto; }}
+.fab-fx-popup__head {{ display:flex; align-items:center; justify-content:space-between; font-family:'Cinzel',serif; font-weight:600; font-size:0.8125rem; letter-spacing:.04em; text-transform:uppercase; color:#2c3c4d; margin-bottom:10px; }}
+.fab-fx-close {{ border:none; background:transparent; font-size:1.25rem; line-height:1; color:#5c6a78; cursor:pointer; padding:0 4px; min-height:auto; }}
 .fab-fx-quick {{ display:flex; flex-direction:column; gap:6px; margin-top:12px; padding-top:12px; border-top:1px solid var(--panel-border); }}
-.fab-fx-quick__btn {{ font-size:12.5px; font-weight:600; color:var(--navy); text-decoration:none; }}
+.fab-fx-quick__btn {{ font-size:0.78125rem; font-weight:600; color:var(--navy); text-decoration:none; }}
 .fab-fx-quick__btn:hover {{ text-decoration:underline; }}
 .fx-row {{ display:flex; align-items:flex-end; gap:10px; }}
 .fx-field {{ flex:1; display:flex; flex-direction:column; gap:4px; }}
-.fx-field label {{ font-size:11px; font-weight:600; letter-spacing:.04em; text-transform:uppercase; color:var(--muted-2); }}
-.fx-field input {{ font-family:'IBM Plex Sans',sans-serif; font-size:16px; font-weight:600; color:var(--ink); background:var(--paper); border:1px solid var(--panel-border); border-radius:6px; padding:9px 10px; width:100%; }}
+.fx-field label {{ font-size:0.6875rem; font-weight:600; letter-spacing:.04em; text-transform:uppercase; color:var(--muted-2); }}
+.fx-field input {{ font-family:'IBM Plex Sans',sans-serif; font-size:1rem; font-weight:600; color:var(--ink); background:var(--paper); border:1px solid var(--panel-border); border-radius:6px; padding:9px 10px; width:100%; }}
 .fx-field input:focus-visible {{ outline:2px solid var(--amber); outline-offset:1px; }}
-.fx-arrow {{ font-size:15px; color:var(--muted-2); padding-bottom:10px; }}
-.fx-rate {{ margin-top:10px; font-size:12px; color:var(--muted-2); }}
+.fx-arrow {{ font-size:0.9375rem; color:var(--muted-2); padding-bottom:10px; }}
+.fx-rate {{ margin-top:10px; font-size:0.75rem; color:var(--muted-2); }}
 
 .chk-list {{ display:flex; flex-direction:column; gap:2px; }}
-.chk-item {{ display:flex; align-items:center; gap:10px; padding:9px 4px; min-height:44px; font-size:14px; line-height:1.5; color:#333c46; cursor:pointer; border-radius:6px; }}
+.chk-item {{ display:flex; align-items:center; gap:10px; padding:9px 4px; min-height:44px; font-size:0.875rem; line-height:1.5; color:#333c46; cursor:pointer; border-radius:6px; }}
 .chk-item:hover {{ background:rgba(0,0,0,.03); }}
 .chk-box {{ margin-top:3px; width:18px; height:18px; flex-shrink:0; accent-color:var(--amber); }}
 .chk-item:has(.chk-box:checked) span {{ color:var(--muted-2); text-decoration:line-through; text-decoration-color:var(--amber-soft-border); }}
 
 .countdown-banner {{ background:transparent; text-align:center; padding:14px 20px 6px; margin-top:4px; }}
-.countdown-banner__big {{ font-family:'Cinzel',serif; font-weight:600; font-size:26px; color:var(--navy); }}
-.countdown-banner__sub {{ font-size:12px; color:#7c8794; margin-top:4px; }}
-.aurora-panel .more {{ font-size:13px; line-height:1.6; margin-top:10px; color:#c7ccd2; }}
+.countdown-banner__big {{ font-family:'Cinzel',serif; font-weight:600; font-size:1.625rem; color:var(--navy); }}
+.countdown-banner__sub {{ font-size:0.75rem; color:#5c6a78; margin-top:4px; }}
+.aurora-panel .more {{ font-size:0.8125rem; line-height:1.6; margin-top:10px; color:#c7ccd2; }}
 .aurora-panel .more a {{ color:#8fd6cd; }}
 
 .photo-slot {{ position:relative; overflow:hidden; background:linear-gradient(135deg,var(--bg1,#3a2f22),var(--bg2,#5c4a33)); border-radius:8px; }}
 .photo-slot img {{ width:100%; height:100%; object-fit:cover; display:block; }}
 .photo-slot__ph {{ position:absolute; inset:0; display:none; flex-direction:column; align-items:center; justify-content:center; gap:6px; color:#e4dcc8; text-align:center; padding:10px; }}
 .photo-slot__icon {{ width:56px; height:44px; opacity:.95; }}
-.photo-slot__ph span {{ font-size:11px; font-weight:600; letter-spacing:.02em; max-width:88%; color:#d9d0ba; }}
+.photo-slot__ph span {{ font-size:0.6875rem; font-weight:600; letter-spacing:.02em; max-width:88%; color:#d9d0ba; }}
 .photo-slot--empty img {{ display:none; }}
 .photo-slot--empty .photo-slot__ph {{ display:flex; }}
 .photo-slot--hero {{ width:100%; height:180px; }}
 .photo-slot--hero .photo-slot__icon {{ width:74px; height:58px; }}
-.photo-slot--hero .photo-slot__ph span {{ font-size:13px; }}
+.photo-slot--hero .photo-slot__ph span {{ font-size:0.8125rem; }}
 .photo-slot--thumb {{ width:92px; height:92px; flex-shrink:0; }}
 .photo-slot--thumb .photo-slot__icon {{ width:34px; height:26px; }}
-.photo-slot--thumb .photo-slot__ph span {{ font-size:8.5px; line-height:1.2; }}
+.photo-slot--thumb .photo-slot__ph span {{ font-size:0.53125rem; line-height:1.2; }}
 .photo-slot--cover {{ position:absolute; inset:0; opacity:.55; border-radius:0; }}
 .photo-slot--cover .photo-slot__ph span {{ display:none; }}
 .photo-slot--cover .photo-slot__icon {{ width:110px; height:86px; }}
 
-.day-head .day-date {{ font-size:12px; color:var(--amber); font-weight:700; text-transform:uppercase; letter-spacing:.08em; }}
-.day-head .day-title {{ font-family:'Cinzel',serif; font-weight:600; font-size:25px; margin-top:6px; color:#1f2c39; letter-spacing:.005em; }}
+.day-head .day-date {{ font-size:0.75rem; color:var(--amber); font-weight:700; text-transform:uppercase; letter-spacing:.08em; }}
+.day-head .day-title {{ font-family:'Cinzel',serif; font-weight:600; font-size:1.5625rem; margin-top:6px; color:#1f2c39; letter-spacing:.005em; }}
 
 .map-frame {{ position:relative; isolation:isolate; z-index:0; border-radius:8px; overflow:hidden; border:2px solid var(--navy); box-shadow:0 4px 16px rgba(0,0,0,.12); line-height:0; height:260px; }}
 .map-frame .route-map {{ width:100%; height:auto; display:block; }}
@@ -1603,54 +1650,54 @@ main {{ max-width:820px; margin:0 auto; padding:20px 20px 70px; display:flex; fl
 .grid2 {{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }}
 .offline-bar {{ height:8px; margin-top:12px; border-radius:4px; background:var(--panel-border); overflow:hidden; }}
 .offline-bar__fill {{ height:100%; width:0; background:var(--amber); transition:width .2s; }}
-.offline-status {{ margin-top:8px; font-size:12.5px; color:#5c6a78; min-height:1em; }}
+.offline-status {{ margin-top:8px; font-size:0.78125rem; color:#5c6a78; min-height:1em; }}
 .offline-status--ok {{ color:#2c6b3f; font-weight:600; }}
-.offline-btn {{ margin-top:10px; min-height:44px; padding:0 18px; border:none; border-radius:8px; background:var(--navy); color:#f2ede2; font-family:'IBM Plex Sans',sans-serif; font-size:13px; font-weight:700; cursor:pointer; }}
+.offline-btn {{ margin-top:10px; min-height:44px; padding:0 18px; border:none; border-radius:8px; background:var(--navy); color:#f2ede2; font-family:'IBM Plex Sans',sans-serif; font-size:0.8125rem; font-weight:700; cursor:pointer; }}
 .offline-btn:disabled {{ opacity:.6; cursor:default; }}
-.app-toast {{ position:fixed; left:50%; bottom:80px; transform:translateX(-50%); z-index:450; background:var(--navy); color:#f2ede2; font-size:12.5px; font-weight:600; padding:8px 14px; border-radius:8px; box-shadow:0 4px 14px rgba(0,0,0,.3); opacity:0; transition:opacity .3s; pointer-events:none; }}
+.app-toast {{ position:fixed; left:50%; bottom:80px; transform:translateX(-50%); z-index:450; background:var(--navy); color:#f2ede2; font-size:0.78125rem; font-weight:600; padding:8px 14px; border-radius:8px; box-shadow:0 4px 14px rgba(0,0,0,.3); opacity:0; transition:opacity .3s; pointer-events:none; }}
 .app-toast--show {{ opacity:.95; }}
 .info-card {{ background:var(--panel); border:1px solid var(--panel-border); border-radius:8px; padding:16px; }}
-.info-card__label {{ font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.06em; color:#5a6675; margin-bottom:8px; }}
-.info-card__big {{ font-family:'Cinzel',serif; font-weight:600; font-size:20px; color:#28323e; }}
-.info-card__sub {{ font-size:13px; color:#3a4351; margin-top:4px; }}
-.info-card__source {{ font-size:11px; color:#7c8794; margin-top:8px; }}
-.sun-line {{ font-size:14px; line-height:1.7; color:#28323e; }}
+.info-card__label {{ font-size:0.6875rem; font-weight:700; text-transform:uppercase; letter-spacing:.06em; color:#5a6675; margin-bottom:8px; }}
+.info-card__big {{ font-family:'Cinzel',serif; font-weight:600; font-size:1.25rem; color:#28323e; }}
+.info-card__sub {{ font-size:0.8125rem; color:#3a4351; margin-top:4px; }}
+.info-card__source {{ font-size:0.6875rem; color:#5c6a78; margin-top:8px; }}
+.sun-line {{ font-size:0.875rem; line-height:1.7; color:#28323e; }}
 
-.aurora-note {{ background:var(--teal-soft); border:1px solid var(--teal-border); border-radius:8px; padding:14px 16px; font-size:13px; line-height:1.6; color:#1e3038; }}
+.aurora-note {{ background:var(--teal-soft); border:1px solid var(--teal-border); border-radius:8px; padding:14px 16px; font-size:0.8125rem; line-height:1.6; color:#1e3038; }}
 .aurora-note strong {{ color:var(--teal); }}
 
-.section-title {{ font-family:'Cinzel',serif; font-weight:600; font-size:16px; margin-bottom:8px; color:#2c3c4d; letter-spacing:.02em; }}
+.section-title {{ font-family:'Cinzel',serif; font-weight:600; font-size:1rem; margin-bottom:8px; color:#2c3c4d; letter-spacing:.02em; }}
 
-.leg {{ background:var(--panel); border:1px solid var(--panel-border); border-left:3px solid var(--amber); border-radius:6px; padding:12px 14px; font-size:13px; }}
+.leg {{ background:var(--panel); border:1px solid var(--panel-border); border-left:3px solid var(--amber); border-radius:6px; padding:12px 14px; font-size:0.8125rem; }}
 .leg-route {{ font-weight:600; color:#28323e; }}
 .leg-meta {{ color:#576270; margin-top:2px; }}
 .leg-note {{ color:#3a4351; margin-top:4px; }}
 .leg-links {{ display:flex; flex-wrap:wrap; gap:8px; margin:8px 0 10px; }}
-.leg-link {{ display:inline-flex; align-items:center; min-height:32px; padding:6px 10px; border-radius:6px; background:rgba(92,106,120,.08); border:1px solid rgba(92,106,120,.25); color:#5c6a78; font-size:11.5px; font-weight:600; text-decoration:none; letter-spacing:.01em; }}
+.leg-link {{ display:inline-flex; align-items:center; min-height:32px; padding:6px 10px; border-radius:6px; background:rgba(92,106,120,.08); border:1px solid rgba(92,106,120,.25); color:#5c6a78; font-size:0.71875rem; font-weight:600; text-decoration:none; letter-spacing:.01em; }}
 .leg-link:hover, .leg-link:focus-visible {{ color:var(--teal); border-color:var(--teal-border); background:var(--teal-soft); }}
 @media (max-width:400px) {{ .leg-link {{ min-height:44px; padding:0 12px; }} }}
 
 .act-card {{ background:var(--panel); border:1px solid var(--panel-border); border-radius:8px; padding:14px 16px; display:flex; gap:14px; }}
 .act-body {{ flex:1; min-width:0; }}
 .act-top {{ display:flex; justify-content:space-between; gap:10px; align-items:baseline; }}
-.act-title {{ font-weight:600; font-size:14px; color:#1f2c39; }}
+.act-title {{ font-weight:600; font-size:0.875rem; color:#1f2c39; }}
 .act-title--link {{ text-decoration:none; border-bottom:1px dashed var(--navy); padding-bottom:1px; }}
 .act-title--link:hover {{ border-bottom-style:solid; }}
-.act-title-arrow {{ font-weight:400; color:var(--amber); font-size:12px; }}
-.act-time {{ font-size:12px; color:#7c8794; white-space:nowrap; }}
-.act-desc {{ font-size:13px; color:#3a4351; margin-top:6px; line-height:1.6; }}
-.act-cost {{ display:inline-block; margin-top:8px; background:var(--amber-soft); border:1px solid var(--amber-soft-border); border-radius:5px; padding:3px 9px; font-size:12px; color:#5c3a1f; }}
-.act-link {{ display:inline-block; margin-top:8px; margin-right:14px; font-size:12.5px; font-weight:600; color:var(--navy); text-decoration:none; }}
+.act-title-arrow {{ font-weight:400; color:var(--amber); font-size:0.75rem; }}
+.act-time {{ font-size:0.75rem; color:#5c6a78; white-space:nowrap; }}
+.act-desc {{ font-size:0.8125rem; color:#3a4351; margin-top:6px; line-height:1.6; }}
+.act-cost {{ display:inline-block; margin-top:8px; background:var(--amber-soft); border:1px solid var(--amber-soft-border); border-radius:5px; padding:3px 9px; font-size:0.75rem; color:#5c3a1f; }}
+.act-link {{ display:inline-block; margin-top:8px; margin-right:14px; font-size:0.78125rem; font-weight:600; color:var(--navy); text-decoration:none; }}
 .act-link--nav {{ color:#3d8f8a; }}
 .act-link:hover {{ text-decoration:underline; }}
 
-.food-card {{ background:var(--panel); border:1px solid var(--panel-border); border-radius:6px; padding:12px 14px; font-size:13px; }}
+.food-card {{ background:var(--panel); border:1px solid var(--panel-border); border-radius:6px; padding:12px 14px; font-size:0.8125rem; }}
 .food-top {{ display:flex; justify-content:space-between; gap:10px; color:#28323e; }}
-.food-cost {{ color:#7c8794; white-space:nowrap; }}
+.food-cost {{ color:#5c6a78; white-space:nowrap; }}
 .food-note {{ color:#4a5361; margin-top:4px; }}
-.gf-badge {{ display:inline-block; margin-top:6px; background:var(--green-soft); border:1px solid var(--green-border); border-radius:5px; padding:2px 8px; font-size:11px; color:var(--green-text); }}
+.gf-badge {{ display:inline-block; margin-top:6px; background:var(--green-soft); border:1px solid var(--green-border); border-radius:5px; padding:2px 8px; font-size:0.6875rem; color:var(--green-text); }}
 
-.acc-card {{ background:var(--navy); border-radius:8px; padding:14px 16px; font-size:13px; }}
+.acc-card {{ background:var(--navy); border-radius:8px; padding:14px 16px; font-size:0.8125rem; }}
 .acc-name {{ font-weight:600; color:#f2ede2; }}
 .acc-name a {{ color:inherit; text-decoration:underline; text-underline-offset:2px; }}
 .acc-name a:hover {{ color:var(--amber); }}
@@ -1658,16 +1705,16 @@ main {{ max-width:820px; margin:0 auto; padding:20px 20px 70px; display:flex; fl
 .acc-parking-nav {{ display:flex; flex-wrap:wrap; gap:4px 16px; margin-top:8px; }}
 .acc-parking-nav .act-link {{ margin:0; color:#8fd6cd; }}
 
-.tip-card {{ background:var(--amber-soft); border:1px solid var(--amber-soft-border); border-radius:8px; padding:12px 14px; font-size:13px; line-height:1.6; color:#5c3a1f; }}
+.tip-card {{ background:var(--amber-soft); border:1px solid var(--amber-soft-border); border-radius:8px; padding:12px 14px; font-size:0.8125rem; line-height:1.6; color:#5c3a1f; }}
 
 .culture-card {{ background:var(--teal-soft); border:1px solid var(--teal-border); border-radius:8px; padding:14px 16px; }}
-.culture-card__label {{ font-family:'Cinzel',serif; font-weight:600; font-size:13px; letter-spacing:.03em; color:var(--teal); margin-bottom:6px; display:flex; align-items:center; gap:6px; }}
+.culture-card__label {{ font-family:'Cinzel',serif; font-weight:600; font-size:0.8125rem; letter-spacing:.03em; color:var(--teal); margin-bottom:6px; display:flex; align-items:center; gap:6px; }}
 .culture-card__label svg {{ width:15px; height:15px; flex-shrink:0; }}
-.culture-card p {{ margin:0; font-size:13.5px; line-height:1.65; color:#22404a; }}
+.culture-card p {{ margin:0; font-size:0.84375rem; line-height:1.65; color:#22404a; }}
 
 .section {{ display:flex; flex-direction:column; gap:8px; }}
 
-.install-hint {{ font-size:12px; color:#7c8794; text-align:center; padding:6px 20px 0; }}
+.install-hint {{ font-size:0.75rem; color:#5c6a78; text-align:center; padding:6px 20px 0; }}
 {diario_css}</style>
 <link rel="stylesheet" href="vendor/leaflet/leaflet.css"/>
 <script src="vendor/leaflet/leaflet.js"></script>
@@ -1711,7 +1758,7 @@ main {{ max-width:820px; margin:0 auto; padding:20px 20px 70px; display:flex; fl
     <div class="panel-title">Mappa del viaggio</div>
     <div class="rune-rule"></div>
     <div id="trip-map" role="region" aria-label="Mappa del viaggio" style="position:relative;isolation:isolate;z-index:0;height:260px;border-radius:8px;overflow:hidden;border:2px solid var(--navy);box-shadow:0 4px 16px rgba(0,0,0,.12);background:#e4e6e3;"></div>
-    <div class="line" style="margin-top:10px;font-size:12px;color:#7c8794;">Mappa reale (OpenStreetMap) — zoomabile e trascinabile. Tocca un marker per il nome della tappa. Per la navigazione stradale vera e propria usa Google Maps offline.</div>
+    <div class="line" style="margin-top:10px;font-size:0.75rem;color:#5c6a78;">Mappa reale (OpenStreetMap) — zoomabile e trascinabile. Tocca un marker per il nome della tappa. Per la navigazione stradale vera e propria usa Google Maps offline.</div>
   </div>
 
   <div class="panel">
@@ -1785,7 +1832,7 @@ main {{ max-width:820px; margin:0 auto; padding:20px 20px 70px; display:flex; fl
     <div class="line">• <strong>46heima / Heimaleiga (Reykjavík, Giorni 1-3):</strong> <a href="tel:+3544494900">+354 449 4900</a></div>
     <div class="line">• <strong>Hótel Búrfell (Vík, Giorni 4-5):</strong> <a href="tel:+3544874660">+354 487 4660</a></div>
     <div class="line">• <strong>The Hill Hotel (Flúðir, Giorni 6-7):</strong> <a href="tel:+3544864430">+354 486 4430</a></div>
-    <div class="line" style="margin-top:6px;font-size:12px;color:#7c8794;">Numeri trovati via ricerca online, non verificati con una chiamata diretta: ricontrollateli nelle email di conferma prima di partire.</div>
+    <div class="line" style="margin-top:6px;font-size:0.75rem;color:#5c6a78;">Numeri trovati via ricerca online, non verificati con una chiamata diretta: ricontrollateli nelle email di conferma prima di partire.</div>
   </div>
 </section>
 
@@ -1855,16 +1902,23 @@ function ensureDayMap(dayId) {{
   }}).addTo(map);
 
   const latlngs = points.map(p => [p.lat, p.lon]);
+  const routePts = points.filter(p => !p.extra);   // tappe facoltative: solo segnaposto
 
   const seen = {{}};
   let seq = 0;
-  points.forEach((p, i) => {{
-    const key = p.lat.toFixed(3) + ',' + p.lon.toFixed(3);
-    if (!(key in seen)) {{ seq++; seen[key] = seq; }}
-    const n = seen[key];
-    const isEnd = i === 0 || i === points.length - 1;
-    const size = isEnd ? 26 : 20;
-    const bg = isEnd ? '#b5673a' : '#f2ede2';
+  points.forEach(p => {{
+    let n, size, bg;
+    if (p.extra) {{
+      n = '+'; size = 18; bg = '#faf7f0';
+    }} else {{
+      const key = p.lat.toFixed(3) + ',' + p.lon.toFixed(3);
+      if (!(key in seen)) {{ seq++; seen[key] = seq; }}
+      n = seen[key];
+      const ri = routePts.indexOf(p);
+      const isEnd = ri === 0 || ri === routePts.length - 1;
+      size = isEnd ? 26 : 20;
+      bg = isEnd ? '#b5673a' : '#f2ede2';
+    }}
     const icon = L.divIcon({{
       className: '',
       html: '<div style="width:' + size + 'px;height:' + size + 'px;border-radius:50%;background:' + bg + ';' +
@@ -1883,7 +1937,7 @@ function ensureDayMap(dayId) {{
     // percorso stradale precalcolato (routes.json): disponibile anche offline
     L.polyline(DAY_GEOMETRY[dayId], ROUTE_STYLE).addTo(map);
   }} else {{
-    drawRouteLive(map, points, latlngs, ROUTE_STYLE);
+    drawRouteLive(map, routePts, routePts.map(p => [p.lat, p.lon]), ROUTE_STYLE);
   }}
 
   el.addEventListener('touchstart', () => {{ map.scrollWheelZoom.enable(); map.dragging.enable(); }}, {{ once: true, passive: true }});
@@ -2083,7 +2137,7 @@ async function fetchKp() {{
     kpText = (state.kp >= 4 ? 'Attività alta' : 'Attività bassa/moderata')
            + (navigator.onLine ? ' · aggiornato alle ' + hh : ' · ultimo dato salvato, sei offline');
   }} else {{
-    kpText = 'Dato non disponibile offline';
+    kpText = navigator.onLine ? 'Dato non disponibile al momento (NOAA non risponde)' : 'Dato non disponibile offline';
   }}
   document.getElementById('kp-status').textContent = kpText;
 }}
@@ -2340,12 +2394,18 @@ function initTripMap() {{
 
   const latlngs = stops.map(s => [LOCATIONS[s.key].lat, LOCATIONS[s.key].lon]);
 
-  L.polyline(latlngs, {{
-    color: '#d9985f',
-    weight: 3,
-    dashArray: '1,9',
-    lineCap: 'round'
-  }}).addTo(map);
+  const dayLines = Object.values(DAY_GEOMETRY);
+  if (dayLines.length) {{
+    // strade reali di tutti i giorni (percorsi precalcolati)
+    dayLines.forEach(line => L.polyline(line, {{ color: '#d9985f', weight: 3, opacity: 0.9, lineCap: 'round' }}).addTo(map));
+  }} else {{
+    L.polyline(latlngs, {{
+      color: '#d9985f',
+      weight: 3,
+      dashArray: '1,9',
+      lineCap: 'round'
+    }}).addTo(map);
+  }}
 
   stops.forEach(s => {{
     const loc = LOCATIONS[s.key];
@@ -2647,6 +2707,10 @@ with open(_manifest_path, 'w', encoding='utf-8') as f:
     json.dump(_webp_manifest, f, ensure_ascii=False, indent=2, sort_keys=True)
     f.write('\n')
 webp_files = sorted(webp_files)
+# WebP di foto non più usate o cancellate: via, così non restano online né in cache
+for _f in sorted(os.listdir(WEBP_DIR)):
+    if _f.endswith('.webp') and 'web/' + _f not in webp_files:
+        os.remove(os.path.join(WEBP_DIR, _f))
 
 STATIC_FILES = ['manifest.json', 'icons/icon-180.png', 'icons/icon-192.png', 'icons/icon-512.png',
                 'icons/icon-192-maskable.png', 'icons/icon-512-maskable.png',
