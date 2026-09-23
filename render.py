@@ -422,19 +422,20 @@ def photo_slot(filename, label, css_class, icon_key='village'):
             f'<div class="photo-slot__ph"><svg viewBox="0 0 64 56" class="photo-slot__icon" aria-hidden="true">{inner}</svg>'
             f'<span>{e(label)}</span></div></div>')
 
-# Safetravel (soccorso islandese ICE-SAR): strade (Vegagerðin) e allerte meteo
-# (Veðurstofan) sulla stessa mappa, per tutta l'Islanda.
-CONDITIONS_URL = 'https://safetravel.is/conditions'
+# Stato strade in tempo reale (Vegagerðin) e allerte meteo (Veðurstofan):
+# pagine nazionali, quindi una sola riga per giorno, non per ogni tratta.
+ROAD_COND_URL = 'https://umferdin.is/en'
+VEDUR_ALERTS_URL = 'https://en.vedur.is/alerts'
+LEG_LINKS_HTML = (f'<div class="leg-links">'
+                  f'<a href="{ROAD_COND_URL}" target="_blank" rel="noopener" class="leg-link" aria-label="Stato delle strade in Islanda in tempo reale, umferdin.is">Strade ↗</a>'
+                  f'<a href="{VEDUR_ALERTS_URL}" target="_blank" rel="noopener" class="leg-link" aria-label="Allerte vento e meteo in Islanda, vedur.is">Allerte meteo ↗</a>'
+                  f'</div>')
 
 def render_leg(leg):
     note = f'<div class="leg-note">{e(leg["note"])}</div>' if leg.get('note') else ''
     route_label = f'{e(leg["from"])} → {e(leg["to"])}'
-    cond_label = f'Stato delle strade e allerte meteo {e(leg["from"])} → {e(leg["to"])} su safetravel.is'
-    links = (f'<div class="leg-links">'
-             f'<a href="{CONDITIONS_URL}" target="_blank" rel="noopener" class="leg-link" aria-label="{cond_label}">Strade e meteo ↗</a>'
-             f'</div>')
     return (f'<div class="leg"><div class="leg-route">{route_label}</div>'
-            f'<div class="leg-meta">{leg["km"]} km · {e(leg["time"])}</div>{note}{links}</div>')
+            f'<div class="leg-meta">{leg["km"]} km · {e(leg["time"])}</div>{note}</div>')
 
 def render_activity(day_id, idx, act):
 
@@ -576,7 +577,8 @@ def render_day_section(day):
     legs_html = ''
     if day['legs']:
         legs_html = ('<div class="section"><div class="section-title">Spostamenti in auto</div>'
-                     '<div class="stack">' + ''.join(render_leg(l) for l in day['legs']) + '</div></div>')
+                     '<div class="stack">' + ''.join(render_leg(l) for l in day['legs']) + '</div>'
+                     + LEG_LINKS_HTML + '</div>')
     acts_html = ''.join(render_activity(day['id'], i, a) for i, a in enumerate(day['activities']))
     food_html = ''.join(render_food(f) for f in day['food'])
     acc = day.get('accommodation')
@@ -996,7 +998,7 @@ main {{ max-width:820px; margin:0 auto; padding:20px 20px 70px; display:flex; fl
 .leg-route {{ font-weight:600; color:#28323e; }}
 .leg-meta {{ color:#576270; margin-top:2px; }}
 .leg-note {{ color:#3a4351; margin-top:4px; }}
-.leg-links {{ display:flex; flex-wrap:wrap; gap:8px; margin-top:8px; }}
+.leg-links {{ display:flex; flex-wrap:wrap; gap:8px; margin:8px 0 10px; }}
 .leg-link {{ display:inline-flex; align-items:center; min-height:32px; padding:6px 10px; border-radius:6px; background:rgba(92,106,120,.08); border:1px solid rgba(92,106,120,.25); color:#5c6a78; font-size:11.5px; font-weight:600; text-decoration:none; letter-spacing:.01em; }}
 .leg-link:hover, .leg-link:focus-visible {{ color:var(--teal); border-color:var(--teal-border); background:var(--teal-soft); }}
 @media (max-width:400px) {{ .leg-link {{ min-height:44px; padding:0 12px; }} }}

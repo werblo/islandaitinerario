@@ -406,11 +406,12 @@ La stima è indicativa: in Islanda l'aurora si vede spesso già con Kp 2-3
 se il cielo è sereno.
 
 ### Strade e meteo per tappa
-Nella sezione "Spostamenti in auto" di ogni giorno, sotto ogni tratta
-(da → a, km, tempo) c'è un piccolo link "Strade e meteo ↗" che apre
-[safetravel.is/conditions](https://safetravel.is/conditions): la mappa
-ufficiale di Safetravel (soccorso islandese) con lo stato delle strade
-(dati Vegagerðin) e le allerte vento/meteo (dati Veðurstofan) insieme, per
-tutta l'Islanda. È volutamente piccolo e grigio, ben distinto dai
-pulsanti "Naviga", che restano invariati. Compaiono solo nei giorni con
+In fondo alla sezione "Spostamenti in auto" di ogni giorno c'è una riga
+con due piccoli link, validi per tutta l'Islanda: "Strade ↗" (mappa in
+tempo reale dello stato delle strade della Vegagerðin, umferdin.is, lo
+stesso servizio di road.is) e "Allerte meteo ↗" (avvisi vento/meteo
+dell'Ufficio meteorologico, en.vedur.is/alerts). Una volta per giorno, non
+sotto ogni tratta, perché le pagine sono nazionali. Sono volutamente
+piccoli e grigi, ben distinti dai pulsanti "Naviga", che restano
+invariati. Compaiono solo nei giorni con
 spostamenti in auto.
