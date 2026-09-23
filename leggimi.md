@@ -505,3 +505,28 @@ ora l'attività del pomeriggio del 16 novembre, con le tratte in auto
 Grindavík è chiusa e la strada 43 può chiudere per l'attività vulcanica.
 Le coordinate delle tappe sulla mappa non sono cambiate, quindi il
 percorso già calcolato resta valido.
+
+### Revisione generale: correzioni approvate
+- **Km e tempi delle tratte** ("Spostamenti in auto"): ora vengono da OSRM
+  come i percorsi. L'azione "Aggiorna percorsi mappa" calcola anche ogni
+  singola tratta (partenza e arrivo presi dalle tappe della mappa o dalle
+  località; nomi diversi come "Ponte tra i continenti" sono collegati in
+  `LEG_ALIASES` in `render.py`). Le tratte senza coordinate note (es. la
+  navetta FairCar) tengono i valori scritti a mano. Il controllo aveva
+  trovato, ad esempio, Faxi → Efstidalur II dichiarata 9 km, pari alla
+  sola linea d'aria. **Dopo ogni modifica a tappe o tratte rilancia
+  l'azione.**
+- **Mappa del Giorno 2**: il percorso ora torna a Reykjavík; il National
+  Museum è un segnaposto "+" fuori dal percorso (tappe con `'extra': True`
+  in `map_points`).
+- **Mappa del viaggio** (tab Info): disegna le strade reali di tutti i
+  giorni invece delle linee tratteggiate tra le città.
+- **Leggibilità**: testi grigi, link e scheda attiva leggermente più scuri
+  (contrasto AA); dimensioni dei testi in `rem`, così rispettano la
+  dimensione dei caratteri scelta nel telefono.
+- **Kp**: se NOAA non risponde da online, il messaggio dice "non
+  disponibile al momento" invece di "offline".
+- **Orari**: Þingvellir e Geysir alle 10:30 invece delle 10:00, con più
+  luce (alba verso le 10:05).
+- **Foto**: `render.py` cancella da `images/web/` i WebP delle foto non più
+  usate.
