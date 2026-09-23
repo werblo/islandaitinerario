@@ -276,6 +276,22 @@ Una copia completa del repository com'era prima, voucher inclusi, è
 conservata solo in locale (backup scaricato il 23/09). Il repository è
 pubblico: non aggiungere mai file con dati personali.
 
+Seconda pulizia (23/09, pomeriggio): i commit di merge delle PR #55-#68,
+creati da GitHub, avevano di nuovo l'email personale come autore. La
+cronologia è stata riscritta ancora (stesso metodo) e sull'account GitHub
+è attiva **"Keep my email addresses private"** (Settings → Emails): da
+allora anche i merge fatti da GitHub usano l'indirizzo noreply (verificato
+con la PR #69). Il tag `v1-stabile` è stato ricreato sul commit
+equivalente della nuova cronologia. Un secondo backup completo è stato
+scaricato in locale.
+
+**Da fare**: inviare al supporto GitHub
+(support.github.com/contact → Repository → Eliminazioni) la richiesta di
+cancellare le "cached views" e i riferimenti delle vecchie PR (#26-#68),
+che tengono ancora raggiungibili i vecchi commit (voucher ed email) da chi
+conosce l'URL esatto. Dopo l'intervento, l'URL raw di un vecchio commit
+deve dare 404.
+
 ### Offline completo
 - **Tutto in cache all'installazione**: pagina, Leaflet (ora nel repo in
   `vendor/leaflet/`, non più da unpkg) e tutte le foto usate.
