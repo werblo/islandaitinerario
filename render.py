@@ -422,10 +422,20 @@ def photo_slot(filename, label, css_class, icon_key='village'):
             f'<div class="photo-slot__ph"><svg viewBox="0 0 64 56" class="photo-slot__icon" aria-hidden="true">{inner}</svg>'
             f'<span>{e(label)}</span></div></div>')
 
+ROAD_COND_URL = 'https://umferdin.is/en'
+VEDUR_WARN_URL = 'https://en.vedur.is/alerts'
+
 def render_leg(leg):
     note = f'<div class="leg-note">{e(leg["note"])}</div>' if leg.get('note') else ''
-    return (f'<div class="leg"><div class="leg-route">{e(leg["from"])} → {e(leg["to"])}</div>'
-            f'<div class="leg-meta">{leg["km"]} km · {e(leg["time"])}</div>{note}</div>')
+    route_label = f'{e(leg["from"])} → {e(leg["to"])}'
+    road_label = f'Stato delle strade {e(leg["from"])} → {e(leg["to"])} su umferdin.is (Vegagerðin, road.is)'
+    weather_label = f'Allerte vento e meteo {e(leg["from"])} → {e(leg["to"])} su vedur.is'
+    links = (f'<div class="leg-links">'
+             f'<a href="{ROAD_COND_URL}" target="_blank" rel="noopener" class="leg-link" aria-label="{road_label}">Strade ↗</a>'
+             f'<a href="{VEDUR_WARN_URL}" target="_blank" rel="noopener" class="leg-link" aria-label="{weather_label}">Allerte meteo ↗</a>'
+             f'</div>')
+    return (f'<div class="leg"><div class="leg-route">{route_label}</div>'
+            f'<div class="leg-meta">{leg["km"]} km · {e(leg["time"])}</div>{note}{links}</div>')
 
 def render_activity(day_id, idx, act):
 
@@ -987,6 +997,10 @@ main {{ max-width:820px; margin:0 auto; padding:20px 20px 70px; display:flex; fl
 .leg-route {{ font-weight:600; color:#28323e; }}
 .leg-meta {{ color:#576270; margin-top:2px; }}
 .leg-note {{ color:#3a4351; margin-top:4px; }}
+.leg-links {{ display:flex; flex-wrap:wrap; gap:8px; margin-top:8px; }}
+.leg-link {{ display:inline-flex; align-items:center; min-height:32px; padding:6px 10px; border-radius:6px; background:rgba(92,106,120,.08); border:1px solid rgba(92,106,120,.25); color:#5c6a78; font-size:11.5px; font-weight:600; text-decoration:none; letter-spacing:.01em; }}
+.leg-link:hover, .leg-link:focus-visible {{ color:var(--teal); border-color:var(--teal-border); background:var(--teal-soft); }}
+@media (max-width:400px) {{ .leg-link {{ min-height:44px; padding:0 12px; }} }}
 
 .act-card {{ background:var(--panel); border:1px solid var(--panel-border); border-radius:8px; padding:14px 16px; display:flex; gap:14px; }}
 .act-body {{ flex:1; min-width:0; }}
