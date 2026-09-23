@@ -501,7 +501,7 @@ ricollegare lo stesso token per ritrovarle.
 ### Giorno 2: Reykjanes confermato
 Reykjanes (ponte tra i continenti, Gunnuhver, faro di Reykjanesviti) è
 ora l'attività del pomeriggio del 16 novembre, con le tratte in auto
-(~145 km in tutto). Il National Museum resta come alternativa se il meteo
+(~135 km in tutto). Il National Museum resta come alternativa se il meteo
 è brutto. Andata e ritorno passano da Keflavík e Hafnir (strada 425):
 Grindavík è chiusa e la strada 43 può chiudere per l'attività vulcanica.
 Le coordinate delle tappe sulla mappa non sono cambiate, quindi il
@@ -535,6 +535,14 @@ percorso già calcolato resta valido.
 ### Giorno 3: tabella di marcia per Fontana
 Le terme di Fontana sono prenotate alle 15:30. Il Giorno 3 ora ha una
 tabella di marcia nel consiglio del giorno (Þingvellir 10:30-13:30,
-Laugarvatn verso le 13:50) e una nuova attività alle 14:15: passeggiata
+Laugarvatn verso le 14:05) e una nuova attività alle 14:15: passeggiata
 sulla riva del lago Laugarvatn accanto a Fontana. Foto attesa:
 `d3-passeggiata-sul-lago-laugarvatn.jpg`.
+
+### Km e tempi reali (azione del 23/09)
+Il primo calcolo OSRM tratta per tratta ha corretto alcuni valori, per
+esempio Dyrhólaey → Reynisfjara 20 km (si gira dalla strada 215, non 7 km),
+Faxi → Efstidalur II 16 km (non 9), Þingvellir → Laugarvatn ~35 min.
+Di conseguenza: Seljalandsfoss alle 11:45 (Giorno 4), Jökulsárlón alle
+11:00 (Giorno 5), arrivo a Laugarvatn verso le 14:05 (Giorno 3), e i
+totali nei consigli dei giorni sono stati riallineati.
