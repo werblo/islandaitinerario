@@ -486,3 +486,15 @@ Faxi → Efstidalur II 16 km (non 9), Þingvellir → Laugarvatn ~35 min.
 Di conseguenza: Seljalandsfoss alle 11:45 (Giorno 4), Jökulsárlón alle
 11:00 (Giorno 5), arrivo a Laugarvatn verso le 14:05 (Giorno 3), e i
 totali nei consigli dei giorni sono stati riallineati.
+
+### Testi più grandi (23/09)
+I testi da leggere sono stati ingranditi di circa 2 px, per leggerli meglio
+sul telefono anche all'aperto, in macchina o con poca luminosità:
+- descrizioni delle attività, consigli del giorno, box aurora e curiosità:
+  13 → 15 px;
+- testo normale e titoli delle attività: 14 → 15,5 px;
+- orari, costi e link (compresi i "Naviga", cambiati solo di dimensione):
+  12-12,5 → 13-13,5 px.
+Invariati: titoli grandi, barra delle tab, testata, foto e mappe. Le
+dimensioni sono in `rem` in `render.py`, quindi seguono anche la grandezza
+dei caratteri impostata nel telefono.
