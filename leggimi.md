@@ -278,8 +278,8 @@ pubblico: non aggiungere mai file con dati personali.
   chiamate a sunrise-sunset.org. Correzione emersa: i vecchi valori di
   riserva del Giorno 6 e del Giorno 8 erano calcolati per Vík e Flúðir
   invece che per Flúðir e Keflavík.
-- **Pulsante "Prepara offline"** (tab Info): salva foto e ~1.050 riquadri
-  di mappa (~17 MB) lungo un corridoio stretto attorno al percorso, zoom
+- **Pulsante "Prepara offline"** (tab Info): salva foto e circa un migliaio di riquadri
+  di mappa (~15 MB) lungo un corridoio stretto attorno al percorso, zoom
   6-12, massimo 2 download alla volta (tile usage policy OSM). Da fare
   con il Wi-Fi prima di partire, su entrambi i telefoni. Ingrandendo oltre
   lo zoom 12 senza rete la mappa resta grigia.
