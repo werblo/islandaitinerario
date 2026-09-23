@@ -387,3 +387,17 @@ orientarsi meglio nella pagina.
   delle schede, le frecce/Home/End spostano il focus e attivano la
   scheda, Invio/Spazio attivano il pulsante €↔kr, e il popup valuta è
   raggiungibile e richiudibile (anche con Esc, aggiunto).
+
+### Indice aurora
+Nella tab Info, sotto il Kp attuale (che resta in evidenza), c'è la stima
+**"Stasera: buone / scarse / nulle probabilità"** con le fasce orarie
+migliori. Combina tre cose, per l'alloggio della notte (prima del viaggio
+usa Reykjavík come esempio):
+- il **Kp previsto** a intervalli di 3 ore (NOAA, fino a 3 giorni);
+- la **copertura nuvolosa oraria** (Open-Meteo, lo stesso servizio del
+  meteo);
+- il **buio astronomico** (sole sotto -18°), calcolato in locale.
+Sotto compare anche il Kp massimo previsto per i prossimi giorni. Offline
+si vede l'ultimo dato salvato, con data e ora in cui è stato scaricato.
+La stima è indicativa: in Islanda l'aurora si vede spesso già con Kp 2-3
+se il cielo è sereno.
