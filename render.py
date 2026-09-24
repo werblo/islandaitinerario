@@ -700,6 +700,19 @@ checklist_html = f'''
   <div class="tip-card">
     <strong>Colonnine di benzina:</strong> in Islanda sono quasi tutte self-service e chiedono una carta con PIN attivo (niente carte prepagate senza PIN o solo contactless). Se avete una carta di credito o debito normale con PIN funziona senza problemi — verificate solo di avere il PIN a mente prima di partire.
   </div>
+
+  <div class="panel aurora-push" id="aurora-push">
+    <div class="panel-title">Avvisi aurora sul telefono</div>
+    <div class="rune-rule"></div>
+    <div class="line">Nelle notti del viaggio una notifica ti avvisa quando l'aurora è probabile dove dormite, anche ad app chiusa (al massimo due per notte: la previsione e &laquo;adesso&raquo;). Serve la connessione per riceverla.</div>
+    <div class="aurora-push__status" id="aurora-push-status" aria-live="polite"></div>
+    <div class="aurora-push__btns">
+      <button type="button" class="aurora-push__btn" id="aurora-push-on">Attiva avvisi aurora</button>
+      <button type="button" class="aurora-push__btn" id="aurora-push-copy" hidden>Copia codice</button>
+      <button type="button" class="aurora-push__btn aurora-push__btn--ghost" id="aurora-push-off" hidden>Disattiva</button>
+    </div>
+    <textarea class="aurora-push__code" id="aurora-push-code" readonly hidden aria-label="Codice di iscrizione agli avvisi aurora"></textarea>
+  </div>
 </section>'''
 
 seasonal_js = json.dumps(seasonal, ensure_ascii=False)
@@ -903,17 +916,15 @@ main {{ max-width:820px; margin:0 auto; padding:20px 20px 70px; display:flex; fl
 .countdown-banner__sub {{ font-size:0.8125rem; color:#5c6a78; margin-top:4px; }}
 .aurora-panel .more {{ font-size:0.9375rem; line-height:1.6; margin-top:10px; color:#c7ccd2; }}
 .aurora-panel .more a {{ color:#8fd6cd; }}
-.aurora-push {{ border-top:1px solid #26374a; margin-top:14px; padding-top:14px; }}
-.aurora-push__title {{ font-family:'Cinzel',serif; font-weight:600; font-size:1rem; color:#faf5ea; }}
-.aurora-push p {{ margin-top:6px; }}
-.aurora-push__status {{ font-size:0.875rem; color:#c7ccd2; margin-top:8px; min-height:1em; line-height:1.5; }}
-.aurora-push__status--ok {{ color:#8fd6cd; font-weight:600; }}
+.aurora-push {{ margin-top:18px; }}
+.aurora-push__status {{ font-size:0.875rem; color:#5c6a78; margin-top:8px; min-height:1em; line-height:1.5; }}
+.aurora-push__status--ok {{ color:#2c6b3f; font-weight:600; }}
 .aurora-push__btns {{ display:flex; flex-wrap:wrap; gap:8px; margin-top:10px; }}
-.aurora-push__btn {{ min-height:44px; padding:0 16px; border:none; border-radius:8px; background:#8fd6cd; color:#16263b; font-family:'IBM Plex Sans',sans-serif; font-size:0.9375rem; font-weight:700; cursor:pointer; }}
-.aurora-push__btn--ghost {{ background:transparent; color:#c7ccd2; border:1px solid #3a4b5e; }}
+.aurora-push__btn {{ min-height:44px; padding:0 18px; border:none; border-radius:8px; background:var(--navy); color:#f2ede2; font-family:'IBM Plex Sans',sans-serif; font-size:0.9375rem; font-weight:700; cursor:pointer; }}
+.aurora-push__btn--ghost {{ background:transparent; color:var(--navy); border:1px solid var(--panel-border); }}
 .aurora-push__btn:disabled {{ opacity:.6; cursor:default; }}
 .aurora-push [hidden] {{ display:none; }}
-.aurora-push__code {{ display:block; width:100%; box-sizing:border-box; margin-top:10px; min-height:96px; padding:10px; border:1px solid #3a4b5e; border-radius:8px; background:#0f1b2a; color:#c7ccd2; font-family:ui-monospace,monospace; font-size:0.75rem; line-height:1.4; resize:vertical; word-break:break-all; }}
+.aurora-push__code {{ display:block; width:100%; box-sizing:border-box; margin-top:10px; min-height:96px; padding:10px; border:1px solid var(--panel-border); border-radius:8px; background:#fff; color:#2c3c4d; font-family:ui-monospace,monospace; font-size:0.75rem; line-height:1.4; resize:vertical; word-break:break-all; }}
 
 .photo-slot {{ position:relative; overflow:hidden; background:linear-gradient(135deg,var(--bg1,#3a2f22),var(--bg2,#5c4a33)); border-radius:8px; }}
 .photo-slot img {{ width:100%; height:100%; object-fit:cover; display:block; }}
@@ -1044,17 +1055,6 @@ main {{ max-width:820px; margin:0 auto; padding:20px 20px 70px; display:flex; fl
     </div>
     <p>Indice geomagnetico Kp attuale (NOAA), aggiornato in tempo reale se sei online. La stima di stasera combina Kp previsto (NOAA), copertura nuvolosa oraria (Open-Meteo) e buio astronomico per l'alloggio della notte.</p>
     <div class="more">Più vicino alla partenza, controlla <a href="https://en.vedur.is/weather/forecasts/aurora/" target="_blank" rel="noopener">vedur.is/aurora</a> per la previsione reale sulle vostre date e sul cielo sereno.</div>
-    <div class="aurora-push" id="aurora-push">
-      <div class="aurora-push__title">Avvisi aurora sul telefono</div>
-      <p>Nelle notti del viaggio una notifica ti avvisa quando l'aurora è probabile dove dormite, anche ad app chiusa (al massimo due per notte: la previsione e &laquo;adesso&raquo;). Serve la connessione per riceverla.</p>
-      <div class="aurora-push__status" id="aurora-push-status" aria-live="polite"></div>
-      <div class="aurora-push__btns">
-        <button type="button" class="aurora-push__btn" id="aurora-push-on">Attiva avvisi aurora</button>
-        <button type="button" class="aurora-push__btn" id="aurora-push-copy" hidden>Copia codice</button>
-        <button type="button" class="aurora-push__btn aurora-push__btn--ghost" id="aurora-push-off" hidden>Disattiva</button>
-      </div>
-      <textarea class="aurora-push__code" id="aurora-push-code" readonly hidden aria-label="Codice di iscrizione agli avvisi aurora"></textarea>
-    </div>
   </div>
 
   <div class="panel">
