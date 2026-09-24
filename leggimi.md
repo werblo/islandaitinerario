@@ -498,3 +498,59 @@ sul telefono anche all'aperto, in macchina o con poca luminosità:
 Invariati: titoli grandi, barra delle tab, testata, foto e mappe. Le
 dimensioni sono in `rem` in `render.py`, quindi seguono anche la grandezza
 dei caratteri impostata nel telefono.
+
+## 12. Avvisi aurora sul telefono (notifiche push)
+
+Nelle notti del viaggio (15–21 novembre) il workflow **"Avvisi aurora"**
+(`.github/workflows/avvisi-aurora.yml`) gira su GitHub ogni 30 minuti, dalle
+16:00 alle 03:30 (ora islandese = UTC). Lancia `tools/aurora_alert.py`, che
+fa la stessa stima del box "Stasera" dell'app (Kp previsto NOAA × cielo
+sereno Open-Meteo nelle ore di buio, per l'alloggio della notte) e manda una
+notifica push ai telefoni iscritti. Al massimo due avvisi per notte:
+
+- **"Aurora stanotte: buone probabilità"**: appena la stima diventa "buone",
+  con le fasce orarie migliori;
+- **"Aurora: condizioni buone adesso"**: quando è buio e il Kp misurato in
+  quel momento, insieme alle nuvole di quell'ora, è buono.
+
+Gli avvisi già mandati si salvano nella cache di GitHub Actions, non nel
+repo: niente commit e il sito non viene ripubblicato.
+
+### Configurazione (una volta sola)
+
+1. **Chiave privata.** Nel repo: Settings → Secrets and variables →
+   Actions → *New repository secret*, nome `VAPID_PRIVATE_KEY`. Come valore
+   metti la chiave privata che corrisponde a `VAPID_PUBLIC_KEY` in
+   `render.py`. Se la perdi, genera una nuova coppia di chiavi, sostituisci
+   la pubblica in `render.py`, rilancia `render.py` e riattiva gli avvisi
+   su ogni telefono.
+2. **Iscrivere i telefoni.** Su ogni telefono: apri l'app installata → tab
+   Info → box Aurora → **"Attiva avvisi aurora"** → consenti le notifiche →
+   **"Copia codice"**. Crea il secret `AURORA_SUBSCRIPTIONS` e incollaci i
+   codici di tutti i telefoni, uno dopo l'altro (anche su righe separate).
+   I secret non si possono rileggere: per aggiungere un telefono in seguito,
+   reincolla tutti i codici. Il codice di ogni telefono resta visibile
+   nell'app, sotto "Copia codice".
+3. **Prova.** Tab Actions → "Avvisi aurora" → *Run workflow* → modalità
+   `prova`. Deve arrivare subito "🔔 Prova avvisi aurora" su ogni telefono.
+   Falla con il browser chiuso e il telefono in standby: se arriva così,
+   arriverà anche in Islanda.
+
+Il workflow programmato gira solo dal branch `main`, quindi funziona dopo il
+merge.
+
+### Firefox su Android
+
+Le notifiche passano dal servizio push di Mozilla e funzionano come su
+Chrome. Controlla però che:
+- le notifiche di Firefox siano attive (Impostazioni Android → App →
+  Firefox → Notifiche);
+- la batteria per Firefox sia su "Senza restrizioni", altrimenti Android può
+  ritardare o bloccare le notifiche ad app chiusa;
+- i dati di Firefox non vengano cancellati alla chiusura: si perderebbe
+  l'iscrizione, oltre alla cache offline.
+
+Se nel log del workflow compare "iscrizione scaduta", su quel telefono
+tocca di nuovo "Attiva avvisi aurora" e aggiorna `AURORA_SUBSCRIPTIONS`.
+Per ricevere le notifiche serve la connessione (in Islanda il roaming UE
+vale come a casa).

@@ -95,3 +95,27 @@ self.addEventListener('fetch', (event) => {
       .catch(() => caches.open(LIVE_CACHE).then((cache) => cache.match(req)))
   );
 });
+
+// Avvisi aurora: notifica push mandata dal workflow "Avvisi aurora" su GitHub,
+// mostrata anche ad app chiusa. Toccandola si apre l'app.
+self.addEventListener('push', (event) => {
+  let data = {};
+  try { data = event.data ? event.data.json() : {}; } catch (e) { data = { body: event.data && event.data.text() }; }
+  event.waitUntil(self.registration.showNotification(data.title || 'Aurora boreale', {
+    body: data.body || '',
+    tag: data.tag || 'aurora',
+    renotify: true,
+    icon: 'icons/icon-192.png',
+    lang: 'it',
+  }));
+});
+
+self.addEventListener('notificationclick', (event) => {
+  event.notification.close();
+  event.waitUntil(
+    self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then((list) => {
+      const open = list.find((c) => new URL(c.url).pathname.startsWith(new URL(self.registration.scope).pathname));
+      return open ? open.focus() : self.clients.openWindow(self.registration.scope);
+    })
+  );
+});

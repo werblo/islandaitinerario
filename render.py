@@ -705,6 +705,10 @@ checklist_html = f'''
 seasonal_js = json.dumps(seasonal, ensure_ascii=False)
 locations_js = json.dumps(locations, ensure_ascii=False)
 day_routes_js = json.dumps(map_points, ensure_ascii=False)
+# Chiave pubblica VAPID degli avvisi aurora: la privata corrispondente sta solo
+# nel secret VAPID_PRIVATE_KEY del repo (vedi leggimi, sezione 12).
+VAPID_PUBLIC_KEY = 'BMOzcfKagfPhm6Ax0MRUig7SvV7LoQjp2WzP-YWybYEE0TVCguWI11MTKxO5i2UslqyvHeG6HOtsN08FVa_6yZk'
+
 days_meta_js = json.dumps(
     [{'id': d['id'], 'dateISO': d['dateISO'], 'locKey': d['locKey']} for d in days],
     ensure_ascii=False
@@ -899,6 +903,17 @@ main {{ max-width:820px; margin:0 auto; padding:20px 20px 70px; display:flex; fl
 .countdown-banner__sub {{ font-size:0.8125rem; color:#5c6a78; margin-top:4px; }}
 .aurora-panel .more {{ font-size:0.9375rem; line-height:1.6; margin-top:10px; color:#c7ccd2; }}
 .aurora-panel .more a {{ color:#8fd6cd; }}
+.aurora-push {{ border-top:1px solid #26374a; margin-top:14px; padding-top:14px; }}
+.aurora-push__title {{ font-family:'Cinzel',serif; font-weight:600; font-size:1rem; color:#faf5ea; }}
+.aurora-push p {{ margin-top:6px; }}
+.aurora-push__status {{ font-size:0.875rem; color:#c7ccd2; margin-top:8px; min-height:1em; line-height:1.5; }}
+.aurora-push__status--ok {{ color:#8fd6cd; font-weight:600; }}
+.aurora-push__btns {{ display:flex; flex-wrap:wrap; gap:8px; margin-top:10px; }}
+.aurora-push__btn {{ min-height:44px; padding:0 16px; border:none; border-radius:8px; background:#8fd6cd; color:#16263b; font-family:'IBM Plex Sans',sans-serif; font-size:0.9375rem; font-weight:700; cursor:pointer; }}
+.aurora-push__btn--ghost {{ background:transparent; color:#c7ccd2; border:1px solid #3a4b5e; }}
+.aurora-push__btn:disabled {{ opacity:.6; cursor:default; }}
+.aurora-push [hidden] {{ display:none; }}
+.aurora-push__code {{ display:block; width:100%; box-sizing:border-box; margin-top:10px; min-height:96px; padding:10px; border:1px solid #3a4b5e; border-radius:8px; background:#0f1b2a; color:#c7ccd2; font-family:ui-monospace,monospace; font-size:0.75rem; line-height:1.4; resize:vertical; word-break:break-all; }}
 
 .photo-slot {{ position:relative; overflow:hidden; background:linear-gradient(135deg,var(--bg1,#3a2f22),var(--bg2,#5c4a33)); border-radius:8px; }}
 .photo-slot img {{ width:100%; height:100%; object-fit:cover; display:block; }}
@@ -1029,6 +1044,17 @@ main {{ max-width:820px; margin:0 auto; padding:20px 20px 70px; display:flex; fl
     </div>
     <p>Indice geomagnetico Kp attuale (NOAA), aggiornato in tempo reale se sei online. La stima di stasera combina Kp previsto (NOAA), copertura nuvolosa oraria (Open-Meteo) e buio astronomico per l'alloggio della notte.</p>
     <div class="more">Più vicino alla partenza, controlla <a href="https://en.vedur.is/weather/forecasts/aurora/" target="_blank" rel="noopener">vedur.is/aurora</a> per la previsione reale sulle vostre date e sul cielo sereno.</div>
+    <div class="aurora-push" id="aurora-push">
+      <div class="aurora-push__title">Avvisi aurora sul telefono</div>
+      <p>Nelle notti del viaggio una notifica ti avvisa quando l'aurora è probabile dove dormite, anche ad app chiusa (al massimo due per notte: la previsione e &laquo;adesso&raquo;). Serve la connessione per riceverla.</p>
+      <div class="aurora-push__status" id="aurora-push-status" aria-live="polite"></div>
+      <div class="aurora-push__btns">
+        <button type="button" class="aurora-push__btn" id="aurora-push-on">Attiva avvisi aurora</button>
+        <button type="button" class="aurora-push__btn" id="aurora-push-copy" hidden>Copia codice</button>
+        <button type="button" class="aurora-push__btn aurora-push__btn--ghost" id="aurora-push-off" hidden>Disattiva</button>
+      </div>
+      <textarea class="aurora-push__code" id="aurora-push-code" readonly hidden aria-label="Codice di iscrizione agli avvisi aurora"></textarea>
+    </div>
   </div>
 
   <div class="panel">
@@ -1152,6 +1178,7 @@ const DAY_GEOMETRY = {day_geometry_js};
 const OFFLINE_TILES = {offline_tiles_js};
 const APP_VERSION = '__APP_VERSION__';
 const DAYS_META = {days_meta_js};
+const VAPID_PUBLIC_KEY = '{VAPID_PUBLIC_KEY}';
 const WEATHER_CODES = {WEATHER_CODES_JS};
 
 const state = {{ weather:{{}}, sun:{{}}, kp:null, kpStatus:'loading' }};
@@ -1888,6 +1915,71 @@ async function prepareOffline() {{
   const btn = document.getElementById('offline-btn');
   if (btn) btn.addEventListener('click', prepareOffline);
   showOfflineState();
+}})();
+
+// ---------- Avvisi aurora (notifiche push dal workflow GitHub "Avvisi aurora") ----------
+function b64urlToBytes(s) {{
+  const bin = atob(s.replace(/-/g, '+').replace(/_/g, '/') + '='.repeat((4 - s.length % 4) % 4));
+  return Uint8Array.from(bin, c => c.charCodeAt(0));
+}}
+
+(function setupAuroraPush() {{
+  const status = document.getElementById('aurora-push-status');
+  const onBtn = document.getElementById('aurora-push-on');
+  const copyBtn = document.getElementById('aurora-push-copy');
+  const offBtn = document.getElementById('aurora-push-off');
+  const code = document.getElementById('aurora-push-code');
+  if (!status) return;
+  const say = (msg, ok) => {{ status.textContent = msg; status.classList.toggle('aurora-push__status--ok', !!ok); }};
+  if (!('serviceWorker' in navigator) || !('PushManager' in window) || !('Notification' in window)) {{
+    onBtn.hidden = true;
+    say('Questo browser non supporta le notifiche push. Su iPhone aggiungi prima l\u2019app alla schermata Home.');
+    return;
+  }}
+
+  function show(sub) {{
+    const on = !!sub;
+    onBtn.hidden = on;
+    copyBtn.hidden = offBtn.hidden = code.hidden = !on;
+    code.value = on ? JSON.stringify(sub) : '';
+    if (on) say('\u2713 Avvisi attivi su questo telefono. Se non l\u2019hai già fatto, copia il codice e incollalo nel secret AURORA_SUBSCRIPTIONS del repo (istruzioni nel leggimi).', true);
+    else if (Notification.permission === 'denied') say('Notifiche bloccate: riattivale dalle impostazioni del sito nel browser, poi riprova.');
+    else say('');
+  }}
+
+  navigator.serviceWorker.ready.then(reg => reg.pushManager.getSubscription()).then(show).catch(() => show(null));
+
+  onBtn.addEventListener('click', async () => {{
+    if (!navigator.onLine) {{ say('Serve una connessione per attivare gli avvisi.'); return; }}
+    onBtn.disabled = true;
+    say('Attivazione…');
+    try {{
+      if (await Notification.requestPermission() !== 'granted') {{ show(null); if (Notification.permission !== 'denied') say('Permesso per le notifiche non concesso.'); return; }}
+      const reg = await navigator.serviceWorker.ready;
+      const sub = await reg.pushManager.subscribe({{ userVisibleOnly: true, applicationServerKey: b64urlToBytes(VAPID_PUBLIC_KEY) }});
+      show(sub);
+    }} catch (e) {{
+      say('Attivazione non riuscita: ' + (e && e.message ? e.message : e));
+    }} finally {{
+      onBtn.disabled = false;
+    }}
+  }});
+
+  copyBtn.addEventListener('click', async () => {{
+    try {{ await navigator.clipboard.writeText(code.value); }}
+    catch (e) {{ code.select(); document.execCommand('copy'); }}
+    showToast('Codice copiato');
+  }});
+
+  offBtn.addEventListener('click', async () => {{
+    try {{
+      const reg = await navigator.serviceWorker.ready;
+      const sub = await reg.pushManager.getSubscription();
+      if (sub) await sub.unsubscribe();
+    }} catch (e) {{}}
+    show(null);
+    say('Avvisi disattivati su questo telefono.');
+  }});
 }})();
 
 if ('serviceWorker' in navigator) {{
