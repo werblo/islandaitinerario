@@ -525,7 +525,8 @@ repo: niente commit e il sito non viene ripubblicato.
    la pubblica in `render.py`, rilancia `render.py` e riattiva gli avvisi
    su ogni telefono.
 2. **Iscrivere i telefoni.** Su ogni telefono: apri l'app installata → tab
-   Info → box Aurora → **"Attiva avvisi aurora"** → consenti le notifiche →
+   Checklist → in fondo, "Avvisi aurora sul telefono" →
+   **"Attiva avvisi aurora"** → consenti le notifiche →
    **"Copia codice"**. Crea il secret `AURORA_SUBSCRIPTIONS` e incollaci i
    codici di tutti i telefoni, uno dopo l'altro (anche su righe separate).
    I secret non si possono rileggere: per aggiungere un telefono in seguito,
