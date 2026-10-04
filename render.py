@@ -730,10 +730,14 @@ evening_stops = {
            {'place': 'thingvellir', 'until': 22},    # ~1h di strada verso Reykjavík
            {'place': 'reykjavik'}],
 }
-# Stima delle nuvole: 'totale' (nuvolosità totale) oppure 'pesata' (strati bassi
-# contano tutti, medi e alti meno: vedi tools/research/nuvole.py e leggimi sezione 13).
+# Stima delle nuvole (vedi tools/research/nuvole.py e leggimi sezione 13):
+#   'totale'    nuvolosità totale del modello automatico (DMI HARMONIE in Islanda)
+#   'pesata'    stesso modello, strati pesati: bassi contano tutti, medi e alti meno
+#   'media'     media della nuvolosità totale dei CLOUD_MODELS
+#   'media_pes' media dei CLOUD_MODELS, ognuno con gli strati pesati
 CLOUD_METHOD = 'totale'
 CLOUD_W_MID, CLOUD_W_HIGH = 0.8, 0.3
+CLOUD_MODELS = ['best_match', 'ecmwf_ifs025', 'icon_seamless', 'ukmo_seamless', 'metno_seamless', 'gfs_seamless']
 
 # Chiave pubblica VAPID degli avvisi aurora: la privata corrispondente sta solo
 # nel secret VAPID_PRIVATE_KEY del repo (vedi leggimi, sezione 12).
@@ -1203,6 +1207,7 @@ const AURORA_PLACES = {aurora_places_js};
 const NIGHT_STOPS = {night_stops_js};
 const CLOUD_METHOD = '{CLOUD_METHOD}';
 const CLOUD_W_MID = {CLOUD_W_MID}, CLOUD_W_HIGH = {CLOUD_W_HIGH};
+const CLOUD_MODELS = {json.dumps(CLOUD_MODELS)};
 const WEATHER_CODES = {WEATHER_CODES_JS};
 
 const state = {{ weather:{{}}, sun:{{}}, kp:null, kpStatus:'loading' }};
@@ -1374,7 +1379,14 @@ async function fetchAllWeather() {{
       const res = await fetch(url);
       const json = await res.json();
       if (json && json.daily) {{ state.weather[key] = json.daily; renderWeatherAndSun(); }}
-      if (json && json.hourly && navigator.onLine) auroraSave({{ clouds: {{ [key]: json.hourly }} }});
+      let hourly = json && json.hourly;
+      if (CLOUD_METHOD.startsWith('media')) {{
+        // più modelli insieme: le variabili arrivano con il nome del modello (cloud_cover_icon_seamless…)
+        const multi = await (await fetch('https://api.open-meteo.com/v1/forecast?latitude=' + loc.lat + '&longitude=' + loc.lon
+          + '&hourly=cloud_cover,cloud_cover_low,cloud_cover_mid,cloud_cover_high&models=' + CLOUD_MODELS.join(',') + '&timezone=UTC&forecast_days=3')).json();
+        if (multi && multi.hourly) hourly = multi.hourly;
+      }}
+      if (hourly && navigator.onLine) auroraSave({{ clouds: {{ [key]: hourly }} }});
     }} catch (e) {{ /* resta sulla stima stagionale */ }}
   }}
 }}
@@ -1527,14 +1539,23 @@ function stopAt(stops, t) {{
   return stops.find(s => s.until === undefined || off < (s.until + 12) % 24) || stops[stops.length - 1];
 }}
 
-// Nuvole "efficaci" per l'aurora in un'ora: totale, oppure strati pesati (le alte sottili lasciano vedere).
+// Nuvole "efficaci" per l'aurora in un'ora secondo CLOUD_METHOD (vedi render.py):
+// gli strati alti e medi pesano meno perché le nuvole alte sottili lasciano vedere.
+function layeredCloud(c, idx, sfx) {{
+  const l = (c['cloud_cover_low' + sfx] || [])[idx], m = (c['cloud_cover_mid' + sfx] || [])[idx], h = (c['cloud_cover_high' + sfx] || [])[idx];
+  if (l == null || m == null || h == null) return null;
+  return 100 * (1 - (1 - l / 100) * (1 - CLOUD_W_MID * m / 100) * (1 - CLOUD_W_HIGH * h / 100));
+}}
 function effCloud(c, idx) {{
-  if (CLOUD_METHOD === 'pesata' && c.cloud_cover_low) {{
-    const l = c.cloud_cover_low[idx], m = c.cloud_cover_mid[idx], h = c.cloud_cover_high[idx];
-    if (l != null && m != null && h != null)
-      return Math.round(100 * (1 - (1 - l / 100) * (1 - CLOUD_W_MID * m / 100) * (1 - CLOUD_W_HIGH * h / 100)));
+  if (CLOUD_METHOD.startsWith('media')) {{
+    const vals = CLOUD_MODELS.map(m => CLOUD_METHOD === 'media'
+      ? (c['cloud_cover_' + m] || [])[idx] : layeredCloud(c, idx, '_' + m)).filter(v => v != null);
+    if (vals.length >= 3) return Math.round(vals.reduce((a, b) => a + b, 0) / vals.length);
+  }} else if (CLOUD_METHOD === 'pesata') {{
+    const v = layeredCloud(c, idx, '');
+    if (v != null) return Math.round(v);
   }}
-  return c.cloud_cover[idx];
+  return c.cloud_cover ? c.cloud_cover[idx] : null;
 }}
 
 function auroraLevel(best) {{
@@ -1632,7 +1653,8 @@ function renderAurora() {{
       if (est.stops.length > 1) est.stops.forEach(st => parts.push(shortPlace(st.name) + ' ' + AU_HH(st.from) + '–' + AU_HH(st.end) + ': ' + st.level));
       if (est.level !== 'nulle' && est.windows.length) parts.push('meglio ' + auroraWindowsText(est));
       parts.push('Kp previsto fino a ' + est.kpMax.toFixed(1).replace('.0', ''));
-      parts.push(est.clouds.length ? 'nuvole ' + Math.min(...est.clouds) + '–' + Math.max(...est.clouds) + '%' : 'nuvole non disponibili');
+      const cMin = Math.min(...est.clouds), cMax = Math.max(...est.clouds);
+      parts.push(est.clouds.length ? 'nuvole ' + (cMin === cMax ? cMin : cMin + '–' + cMax) + '%' : 'nuvole non disponibili');
       parts.push('buio ' + AU_HH(est.hours[0].t) + '–' + AU_HH(new Date(est.hours[est.hours.length - 1].t.getTime() + 3600000)) + ' (ora islandese)');
       detailEl.textContent = parts.join(' · ');
     }}

@@ -591,5 +591,20 @@ Open-Meteo è già il DMI HARMONIE, lo stesso tipo di vedur.is), `pesata`
   novembre fa il confronto finale. Risultati nel riepilogo di ogni esecuzione
   e nell'artifact `ricerca-nuvole`.
 
-Il metodo in uso si sceglie con `CLOUD_METHOD` in `render.py` (`'totale'` o
-`'pesata'`, pesi `CLOUD_W_MID` e `CLOUD_W_HIGH`); vale per app e notifiche.
+Il metodo in uso si sceglie con `CLOUD_METHOD` in `render.py` (`'totale'`,
+`'pesata'`, `'media'` o `'media_pes'`; pesi `CLOUD_W_MID` e `CLOUD_W_HIGH`,
+modelli `CLOUD_MODELS`) e vale per app e notifiche. Per ora resta `'totale'`.
+
+**Risultati del test veloce (4 ottobre 2026, 40 notti, 521 ore di buio a
+Reykjavík e Keflavík):**
+
+| metodo | previsioni a breve termine: ore azzeccate / errore medio | previsioni del giorno prima |
+|---|---|---|
+| totale (in uso) | 75% / 29 punti | 77% / 28 punti |
+| pesata | 77% / 25 punti | — (l'archivio non ha gli strati) |
+| media | 81% / 21 punti | 77% / 24 punti |
+| media_pes | **82% / 18 punti** | — |
+
+`media_pes` è la più promettente, ma sulle previsioni del giorno prima la
+media non ha fatto meglio del metodo attuale: decide il test approfondito di
+ottobre, che usa proprio le previsioni delle 7:30 con gli strati.

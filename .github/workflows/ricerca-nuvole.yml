@@ -10,9 +10,6 @@ on:
   schedule:
     - cron: '30 7 * 10 *'
     - cron: '30 9 1 11 *'
-  push:   # TEMPORANEO: solo per provarlo sul branch, da togliere prima del merge
-    branches: [claude/web-app-native-android-17reoa]
-    paths: ['tools/research/**']
   workflow_dispatch:
     inputs:
       azione:
@@ -52,7 +49,7 @@ jobs:
         env:
           REPORT: ricerca-dati/RISULTATI.md
       - name: Test veloce sulle previsioni d'archivio
-        if: inputs.azione == 'storico' || github.event_name == 'push'
+        if: inputs.azione == 'storico'
         run: python tools/research/nuvole.py storico 40
       - uses: actions/cache/save@v4
         if: always() && hashFiles('ricerca-dati/previsioni.csv') != ''

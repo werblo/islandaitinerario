@@ -47,6 +47,7 @@ def trip_data(path='index.html'):
     return {
         'places': const('AURORA_PLACES'), 'days': const('DAYS_META'), 'stops': const('NIGHT_STOPS'),
         'method': method.group(1) if method else 'totale', 'w_mid': float(w.group(1)), 'w_high': float(w.group(2)),
+        'models': const('CLOUD_MODELS'),
     }
 
 
@@ -121,18 +122,37 @@ def parse_kp_forecast(data):
     return out
 
 
+def clouds_url(loc, trip):
+    url = CLOUDS_URL.format(**loc)
+    return url + '&models=' + ','.join(trip['models']) if trip['method'].startswith('media') else url
+
+
 def clouds_by_hour(data, trip):
-    """{ora: nuvole efficaci %} secondo il metodo dell'app (totale o strati pesati)."""
+    """{ora: nuvole efficaci %} secondo CLOUD_METHOD, come effCloud() nell'app."""
     h = (data or {}).get('hourly') or {}
+    def val(key, i):
+        col = h.get(key)
+        return col[i] if col and i < len(col) else None
+    def layered(i, sfx):
+        lo, mi, hi = (val(k + sfx, i) for k in ('cloud_cover_low', 'cloud_cover_mid', 'cloud_cover_high'))
+        if None in (lo, mi, hi):
+            return None
+        return 100 * (1 - (1 - lo / 100) * (1 - trip['w_mid'] * mi / 100) * (1 - trip['w_high'] * hi / 100))
     out = {}
     for i, t in enumerate(h.get('time', [])):
-        tot = (h.get('cloud_cover') or [None] * (i + 1))[i]
-        layers = [(h.get(k) or [None] * (i + 1))[i] for k in ('cloud_cover_low', 'cloud_cover_mid', 'cloud_cover_high')]
-        if trip['method'] == 'pesata' and None not in layers:
-            lo, mi, hi = (v / 100 for v in layers)
-            out[t] = round(100 * (1 - (1 - lo) * (1 - trip['w_mid'] * mi) * (1 - trip['w_high'] * hi)))
-        elif tot is not None:
-            out[t] = tot
+        v = None
+        if trip['method'].startswith('media'):
+            vals = [val('cloud_cover_' + m, i) if trip['method'] == 'media' else layered(i, '_' + m)
+                    for m in trip['models']]
+            vals = [x for x in vals if x is not None]
+            if len(vals) >= 3:
+                v = sum(vals) / len(vals)
+        elif trip['method'] == 'pesata':
+            v = layered(i, '')
+        if v is None:
+            v = val('cloud_cover', i)
+        if v is not None:
+            out[t] = round(v)
     return out
 
 
@@ -390,7 +410,7 @@ def main():
         print(f'::warning::Previsione Kp NOAA non disponibile: {e}')
     for place in dict.fromkeys(s['place'] for s in stops):
         try:
-            clouds[place] = clouds_by_hour(get_json(CLOUDS_URL.format(**trip['places'][place])), trip)
+            clouds[place] = clouds_by_hour(get_json(clouds_url(trip['places'][place], trip)), trip)
         except Exception as e:
             print(f'::warning::Nuvolosità Open-Meteo per {place} non disponibile: {e}')
     if mode == 'controllo':
