@@ -6,8 +6,10 @@ name: Avvisi aurora
 # - Notte: ogni 30 minuti (ai minuti 7 e 37: allo scoccare dell'ora GitHub è più
 #   carico e ritarda di più), 16:07-23:37 dal 15 al 21 novembre e 00:07-03:37
 #   dal 16 al 22 novembre; lo script non fa niente fuori dalle date del viaggio.
-# Attenzione: la riga AURORA_MODE più sotto confronta il testo esatto del cron
-# del mattino: se lo cambi, cambia anche lì.
+# Attenzione: la riga AURORA_MODE più sotto confronta il testo esatto dei cron
+# del mattino e della prova: se li cambi, cambiali anche lì.
+# - Prova automatica: il 13 novembre alle 18:07 (19:07 in Italia) una notifica di
+#   prova a tutti i telefoni, per controllare che arrivino prima di partire.
 # A mano (tab Actions -> "Avvisi aurora" -> Run workflow): "prova" manda subito
 # una notifica di prova, "mattino" un'anteprima del messaggio del mattino.
 on:
@@ -15,6 +17,7 @@ on:
     - cron: '7,37 16-23 15-21 11 *'
     - cron: '7,37 0-3 16-22 11 *'
     - cron: '15 7 15-21 11 *'
+    - cron: '7 18 13 11 *'
   workflow_dispatch:
     inputs:
       modalita:
@@ -48,7 +51,7 @@ jobs:
       - name: Controlla l'aurora e manda gli avvisi
         run: python tools/aurora_alert.py
         env:
-          AURORA_MODE: ${{ github.event.schedule == '15 7 15-21 11 *' && 'mattino' || inputs.modalita || 'controllo' }}
+          AURORA_MODE: ${{ github.event.schedule == '15 7 15-21 11 *' && 'mattino' || github.event.schedule == '7 18 13 11 *' && 'prova' || inputs.modalita || 'controllo' }}
           VAPID_PRIVATE_KEY: ${{ secrets.VAPID_PRIVATE_KEY }}
           AURORA_SUBSCRIPTIONS: ${{ secrets.AURORA_SUBSCRIPTIONS }}
           AURORA_MANUAL: ${{ github.event_name == 'workflow_dispatch' && '1' || '0' }}

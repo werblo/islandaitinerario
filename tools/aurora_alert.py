@@ -456,6 +456,10 @@ def main():
         return 1
 
     if mode == 'prova':
+        # la prova automatica (cron del 13 novembre) serve solo prima del viaggio del 2026
+        if os.environ.get('GITHUB_EVENT_NAME') == 'schedule' and now.year != 2026:
+            print('Prova automatica: solo nel 2026, niente da fare.')
+            return 0
         ok = send_all(subs, lambda name: {
             'title': '🔔 Prova avvisi aurora', 'tag': 'aurora-prova',
             'body': (f'Ciao {name}! ' if name else '') + 'Le notifiche funzionano.'

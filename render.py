@@ -64,7 +64,7 @@ days = [
  {'id':'d1','num':1,'dateISO':'2026-11-15','dateLabel':'Dom 15 nov','title':'Arrivo & Reykjavík','locKey':'reykjavik',
   'legs':[
     {'from':'Aeroporto di Keflavík','to':'Ufficio FairCar','km':3,'time':'~10 min (navetta inclusa)','note':'Atterraggio 10:35 · ritiro auto previsto 11:00'},
-    {'from':'Keflavík','to':'Reykjavík','km':48,'time':'~45 min','note':'Se si salta la Blue Lagoon; con tappa +45 min circa'}
+    {'from':'Keflavík','to':'Reykjavík','km':48,'time':'~45 min','note':'Strada 41 diretta per Reykjavík: check-in all\'appartamento alle 15:00'}
   ],
   'activities':[
     {'time':'11:00','title':'Ritiro auto 4x4','desc':'FairCar, Bogatröð 1, Keflavík. Portare patente, carta di credito intestata al conducente e voucher stampato o digitale.','cost':None},
@@ -72,8 +72,8 @@ days = [
     {'time':'16:30','title':'Passeggiata nel centro','desc':'Laugavegur, Hallgrímskirkja (belvedere sulla torre), porto vecchio, Sun Voyager.','cost':'gratis','nav':'Laugavegur Reykjavik'}
   ],
   'food':[
-    {'meal':'Pranzo','place':'Bónus (supermercato) o hot dog da Bæjarins Beztu','note':'Per il senza glutine, chiedi il würstel senza pane','cost':'€','gf':True},
-    {'meal':'Cena','place':'Gló, Laugavegur','note':'Cucina salutista, piatti glútenlaus segnalati in menu','cost':'€€','gf':True}
+    {'meal':'Pranzo','place':'Bónus (supermercato) o hot dog da Bæjarins Beztu','note':'Il würstel senza pane non è garantito senza glutine: per un pranzo sicuro meglio il Bónus (prodotti glútenlaust)','cost':'€','gf':False},
+    {'meal':'Cena','place':'Gló, Laugavegur','note':'Cucina vegana e salutista con piatti senza glutine; verificate prima che sia aperto','cost':'€€','gf':True}
   ],
   'accommodation':{'name':'46heima Boutique Apartments','detail':'Laugavegur 46, Reykjavík · 3 notti · check-in dalle 15:00','url':'https://www.booking.com/hotel/is/46heima-apartments.en-gb.html'},
   'tips':"Giornata di arrivo tranquilla: sistematevi con calma e fate un po' di spesa in un Bónus per i giorni successivi. Avrete un paio di soste alle terme nel resto del viaggio, più economiche e meno turistiche della Blue Lagoon. Parcheggio: l'appartamento non ne ha uno incluso e Laugavegur è zona P1 (~650 ISK/h, max 3h consecutive), gratis dalle 21:00 alle 9:00 nei feriali/sabato e prima delle 10:00/dopo le 21:00 la domenica (orari da riconfermare su reykjavik.is/en/parking vicino alla partenza). Strategia notte per notte: 15 e 16 novembre parcheggiate in zona P2 verso Hlemmur/Rauðarárstígur (~230 ISK/h, senza limite di 3h, più economica se rientrate prima delle 21:00); la notte del 17 invece va bene direttamente P1 sotto casa, perché quella sera rientrerete da Fontana dopo le 21:00 (quando è già gratis anche lì) e ripartirete presto il mattino dopo per la Costa Sud.",
@@ -85,7 +85,7 @@ days = [
  },
  {'id':'d2','num':2,'dateISO':'2026-11-16','dateLabel':'Lun 16 nov','title':'Reykjavík: cultura e Reykjanes','locKey':'reykjavik',
   'legs':[
-    {'from':'Reykjavík','to':'Ponte tra i continenti','km':60,'time':'~50 min','note':'Via Keflavík e Hafnir (strade 41, 44 e 425).'},
+    {'from':'Reykjavík','to':'Ponte tra i continenti','km':61,'time':'~55 min','note':'Via Keflavík e Hafnir (strade 41, 44 e 425).'},
     {'from':'Ponte tra i continenti','to':'Gunnuhver','km':9,'time':'~12 min'},
     {'from':'Gunnuhver','to':'Reykjanesviti','km':2,'time':'~5 min'},
     {'from':'Reykjanesviti','to':'Reykjavík','km':72,'time':'~1h05','note':'Rientro dalla stessa strada via Keflavík: Grindavík e la strada 43 possono essere chiuse per l\'attività vulcanica.'}
@@ -93,16 +93,16 @@ days = [
   'activities':[
     {'time':'10:00','title':'Perlan','desc':'Museo con grotta di ghiaccio artificiale e vista panoramica a 360° sulla città.','cost':'€€ ~4900 ISK / ~34€','link':'https://perlan.is/en','nav':'Perlan Reykjavik parking'},
     {'time':'12:30','title':'Harpa & porto vecchio','desc':'Sala concerti in vetro iridescente, passeggiata sul lungomare.','cost':'gratis','link':'https://www.harpa.is/en/','nav':'Harpa Reykjavik parking'},
-    {'time':'14:00','title':'Reykjanes (mezza giornata fuori città)','desc':"Ponte tra i continenti, Gunnuhver (la pozza di fango più grande d'Islanda) e il faro di Reykjanesviti. ~50 min di guida all'andata e ~1h al ritorno, paesaggio lunare e vulcanico diverso da tutto il resto del viaggio. Partite entro le 14:00 per avere luce fino al tramonto (~16:20). Zona geologicamente molto attiva e Grindavík chiusa: andata e ritorno passano da Keflavík e Hafnir (strada 425); verificate lo stato di accesso il giorno stesso su visitreykjanes.is.",'cost':'gratis','link':'https://www.visitreykjanes.is/en/','nav':'Gunnuhver hot springs parking'},
+    {'time':'14:00','title':'Reykjanes (mezza giornata fuori città)','desc':"Ponte tra i continenti, Gunnuhver (la pozza di fango più grande d'Islanda) e il faro di Reykjanesviti. ~55 min di guida all'andata e ~1h05 al ritorno, paesaggio lunare e vulcanico diverso da tutto il resto del viaggio. Partite entro le 14:00 per avere luce fino al tramonto (~16:20). Zona geologicamente molto attiva e Grindavík chiusa: andata e ritorno passano da Keflavík e Hafnir (strada 425); verificate lo stato di accesso il giorno stesso su visitreykjanes.is.",'cost':'gratis','link':'https://www.visitreykjanes.is/en/','nav':'Gunnuhver hot springs parking'},
     {'time':'14:00','title':'National Museum of Iceland (facoltativo, se il meteo è brutto)','desc':'Alternativa a Reykjanes in caso di maltempo: storia e cultura islandese dagli insediamenti vichinghi a oggi, al coperto e in città.','cost':'€ ~2900 ISK / ~20€','link':'https://www.thjodminjasafn.is/english','nav':'National Museum of Iceland parking'}
   ],
   'food':[
-    {'meal':'Pranzo','place':'Hlemmur Mathöll','note':'Più stand con piatti glútenlaus','cost':'€€','gf':True},
-    {'meal':'Cena','place':'Sushi Social o cucina in appartamento','note':'Menu con opzioni senza glutine indicate','cost':'€€€','gf':True}
+    {'meal':'Pranzo','place':'Hlemmur Mathöll','note':'Food hall con vari stand: chiedete stand per stand, nessuna opzione senza glutine confermata','cost':'€€','gf':False},
+    {'meal':'Cena','place':'Sushi Social o cucina in appartamento','note':'Opzioni senza glutine non confermate: chiedete allo staff (la salsa di soia normale contiene glutine, chiedete tamari)','cost':'€€€','gf':False}
   ],
   'accommodation':{'name':'46heima Boutique Apartments','detail':'2ª notte a Reykjavík','url':'https://www.booking.com/hotel/is/46heima-apartments.en-gb.html'},
   'tips':"Nel pomeriggio si va a Reykjanes (~135 km in tutto tra andata, tappe e ritorno). Se il meteo è brutto, al posto di Reykjanes c'è il National Museum, al coperto in città; in alternativa si può invertire la giornata con il Giorno 3.",
-  'culture':"Il Perlan racconta la geologia islandese da dentro una grotta di ghiaccio artificiale, costruito sopra sei enormi serbatoi che ancora oggi riscaldano Reykjavík con l'acqua calda del sottosuolo. L'Harpa, sala concerti dalla facciata a nido d'ape ispirata alle colonne di basalto, è diventata il simbolo della rinascita della città dopo la crisi finanziaria del 2008. Al National Museum si ripercorre la storia islandese dai primi coloni vichinghi a oggi. Se scegliete invece Reykjanes, camminerete letteralmente tra due continenti sul Bridge Between Continents, un ponte pedonale sulla stessa faglia di Þingvellir. Qui la terra non è statica: dopo quasi 800 anni di quiete, dal 2021 il vulcanismo è tornato con eruzioni vicino a Grindavík, ripetute più volte tra il 2023 e il 2025. Vedrete il Gunnuhver, la pozza di fango più grande d'Islanda, e il Reykjanesviti, il faro più antico della nazione — tutto dentro un UNESCO Global Geopark dove la terra si sta ancora formando.",
+  'culture':"Il Perlan racconta la geologia islandese da dentro una grotta di ghiaccio artificiale, costruito sopra sei enormi serbatoi che ancora oggi riscaldano Reykjavík con l'acqua calda del sottosuolo. L'Harpa, sala concerti dalla facciata a nido d'ape ispirata alle colonne di basalto, è diventata il simbolo della rinascita della città dopo la crisi finanziaria del 2008. Al National Museum si ripercorre la storia islandese dai primi coloni vichinghi a oggi. Nel pomeriggio, a Reykjanes, camminerete letteralmente tra due continenti sul Bridge Between Continents, un ponte pedonale sulla stessa faglia di Þingvellir. Qui la terra non è statica: dopo quasi 800 anni di quiete, dal 2021 il vulcanismo è tornato con eruzioni vicino a Grindavík, ripetute più volte tra il 2023 e il 2025. Vedrete il Gunnuhver, la pozza di fango più grande d'Islanda, e il Reykjanesviti, il faro più antico della nazione — tutto dentro un UNESCO Global Geopark dove la terra si sta ancora formando.",
   'parking_nav':[
     {'label':'Naviga verso zona P2 (per questa notte)','query':'Rauðarárstígur Reykjavik'}
   ]
@@ -119,8 +119,8 @@ days = [
     {'time':'15:30','title':'Fontana Geothermal Baths (prenotato)','desc':"Ingresso prenotato alle 15:30: siate alla reception 10-15 minuti prima. Terme geotermiche sul lago di Laugarvatn, sulla strada del ritorno verso Reykjavík: piscine a cielo aperto e sauna a vapore naturale. Se il cielo è sereno vale la pena restare fino a tardi, quasi in chiusura (21:00), con più possibilità di vedere l'aurora rispetto a rientrare subito in città.",'cost':'€€ ~50€/persona','link':'https://fontana.is/','nav':'Laugarvatn Fontana'}
   ],
   'food':[
-    {'meal':'Pranzo','place':'Pranzo al sacco / Bónus','note':'Porta qualcosa dal Bónus di Reykjavík, comodo per una sosta veloce vicino a Þingvellir','cost':'€','gf':True},
-    {'meal':'Cena','place':'Hlemmur Mathöll, Reykjavík','note':'Food hall con vari stand (aperto fino alle 23:00), alcuni segnalano opzioni senza glutine. Se rientrate tardi in serata, come piano B ci sono minimarket 10-11 aperti 24/7 o Hagkaup (Skeifan, 24h)','cost':'€€','gf':True}
+    {'meal':'Pranzo','place':'Pranzo al sacco / Bónus','note':'Porta qualcosa dal Bónus di Reykjavík, comodo per una sosta veloce vicino a Þingvellir','cost':'€','gf':False},
+    {'meal':'Cena','place':'Hlemmur Mathöll, Reykjavík','note':'Food hall con vari stand (aperto fino alle 23:00), opzioni senza glutine da chiedere stand per stand. Se rientrate tardi in serata, come piano B ci sono minimarket 10-11 aperti 24/7 o Hagkaup (Skeifan, 24h)','cost':'€€','gf':False}
   ],
   'accommodation':{'name':'46heima Boutique Apartments','detail':'Ultima notte a Reykjavík · check-out domani 09:30-10:00','url':'https://www.booking.com/hotel/is/46heima-apartments.en-gb.html'},
   'tips':"Giornata più leggera (~160 km totali) e volutamente rilassante: è l'ultima notte a Reykjavík prima dei due giorni più intensi del viaggio (Costa Sud e Jökulsárlón). Tabella di marcia per non perdere le terme prenotate alle 15:30: partenza da Reykjavík verso le 9:45, Þingvellir dalle 10:30 alle 13:30, Laugarvatn verso le 14:05 (~35 min di strada), pranzo e passeggiata sul lago dalle 14:15, alla reception di Fontana alle 15:15. Geysir e Gullfoss li vedrete il Giorno 7 da Flúðir, molto più vicini da lì che da Reykjavík. Se restate fino a tardi la sera, il rientro a Reykjavík (~1h20 da Laugarvatn) va messo in conto: con cielo sereno può valerne la pena per l'aurora. Hlemmur Mathöll chiude alle 23:00: uscendo da Fontana alla chiusura (21:00) arrivate verso le 22:20, ancora in tempo per cena; se fate più tardi, ripiegate su un minimarket 10-11 (24/7) o Hagkaup senza stress.",
@@ -146,8 +146,8 @@ days = [
     {'time':'16:15','title':'Víkurkirkja','desc':"La chiesetta bianca dal tetto rosso su per la collina di Vík, tra le più fotografate d'Islanda: da lassù la vista abbraccia il villaggio, la spiaggia nera e i faraglioni di Reynisdrangar sullo sfondo. Ultima tappa apposta: proprio all'ora del tramonto può regalare una luce spettacolare.",'cost':'gratis','nav':'Víkurkirkja Vík Iceland'}
   ],
   'food':[
-    {'meal':'Pranzo','place':'Picnic a Skógar','note':'Porta snack dal Bónus di Reykjavík','cost':'€','gf':True},
-    {'meal':'Cena','place':'Suður-Vík Restaurant','note':'Menu con opzioni glútenlaus indicate','cost':'€€','gf':True}
+    {'meal':'Pranzo','place':'Picnic a Skógar','note':'Porta snack dal Bónus di Reykjavík','cost':'€','gf':False},
+    {'meal':'Cena','place':'Suður-Vík Restaurant','note':'Opzioni senza glutine segnate nel menu; segnalate la celiachia, in cucina c\'è rischio di contaminazione','cost':'€€','gf':True}
   ],
   'accommodation':{'name':'Hotel Burfell','detail':'Vík í Mýrdal · 2 notti · parcheggio gratuito incluso','url':'https://hotelburfell.is/'},
   'tips':'Il 18 novembre a Vík il sole tramonta verso le 16:15 (molto prima di quanto sembri): Dyrhólaey e Reynisfjara vanno viste per bene entro quell\'ora, la Víkurkirkja invece va benissimo proprio al tramonto/appena dopo, dato che è a due passi dal centro del paese e non richiede tempo di guida extra.',
@@ -169,8 +169,8 @@ days = [
     {'time':'14:30','title':'Fjaðrárgljúfur','desc':"Canyon serpeggiante con pareti muschiose, punti panoramici accessibili a piedi. Visitato sulla via del ritorno apposta: con la luce del primo mattino (alba verso le 9:50) si vedrebbe pochissimo.",'cost':'gratis','nav':'Fjaðrárgljúfur canyon parking'}
   ],
   'food':[
-    {'meal':'Pranzo','place':'Kaffi Jökulsárlón o pranzo al sacco','note':'Zuppe spesso senza glutine, conferma con lo staff','cost':'€€','gf':True},
-    {'meal':'Cena','place':'Ströndin Bistro, Vík','note':'','cost':'€€','gf':True}
+    {'meal':'Pranzo','place':'Kaffi Jökulsárlón o pranzo al sacco','note':'Nessuna informazione sul senza glutine trovata: chiedete allo staff e portate un\'alternativa al sacco','cost':'€€','gf':False},
+    {'meal':'Cena','place':'Ströndin Bistro, Vík','note':'Opzioni senza glutine (per esempio lo stufato di carne e le costolette d\'agnello): chiedete conferma allo staff','cost':'€€','gf':True}
   ],
   'accommodation':{'name':'Hotel Burfell','detail':'2ª notte a Vík','url':'https://hotelburfell.is/'},
   'tips':"~390 km andata/ritorno da Vík, circa 6 ore di guida. Tabella di marcia: partenza alle 7:30, Jökulsárlón verso le 10:30 (~2h55 senza soste, in inverno contate qualcosa in più), Diamond Beach e via entro le 12:30, Fjaðrárgljúfur verso le 14:30 con un'ora abbondante di luce prima del tramonto (16:05), rientro a Vík verso le 16:45. Prima di partire controllate che il sentiero del canyon sia aperto (in inverno a volte viene chiuso per il terreno fradicio) e le strade su road.is; con brutto tempo valutate di fermarvi solo a Jökulsárlón/Diamond Beach.",
@@ -191,8 +191,8 @@ days = [
     {'time':'17:30','title':'Secret Lagoon','desc':"La piscina geotermica più antica d'Islanda, meno turistica ed economica della Blue Lagoon. Il sole è già tramontato da un'ora e mezza, quindi ottima per provare a scorgere l'aurora dall'acqua calda.",'cost':'€ ~4500 ISK / ~31€ a persona, prenotare online','link':'https://secretlagoon.is/','nav':'Secret Lagoon Gamla Laugin Flúðir'}
   ],
   'food':[
-    {'meal':'Pranzo','place':'Selfoss (pranzo al sacco o supermercato locale)','note':'Ultima città con supermercati grandi prima di Flúðir, sulla strada da Vík','cost':'€','gf':True},
-    {'meal':'Cena','place':'Cucina alla guesthouse o Restaurant Grund','note':'Verifica il menu glútenlaus in loco','cost':'€€','gf':True}
+    {'meal':'Pranzo','place':'Selfoss (pranzo al sacco o supermercato locale)','note':'Ultima città con supermercati grandi prima di Flúðir, sulla strada da Vík','cost':'€','gf':False},
+    {'meal':'Cena','place':'Cucina alla guesthouse o Restaurant Grund','note':'Opzioni senza glutine non confermate: verificate il menu in loco','cost':'€€','gf':False}
   ],
   'accommodation':{'name':'The Hill Guesthouse','detail':'Flúðir · 2 notti · parcheggio gratuito incluso','url':'https://thehillhotel.is/guesthouse-fludir/'},
   'tips':'Prenota la Secret Lagoon in anticipo online: gli slot serali si esauriscono. A novembre lo slot più tardo disponibile è 17:30, non più tardi.',
@@ -216,8 +216,8 @@ days = [
     {'time':'15:30','title':'Efstidalur II','desc':"Fattoria con gelateria e vacche visibili da dietro un vetro, ambiente al caldo e informale. Sosta comoda per il buio che cala presto in questo periodo, prima del rientro a Flúðir.",'cost':'€ gelato/spuntino a parte','nav':'Efstidalur II Farm'}
   ],
   'food':[
-    {'meal':'Pranzo','place':'Friðheimar, Reykholt','note':'Famosa zuppa di pomodoro in serra, sulla strada per Geysir; chiedi la versione senza pane/crostini','cost':'€€','gf':True},
-    {'meal':'Cena','place':'Cucina alla guesthouse','note':'Ultima occasione per finire la spesa dal Bónus','cost':'€','gf':True}
+    {'meal':'Pranzo','place':'Friðheimar, Reykholt','note':'Famosa zuppa di pomodoro in serra, sulla strada per Geysir: hanno pane senza glutine, ma non garantito senza contaminazione; in alternativa c\'è un\'insalata','cost':'€€','gf':True},
+    {'meal':'Cena','place':'Cucina alla guesthouse','note':'Ultima occasione per finire la spesa dal Bónus','cost':'€','gf':False}
   ],
   'accommodation':{'name':'The Hill Guesthouse','detail':'Ultima notte a Flúðir · check-out presto domani','url':'https://thehillhotel.is/guesthouse-fludir/'},
   'tips':"Da Flúðir Geysir e Gullfoss sono a un tiro di schioppo (~30-40 km), molto più vicini che da Reykjavík: giornata comoda, e cielo scuro poco inquinato per tenere d'occhio l'aurora la sera.",
@@ -236,7 +236,7 @@ days = [
     {'time':'11:25','title':'Volo EJU3970 Keflavík → Milano Malpensa','desc':'Arrivo previsto alle 16:45.','cost':None}
   ],
   'food':[
-    {'meal':'Colazione','place':'Guesthouse o avanzi della spesa','note':'','cost':'€','gf':True}
+    {'meal':'Colazione','place':'Guesthouse o avanzi della spesa','note':'','cost':'€','gf':False}
   ],
   'accommodation': None,
   'tips':'Pochissimo margine tra riconsegna auto (11:00) e decollo (11:25): meglio anticipare la riconsegna il più possibile.',
@@ -520,7 +520,8 @@ def render_activity(day_id, idx, act):
 
 def render_food(f):
     note = f'<div class="food-note">{e(f["note"])}</div>' if f.get('note') else ''
-    gf = '<span class="gf-badge">senza glutine indicato</span>' if f.get('gf') else ''
+    # badge solo dove abbiamo trovato opzioni senza glutine (ricerca ottobre 2026)
+    gf = '<span class="gf-badge">opzioni senza glutine</span>' if f.get('gf') else ''
     return (f'<div class="food-card"><div class="food-top">'
             f'<div><strong>{e(f["meal"])}</strong> — {e(f["place"])}</div>'
             f'<div class="food-cost">{e(f["cost"])}</div></div>{note}{gf}</div>')
@@ -940,7 +941,6 @@ main {{ max-width:820px; margin:0 auto; padding:20px 20px 70px; display:flex; fl
 .countdown-banner__sub {{ font-size:0.8125rem; color:#5c6a78; margin-top:4px; }}
 .aurora-panel .more {{ font-size:0.9375rem; line-height:1.6; margin-top:10px; color:#c7ccd2; }}
 .aurora-panel .more a {{ color:#8fd6cd; }}
-.aurora-push {{ margin-top:18px; }}
 .aurora-push__status {{ font-size:0.875rem; color:#5c6a78; margin-top:8px; min-height:1em; line-height:1.5; }}
 .aurora-push__status--ok {{ color:#2c6b3f; font-weight:600; }}
 .aurora-push__btns {{ display:flex; flex-wrap:wrap; gap:8px; margin-top:10px; }}
@@ -967,7 +967,7 @@ main {{ max-width:820px; margin:0 auto; padding:20px 20px 70px; display:flex; fl
 .photo-slot--cover .photo-slot__ph span {{ display:none; }}
 .photo-slot--cover .photo-slot__icon {{ width:110px; height:86px; }}
 
-.day-head .day-date {{ font-size:0.8125rem; color:var(--amber); font-weight:700; text-transform:uppercase; letter-spacing:.08em; }}
+.day-head .day-date {{ font-size:0.8125rem; color:var(--amber-2); font-weight:700; text-transform:uppercase; letter-spacing:.08em; }}
 .day-head .day-title {{ font-family:'Cinzel',serif; font-weight:600; font-size:1.5625rem; margin-top:6px; color:#1f2c39; letter-spacing:.005em; }}
 
 .map-frame {{ position:relative; isolation:isolate; z-index:0; border-radius:8px; overflow:hidden; border:2px solid var(--navy); box-shadow:0 4px 16px rgba(0,0,0,.12); line-height:0; height:260px; }}
@@ -1000,7 +1000,7 @@ main {{ max-width:820px; margin:0 auto; padding:20px 20px 70px; display:flex; fl
 .leg-meta {{ color:#576270; margin-top:2px; }}
 .leg-note {{ color:#3a4351; margin-top:4px; }}
 .leg-links {{ display:flex; flex-wrap:wrap; gap:8px; margin:8px 0 10px; }}
-.leg-link {{ display:inline-flex; align-items:center; min-height:32px; padding:6px 10px; border-radius:6px; background:rgba(92,106,120,.08); border:1px solid rgba(92,106,120,.25); color:#5c6a78; font-size:0.78125rem; font-weight:600; text-decoration:none; letter-spacing:.01em; }}
+.leg-link {{ display:inline-flex; align-items:center; min-height:32px; padding:6px 10px; border-radius:6px; background:rgba(92,106,120,.08); border:1px solid rgba(92,106,120,.25); color:#4a5664; font-size:0.78125rem; font-weight:600; text-decoration:none; letter-spacing:.01em; }}
 .leg-link:hover, .leg-link:focus-visible {{ color:var(--teal); border-color:var(--teal-border); background:var(--teal-soft); }}
 @media (max-width:400px) {{ .leg-link {{ min-height:44px; padding:0 12px; }} }}
 
@@ -1010,12 +1010,12 @@ main {{ max-width:820px; margin:0 auto; padding:20px 20px 70px; display:flex; fl
 .act-title {{ font-weight:600; font-size:0.96875rem; color:#1f2c39; }}
 .act-title--link {{ text-decoration:none; border-bottom:1px dashed var(--navy); padding-bottom:1px; }}
 .act-title--link:hover {{ border-bottom-style:solid; }}
-.act-title-arrow {{ font-weight:400; color:var(--amber); font-size:0.8125rem; }}
+.act-title-arrow {{ font-weight:400; color:var(--amber-2); font-size:0.8125rem; }}
 .act-time {{ font-size:0.8125rem; color:#5c6a78; white-space:nowrap; }}
 .act-desc {{ font-size:0.9375rem; color:#3a4351; margin-top:6px; line-height:1.6; }}
 .act-cost {{ margin-right:10px; display:inline-block; margin-top:8px; background:var(--amber-soft); border:1px solid var(--amber-soft-border); border-radius:5px; padding:3px 9px; font-size:0.8125rem; color:#5c3a1f; }}
 .act-link {{ display:inline-block; margin-top:0; padding:8px 0; margin-right:14px; font-size:0.84375rem; font-weight:600; color:var(--navy); text-decoration:none; }}
-.act-link--nav {{ color:#3d8f8a; }}
+.act-link--nav {{ color:#2e6f6b; }}
 .act-link:hover {{ text-decoration:underline; }}
 
 .food-card {{ background:var(--panel); border:1px solid var(--panel-border); border-radius:6px; padding:12px 14px; font-size:0.9375rem; }}
@@ -1042,6 +1042,11 @@ main {{ max-width:820px; margin:0 auto; padding:20px 20px 70px; display:flex; fl
 .section {{ display:flex; flex-direction:column; gap:8px; }}
 
 .install-hint {{ font-size:0.8125rem; color:#5c6a78; text-align:center; padding:6px 20px 0; }}
+/* respiro tra i blocchi di ogni tab (prima si toccavano); didascalia della mappa
+   attaccata alla mappa, titolo del giorno vicino alla foto */
+.page-view > * + * {{ margin-top:14px; }}
+.page-view > .map-frame + .line {{ margin-top:6px; }}
+.page-view > .day-head + * {{ margin-top:8px; }}
 </style>
 <link rel="stylesheet" href="vendor/leaflet/leaflet.css"/>
 <script src="vendor/leaflet/leaflet.js"></script>
