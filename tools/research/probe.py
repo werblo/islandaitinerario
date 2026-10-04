@@ -12,14 +12,6 @@ def km(a, b):
     la1, lo1, la2, lo2 = map(math.radians, (*a, *b))
     return 6371 * 2 * math.asin(math.sqrt(math.sin((la2-la1)/2)**2 + math.cos(la1)*math.cos(la2)*math.sin((lo2-lo1)/2)**2))
 
-# METAR (IEM)
-gj = json.loads(get('https://mesonet.agron.iastate.edu/geojson/network/IS__ASOS.geojson'))
-metar = [(f['properties']['sid'], f['properties']['sname'], f['geometry']['coordinates'][1], f['geometry']['coordinates'][0]) for f in gj['features']]
-print('METAR stations', len(metar))
-for p, c in PLACES.items():
-    near = sorted(metar, key=lambda s: km(c, (s[2], s[3])))[:4]
-    print(' ', p, [(s[0], s[1], round(km(c, (s[2], s[3])))) for s in near])
-
 # SYNOP: chi riporta N (nuvolosità totale) in un giorno, con coordinate da ISD
 syn = get('https://www.ogimet.com/cgi-bin/getsynop?block=04&begin=202610010000&end=202610012300')
 withN = {}
@@ -32,9 +24,10 @@ for line in syn.splitlines():
         n = groups[4][0]
         withN.setdefault(parts[0], []).append(n)
 isd = list(csv.DictReader(io.StringIO(get('https://www.ncei.noaa.gov/pub/data/noaa/isd-history.csv'))))
+print('ISD sample', [ (r['USAF'], r['CTRY'], r['STATION NAME'], r['END']) for r in isd if r['USAF'].startswith('0403')][:8])
 coords = {}
 for r in isd:
-    if r['CTRY'] == 'IC' and r['USAF'].startswith('04') and r['LAT'] and r['END'] >= '20260101':
+    if r['USAF'].startswith('04') and r['LAT'] and r['END'] >= '20240101':
         coords[r['USAF'][:5]] = (r['STATION NAME'], float(r['LAT']), float(r['LON']))
 print('SYNOP stations', len(withN), 'with coords', sum(k in coords for k in withN))
 rows = []
@@ -42,6 +35,7 @@ for sid, ns in withN.items():
     if sid in coords:
         name, la, lo = coords[sid]
         rows.append((sid, name, la, lo, ''.join(ns)))
+print('senza coordinate:', sorted(k for k in withN if k not in coords)[:60])
 for p, c in PLACES.items():
     near = sorted(rows, key=lambda s: km(c, (s[2], s[3])))[:6]
     print(' ', p)
