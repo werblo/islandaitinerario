@@ -503,7 +503,7 @@ def render_activity(day_id, idx, act):
     desc_html = f'<div class="act-desc">{e(act["desc"])}</div>' if act.get('desc') else ''
     if act.get('link'):
         title_html = (f'<a class="act-title act-title--link" href="{e(act["link"])}" '
-                       f'target="_blank" rel="noopener">{e(act["title"])} <span class="act-title-arrow">\u2197</span></a>')
+                       f'target="_blank" rel="noopener">{e(act["title"])}\u00a0<span class="act-title-arrow">\u2197</span></a>')
     else:
         title_html = f'<div class="act-title">{e(act["title"])}</div>'
     links_html = ''
@@ -516,7 +516,8 @@ def render_activity(day_id, idx, act):
                         f'Naviga \u2197</a>')
     return (f'<div class="act-card">{img_html}<div class="act-body">'
             f'<div class="act-top">{title_html}'
-            f'<div class="act-time">{e(act["time"])}</div></div>{desc_html}{cost_html}{links_html}</div></div>')
+            f'<div class="act-time">{e(act["time"])}</div></div>{desc_html}{cost_html}'
+            + (f'<div class="act-links">{links_html}</div>' if links_html else '') + '</div></div>')
 
 def render_food(f):
     note = f'<div class="food-note">{e(f["note"])}</div>' if f.get('note') else ''
@@ -1010,11 +1011,12 @@ main {{ max-width:820px; margin:0 auto; padding:20px 20px 70px; display:flex; fl
 .act-title {{ font-weight:600; font-size:0.96875rem; color:#1f2c39; }}
 .act-title--link {{ text-decoration:none; border-bottom:1px dashed var(--navy); padding-bottom:1px; }}
 .act-title--link:hover {{ border-bottom-style:solid; }}
-.act-title-arrow {{ font-weight:400; color:var(--amber-2); font-size:0.8125rem; }}
+.act-title-arrow {{ white-space:nowrap; font-weight:400; color:var(--amber-2); font-size:0.8125rem; }}
 .act-time {{ font-size:0.8125rem; color:#5c6a78; white-space:nowrap; }}
 .act-desc {{ font-size:0.9375rem; color:#3a4351; margin-top:6px; line-height:1.6; }}
-.act-cost {{ margin-right:10px; display:inline-block; margin-top:8px; background:var(--amber-soft); border:1px solid var(--amber-soft-border); border-radius:5px; padding:3px 9px; font-size:0.8125rem; color:#5c3a1f; }}
-.act-link {{ display:inline-block; margin-top:0; padding:8px 0; margin-right:14px; font-size:0.84375rem; font-weight:600; color:var(--navy); text-decoration:none; }}
+.act-cost {{ display:table; margin-top:8px; background:var(--amber-soft); border:1px solid var(--amber-soft-border); border-radius:5px; padding:3px 9px; font-size:0.8125rem; color:#5c3a1f; }}
+.act-links {{ display:flex; flex-wrap:wrap; column-gap:16px; margin-top:2px; }}
+.act-link {{ display:inline-block; margin-top:0; padding:8px 0; font-size:0.84375rem; font-weight:600; color:var(--navy); text-decoration:none; }}
 .act-link--nav {{ color:#2e6f6b; }}
 .act-link:hover {{ text-decoration:underline; }}
 
