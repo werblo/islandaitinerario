@@ -21,8 +21,7 @@ from datetime import date, datetime, timedelta, timezone
 STATIONS = {   # punti con osservazioni del cielo anche di notte
     'BIRK': ('Reykjavík', 64.1300, -21.9406),
     'BIKF': ('Keflavík', 63.9850, -22.6056),
-    'BIVM': ('Vestmannaeyjar (costa sud)', 63.4243, -20.2789),
-}
+}   # Vestmannaeyjar (BIVM) ha METAR solo di giorno: inutile per le notti
 SYNOP_REYKJAVIK = '04030'
 MODELS = ['best_match', 'ecmwf_ifs025', 'icon_seamless', 'ukmo_seamless', 'metno_seamless', 'gfs_seamless']
 W_MID, W_HIGH = 0.8, 0.3      # pesi degli strati medi e alti (bassi = 1)
@@ -161,6 +160,17 @@ def archived_forecasts(lat, lon, model, d0, d1):
     return out
 
 
+def short_forecasts(lat, lon, model, d0, d1):
+    """Previsioni a breve termine d'archivio (prime ore di ogni corsa), con gli strati."""
+    url = (f'https://historical-forecast-api.open-meteo.com/v1/forecast?latitude={lat}&longitude={lon}'
+           f'&hourly={",".join(VARS)}&models={model}&start_date={d0}&end_date={d1}&timezone=UTC')
+    h = json.loads(get(url))['hourly']
+    cols = [h.get(v) or [None] * len(h['time']) for v in VARS]
+    print(f'    {model} (breve): ' + ', '.join(f'{v} {sum(x is not None for x in c)}/{len(c)}' for v, c in zip(VARS, cols)))
+    return {t: [None if c[i] is None else c[i] / 100 for c in cols]
+            for i, t in enumerate(h['time']) if cols[0][i] is not None}
+
+
 def live_forecasts(lat, lon, model):
     url = (f'https://api.open-meteo.com/v1/forecast?latitude={lat}&longitude={lon}'
            f'&hourly={",".join(VARS)}&models={model}&timezone=UTC&forecast_days=2')
@@ -211,6 +221,9 @@ def score(rows, label):
     return '\n'.join(lines), best
 
 
+_OBS = {}
+
+
 def evaluate(fc_by_station, d0, d1, title):
     """fc_by_station: {sid: {ora: {modello: [tot, low, mid, high]}}}"""
     report = [f'# {title}', '', f'Periodo: {d0} → {d1}. Ore di buio (sole sotto −12°).',
@@ -218,11 +231,15 @@ def evaluate(fc_by_station, d0, d1, title):
               '(le nuvole alte sottili di solito lasciano vedere l\'aurora).',
               f'"Cielo utile" = nuvole ≤ {OPEN*100:.0f}%. Errore medio in punti percentuali (più basso = meglio).']
     all_tot, all_eff, syn_rows = [], [], []
-    syn = synop_obs(d0, d1)
+    if 'synop' not in _OBS:
+        _OBS['synop'] = synop_obs(d0, d1)
+    syn = _OBS['synop']
     print('SYNOP Reykjavík:', len(syn), 'osservazioni')
     for sid, (name, lat, lon) in STATIONS.items():
         try:
-            obs = metar_obs(sid, d0, d1 + timedelta(days=1))
+            if sid not in _OBS:
+                _OBS[sid] = metar_obs(sid, d0, d1 + timedelta(days=1))
+            obs = _OBS[sid]
         except Exception as e:
             print(f'METAR {sid}: {e}')
             continue
@@ -265,19 +282,24 @@ def evaluate(fc_by_station, d0, d1, title):
 def cmd_storico(days):
     d1 = date.today() - timedelta(days=2)
     d0 = d1 - timedelta(days=days - 1)
-    fc = {}
-    for sid, (name, lat, lon) in STATIONS.items():
-        per_hour = {}
-        for m in MODELS:
-            try:
-                for t, v in archived_forecasts(lat, lon, m, d0, d1).items():
-                    per_hour.setdefault(t, {})[m] = v
-                print(f'{sid} {m}: ok')
-            except Exception as e:
-                print(f'{sid} {m}: non disponibile ({e})')
-            time.sleep(1)
-        fc[sid] = per_hour
-    return evaluate(fc, d0, d1, 'Test veloce: previsioni del giorno prima')
+    out = []
+    # 1) previsioni fatte il giorno prima: solo nuvolosità totale (l'archivio non ha gli strati)
+    # 2) previsioni a breve termine: con gli strati, per provare il metodo pesato
+    for title, fetch in [('Test veloce A: previsioni fatte il giorno prima (solo totale)', archived_forecasts),
+                         ('Test veloce B: previsioni a breve termine (con gli strati)', short_forecasts)]:
+        fc = {}
+        for sid, (name, lat, lon) in STATIONS.items():
+            per_hour = {}
+            for m in MODELS:
+                try:
+                    for t, v in fetch(lat, lon, m, d0, d1).items():
+                        per_hour.setdefault(t, {})[m] = v
+                except Exception as e:
+                    print(f'{sid} {m}: non disponibile ({e})')
+                time.sleep(1)
+            fc[sid] = per_hour
+        out.append(evaluate(fc, d0, d1, title))
+    return '\n\n'.join(out)
 
 
 def cmd_raccogli(path):
