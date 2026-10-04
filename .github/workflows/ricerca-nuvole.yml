@@ -1,0 +1,65 @@
+name: Ricerca nuvole
+
+# Test approfondito del metodo per le nuvole (tools/research/nuvole.py):
+# ogni mattina di ottobre alle 7:30 salva le previsioni per la notte, poi le
+# confronta con il cielo osservato nei giorni già passati. Il 1° novembre fa
+# il confronto finale. Risultati: nel riepilogo di ogni esecuzione (tab
+# Actions) e nell'artifact "ricerca-nuvole". Non tocca il sito né gli avvisi.
+# A mano: "storico" = test veloce sulle previsioni d'archivio degli ultimi 40 giorni.
+on:
+  schedule:
+    - cron: '30 7 * 10 *'
+    - cron: '30 9 1 11 *'
+  workflow_dispatch:
+    inputs:
+      azione:
+        description: 'valuta = confronta i dati raccolti · storico = test veloce sugli ultimi 40 giorni'
+        type: choice
+        options: [valuta, storico]
+        default: valuta
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ricerca-nuvole
+
+jobs:
+  ricerca:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      # previsioni raccolte nei giorni precedenti: cache, niente commit nel repo
+      - uses: actions/cache/restore@v4
+        with:
+          path: ricerca-dati
+          key: ricerca-nuvole-${{ github.run_id }}
+          restore-keys: ricerca-nuvole-
+      - name: Salva le previsioni di stamattina per stanotte
+        if: github.event.schedule == '30 7 * 10 *'
+        run: mkdir -p ricerca-dati && python tools/research/nuvole.py raccogli ricerca-dati/previsioni.csv
+      - name: Confronta con il cielo osservato
+        if: github.event_name == 'schedule' || inputs.azione == 'valuta'
+        continue-on-error: true
+        run: python tools/research/nuvole.py valuta ricerca-dati/previsioni.csv
+        env:
+          REPORT: ricerca-dati/RISULTATI.md
+      - name: Test veloce sulle previsioni d'archivio
+        if: inputs.azione == 'storico'
+        run: python tools/research/nuvole.py storico 40
+      - uses: actions/cache/save@v4
+        if: always() && hashFiles('ricerca-dati/previsioni.csv') != ''
+        with:
+          path: ricerca-dati
+          key: ricerca-nuvole-${{ github.run_id }}
+      # copia di riserva (90 giorni), nel caso la cache venisse svuotata
+      - uses: actions/upload-artifact@v4
+        if: always() && hashFiles('ricerca-dati/previsioni.csv') != ''
+        with:
+          name: ricerca-nuvole
+          path: ricerca-dati
+          retention-days: 90

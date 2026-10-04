@@ -501,17 +501,26 @@ dei caratteri impostata nel telefono.
 
 ## 12. Avvisi aurora sul telefono (notifiche push)
 
-Nelle notti del viaggio (15–21 novembre) il workflow **"Avvisi aurora"**
-(`.github/workflows/avvisi-aurora.yml`) gira su GitHub ogni 30 minuti, dalle
-16:00 alle 03:30 (ora islandese = UTC). Lancia `tools/aurora_alert.py`, che
-fa la stessa stima del box "Stasera" dell'app (Kp previsto NOAA × cielo
-sereno Open-Meteo nelle ore di buio, per l'alloggio della notte) e manda una
-notifica push ai telefoni iscritti. Al massimo due avvisi per notte:
+Nei giorni del viaggio (15–21 novembre) il workflow **"Avvisi aurora"**
+(`.github/workflows/avvisi-aurora.yml`) lancia su GitHub `tools/aurora_alert.py`,
+che fa la stessa stima del box "Stasera" dell'app (Kp previsto NOAA × cielo
+sereno Open-Meteo nelle ore di buio) e manda notifiche push ai telefoni
+iscritti. Orari in ora islandese (= UTC):
 
-- **"Aurora stanotte: buone probabilità"**: appena la stima diventa "buone",
-  con le fasce orarie migliori;
+- **Mattino, verso le 7:30, tutti i giorni (sempre):** com'è messa la sera,
+  con una frase scherzosa diversa ogni giorno (personalizzata per nome, vedi
+  sotto) e il dettaglio: tappe, ore migliori, Kp, nuvole. Il workflow parte
+  alle 7:15 perché GitHub di solito ha qualche minuto di ritardo.
+- **"🔄 Cambio di programma"** (controllo ogni 30 minuti, 16:00–03:30): solo
+  se la stima della notte diventa "buone" e al mattino non lo era.
 - **"Aurora: condizioni buone adesso"**: quando è buio e il Kp misurato in
   quel momento, insieme alle nuvole di quell'ora, è buono.
+
+**Tappe serali.** La stima segue dove siete davvero la sera, ora per ora:
+`evening_stops` in `render.py` (oggi il giorno 3: Fontana a Laugarvatn fino
+alle 21, la strada del ritorno per Þingvellir fino alle 22, poi Reykjavík).
+I giorni non elencati usano l'alloggio della notte. Vale per l'app (box
+"Stasera" e tab dei giorni) e per tutte le notifiche.
 
 Gli avvisi già mandati si salvano nella cache di GitHub Actions, non nel
 repo: niente commit e il sito non viene ripubblicato.
@@ -528,7 +537,15 @@ repo: niente commit e il sito non viene ripubblicato.
    Checklist → in fondo, "Avvisi aurora sul telefono" →
    **"Attiva avvisi aurora"** → consenti le notifiche →
    **"Copia codice"**. Crea il secret `AURORA_SUBSCRIPTIONS` e incollaci i
-   codici di tutti i telefoni, uno dopo l'altro (anche su righe separate).
+   codici di tutti i telefoni, uno dopo l'altro, ognuno con il **nome
+   davanti** (serve per le frasi personalizzate; con "Fede..." arrivano
+   quelle per Federica):
+
+   ```
+   Michele: {"endpoint":"https://...","keys":{...}}
+   Federica: {"endpoint":"https://...","keys":{...}}
+   ```
+
    I secret non si possono rileggere: per aggiungere un telefono in seguito,
    reincolla tutti i codici. Il codice di ogni telefono resta visibile
    nell'app, sotto "Copia codice".
@@ -555,3 +572,39 @@ Se nel log del workflow compare "iscrizione scaduta", su quel telefono
 tocca di nuovo "Attiva avvisi aurora" e aggiorna `AURORA_SUBSCRIPTIONS`.
 Per ricevere le notifiche serve la connessione (in Islanda il roaming UE
 vale come a casa).
+
+## 13. Ricerca: quale stima delle nuvole funziona meglio
+
+`tools/research/nuvole.py` confronta, nelle ore di buio, le previsioni delle
+nuvole con il cielo osservato davvero: METAR degli aeroporti di Reykjavík,
+Keflavík e Vestmannaeyjar (strati di nuvole con l'altezza) e SYNOP di
+Reykjavík (osservatore umano). Le stazioni automatiche vicino a Vík e
+Flúðir non misurano le nuvole, quindi il confronto valuta il *metodo*.
+Metodi: `totale` (quello in uso: per l'Islanda il modello automatico di
+Open-Meteo è già il DMI HARMONIE, lo stesso tipo di vedur.is), `pesata`
+(nuvole alte e medie contano meno), `media` e `media_pes` (media di 6 modelli).
+
+- **Test veloce:** tab Actions → "Ricerca nuvole" → *Run workflow* →
+  `storico` (previsioni d'archivio fatte il giorno prima, ultimi 40 giorni).
+- **Test approfondito:** ogni mattina di ottobre alle 7:30 il workflow salva
+  le previsioni per la notte e le confronta con le osservazioni; il 1°
+  novembre fa il confronto finale. Risultati nel riepilogo di ogni esecuzione
+  e nell'artifact `ricerca-nuvole`.
+
+Il metodo in uso si sceglie con `CLOUD_METHOD` in `render.py` (`'totale'`,
+`'pesata'`, `'media'` o `'media_pes'`; pesi `CLOUD_W_MID` e `CLOUD_W_HIGH`,
+modelli `CLOUD_MODELS`) e vale per app e notifiche. Per ora resta `'totale'`.
+
+**Risultati del test veloce (4 ottobre 2026, 40 notti, 521 ore di buio a
+Reykjavík e Keflavík):**
+
+| metodo | previsioni a breve termine: ore azzeccate / errore medio | previsioni del giorno prima |
+|---|---|---|
+| totale (in uso) | 75% / 29 punti | 77% / 28 punti |
+| pesata | 77% / 25 punti | — (l'archivio non ha gli strati) |
+| media | 81% / 21 punti | 77% / 24 punti |
+| media_pes | **82% / 18 punti** | — |
+
+`media_pes` è la più promettente, ma sulle previsioni del giorno prima la
+media non ha fatto meglio del metodo attuale: decide il test approfondito di
+ottobre, che usa proprio le previsioni delle 7:30 con gli strati.

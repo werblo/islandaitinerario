@@ -1,31 +1,35 @@
-"""Avvisi aurora: notifica push sui telefoni quando stanotte l'aurora è probabile.
+"""Avvisi aurora: notifiche push sui telefoni nelle notti del viaggio.
 
-Lanciato dal workflow "Avvisi aurora" (.github/workflows/avvisi-aurora.yml)
-ogni 30 minuti nelle notti del viaggio. Usa la stessa stima dell'app
-(Kp previsto NOAA × cielo sereno Open-Meteo, solo nelle ore di buio) per
-l'alloggio della notte, e manda al massimo due avvisi per notte:
+Lanciato dal workflow "Avvisi aurora" (.github/workflows/avvisi-aurora.yml).
+Usa la stessa stima dell'app (Kp previsto NOAA × cielo sereno Open-Meteo, solo
+nelle ore di buio) nei posti in cui siete la sera, tappa per tappa
+(evening_stops in render.py; di default l'alloggio della notte). Avvisi:
 
-- "previsione": appena la stima della notte diventa "buone probabilità";
+- "mattino":    alle 7:30 di ogni giorno del viaggio, sempre: com'è messa stasera,
+                con una frase scherzosa (personalizzata se il telefono ha un nome);
+- "previsione": la sera, solo se la stima diventa "buone" e al mattino non lo era
+                (cambio di programma in meglio);
 - "adesso":     quando è buio e Kp misurato + nuvole di quest'ora sono buoni.
 
 Variabili d'ambiente:
   VAPID_PRIVATE_KEY     chiave privata VAPID (secret del repo)
-  AURORA_SUBSCRIPTIONS  codici copiati dall'app ("Attiva avvisi aurora"),
-                        uno dopo l'altro (secret del repo)
-  AURORA_MODE           "controllo" (default) oppure "prova" (notifica subito)
+  AURORA_SUBSCRIPTIONS  codici copiati dall'app ("Attiva avvisi aurora"), uno dopo
+                        l'altro; un nome davanti ("Federica: {...}") personalizza le frasi
+  AURORA_MODE           "controllo" (default), "mattino" oppure "prova" (notifica subito)
   AURORA_STATE          file con gli avvisi già inviati (default .aurora-state/state.json)
   AURORA_NOW            solo per test: istante da simulare (ISO, UTC)
 
 Uso: python3 tools/aurora_alert.py  (dalla radice del repo, dopo render.py)
 """
-import json, math, os, re, sys, urllib.request
+import json, math, os, random, re, sys, urllib.request
 from datetime import datetime, timedelta, timezone
 
 VAPID_SUB = 'https://werblo.github.io'   # contatto per i servizi push (solo dominio)
 KP_FORECAST_URL = 'https://services.swpc.noaa.gov/products/noaa-planetary-k-index-forecast.json'
 KP_NOW_URL = 'https://services.swpc.noaa.gov/json/planetary_k_index_1m.json'
 CLOUDS_URL = ('https://api.open-meteo.com/v1/forecast?latitude={lat}&longitude={lon}'
-              '&hourly=cloud_cover&timezone=UTC&past_days=1&forecast_days=3')
+              '&hourly=cloud_cover,cloud_cover_low,cloud_cover_mid,cloud_cover_high'
+              '&timezone=UTC&past_days=1&forecast_days=3')
 GOOD = 0.45   # soglia di "buone probabilità", come nell'app
 
 
@@ -38,13 +42,30 @@ def trip_data(path='index.html'):
         if not m:
             sys.exit(f'{name} non trovato in {path}: rilancia python3 render.py')
         return json.loads(m.group(1))
-    return const('LOCATIONS'), const('DAYS_META')
+    method = re.search(r"^const CLOUD_METHOD = '(\w+)';$", page, re.M)
+    w = re.search(r'^const CLOUD_W_MID = ([\d.]+), CLOUD_W_HIGH = ([\d.]+);$', page, re.M)
+    return {
+        'places': const('AURORA_PLACES'), 'days': const('DAYS_META'), 'stops': const('NIGHT_STOPS'),
+        'method': method.group(1) if method else 'totale', 'w_mid': float(w.group(1)), 'w_high': float(w.group(2)),
+        'models': const('CLOUD_MODELS'),
+    }
 
 
 def night_place_key(date_iso, days):
     # come nightPlaceKey() nell'app: l'alloggio di quel giorno (l'ultimo giorno si riparte)
     day = next((d for d in days if d['dateISO'] == date_iso and d['id'] != 'd8'), None)
     return day['locKey'] if day else 'reykjavik'
+
+
+def night_stops(date_iso, trip):
+    # come nightStops() nell'app: le tappe della sera, di default l'alloggio
+    return trip['stops'].get(date_iso) or [{'place': night_place_key(date_iso, trip['days'])}]
+
+
+def stop_at(stops, t):
+    # come stopAt(): 'until' è l'ora islandese di fine tappa, contata dalle 12
+    off = (t.hour + 12) % 24
+    return next((s for s in stops if 'until' not in s or off < (s['until'] + 12) % 24), stops[-1])
 
 
 # ---------- sole: stesso algoritmo NOAA dell'app ----------
@@ -101,9 +122,38 @@ def parse_kp_forecast(data):
     return out
 
 
-def clouds_by_hour(data):
+def clouds_url(loc, trip):
+    url = CLOUDS_URL.format(**loc)
+    return url + '&models=' + ','.join(trip['models']) if trip['method'].startswith('media') else url
+
+
+def clouds_by_hour(data, trip):
+    """{ora: nuvole efficaci %} secondo CLOUD_METHOD, come effCloud() nell'app."""
     h = (data or {}).get('hourly') or {}
-    return {t: c for t, c in zip(h.get('time', []), h.get('cloud_cover', [])) if c is not None}
+    def val(key, i):
+        col = h.get(key)
+        return col[i] if col and i < len(col) else None
+    def layered(i, sfx):
+        lo, mi, hi = (val(k + sfx, i) for k in ('cloud_cover_low', 'cloud_cover_mid', 'cloud_cover_high'))
+        if None in (lo, mi, hi):
+            return None
+        return 100 * (1 - (1 - lo / 100) * (1 - trip['w_mid'] * mi / 100) * (1 - trip['w_high'] * hi / 100))
+    out = {}
+    for i, t in enumerate(h.get('time', [])):
+        v = None
+        if trip['method'].startswith('media'):
+            vals = [val('cloud_cover_' + m, i) if trip['method'] == 'media' else layered(i, '_' + m)
+                    for m in trip['models']]
+            vals = [x for x in vals if x is not None]
+            if len(vals) >= 3:
+                v = sum(vals) / len(vals)
+        elif trip['method'] == 'pesata':
+            v = layered(i, '')
+        if v is None:
+            v = val('cloud_cover', i)
+        if v is not None:
+            out[t] = round(v)
+    return out
 
 
 def kp_factor(kp):
@@ -119,17 +169,42 @@ def hour_key(t):
     return t.strftime('%Y-%m-%dT%H:00')
 
 
-def night_estimate(start, loc, kp_rows, clouds):
-    """Come nightEstimate() nell'app: ore di buio astronomico della notte che inizia alle 12 UTC."""
+def level_of(best):
+    return 'buone' if best >= GOOD else 'scarse' if best >= 0.2 else 'nulle'
+
+
+def windows_of(hours, best):
+    # fasce orarie migliori: ore consecutive vicine al massimo
+    windows = []
+    for h in hours:
+        if h['score'] < max(0.2, best * 0.8):
+            continue
+        if windows and windows[-1][1] == h['t']:
+            windows[-1][1] = h['t'] + timedelta(hours=1)
+        else:
+            windows.append([h['t'], h['t'] + timedelta(hours=1)])
+    return windows
+
+
+def short_name(name):
+    return re.sub(r' \(.*\)$', '', name)
+
+
+def night_estimate(start, stops, trip, kp_rows, clouds):
+    """Come nightEstimate() nell'app: ore di buio astronomico della notte che inizia alle 12 UTC,
+    ognuna nel posto in cui siete a quell'ora."""
+    places = trip['places']
     hours = []
     for i in range(24):
         t = start + timedelta(hours=i)
+        place = stop_at(stops, t)['place']
+        loc = places[place]
         if sun_altitude(t + timedelta(minutes=30), loc['lat'], loc['lon']) >= -18:
             continue
         kp = next((k for rt, k in kp_rows if rt <= t < rt + timedelta(hours=3)), None)
-        hours.append({'t': t, 'kp': kp, 'cloud': clouds.get(hour_key(t))})
+        hours.append({'t': t, 'place': place, 'kp': kp, 'cloud': clouds.get(place, {}).get(hour_key(t))})
     with_kp = [h for h in hours if h['kp'] is not None]
-    est = {'hours': hours, 'level': None}
+    est = {'hours': hours, 'level': None, 'stops': [], 'last': places[stops[-1]['place']]['name']}
     if not with_kp:
         return est
     has_clouds = any(h['cloud'] is not None for h in with_kp)
@@ -137,18 +212,15 @@ def night_estimate(start, loc, kp_rows, clouds):
         sky = (0.5 if has_clouds else 1) if h['cloud'] is None else (100 - h['cloud']) / 100
         h['score'] = kp_factor(h['kp']) * sky
     best = max(h['score'] for h in with_kp)
-    est['level'] = 'buone' if best >= GOOD else 'scarse' if best >= 0.2 else 'nulle'
-    est['kp_max'] = max(h['kp'] for h in with_kp)
-    est['clouds'] = [h['cloud'] for h in with_kp if h['cloud'] is not None]
-    windows = []
-    for h in with_kp:
-        if h['score'] < max(0.2, best * 0.8):
-            continue
-        if windows and windows[-1][1] == h['t']:
-            windows[-1][1] = h['t'] + timedelta(hours=1)
-        else:
-            windows.append([h['t'], h['t'] + timedelta(hours=1)])
-    est['windows'] = windows
+    est.update(level=level_of(best), best=best, kp_max=max(h['kp'] for h in with_kp),
+               clouds=[h['cloud'] for h in with_kp if h['cloud'] is not None],
+               windows=windows_of(with_kp, best))
+    for s in stops:
+        hs = [h for h in with_kp if h['place'] == s['place']]
+        if hs:
+            b = max(h['score'] for h in hs)
+            est['stops'].append({'name': places[s['place']]['name'], 'level': level_of(b), 'best': b,
+                                 'from': hs[0]['t'], 'end': hs[-1]['t'] + timedelta(hours=1)})
     return est
 
 
@@ -156,12 +228,16 @@ def fmt_kp(kp):
     return f'{kp:.1f}'.replace('.0', '')
 
 
-def describe(est, place):
-    if not est['hours']:
-        return f'{place}: niente buio astronomico stanotte.'
-    if not est['level']:
-        return f'{place}: previsione non disponibile.'
-    parts = [f'{place}: {est["level"]} probabilità']
+def place_label(est):
+    names = [short_name(s['name']) for s in est['stops']]
+    return ' → '.join(names) if len(names) > 1 else (names[0] if names else est['last'])
+
+
+def details(est):
+    """Riga di dettaglio: tappe, ore migliori, Kp, nuvole."""
+    parts = []
+    if len(est['stops']) > 1:
+        parts += [f'{short_name(s["name"])} {s["from"]:%H}–{s["end"]:%H}: {s["level"]}' for s in est['stops']]
     if est['level'] != 'nulle' and est['windows']:
         parts.append('meglio ' + ' e '.join(f'{a:%H}:00–{b:%H}:00' for a, b in est['windows'][:2]))
     parts.append('Kp fino a ' + fmt_kp(est['kp_max']))
@@ -171,10 +247,79 @@ def describe(est, place):
     return ' · '.join(parts)
 
 
+def describe(est):
+    if not est['hours']:
+        return f'{est["last"]}: niente buio astronomico stanotte.'
+    if not est['level']:
+        return f'{place_label(est)}: previsione non disponibile.'
+    return f'{place_label(est)}: {est["level"]} probabilità · ' + details(est)
+
+
+# ---------- frasi del mattino ----------
+# {luogo} = dove siete stasera; {nome} = nome davanti al codice del telefono.
+PHRASES = {
+    'tutti': {
+        'buone': ["🌌 Attenzione: stasera naso all'insù! A {luogo} il cielo promette spettacolo.",
+                  "🧣 Sciarpa, thermos e torcicollo assicurato: stasera a {luogo} l'aurora ha buone chance.",
+                  "📸 Treppiede carico? Stasera a {luogo} l'aurora potrebbe fare le prove generali.",
+                  "🎆 Stasera il cielo di {luogo} potrebbe accendersi: scarponi pronti e tanta pazienza."],
+        'scarse': ["🤞 Stasera l'aurora fa la timida: a {luogo} qualche chance c'è, un'occhiata fuori prima di dormire vale la pena.",
+                   "🌥️ Possibilità modeste a {luogo}: non rinunciate alla cena, ma tenete un occhio alla finestra.",
+                   "🔭 Stasera a {luogo} è un terno al lotto: se vi svegliate di notte, sbirciate fuori."],
+        'nulle': ["♨️ Stasera a {luogo} l'aurora dà forfait. Piano B: piscina calda e birra islandese.",
+                  "😴 L'aurora si è presa la serata libera. A nanna presto, domani si guida!",
+                  "🍲 Niente spettacolo in cielo stasera a {luogo}: concentratevi sulla zuppa di agnello."],
+        'viaggio': ["🛁 Stasera occhi al cielo già a {migliore}: è la tappa più promettente della serata, poi via verso {ultimo}.",
+                    "🚗 Stasera il meglio potrebbe arrivare a {migliore}: guardate in alto prima di ripartire per {ultimo}!"],
+    },
+    'nome': {
+        'buone': ["🌌 {nome}, stasera naso all'insù! A {luogo} il cielo promette spettacolo.",
+                  "🧤 {nome}, guanti e cappello: stasera a {luogo} si va a caccia di aurora!"],
+        'scarse': ["🤞 {nome}, stasera l'aurora fa la preziosa: a {luogo} qualche chance c'è.",
+                   "🔭 {nome}, stasera serve un pizzico di fortuna: a {luogo} non è detta l'ultima parola."],
+        'nulle': ["☁️ {nome}, stasera a {luogo} il cielo è chiuso per ferie. Domani andrà meglio!",
+                  "😴 {nome}, l'aurora stasera resta a casa. Goditi la cena a {luogo}!"],
+        'viaggio': ["🛁 {nome}, stasera guarda in alto già a {migliore}, poi anche lungo la strada per {ultimo}!"],
+    },
+    'federica': {
+        'buone': ["👑 Federica, stasera l'aurora ha chiesto di te: a {luogo} buone probabilità!",
+                  "🧤 Fede, guanti e cappello: stasera a {luogo} si va a caccia di aurora!",
+                  "📸 Fede, telefono carico: stasera il cielo di {luogo} potrebbe meritarsi una storia.",
+                  "✨ Fede, stasera a {luogo} il cielo si mette in ghingheri per te."],
+        'scarse': ["🤞 Fede, stasera l'aurora fa la timida: a {luogo} qualche chance c'è, tieni d'occhio la finestra.",
+                   "🔭 Federica, stasera serve un pizzico di fortuna: a {luogo} non è detta l'ultima parola."],
+        'nulle': ["🛌 Niente aurora stasera, Fede: si è infilata sotto il piumone prima di te.",
+                  "😴 Fede, l'aurora stasera ha mal di testa: a {luogo} niente spettacolo. Domani ci riprova!"],
+        'viaggio': ["🛁 Fede, stasera guarda in alto già dalla piscina di {migliore}, poi anche lungo la strada per {ultimo}!"],
+    },
+}
+
+
+MORNING_TITLES = {'buone': '🌅 Aurora stasera: buone probabilità', 'scarse': '🌅 Aurora stasera: qualche chance',
+                  'nulle': '🌅 Aurora stasera: quasi impossibile'}
+
+
+def morning_phrase(name, est, night):
+    """Frase del mattino per un telefono: stesso giorno e stesso nome -> stessa frase."""
+    pool = PHRASES['federica'] if name.lower().startswith('fede') else PHRASES['nome'] if name else PHRASES['tutti']
+    level = est['level'] or 'nulle'
+    kind = level
+    stops = est['stops']
+    best_stop = max(stops, key=lambda s: s['best']) if stops else None
+    # sera in movimento e la tappa migliore non è l'ultima: frase "di viaggio"
+    if level != 'nulle' and len(stops) > 1 and best_stop is not stops[-1] and best_stop['level'] != 'nulle':
+        kind = 'viaggio'
+    text = random.Random(f'{night}|{name}|{kind}').choice(pool[kind])
+    return text.format(nome=name, luogo=place_label(est),
+                       migliore=short_name(best_stop['name']) if best_stop else '',
+                       ultimo=short_name(stops[-1]['name']) if stops else est['last'])
+
+
 # ---------- iscrizioni e invio ----------
 def parse_subscriptions(text):
-    """Accetta i codici incollati uno dopo l'altro (o una lista JSON)."""
-    subs, dec, i = [], json.JSONDecoder(), 0
+    """Codici incollati uno dopo l'altro (o lista JSON), ognuno con un nome davanti facoltativo:
+    'Federica: {...}'. Restituisce [(nome, iscrizione)]."""
+    subs, dec, i, prev = [], json.JSONDecoder(), 0, 0
     text = text or ''
     while True:
         i = text.find('{', i)
@@ -186,33 +331,38 @@ def parse_subscriptions(text):
             i += 1
             continue
         if isinstance(obj, dict) and obj.get('endpoint') and (obj.get('keys') or {}).get('p256dh'):
-            if obj['endpoint'] not in [s['endpoint'] for s in subs]:
-                subs.append(obj)
-        i = end
+            label = text[prev:i].strip().splitlines()[-1] if text[prev:i].strip() else ''
+            name = re.sub(r'[^\wÀ-ÿ\' -]', '', label).strip()
+            if obj['endpoint'] not in [s['endpoint'] for _, s in subs]:
+                subs.append((name, obj))
+        i = prev = end
     return subs
 
 
-def send_all(subs, payload, ttl):
+def send_all(subs, make_payload, ttl):
+    """make_payload(nome) -> payload della notifica per quel telefono."""
     from pywebpush import webpush, WebPushException
     key = os.environ.get('VAPID_PRIVATE_KEY', '').strip()
     if not key:
         print('::error::Manca il secret VAPID_PRIVATE_KEY')
         return 0
     ok = 0
-    for n, sub in enumerate(subs, 1):
+    for n, (name, sub) in enumerate(subs, 1):
         host = re.sub(r'^https?://([^/]+).*$', r'\1', sub['endpoint'])
+        who = f'Telefono {n}' + (f' ({name})' if name else '') + f' [{host}]'
+        payload = make_payload(name)
         try:
             webpush(sub, json.dumps(payload, ensure_ascii=False), vapid_private_key=key,
                     vapid_claims={'sub': VAPID_SUB}, ttl=ttl, headers={'Urgency': 'high'})
-            print(f'Telefono {n} ({host}): inviata')
+            print(f'{who}: inviata · {payload["title"]} · {payload["body"]}')
             ok += 1
         except WebPushException as e:
             code = getattr(e.response, 'status_code', None)
             if code in (404, 410):
-                print(f'::warning::Telefono {n} ({host}): iscrizione scaduta, '
+                print(f'::warning::{who}: iscrizione scaduta, '
                       'ricopia il codice dall\'app e aggiorna AURORA_SUBSCRIPTIONS')
             else:
-                print(f'::warning::Telefono {n} ({host}): invio fallito ({code or e})')
+                print(f'::warning::{who}: invio fallito ({code or e})')
     return ok
 
 
@@ -235,74 +385,101 @@ def main():
     state_path = os.environ.get('AURORA_STATE', '.aurora-state/state.json')
     now = (parse_time(os.environ['AURORA_NOW']) if os.environ.get('AURORA_NOW')
            else datetime.now(timezone.utc)).replace(second=0, microsecond=0)
-    locations, days = trip_data()
+    trip = trip_data()
 
-    # la notte "di stasera" inizia alle 12 UTC di oggi (prima delle 10 è ancora quella di ieri);
-    # in Islanda l'ora locale coincide con UTC tutto l'anno
-    start = now.replace(hour=12, minute=0) - timedelta(days=1 if now.hour < 10 else 0)
+    # la notte "di stasera" inizia alle 12 UTC di oggi (di notte, prima delle 10, è ancora
+    # quella di ieri; il messaggio del mattino parla invece della sera che verrà).
+    # In Islanda l'ora locale coincide con UTC tutto l'anno.
+    start = now.replace(hour=12, minute=0) - timedelta(days=1 if now.hour < 10 and mode != 'mattino' else 0)
     night = start.strftime('%Y-%m-%d')
-    trip_nights = {d['dateISO'] for d in days if d['id'] != 'd8'}
-    if mode != 'prova' and night not in trip_nights:
+    trip_nights = {d['dateISO'] for d in trip['days'] if d['id'] != 'd8'}
+    if mode == 'controllo' and night not in trip_nights:
         print(f'Notte del {night}: fuori dalle date del viaggio, nessun controllo.')
         return 0
 
-    place_key = night_place_key(night, days)
-    loc = locations[place_key]
+    stops = night_stops(night, trip)
     subs = parse_subscriptions(os.environ.get('AURORA_SUBSCRIPTIONS'))
-    print(f'Notte del {night} a {loc["name"]} · {now:%H:%M} UTC · telefoni iscritti: {len(subs)}')
+    names = ', '.join(n or '(senza nome)' for n, _ in subs)
+    print(f'Notte del {night} · tappe: {" → ".join(s["place"] for s in stops)} · {now:%H:%M} UTC'
+          f' · nuvole: {trip["method"]} · telefoni: {len(subs)} ({names})')
 
     kp_rows, clouds, kp_now = [], {}, None
     try:
         kp_rows = parse_kp_forecast(get_json(KP_FORECAST_URL))
     except Exception as e:
         print(f'::warning::Previsione Kp NOAA non disponibile: {e}')
-    try:
-        clouds = clouds_by_hour(get_json(CLOUDS_URL.format(**loc)))
-    except Exception as e:
-        print(f'::warning::Nuvolosità Open-Meteo non disponibile: {e}')
-    try:
-        last = get_json(KP_NOW_URL)[-1]
-        kp_now = float(last.get('estimated_kp', last.get('kp_index')))
-    except Exception as e:
-        print(f'::warning::Kp attuale NOAA non disponibile: {e}')
+    for place in dict.fromkeys(s['place'] for s in stops):
+        try:
+            clouds[place] = clouds_by_hour(get_json(clouds_url(trip['places'][place], trip)), trip)
+        except Exception as e:
+            print(f'::warning::Nuvolosità Open-Meteo per {place} non disponibile: {e}')
+    if mode == 'controllo':
+        try:
+            last = get_json(KP_NOW_URL)[-1]
+            kp_now = float(last.get('estimated_kp', last.get('kp_index')))
+        except Exception as e:
+            print(f'::warning::Kp attuale NOAA non disponibile: {e}')
 
-    est = night_estimate(start, loc, kp_rows, clouds)
-    summary = describe(est, loc['name'])
+    est = night_estimate(start, stops, trip, kp_rows, clouds)
+    summary = describe(est)
     print('Stima:', summary)
 
+    if (mode in ('prova', 'mattino')) and not subs:
+        print('::error::Nessun telefono in AURORA_SUBSCRIPTIONS: copia il codice dall\'app '
+              '("Attiva avvisi aurora") e incollalo nel secret.')
+        return 1
+
     if mode == 'prova':
-        if not subs:
-            print('::error::Nessun telefono in AURORA_SUBSCRIPTIONS: copia il codice dall\'app '
-                  '("Attiva avvisi aurora") e incollalo nel secret.')
-            return 1
-        payload = {'title': '🔔 Prova avvisi aurora', 'tag': 'aurora-prova',
-                   'body': 'Le notifiche funzionano. Stanotte a ' + summary
-                           if est['level'] else 'Le notifiche funzionano!'}
-        ok = send_all(subs, payload, ttl=3600)
+        ok = send_all(subs, lambda name: {
+            'title': '🔔 Prova avvisi aurora', 'tag': 'aurora-prova',
+            'body': (f'Ciao {name}! ' if name else '') + 'Le notifiche funzionano.'
+                    + (' Stanotte a ' + summary if est['level'] else '')}, ttl=3600)
         print(f'Prova inviata a {ok} telefoni su {len(subs)}.')
         return 0 if ok == len(subs) else 1
 
     sent = load_state(state_path)
-    done = set(sent.get(night, []))
+    rec = sent.get(night)
+    rec = {'inviati': rec} if isinstance(rec, list) else (rec or {'inviati': []})
+    done = set(rec['inviati'])
+
+    if mode == 'mattino':
+        if not est['level']:
+            body_info = 'Previsione non disponibile al momento: guardate l\'app o vedur.is/aurora in serata.'
+        else:
+            body_info = details(est)
+        ok = send_all(subs, lambda name: {
+            'title': MORNING_TITLES.get(est['level'], '🌅 Aurora stasera: previsione non disponibile'),
+            'body': morning_phrase(name, est, night) + '\n' + body_info,
+            'tag': 'aurora-' + night}, ttl=4 * 3600)
+        if ok:
+            rec['mattino'] = est['level']
+            done.add('mattino')
+        rec['inviati'] = sorted(done)
+        sent[night] = rec
+        save_state(state_path, sent)
+        return 0 if ok else 1
+
     alerts = []
+    morning = rec.get('mattino')
+    # 1) cambio di programma: stanotte "buone", ma al mattino non lo era (o il mattino è mancato)
+    if ('previsione' not in done and est['level'] == 'buone' and morning != 'buone'
+            and any(b > now for _, b in est['windows'])):
+        title = ('🔄 Cambio di programma: stanotte buone probabilità!' if morning
+                 else '🌌 Aurora stanotte: buone probabilità')
+        alerts.append(('previsione', {'title': title, 'body': place_label(est) + ' · ' + details(est),
+                                      'tag': 'aurora-' + night}, 6 * 3600))
 
-    # 1) previsione della notte: buone probabilità in una fascia non ancora passata
-    if 'previsione' not in done and est['level'] == 'buone' and any(b > now for _, b in est['windows']):
-        alerts.append(('previsione', {
-            'title': '🌌 Aurora stanotte: buone probabilità',
-            'body': summary.replace(': buone probabilità', ''),
-            'tag': 'aurora-' + night,
-        }, 6 * 3600))
-
-    # 2) adesso: buio, Kp misurato e cielo di quest'ora buoni
-    cloud = clouds.get(hour_key(now))
+    # 2) adesso: buio, Kp misurato e cielo di quest'ora buoni, dove siete adesso
+    place = stop_at(stops, now)['place']
+    loc = trip['places'][place]
+    cloud = clouds.get(place, {}).get(hour_key(now))
     dark = sun_altitude(now, loc['lat'], loc['lon']) < -12
     if 'adesso' not in done and dark and kp_now is not None:
         sky = 0.5 if cloud is None else (100 - cloud) / 100
         if kp_factor(kp_now) * sky >= GOOD:
             alerts.append(('adesso', {
                 'title': '🌌 Aurora: condizioni buone adesso',
-                'body': f'{loc["name"]}: Kp {fmt_kp(kp_now)} in questo momento'
+                'body': f'{short_name(loc["name"])}: Kp {fmt_kp(kp_now)} in questo momento'
                         + (f', nuvole {cloud}%' if cloud is not None else '')
                         + '. Allontanatevi dalle luci e guardate verso nord!',
                 'tag': 'aurora-' + night,
@@ -318,11 +495,12 @@ def main():
     failed = False
     for kind, payload, ttl in alerts:
         print(f'Avviso "{kind}": {payload["body"]}')
-        if send_all(subs, payload, ttl):
+        if send_all(subs, lambda name, p=payload: p, ttl):
             done.add(kind)
         else:
             failed = True
-    sent[night] = sorted(done)
+    rec['inviati'] = sorted(done)
+    sent[night] = rec
     save_state(state_path, sent)
     return 1 if failed else 0
 
