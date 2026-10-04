@@ -1,5 +1,5 @@
 // Generato da render.py a partire da sw-template.js: non modificare sw.js a mano.
-const VERSION = 'b2249e2c5314';
+const VERSION = '9d617c0d9c2b';
 const APP_CACHE = 'islanda-2026-app-' + VERSION;
 const TILE_CACHE = 'islanda-2026-tiles';
 const LIVE_CACHE = 'islanda-2026-live';

@@ -1266,7 +1266,8 @@ function ensureDayMap(dayId) {{
     L.marker([p.lat, p.lon], {{ icon }}).addTo(map).bindPopup(p.name);
   }});
 
-  map.fitBounds(latlngs, {{ padding: [24, 24] }});
+  // margini: a sinistra in alto ci sono i pulsanti +/−, in basso i crediti della mappa
+  map.fitBounds(latlngs, {{ paddingTopLeft: [52, 34], paddingBottomRight: [34, 34] }});
 
   const ROUTE_STYLE = {{ color: '#d9985f', weight: 4, opacity: 0.9, lineCap: 'round' }};
   if (DAY_GEOMETRY[dayId]) {{
@@ -1838,7 +1839,8 @@ function initTripMap() {{
     L.marker([loc.lat, loc.lon], {{ icon }}).addTo(map).bindPopup(s.label);
   }});
 
-  map.fitBounds(latlngs, {{ padding: [24, 24] }});
+  // margini: a sinistra in alto ci sono i pulsanti +/−, in basso i crediti della mappa
+  map.fitBounds(latlngs, {{ paddingTopLeft: [52, 34], paddingBottomRight: [34, 34] }});
 
   el.addEventListener('touchstart', () => {{ map.scrollWheelZoom.enable(); map.dragging.enable(); }}, {{ once: true, passive: true }});
 }}
