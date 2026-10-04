@@ -411,7 +411,9 @@ Nella tab Info, sotto il Kp attuale (che resta in evidenza), c'è la stima
 migliori, e sotto quella delle **due notti successive**. La località
 segue il viaggio notte per notte: prima della partenza è Reykjavík (dati
 reali di oggi), durante il viaggio è l'alloggio di quella notte
-(Reykjavík, poi Vík, poi Flúðir). La stima combina:
+(Reykjavík, poi Vík, poi Flúðir), oppure le tappe serali ora per ora dove
+sono indicate (il giorno 3: Fontana, la strada del ritorno, Reykjavík; vedi
+sezione 12). La stima combina:
 - il **Kp previsto** a intervalli di 3 ore (NOAA, fino a 3 giorni);
 - la **copertura nuvolosa oraria** (Open-Meteo, lo stesso servizio del
   meteo);
@@ -484,7 +486,8 @@ Il primo calcolo OSRM tratta per tratta ha corretto alcuni valori, per
 esempio Dyrhólaey → Reynisfjara 20 km (si gira dalla strada 215, non 7 km),
 Faxi → Efstidalur II 16 km (non 9), Þingvellir → Laugarvatn ~35 min.
 Di conseguenza: Seljalandsfoss alle 11:45 (Giorno 4), Jökulsárlón alle
-11:00 (Giorno 5), arrivo a Laugarvatn verso le 14:05 (Giorno 3), e i
+11:00 (Giorno 5; a ottobre anticipato: partenza 7:30, Jökulsárlón 10:30,
+Fjaðrárgljúfur 14:30 per avere luce sul canyon), arrivo a Laugarvatn verso le 14:05 (Giorno 3), e i
 totali nei consigli dei giorni sono stati riallineati.
 
 ### Testi più grandi (23/09)
@@ -511,10 +514,21 @@ iscritti. Orari in ora islandese (= UTC):
   con una frase scherzosa diversa ogni giorno (personalizzata per nome, vedi
   sotto) e il dettaglio: tappe, ore migliori, Kp, nuvole. Il workflow parte
   alle 7:15 perché GitHub di solito ha qualche minuto di ritardo.
-- **"🔄 Cambio di programma"** (controllo ogni 30 minuti, 16:00–03:30): solo
-  se la stima della notte diventa "buone" e al mattino non lo era.
+- **"🔄 Cambio di programma"** (controllo ogni 30 minuti, ai minuti :07 e :37
+  dalle 16:07 alle 3:37): solo se la stima della notte diventa "buone" e al
+  mattino non lo era, e solo se sono arrivati i dati sulle nuvole (con il solo
+  Kp sarebbe un falso allarme). Se il messaggio del mattino non è partito, il
+  titolo è "🌌 Aurora stanotte: buone probabilità".
 - **"Aurora: condizioni buone adesso"**: quando è buio e il Kp misurato in
   quel momento, insieme alle nuvole di quell'ora, è buono.
+
+Ogni tipo di notifica ha la sua etichetta, quindi una non cancella l'altra.
+Se un telefono non risponde, gli altri ricevono comunque la notifica e il
+giro non si blocca. L'anteprima "mattino" lanciata a mano non cambia lo stato
+della notte. I workflow girano su `ubuntu-24.04` (fisso: `ubuntu-latest`
+cambia versione da metà ottobre 2026). Se cambi l'orario del mattino nel
+cron, cambialo anche nella riga `AURORA_MODE` dello stesso file, che
+confronta il testo esatto.
 
 **Tappe serali.** La stima segue dove siete davvero la sera, ora per ora:
 `evening_stops` in `render.py` (oggi il giorno 3: Fontana a Laugarvatn fino
@@ -576,35 +590,49 @@ vale come a casa).
 ## 13. Ricerca: quale stima delle nuvole funziona meglio
 
 `tools/research/nuvole.py` confronta, nelle ore di buio, le previsioni delle
-nuvole con il cielo osservato davvero: METAR degli aeroporti di Reykjavík,
-Keflavík e Vestmannaeyjar (strati di nuvole con l'altezza) e SYNOP di
-Reykjavík (osservatore umano). Le stazioni automatiche vicino a Vík e
-Flúðir non misurano le nuvole, quindi il confronto valuta il *metodo*.
+nuvole con il cielo osservato davvero: METAR degli aeroporti di Reykjavík e
+Keflavík (strati di nuvole con l'altezza; Vestmannaeyjar ha bollettini solo
+di giorno) e SYNOP della stazione di Reykjavík (nuvolosità totale). Le
+stazioni automatiche vicino a Vík e Flúðir non misurano le nuvole, quindi il
+confronto valuta il *metodo*. Limiti da tenere presenti: di notte i sensori
+automatici degli aeroporti spesso non vedono le nuvole alte (risultano
+"sereno"), e questo favorisce i metodi che le pesano poco; le ore della
+stessa notte si somigliano, quindi i campioni veri sono le notti (qualche
+decina), e differenze di pochi punti non sono significative.
 Metodi: `totale` (quello in uso: per l'Islanda il modello automatico di
 Open-Meteo è già il DMI HARMONIE, lo stesso tipo di vedur.is), `pesata`
 (nuvole alte e medie contano meno), `media` e `media_pes` (media di 6 modelli).
 
 - **Test veloce:** tab Actions → "Ricerca nuvole" → *Run workflow* →
-  `storico` (previsioni d'archivio fatte il giorno prima, ultimi 40 giorni).
-- **Test approfondito:** ogni mattina di ottobre alle 7:30 il workflow salva
-  le previsioni per la notte e le confronta con le osservazioni; il 1°
-  novembre fa il confronto finale. Risultati nel riepilogo di ogni esecuzione
-  e nell'artifact `ricerca-nuvole`.
+  `storico`: ultimi 40 giorni, in due parti. A = previsioni fatte il giorno
+  prima (solo nuvolosità totale: l'archivio non ha gli strati); B =
+  previsioni a brevissimo termine, 0-6 ore (con gli strati), che **non**
+  rappresentano la previsione delle 7:30 per la sera.
+- **Test approfondito:** ogni mattina di ottobre alle 7:30 (nel 2026 dal 5
+  ottobre, il giorno dopo l'attivazione) il workflow salva le previsioni per
+  la notte e le confronta con le osservazioni; il 1° novembre fa il confronto
+  finale. Risultati nel riepilogo di ogni esecuzione e nell'artifact
+  `ricerca-nuvole`. Tutti i metodi sono confrontati sulle stesse ore, con due
+  soglie di "cielo utile" (50% e 30%: con Kp 3 l'app vuole nuvole sotto il
+  30% circa). Gira solo nel 2026.
 
 Il metodo in uso si sceglie con `CLOUD_METHOD` in `render.py` (`'totale'`,
 `'pesata'`, `'media'` o `'media_pes'`; pesi `CLOUD_W_MID` e `CLOUD_W_HIGH`,
-modelli `CLOUD_MODELS`) e vale per app e notifiche. Per ora resta `'totale'`.
+modelli `CLOUD_MODELS`) e vale per app e notifiche: dopo averlo cambiato
+rilancia `python3 render.py` e fai il commit anche di `index.html`, perché le
+notifiche leggono il valore da lì. Per ora resta `'totale'`.
 
 **Risultati del test veloce (4 ottobre 2026, 40 notti, 521 ore di buio a
-Reykjavík e Keflavík):**
+Reykjavík e Keflavík, verità = METAR con tutte le nuvole):**
 
-| metodo | previsioni a breve termine: ore azzeccate / errore medio | previsioni del giorno prima |
+| metodo | B, 0-6 ore: ore azzeccate / errore medio | A, giorno prima |
 |---|---|---|
 | totale (in uso) | 75% / 29 punti | 77% / 28 punti |
 | pesata | 77% / 25 punti | — (l'archivio non ha gli strati) |
 | media | 81% / 21 punti | 77% / 24 punti |
 | media_pes | **82% / 18 punti** | — |
 
-`media_pes` è la più promettente, ma sulle previsioni del giorno prima la
-media non ha fatto meglio del metodo attuale: decide il test approfondito di
-ottobre, che usa proprio le previsioni delle 7:30 con gli strati.
+`media_pes` sembra la migliore a brevissimo termine, ma in parte per i limiti
+dei sensori notturni detti sopra; sulle previsioni del giorno prima la media
+non ha fatto meglio del metodo attuale. Il test approfondito usa le
+previsioni delle 7:30: si cambia metodo solo se la differenza è netta.

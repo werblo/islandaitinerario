@@ -3,14 +3,17 @@ name: Avvisi aurora
 # Orari UTC = ora islandese.
 # - Mattino: alle 7:15 dal 15 al 21 novembre (GitHub parte spesso con qualche
 #   minuto di ritardo: la notifica arriva verso le 7:30) com'è messa stasera.
-# - Notte: ogni 30 minuti, 16:00-23:30 dal 15 al 21 novembre e 00:00-03:30
+# - Notte: ogni 30 minuti (ai minuti 7 e 37: allo scoccare dell'ora GitHub è più
+#   carico e ritarda di più), 16:07-23:37 dal 15 al 21 novembre e 00:07-03:37
 #   dal 16 al 22 novembre; lo script non fa niente fuori dalle date del viaggio.
+# Attenzione: la riga AURORA_MODE più sotto confronta il testo esatto del cron
+# del mattino: se lo cambi, cambia anche lì.
 # A mano (tab Actions -> "Avvisi aurora" -> Run workflow): "prova" manda subito
 # una notifica di prova, "mattino" un'anteprima del messaggio del mattino.
 on:
   schedule:
-    - cron: '*/30 16-23 15-21 11 *'
-    - cron: '*/30 0-3 16-22 11 *'
+    - cron: '7,37 16-23 15-21 11 *'
+    - cron: '7,37 0-3 16-22 11 *'
     - cron: '15 7 15-21 11 *'
   workflow_dispatch:
     inputs:
@@ -28,7 +31,7 @@ concurrency:
 
 jobs:
   aurora:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04   # fisso: ubuntu-latest passa a una nuova versione a metà ottobre 2026
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
@@ -40,7 +43,7 @@ jobs:
       - uses: actions/cache/restore@v4
         with:
           path: .aurora-state
-          key: aurora-state-${{ github.run_id }}
+          key: aurora-state-${{ github.run_id }}-${{ github.run_attempt }}
           restore-keys: aurora-state-
       - name: Controlla l'aurora e manda gli avvisi
         run: python tools/aurora_alert.py
@@ -48,8 +51,9 @@ jobs:
           AURORA_MODE: ${{ github.event.schedule == '15 7 15-21 11 *' && 'mattino' || inputs.modalita || 'controllo' }}
           VAPID_PRIVATE_KEY: ${{ secrets.VAPID_PRIVATE_KEY }}
           AURORA_SUBSCRIPTIONS: ${{ secrets.AURORA_SUBSCRIPTIONS }}
+          AURORA_MANUAL: ${{ github.event_name == 'workflow_dispatch' && '1' || '0' }}
       - uses: actions/cache/save@v4
         if: always() && hashFiles('.aurora-state/state.json') != ''
         with:
           path: .aurora-state
-          key: aurora-state-${{ github.run_id }}
+          key: aurora-state-${{ github.run_id }}-${{ github.run_attempt }}

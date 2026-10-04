@@ -102,7 +102,7 @@ days = [
   ],
   'accommodation':{'name':'46heima Boutique Apartments','detail':'2ª notte a Reykjavík','url':'https://www.booking.com/hotel/is/46heima-apartments.en-gb.html'},
   'tips':"Nel pomeriggio si va a Reykjanes (~135 km in tutto tra andata, tappe e ritorno). Se il meteo è brutto, al posto di Reykjanes c'è il National Museum, al coperto in città; in alternativa si può invertire la giornata con il Giorno 3.",
-  'culture':"Il Perlan racconta la geologia islandese da dentro una grotta di ghiaccio artificiale, costruito sopra sei enormi serbatoi che ancora oggi riscaldano Reykjavík con l'acqua calda del sottosuolo. L'Harpa, sala concerti dalla facciata a nido d'ape ispirata alle colonne di basalto, è diventata il simbolo della rinascita della città dopo la crisi finanziaria del 2008. Al National Museum si ripercorre la storia islandese dai primi coloni vichinghi a oggi. Se scegliete invece Reykjanes, camminerete letteralmente tra due continenti sul Bridge Between Continents, un ponte pedonale sulla stessa faglia di Þingvellir. Qui la terra non è statica: dopo quasi 800 anni di quiete, dal 2021 il vulcanismo è tornato con eruzioni vicino a Grindavík, l'ultima tra il 2023 e il 2024. Vedrete il Gunnuhver, la pozza di fango più grande d'Islanda, e il Reykjanesviti, il faro più antico della nazione — tutto dentro un UNESCO Global Geopark dove la terra si sta ancora formando.",
+  'culture':"Il Perlan racconta la geologia islandese da dentro una grotta di ghiaccio artificiale, costruito sopra sei enormi serbatoi che ancora oggi riscaldano Reykjavík con l'acqua calda del sottosuolo. L'Harpa, sala concerti dalla facciata a nido d'ape ispirata alle colonne di basalto, è diventata il simbolo della rinascita della città dopo la crisi finanziaria del 2008. Al National Museum si ripercorre la storia islandese dai primi coloni vichinghi a oggi. Se scegliete invece Reykjanes, camminerete letteralmente tra due continenti sul Bridge Between Continents, un ponte pedonale sulla stessa faglia di Þingvellir. Qui la terra non è statica: dopo quasi 800 anni di quiete, dal 2021 il vulcanismo è tornato con eruzioni vicino a Grindavík, ripetute più volte tra il 2023 e il 2025. Vedrete il Gunnuhver, la pozza di fango più grande d'Islanda, e il Reykjanesviti, il faro più antico della nazione — tutto dentro un UNESCO Global Geopark dove la terra si sta ancora formando.",
   'parking_nav':[
     {'label':'Naviga verso zona P2 (per questa notte)','query':'Rauðarárstígur Reykjavik'}
   ]
@@ -111,7 +111,7 @@ days = [
   'legs':[
     {'from':'Reykjavík','to':'Þingvellir','km':45,'time':'~45 min'},
     {'from':'Þingvellir','to':'Laugarvatn','km':25,'time':'~20 min'},
-    {'from':'Laugarvatn','to':'Reykjavík','km':80,'time':'~1h05'}
+    {'from':'Laugarvatn','to':'Reykjavík','km':78,'time':'~1h20'}
   ],
   'activities':[
     {'time':'10:30','title':'Þingvellir National Park','desc':'Faglia tra le placche nordamericana ed euroasiatica, sito del primo parlamento islandese (Unesco). Ripartite entro le 13:30 per arrivare con calma a Laugarvatn prima delle terme.','cost':'gratis (parcheggio ~1000 ISK / ~7€)','link':'https://www.thingvellir.is/en/','nav':'Þingvellir National Park P1 parking'},
@@ -123,7 +123,7 @@ days = [
     {'meal':'Cena','place':'Hlemmur Mathöll, Reykjavík','note':'Food hall con vari stand (aperto fino alle 23:00), alcuni segnalano opzioni senza glutine. Se rientrate tardi in serata, come piano B ci sono minimarket 10-11 aperti 24/7 o Hagkaup (Skeifan, 24h)','cost':'€€','gf':True}
   ],
   'accommodation':{'name':'46heima Boutique Apartments','detail':'Ultima notte a Reykjavík · check-out domani 09:30-10:00','url':'https://www.booking.com/hotel/is/46heima-apartments.en-gb.html'},
-  'tips':"Giornata più leggera (~160 km totali) e volutamente rilassante: è l'ultima notte a Reykjavík prima dei due giorni più intensi del viaggio (Costa Sud e Jökulsárlón). Tabella di marcia per non perdere le terme prenotate alle 15:30: partenza da Reykjavík verso le 9:45, Þingvellir dalle 10:30 alle 13:30, Laugarvatn verso le 14:05 (~35 min di strada), pranzo e passeggiata sul lago dalle 14:15, alla reception di Fontana alle 15:15. Geysir e Gullfoss li vedrete il Giorno 7 da Flúðir, molto più vicini da lì che da Reykjavík. Se restate fino a tardi la sera, il rientro a Reykjavík (~1h05 da Laugarvatn) va messo in conto: con cielo sereno può valerne la pena per l'aurora. Hlemmur Mathöll chiude alle 23:00, quindi arrivando entro le 22:00 circa siete ancora in tempo per cena; se fate più tardi, ripiegate su un minimarket 10-11 (24/7) o Hagkaup senza stress.",
+  'tips':"Giornata più leggera (~160 km totali) e volutamente rilassante: è l'ultima notte a Reykjavík prima dei due giorni più intensi del viaggio (Costa Sud e Jökulsárlón). Tabella di marcia per non perdere le terme prenotate alle 15:30: partenza da Reykjavík verso le 9:45, Þingvellir dalle 10:30 alle 13:30, Laugarvatn verso le 14:05 (~35 min di strada), pranzo e passeggiata sul lago dalle 14:15, alla reception di Fontana alle 15:15. Geysir e Gullfoss li vedrete il Giorno 7 da Flúðir, molto più vicini da lì che da Reykjavík. Se restate fino a tardi la sera, il rientro a Reykjavík (~1h20 da Laugarvatn) va messo in conto: con cielo sereno può valerne la pena per l'aurora. Hlemmur Mathöll chiude alle 23:00: uscendo da Fontana alla chiusura (21:00) arrivate verso le 22:20, ancora in tempo per cena; se fate più tardi, ripiegate su un minimarket 10-11 (24/7) o Hagkaup senza stress.",
   'culture':"A Þingvellir camminerete letteralmente tra due continenti: la faglia che attraversa il parco segna il punto in cui le placche nordamericana ed eurasiatica si allontanano di circa 2 cm l'anno. Qui, nel 930 d.C., nacque l'Alþingi, tra i più antichi parlamenti al mondo ancora in vita — la culla della democrazia islandese che riprenderete più avanti nella tab Storia. Poco più a sud, sul lago di Laugarvatn, la Fontana sfrutta la stessa energia del sottosuolo che alimenta Þingvellir e Geysir.",
   'parking_nav':[
     {'label':'Naviga verso zona P1 (rientro tardi da Fontana, già gratis dopo le 21:00)','query':'Laugavegur 46 Reykjavik'}
@@ -143,7 +143,7 @@ days = [
     {'time':'13:15','title':'Skógafoss','desc':"Una delle cascate più imponenti d'Islanda, 60m, scalinata panoramica in cima.",'cost':'gratis','link':'https://it.wikipedia.org/wiki/Skogafoss','nav':'Skógafoss parking'},
     {'time':'14:45','title':'Dyrhólaey','desc':'Promontorio con arco di roccia e vista su Reynisfjara. Da vedere con un po\' di luce ancora buona: il tramonto qui è verso le 16:15.','cost':'gratis','nav':'Dyrhólaey parking'},
     {'time':'15:30','title':'Reynisfjara','desc':'Spiaggia di sabbia nera con colonne basaltiche e i faraglioni di Reynisdrangar. Attenzione alle onde anomale, non voltare le spalle al mare.','cost':'gratis','nav':'Reynisfjara Black Sand Beach parking'},
-    {'time':'16:15','title':'Víkurkirkja','desc':"La chiesetta bianca dal tetto rosso su per la collina di Vík, tra le più fotografate d'Islanda: da lassù la vista abbraccia il villaggio, la spiaggia nera e i faraglioni di Reynisdrangar sullo sfondo. Ultima tappa apposta: proprio all'ora del tramonto puo' regalare una luce spettacolare.",'cost':'gratis','nav':'Víkurkirkja Vík Iceland'}
+    {'time':'16:15','title':'Víkurkirkja','desc':"La chiesetta bianca dal tetto rosso su per la collina di Vík, tra le più fotografate d'Islanda: da lassù la vista abbraccia il villaggio, la spiaggia nera e i faraglioni di Reynisdrangar sullo sfondo. Ultima tappa apposta: proprio all'ora del tramonto può regalare una luce spettacolare.",'cost':'gratis','nav':'Víkurkirkja Vík Iceland'}
   ],
   'food':[
     {'meal':'Pranzo','place':'Picnic a Skógar','note':'Porta snack dal Bónus di Reykjavík','cost':'€','gf':True},
@@ -163,17 +163,17 @@ days = [
     {'from':'Fjaðrárgljúfur','to':'Vík','km':72,'time':'~55 min'}
   ],
   'activities':[
-    {'time':'08:00','title':'Partenza presto','desc':'Giornata lunga di guida: partire con il buio è normale in novembre, il sole sorge solo verso le 9:50.','cost':None},
-    {'time':'11:00','title':'Jökulsárlón Glacier Lagoon','desc':'Laguna glaciale con iceberg alla deriva verso il mare.','cost':'gratis (parcheggio a pagamento)','nav':'Jökulsárlón Glacier Lagoon parking'},
-    {'time':'12:15','title':'Diamond Beach','desc':'Spiaggia nera di fronte alla laguna dove i blocchi di ghiaccio si arenano.','cost':'gratis','link':'https://perlan.is/articles/diamond-beach-iceland','nav':'Diamond Beach Iceland parking'},
-    {'time':'15:00','title':'Fjaðrárgljúfur','desc':"Canyon serpeggiante con pareti muschiose, punti panoramici accessibili a piedi. Visitato sulla via del ritorno apposta: con la luce del primo mattino (alba verso le 9:50) si vedrebbe pochissimo.",'cost':'gratis','nav':'Fjaðrárgljúfur canyon parking'}
+    {'time':'07:30','title':'Partenza presto','desc':'Giornata lunga di guida (~6 ore in tutto): si parte con il buio, normale in novembre, e la prima luce arriva verso le 9 (alba alle 9:50). Mezz\'ora prima del solito per avere margine sul canyon nel pomeriggio.','cost':None},
+    {'time':'10:30','title':'Jökulsárlón Glacier Lagoon','desc':'Laguna glaciale con iceberg alla deriva verso il mare. Arrivate con la luce dell\'alba, ottima per le foto degli iceberg.','cost':'gratis (parcheggio a pagamento)','nav':'Jökulsárlón Glacier Lagoon parking'},
+    {'time':'11:45','title':'Diamond Beach','desc':'Spiaggia nera di fronte alla laguna dove i blocchi di ghiaccio si arenano. Ripartite entro le 12:30: pranzo veloce qui o al sacco in macchina.','cost':'gratis','link':'https://perlan.is/articles/diamond-beach-iceland','nav':'Diamond Beach Iceland parking'},
+    {'time':'14:30','title':'Fjaðrárgljúfur','desc':"Canyon serpeggiante con pareti muschiose, punti panoramici accessibili a piedi. Visitato sulla via del ritorno apposta: con la luce del primo mattino (alba verso le 9:50) si vedrebbe pochissimo.",'cost':'gratis','nav':'Fjaðrárgljúfur canyon parking'}
   ],
   'food':[
     {'meal':'Pranzo','place':'Kaffi Jökulsárlón o pranzo al sacco','note':'Zuppe spesso senza glutine, conferma con lo staff','cost':'€€','gf':True},
     {'meal':'Cena','place':'Ströndin Bistro, Vík','note':'','cost':'€€','gf':True}
   ],
   'accommodation':{'name':'Hotel Burfell','detail':'2ª notte a Vík','url':'https://hotelburfell.is/'},
-  'tips':"~390 km andata/ritorno da Vík: con brutto tempo valuta di fermarti solo a Jökulsárlón/Diamond Beach, tagliando Fjaðrárgljúfur. Il giro è organizzato per arrivare a Jökulsárlón e Diamond Beach con il sole già alto, e vedere Fjaðrárgljúfur nel tardo pomeriggio con ancora buona luce prima del tramonto (16:10).",
+  'tips':"~390 km andata/ritorno da Vík, circa 6 ore di guida. Tabella di marcia: partenza alle 7:30, Jökulsárlón verso le 10:30 (~2h55 senza soste, in inverno contate qualcosa in più), Diamond Beach e via entro le 12:30, Fjaðrárgljúfur verso le 14:30 con un'ora abbondante di luce prima del tramonto (16:05), rientro a Vík verso le 16:45. Prima di partire controllate che il sentiero del canyon sia aperto (in inverno a volte viene chiuso per il terreno fradicio) e le strade su road.is; con brutto tempo valutate di fermarvi solo a Jökulsárlón/Diamond Beach.",
   'culture':"Giornata dedicata al ghiaccio. A Jökulsárlón la laguna esiste solo da un secolo: il Vatnajökull, il ghiacciaio più esteso d'Europa, si è ritirato rapidamente da inizio '900 lasciando dietro di sé questo bacino pieno di iceberg alla deriva verso il mare. Quelli che si arenano sulla sabbia nera di Diamond Beach, levigati e trasparenti, possono contenere ghiaccio compresso da centinaia o migliaia di anni. Sulla via del ritorno, il canyon di Fjaðrárgljúfur, scavato da un fiume glaciale in circa due milioni di anni, è diventato famoso di recente anche grazie a un video musicale di Justin Bieber.",
   'parking_nav':[
     {'label':'Naviga verso il parcheggio dell\'hotel (gratuito)','query':'Hotel Burfell Vík Iceland'}
@@ -704,7 +704,7 @@ checklist_html = f'''
   <div class="panel aurora-push" id="aurora-push">
     <div class="panel-title">Avvisi aurora sul telefono</div>
     <div class="rune-rule"></div>
-    <div class="line">Nelle notti del viaggio una notifica ti avvisa quando l'aurora è probabile dove dormite, anche ad app chiusa (al massimo due per notte: la previsione e &laquo;adesso&raquo;). Serve la connessione per riceverla.</div>
+    <div class="line">Nei giorni del viaggio, anche ad app chiusa: ogni mattina verso le 7:30 com'è messa la sera dove sarete, la sera un avviso solo se la previsione migliora, e &laquo;adesso&raquo; quando le condizioni sono buone. Serve la connessione per riceverle.</div>
     <div class="aurora-push__status" id="aurora-push-status" aria-live="polite"></div>
     <div class="aurora-push__btns">
       <button type="button" class="aurora-push__btn" id="aurora-push-on">Attiva avvisi aurora</button>
@@ -727,7 +727,7 @@ evening_places = {
 }
 evening_stops = {
     'd3': [{'place': 'laugarvatn', 'until': 21},     # Fontana fino alla chiusura
-           {'place': 'thingvellir', 'until': 22},    # ~1h di strada verso Reykjavík
+           {'place': 'thingvellir', 'until': 22},    # ~1h20 di strada verso Reykjavík
            {'place': 'reykjavik'}],
 }
 # Stima delle nuvole (vedi tools/research/nuvole.py e leggimi sezione 13):
@@ -1013,8 +1013,8 @@ main {{ max-width:820px; margin:0 auto; padding:20px 20px 70px; display:flex; fl
 .act-title-arrow {{ font-weight:400; color:var(--amber); font-size:0.8125rem; }}
 .act-time {{ font-size:0.8125rem; color:#5c6a78; white-space:nowrap; }}
 .act-desc {{ font-size:0.9375rem; color:#3a4351; margin-top:6px; line-height:1.6; }}
-.act-cost {{ display:inline-block; margin-top:8px; background:var(--amber-soft); border:1px solid var(--amber-soft-border); border-radius:5px; padding:3px 9px; font-size:0.8125rem; color:#5c3a1f; }}
-.act-link {{ display:inline-block; margin-top:8px; margin-right:14px; font-size:0.84375rem; font-weight:600; color:var(--navy); text-decoration:none; }}
+.act-cost {{ margin-right:10px; display:inline-block; margin-top:8px; background:var(--amber-soft); border:1px solid var(--amber-soft-border); border-radius:5px; padding:3px 9px; font-size:0.8125rem; color:#5c3a1f; }}
+.act-link {{ display:inline-block; margin-top:0; padding:8px 0; margin-right:14px; font-size:0.84375rem; font-weight:600; color:var(--navy); text-decoration:none; }}
 .act-link--nav {{ color:#3d8f8a; }}
 .act-link:hover {{ text-decoration:underline; }}
 
@@ -1029,8 +1029,8 @@ main {{ max-width:820px; margin:0 auto; padding:20px 20px 70px; display:flex; fl
 .acc-name a {{ color:inherit; text-decoration:underline; text-underline-offset:2px; }}
 .acc-name a:hover {{ color:var(--amber); }}
 .acc-detail {{ color:#c7ccd2; margin-top:2px; }}
-.acc-parking-nav {{ display:flex; flex-wrap:wrap; gap:4px 16px; margin-top:8px; }}
-.acc-parking-nav .act-link {{ margin:0; color:#8fd6cd; }}
+.acc-parking-nav {{ display:flex; flex-wrap:wrap; gap:0 16px; margin-top:2px; }}
+.acc-parking-nav .act-link {{ margin:0; padding:6px 0; color:#8fd6cd; }}
 
 .tip-card {{ background:var(--amber-soft); border:1px solid var(--amber-soft-border); border-radius:8px; padding:12px 14px; font-size:0.9375rem; line-height:1.6; color:#5c3a1f; }}
 
@@ -1295,6 +1295,7 @@ function setActive(id, moveFocus) {{
     b.setAttribute('aria-selected', isActive ? 'true' : 'false');
     b.tabIndex = isActive ? 0 : -1;
     if (isActive && moveFocus) b.focus();
+    if (isActive && b.scrollIntoView) b.scrollIntoView({{ inline: 'center', block: 'nearest' }});
   }});
   document.querySelectorAll('.page-view').forEach(el => {{ el.hidden = el.id !== 'view-' + id; }});
   if (DAYS_META.some(d => d.id === id)) ensureDayMap(id);
@@ -1375,7 +1376,7 @@ async function fetchAllWeather() {{
     try {{
       // meteo giornaliero solo per gli alloggi; nuvole orarie (anche per strati) per tutte le tappe
       const daily = LOCATIONS[key] ? '&daily=weathercode,temperature_2m_max,temperature_2m_min' : '';
-      const url = 'https://api.open-meteo.com/v1/forecast?latitude=' + loc.lat + '&longitude=' + loc.lon + daily + '&hourly=cloud_cover,cloud_cover_low,cloud_cover_mid,cloud_cover_high&timezone=UTC&forecast_days=16';
+      const url = 'https://api.open-meteo.com/v1/forecast?latitude=' + loc.lat + '&longitude=' + loc.lon + daily + '&hourly=cloud_cover,cloud_cover_low,cloud_cover_mid,cloud_cover_high&timezone=UTC&past_days=1&forecast_days=16';
       const res = await fetch(url);
       const json = await res.json();
       if (json && json.daily) {{ state.weather[key] = json.daily; renderWeatherAndSun(); }}
@@ -1383,7 +1384,7 @@ async function fetchAllWeather() {{
       if (CLOUD_METHOD.startsWith('media')) {{
         // più modelli insieme: le variabili arrivano con il nome del modello (cloud_cover_icon_seamless…)
         const multi = await (await fetch('https://api.open-meteo.com/v1/forecast?latitude=' + loc.lat + '&longitude=' + loc.lon
-          + '&hourly=cloud_cover,cloud_cover_low,cloud_cover_mid,cloud_cover_high&models=' + CLOUD_MODELS.join(',') + '&timezone=UTC&forecast_days=3')).json();
+          + '&hourly=cloud_cover,cloud_cover_low,cloud_cover_mid,cloud_cover_high&models=' + CLOUD_MODELS.join(',') + '&timezone=UTC&past_days=1&forecast_days=3')).json();
         if (multi && multi.hourly) hourly = multi.hourly;
       }}
       if (hourly && navigator.onLine) auroraSave({{ clouds: {{ [key]: hourly }} }});
@@ -1483,7 +1484,20 @@ async function fetchKp() {{
 // ---------- Aurora: stima per stasera (Kp previsto + nuvole + buio) ----------
 const AURORA_KEY = 'islanda2026-aurora';
 function auroraLoad() {{
-  try {{ return JSON.parse(localStorage.getItem(AURORA_KEY) || 'null') || {{ clouds: {{}} }}; }} catch (e) {{ return {{ clouds: {{}} }}; }}
+  let d = null;
+  try {{ d = JSON.parse(localStorage.getItem(AURORA_KEY) || 'null'); }} catch (e) {{}}
+  if (!d || typeof d !== 'object' || Array.isArray(d)) d = {{}};
+  // tiene solo dati con la forma attesa: un salvataggio rovinato non deve bloccare l'app
+  if (!Array.isArray(d.kp)) delete d.kp;
+  const clouds = {{}};
+  if (d.clouds && typeof d.clouds === 'object') {{
+    Object.keys(d.clouds).forEach(k => {{
+      const c = d.clouds[k];
+      if (c && Array.isArray(c.time)) clouds[k] = c;
+    }});
+  }}
+  d.clouds = clouds;
+  return d;
 }}
 // Salva solo dati ricevuti online, con l'ora: offline si mostra l'ultimo dato e quando è stato preso.
 function auroraSave(part) {{
@@ -1617,7 +1631,8 @@ function nightEstimate(startMs, stops, data) {{
 
 const shortPlace = name => name.replace(/ \\(.*\\)$/, '');
 function nightPlaceNames(est) {{
-  return est.stops.length > 1 ? est.stops.map(s => shortPlace(s.name)).join(' → ') : est.loc.name;
+  if (est.stops.length > 1) return est.stops.map(s => shortPlace(s.name)).join(' → ');
+  return est.stops.length === 1 ? est.stops[0].name : est.loc.name;
 }}
 
 const AU_HH = d => String(d.getUTCHours()).padStart(2, '0') + ':00';
@@ -1668,9 +1683,11 @@ function renderAurora() {{
     daysEl.textContent = next.length ? 'Prossime notti: ' + next.join(' · ') : '';
     if (data.kpAt) {{
       const when = new Date(data.kpAt);
-      const t = String(when.getHours()).padStart(2, '0') + ':' + String(when.getMinutes()).padStart(2, '0');
-      const d = String(when.getDate()).padStart(2, '0') + '/' + String(when.getMonth() + 1).padStart(2, '0');
-      srcEl.textContent = navigator.onLine ? 'Aggiornato alle ' + t : 'Ultimo dato salvato il ' + d + ' alle ' + t + ' · sei offline';
+      const t = String(when.getUTCHours()).padStart(2, '0') + ':' + String(when.getUTCMinutes()).padStart(2, '0');
+      const d = String(when.getUTCDate()).padStart(2, '0') + '/' + String(when.getUTCMonth() + 1).padStart(2, '0');
+      const today = when.toISOString().slice(0, 10) === new Date().toISOString().slice(0, 10);
+      srcEl.textContent = !navigator.onLine ? 'Ultimo dato salvato il ' + d + ' alle ' + t + ' · sei offline'
+        : today ? 'Aggiornato alle ' + t + ' (ora islandese)' : 'Ultimo aggiornamento il ' + d + ' alle ' + t;
     }} else {{
       srcEl.textContent = '';
     }}
@@ -1683,13 +1700,14 @@ function renderAurora() {{
     const [Y, M, D] = day.dateISO.split('-').map(Number);
     const e = day.id === 'd8' ? {{}} : nightEstimate(Date.UTC(Y, M - 1, D, 12), nightStops(day.dateISO), data);
     el.textContent = e.level
-      ? ' Previsione per questa notte: ' + e.level + ' probabilità' + (e.level !== 'nulle' && e.windows.length ? ', meglio ' + auroraWindowsText(e) : '') + '.'
+      ? ' Previsione per questa notte: ' + e.level + ' probabilità' + (e.level !== 'nulle' && e.windows.length ? ', meglio ' + auroraWindowsText(e) : '')
+        + (e.stops.length > 1 ? ' (' + e.stops.map(st => shortPlace(st.name) + ' ' + st.level).join(', ') + ')' : '') + '.'
       : '';
   }});
 }}
 
 var auroraReady = true;   // var: all'avvio vale ancora undefined, prima di queste definizioni
-renderAurora();
+try {{ renderAurora(); }} catch (e) {{ /* la stima aurora non deve fermare il resto dell'app */ }}
 
 const FX_FALLBACK_RATE = 145.5; // stima approssimativa EUR->ISK, usata se offline
 let fxRate = FX_FALLBACK_RATE;
@@ -1868,6 +1886,7 @@ function jumpToTodayIfInTrip() {{
   const match = DAYS_META.find(d => d.dateISO === todayISO);
   if (match) setActive(match.id);
 }}
+initTripMap();          // prima del salto al giorno: con la tab Info nascosta la mappa resterebbe vuota
 jumpToTodayIfInTrip();
 
 const CHK_STORAGE_KEY = 'islanda2026-checklist';
@@ -1908,7 +1927,6 @@ function setupChecklist() {{
 setupChecklist();
 
 refreshLiveData(true);
-initTripMap();
 
 // ---------- Offline: pacchetto completo e aggiornamenti ----------
 const APP_CACHE = 'islanda-2026-app-' + APP_VERSION;
@@ -2041,7 +2059,14 @@ function b64urlToBytes(s) {{
     else say('');
   }}
 
-  navigator.serviceWorker.ready.then(reg => reg.pushManager.getSubscription()).then(show).catch(() => show(null));
+  // il service worker può non partire mai (es. browser che blocca i dati dei siti): non aspettare all'infinito
+  const swReady = () => Promise.race([
+    navigator.serviceWorker.ready,
+    new Promise((_, reject) => setTimeout(() => reject(new Error('sw')), 10000)),
+  ]);
+  const swProblem = 'Avvisi non disponibili: il browser non ha avviato l\u2019app installata. Riapri l\u2019app dall\u2019icona e controlla che il browser non cancelli i dati dei siti.';
+
+  swReady().then(reg => reg.pushManager.getSubscription()).then(show).catch(() => show(null));
 
   onBtn.addEventListener('click', async () => {{
     if (!navigator.onLine) {{ say('Serve una connessione per attivare gli avvisi.'); return; }}
@@ -2049,25 +2074,27 @@ function b64urlToBytes(s) {{
     say('Attivazione…');
     try {{
       if (await Notification.requestPermission() !== 'granted') {{ show(null); if (Notification.permission !== 'denied') say('Permesso per le notifiche non concesso.'); return; }}
-      const reg = await navigator.serviceWorker.ready;
+      const reg = await swReady();
       const sub = await reg.pushManager.subscribe({{ userVisibleOnly: true, applicationServerKey: b64urlToBytes(VAPID_PUBLIC_KEY) }});
       show(sub);
     }} catch (e) {{
-      say('Attivazione non riuscita: ' + (e && e.message ? e.message : e));
+      say(e && e.message === 'sw' ? swProblem
+        : 'Attivazione non riuscita (' + (e && e.message ? e.message : e) + '). Riprova con la connessione; se continua, riapri l\u2019app.');
     }} finally {{
       onBtn.disabled = false;
     }}
   }});
 
   copyBtn.addEventListener('click', async () => {{
-    try {{ await navigator.clipboard.writeText(code.value); }}
-    catch (e) {{ code.select(); document.execCommand('copy'); }}
-    showToast('Codice copiato');
+    let copied = false;
+    try {{ await navigator.clipboard.writeText(code.value); copied = true; }}
+    catch (e) {{ code.select(); try {{ copied = document.execCommand('copy'); }} catch (e2) {{}} }}
+    showToast(copied ? 'Codice copiato' : 'Copia non riuscita: tieni premuto sul codice e copialo a mano');
   }});
 
   offBtn.addEventListener('click', async () => {{
     try {{
-      const reg = await navigator.serviceWorker.ready;
+      const reg = await swReady();
       const sub = await reg.pushManager.getSubscription();
       if (sub) await sub.unsubscribe();
     }} catch (e) {{}}

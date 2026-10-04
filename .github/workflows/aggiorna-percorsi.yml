@@ -9,7 +9,7 @@ permissions:
 
 jobs:
   percorsi:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04   # fisso: ubuntu-latest passa a una nuova versione a metà ottobre 2026
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
