@@ -1,34 +1,49 @@
-"""Sonda: quali dati meteo sono disponibili per l'Islanda (solo diagnostica)."""
-import json, urllib.request, datetime as dt
+"""Sonda 2: stazioni con osservazioni di nuvolosità vicino alle località del viaggio."""
+import csv, io, json, math, re, urllib.request
 
-def get(url, n=700):
-    try:
-        req = urllib.request.Request(url, headers={'User-Agent': 'islanda-2026-ricerca'})
-        with urllib.request.urlopen(req, timeout=40) as r:
-            body = r.read().decode('utf-8', 'replace')
-        print(f'OK {url}\n   {body[:n]!r}\n')
-        return body
-    except Exception as e:
-        print(f'ERR {url}\n   {e}\n')
+def get(url):
+    req = urllib.request.Request(url, headers={'User-Agent': 'islanda-2026-ricerca'})
+    with urllib.request.urlopen(req, timeout=60) as r:
+        return r.read().decode('utf-8', 'replace')
 
-VIK = (63.4186, -19.0060)
-V = 'cloud_cover,cloud_cover_low,cloud_cover_mid,cloud_cover_high'
-for m in ['best_match', 'dmi_seamless', 'dmi_harmonie_arome_europe', 'metno_seamless', 'icon_seamless',
-          'ecmwf_ifs025', 'ukmo_seamless', 'knmi_seamless', 'meteofrance_seamless', 'gfs_seamless']:
-    b = get(f'https://api.open-meteo.com/v1/forecast?latitude={VIK[0]}&longitude={VIK[1]}&hourly={V}&models={m}&timezone=UTC&forecast_days=3', 120)
-    if b:
-        h = json.loads(b).get('hourly', {})
-        for k in V.split(','):
-            vals = h.get(k) or []
-            print(f'   {m:28s} {k:18s} non-null {sum(v is not None for v in vals)}/{len(vals)} sample {vals[18:24]}')
-        print()
+PLACES = {'reykjavik': (64.1466, -21.9426), 'vik': (63.4186, -19.0060), 'fludir': (64.1372, -20.3033),
+          'laugarvatn': (64.2150, -20.7300), 'strada': (64.2559, -21.1299)}
+def km(a, b):
+    la1, lo1, la2, lo2 = map(math.radians, (*a, *b))
+    return 6371 * 2 * math.asin(math.sqrt(math.sin((la2-la1)/2)**2 + math.cos(la1)*math.cos(la2)*math.sin((lo2-lo1)/2)**2))
 
-get(f'https://previous-runs-api.open-meteo.com/v1/forecast?latitude={VIK[0]}&longitude={VIK[1]}&hourly=cloud_cover,cloud_cover_previous_day1,cloud_cover_low_previous_day1&models=dmi_seamless&past_days=7&forecast_days=1&timezone=UTC', 900)
-d0 = (dt.date.today() - dt.timedelta(days=20)).isoformat(); d1 = (dt.date.today() - dt.timedelta(days=1)).isoformat()
-get(f'https://historical-forecast-api.open-meteo.com/v1/forecast?latitude={VIK[0]}&longitude={VIK[1]}&hourly={V}&models=dmi_seamless&start_date={d0}&end_date={d1}&timezone=UTC', 600)
-get(f'https://historical-forecast-api.open-meteo.com/v1/forecast?latitude={VIK[0]}&longitude={VIK[1]}&hourly={V}&start_date={d0}&end_date={d1}&timezone=UTC', 600)
+# METAR (IEM)
+gj = json.loads(get('https://mesonet.agron.iastate.edu/geojson/network/IS__ASOS.geojson'))
+metar = [(f['properties']['sid'], f['properties']['sname'], f['geometry']['coordinates'][1], f['geometry']['coordinates'][0]) for f in gj['features']]
+print('METAR stations', len(metar))
+for p, c in PLACES.items():
+    near = sorted(metar, key=lambda s: km(c, (s[2], s[3])))[:4]
+    print(' ', p, [(s[0], s[1], round(km(c, (s[2], s[3])))) for s in near])
 
-for st in ['BIRK', 'BIKF', 'BIVM']:
-    get(f'https://mesonet.agron.iastate.edu/cgi-bin/request/asos.py?station={st}&data=skyc1&data=skyl1&data=skyc2&data=skyl2&data=skyc3&data=skyl3&data=metar&year1=2026&month1=9&day1=28&year2=2026&month2=9&day2=29&tz=Etc/UTC&format=onlycomma&latlon=no&missing=M&trace=T&direct=no&report_type=3&report_type=4', 900)
-get('https://www.ogimet.com/cgi-bin/getsynop?block=04&begin=202609280000&end=202609280600', 1500)
-get('https://xmlweather.vedur.is/?op_w=xml&type=obs&lang=en&view=xml&ids=1;6015;6222;36308;6419&params=N;T;W', 1500)
+# SYNOP: chi riporta N (nuvolosità totale) in un giorno, con coordinate da ISD
+syn = get('https://www.ogimet.com/cgi-bin/getsynop?block=04&begin=202610010000&end=202610012300')
+withN = {}
+for line in syn.splitlines():
+    parts = line.split(',')
+    if len(parts) < 7: continue
+    groups = parts[6].split()
+    # AAXX YYGGi IIiii iRixhVV Nddff
+    if len(groups) > 4 and groups[0] == 'AAXX':
+        n = groups[4][0]
+        withN.setdefault(parts[0], []).append(n)
+isd = list(csv.DictReader(io.StringIO(get('https://www.ncei.noaa.gov/pub/data/noaa/isd-history.csv'))))
+coords = {}
+for r in isd:
+    if r['CTRY'] == 'IC' and r['USAF'].startswith('04') and r['LAT'] and r['END'] >= '20260101':
+        coords[r['USAF'][:5]] = (r['STATION NAME'], float(r['LAT']), float(r['LON']))
+print('SYNOP stations', len(withN), 'with coords', sum(k in coords for k in withN))
+rows = []
+for sid, ns in withN.items():
+    if sid in coords:
+        name, la, lo = coords[sid]
+        rows.append((sid, name, la, lo, ''.join(ns)))
+for p, c in PLACES.items():
+    near = sorted(rows, key=lambda s: km(c, (s[2], s[3])))[:6]
+    print(' ', p)
+    for s in near:
+        print('     ', s[0], s[1], round(km(c, (s[2], s[3]))), 'km  N:', s[4])
