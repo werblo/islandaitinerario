@@ -486,7 +486,8 @@ Il primo calcolo OSRM tratta per tratta ha corretto alcuni valori, per
 esempio Dyrhólaey → Reynisfjara 20 km (si gira dalla strada 215, non 7 km),
 Faxi → Efstidalur II 16 km (non 9), Þingvellir → Laugarvatn ~35 min.
 Di conseguenza: Seljalandsfoss alle 11:45 (Giorno 4), Jökulsárlón alle
-11:00 (Giorno 5), arrivo a Laugarvatn verso le 14:05 (Giorno 3), e i
+11:00 (Giorno 5; a ottobre anticipato: partenza 7:30, Jökulsárlón 10:30,
+Fjaðrárgljúfur 14:30 per avere luce sul canyon), arrivo a Laugarvatn verso le 14:05 (Giorno 3), e i
 totali nei consigli dei giorni sono stati riallineati.
 
 ### Testi più grandi (23/09)

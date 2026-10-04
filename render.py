@@ -163,17 +163,17 @@ days = [
     {'from':'Fjaðrárgljúfur','to':'Vík','km':72,'time':'~55 min'}
   ],
   'activities':[
-    {'time':'08:00','title':'Partenza presto','desc':'Giornata lunga di guida: partire con il buio è normale in novembre, il sole sorge solo verso le 9:50.','cost':None},
-    {'time':'11:00','title':'Jökulsárlón Glacier Lagoon','desc':'Laguna glaciale con iceberg alla deriva verso il mare.','cost':'gratis (parcheggio a pagamento)','nav':'Jökulsárlón Glacier Lagoon parking'},
-    {'time':'12:15','title':'Diamond Beach','desc':'Spiaggia nera di fronte alla laguna dove i blocchi di ghiaccio si arenano.','cost':'gratis','link':'https://perlan.is/articles/diamond-beach-iceland','nav':'Diamond Beach Iceland parking'},
-    {'time':'15:00','title':'Fjaðrárgljúfur','desc':"Canyon serpeggiante con pareti muschiose, punti panoramici accessibili a piedi. Visitato sulla via del ritorno apposta: con la luce del primo mattino (alba verso le 9:50) si vedrebbe pochissimo.",'cost':'gratis','nav':'Fjaðrárgljúfur canyon parking'}
+    {'time':'07:30','title':'Partenza presto','desc':'Giornata lunga di guida (~6 ore in tutto): si parte con il buio, normale in novembre, e la prima luce arriva verso le 9 (alba alle 9:50). Mezz\'ora prima del solito per avere margine sul canyon nel pomeriggio.','cost':None},
+    {'time':'10:30','title':'Jökulsárlón Glacier Lagoon','desc':'Laguna glaciale con iceberg alla deriva verso il mare. Arrivate con la luce dell\'alba, ottima per le foto degli iceberg.','cost':'gratis (parcheggio a pagamento)','nav':'Jökulsárlón Glacier Lagoon parking'},
+    {'time':'11:45','title':'Diamond Beach','desc':'Spiaggia nera di fronte alla laguna dove i blocchi di ghiaccio si arenano. Ripartite entro le 12:30: pranzo veloce qui o al sacco in macchina.','cost':'gratis','link':'https://perlan.is/articles/diamond-beach-iceland','nav':'Diamond Beach Iceland parking'},
+    {'time':'14:30','title':'Fjaðrárgljúfur','desc':"Canyon serpeggiante con pareti muschiose, punti panoramici accessibili a piedi. Visitato sulla via del ritorno apposta: con la luce del primo mattino (alba verso le 9:50) si vedrebbe pochissimo.",'cost':'gratis','nav':'Fjaðrárgljúfur canyon parking'}
   ],
   'food':[
     {'meal':'Pranzo','place':'Kaffi Jökulsárlón o pranzo al sacco','note':'Zuppe spesso senza glutine, conferma con lo staff','cost':'€€','gf':True},
     {'meal':'Cena','place':'Ströndin Bistro, Vík','note':'','cost':'€€','gf':True}
   ],
   'accommodation':{'name':'Hotel Burfell','detail':'2ª notte a Vík','url':'https://hotelburfell.is/'},
-  'tips':"~390 km andata/ritorno da Vík: con brutto tempo valuta di fermarti solo a Jökulsárlón/Diamond Beach, tagliando Fjaðrárgljúfur. Il giro è organizzato per arrivare a Jökulsárlón e Diamond Beach con il sole già alto, e vedere Fjaðrárgljúfur nel tardo pomeriggio con ancora buona luce prima del tramonto (16:10).",
+  'tips':"~390 km andata/ritorno da Vík, circa 6 ore di guida. Tabella di marcia: partenza alle 7:30, Jökulsárlón verso le 10:30 (~2h55 senza soste, in inverno contate qualcosa in più), Diamond Beach e via entro le 12:30, Fjaðrárgljúfur verso le 14:30 con un'ora abbondante di luce prima del tramonto (16:05), rientro a Vík verso le 16:45. Prima di partire controllate che il sentiero del canyon sia aperto (in inverno a volte viene chiuso per il terreno fradicio) e le strade su road.is; con brutto tempo valutate di fermarvi solo a Jökulsárlón/Diamond Beach.",
   'culture':"Giornata dedicata al ghiaccio. A Jökulsárlón la laguna esiste solo da un secolo: il Vatnajökull, il ghiacciaio più esteso d'Europa, si è ritirato rapidamente da inizio '900 lasciando dietro di sé questo bacino pieno di iceberg alla deriva verso il mare. Quelli che si arenano sulla sabbia nera di Diamond Beach, levigati e trasparenti, possono contenere ghiaccio compresso da centinaia o migliaia di anni. Sulla via del ritorno, il canyon di Fjaðrárgljúfur, scavato da un fiume glaciale in circa due milioni di anni, è diventato famoso di recente anche grazie a un video musicale di Justin Bieber.",
   'parking_nav':[
     {'label':'Naviga verso il parcheggio dell\'hotel (gratuito)','query':'Hotel Burfell Vík Iceland'}
