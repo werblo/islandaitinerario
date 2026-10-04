@@ -14,4 +14,4 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - run: python tools/research/probe.py
+      - run: python tools/research/nuvole.py storico 40
