@@ -718,10 +718,30 @@ checklist_html = f'''
 seasonal_js = json.dumps(seasonal, ensure_ascii=False)
 locations_js = json.dumps(locations, ensure_ascii=False)
 day_routes_js = json.dumps(map_points, ensure_ascii=False)
+# Tappe serali per la stima aurora (app e notifiche): dove siete la sera, ora per ora
+# (ora islandese = UTC). 'until' = ora di fine tappa; l'ultima vale fino al mattino.
+# I giorni non elencati usano l'alloggio della notte (locKey).
+evening_places = {
+    'laugarvatn': {'name': 'Laugarvatn (Fontana)', 'lat': 64.2141, 'lon': -20.7290},
+    'thingvellir': {'name': 'strada del ritorno (Þingvellir)', 'lat': 64.2559, 'lon': -21.1299},
+}
+evening_stops = {
+    'd3': [{'place': 'laugarvatn', 'until': 21},     # Fontana fino alla chiusura
+           {'place': 'thingvellir', 'until': 22},    # ~1h di strada verso Reykjavík
+           {'place': 'reykjavik'}],
+}
+# Stima delle nuvole: 'totale' (nuvolosità totale) oppure 'pesata' (strati bassi
+# contano tutti, medi e alti meno: vedi tools/research/nuvole.py e leggimi sezione 13).
+CLOUD_METHOD = 'totale'
+CLOUD_W_MID, CLOUD_W_HIGH = 0.8, 0.3
+
 # Chiave pubblica VAPID degli avvisi aurora: la privata corrispondente sta solo
 # nel secret VAPID_PRIVATE_KEY del repo (vedi leggimi, sezione 12).
 VAPID_PUBLIC_KEY = 'BMOzcfKagfPhm6Ax0MRUig7SvV7LoQjp2WzP-YWybYEE0TVCguWI11MTKxO5i2UslqyvHeG6HOtsN08FVa_6yZk'
 
+aurora_places_js = json.dumps({**locations, **evening_places}, ensure_ascii=False)
+night_stops_js = json.dumps({d['dateISO']: evening_stops[d['id']] for d in days if d['id'] in evening_stops},
+                            ensure_ascii=False)
 days_meta_js = json.dumps(
     [{'id': d['id'], 'dateISO': d['dateISO'], 'locKey': d['locKey']} for d in days],
     ensure_ascii=False
@@ -1179,6 +1199,10 @@ const OFFLINE_TILES = {offline_tiles_js};
 const APP_VERSION = '__APP_VERSION__';
 const DAYS_META = {days_meta_js};
 const VAPID_PUBLIC_KEY = '{VAPID_PUBLIC_KEY}';
+const AURORA_PLACES = {aurora_places_js};
+const NIGHT_STOPS = {night_stops_js};
+const CLOUD_METHOD = '{CLOUD_METHOD}';
+const CLOUD_W_MID = {CLOUD_W_MID}, CLOUD_W_HIGH = {CLOUD_W_HIGH};
 const WEATHER_CODES = {WEATHER_CODES_JS};
 
 const state = {{ weather:{{}}, sun:{{}}, kp:null, kpStatus:'loading' }};
@@ -1341,10 +1365,12 @@ computeAllSun();
 renderWeatherAndSun();
 
 async function fetchAllWeather() {{
-  for (const key of Object.keys(LOCATIONS)) {{
-    const loc = LOCATIONS[key];
+  for (const key of Object.keys(AURORA_PLACES)) {{
+    const loc = AURORA_PLACES[key];
     try {{
-      const url = 'https://api.open-meteo.com/v1/forecast?latitude=' + loc.lat + '&longitude=' + loc.lon + '&daily=weathercode,temperature_2m_max,temperature_2m_min&hourly=cloud_cover&timezone=UTC&forecast_days=16';
+      // meteo giornaliero solo per gli alloggi; nuvole orarie (anche per strati) per tutte le tappe
+      const daily = LOCATIONS[key] ? '&daily=weathercode,temperature_2m_max,temperature_2m_min' : '';
+      const url = 'https://api.open-meteo.com/v1/forecast?latitude=' + loc.lat + '&longitude=' + loc.lon + daily + '&hourly=cloud_cover,cloud_cover_low,cloud_cover_mid,cloud_cover_high&timezone=UTC&forecast_days=16';
       const res = await fetch(url);
       const json = await res.json();
       if (json && json.daily) {{ state.weather[key] = json.daily; renderWeatherAndSun(); }}
@@ -1491,41 +1517,86 @@ function kpFactor(kp) {{
   return 0.15;
 }}
 
+// Tappe della sera (vedi evening_stops in render.py): di default l'alloggio della notte.
+function nightStops(dateISO) {{
+  return NIGHT_STOPS[dateISO] || [{{ place: nightPlaceKey(dateISO) }}];
+}}
+// Tappa in cui si è all'ora t ('until' = ora islandese di fine tappa, contata dalle 12).
+function stopAt(stops, t) {{
+  const off = (t.getUTCHours() + 12) % 24;
+  return stops.find(s => s.until === undefined || off < (s.until + 12) % 24) || stops[stops.length - 1];
+}}
+
+// Nuvole "efficaci" per l'aurora in un'ora: totale, oppure strati pesati (le alte sottili lasciano vedere).
+function effCloud(c, idx) {{
+  if (CLOUD_METHOD === 'pesata' && c.cloud_cover_low) {{
+    const l = c.cloud_cover_low[idx], m = c.cloud_cover_mid[idx], h = c.cloud_cover_high[idx];
+    if (l != null && m != null && h != null)
+      return Math.round(100 * (1 - (1 - l / 100) * (1 - CLOUD_W_MID * m / 100) * (1 - CLOUD_W_HIGH * h / 100)));
+  }}
+  return c.cloud_cover[idx];
+}}
+
+function auroraLevel(best) {{
+  return best >= 0.45 ? 'buone' : best >= 0.2 ? 'scarse' : 'nulle';
+}}
+// fasce orarie migliori: ore consecutive vicine al massimo
+function auroraWindows(hours, best) {{
+  const windows = [];
+  hours.filter(h => h.score >= Math.max(0.2, best * 0.8)).forEach(h => {{
+    const last = windows[windows.length - 1];
+    if (last && h.t - last.end === 0) last.end = new Date(h.t.getTime() + 3600000);
+    else windows.push({{ from: h.t, end: new Date(h.t.getTime() + 3600000) }});
+  }});
+  return windows;
+}}
+
 // Stima per la notte che inizia alle 12 UTC di startMs: ore di buio astronomico,
-// Kp previsto per ogni ora e nuvolosità oraria del luogo.
-function nightEstimate(startMs, placeKey, data) {{
-  const loc = LOCATIONS[placeKey];
+// Kp previsto per ogni ora e nuvolosità oraria del luogo in cui siete a quell'ora.
+function nightEstimate(startMs, stops, data) {{
+  if (typeof stops === 'string') stops = [{{ place: stops }}];
   const kpRows = data.kp || [];
-  const clouds = (data.clouds || {{}})[placeKey];
   const hours = [];
   for (let i = 0; i < 24; i++) {{
     const t = new Date(startMs + i * 3600000);
+    const place = stopAt(stops, t).place;
+    const loc = AURORA_PLACES[place];
     if (sunAltitude(new Date(t.getTime() + 1800000), loc.lat, loc.lon) >= -18) continue;
     const row = kpRows.find(r => t.getTime() >= r.t && t.getTime() < r.t + 3 * 3600000);
+    const clouds = (data.clouds || {{}})[place];
     let cloud = null;
     if (clouds && clouds.time) {{
       const idx = clouds.time.indexOf(t.toISOString().slice(0, 13) + ':00');
-      if (idx >= 0) cloud = clouds.cloud_cover[idx];
+      if (idx >= 0) cloud = effCloud(clouds, idx);
     }}
-    hours.push({{ t, kp: row ? row.kp : null, cloud }});
+    hours.push({{ t, place, kp: row ? row.kp : null, cloud }});
   }}
   const withKp = hours.filter(h => h.kp !== null);
-  const est = {{ loc, hours, withKp, level: null }};
+  const est = {{ loc: AURORA_PLACES[stops[stops.length - 1].place], hours, withKp, level: null, stops: [] }};
   if (!withKp.length) return est;
   const hasClouds = withKp.some(h => h.cloud !== null);
   withKp.forEach(h => {{ h.score = kpFactor(h.kp) * (h.cloud === null ? (hasClouds ? 0.5 : 1) : (100 - h.cloud) / 100); }});
   const best = Math.max(...withKp.map(h => h.score));
-  est.level = best >= 0.45 ? 'buone' : best >= 0.2 ? 'scarse' : 'nulle';
+  est.level = auroraLevel(best);
   est.kpMax = Math.max(...withKp.map(h => h.kp));
   est.clouds = withKp.filter(h => h.cloud !== null).map(h => h.cloud);
-  // fasce orarie migliori: ore consecutive vicine al massimo
-  est.windows = [];
-  withKp.filter(h => h.score >= Math.max(0.2, best * 0.8)).forEach(h => {{
-    const last = est.windows[est.windows.length - 1];
-    if (last && h.t - last.end === 0) last.end = new Date(h.t.getTime() + 3600000);
-    else est.windows.push({{ from: h.t, end: new Date(h.t.getTime() + 3600000) }});
-  }});
+  est.windows = auroraWindows(withKp, best);
+  // con più tappe: una stima per ognuna, nelle sue ore di buio
+  if (stops.length > 1) {{
+    est.stops = stops.map(s => {{
+      const hs = withKp.filter(h => h.place === s.place);
+      if (!hs.length) return null;
+      const b = Math.max(...hs.map(h => h.score));
+      return {{ place: s.place, name: AURORA_PLACES[s.place].name, level: auroraLevel(b), windows: auroraWindows(hs, b),
+               from: hs[0].t, end: new Date(hs[hs.length - 1].t.getTime() + 3600000) }};
+    }}).filter(Boolean);
+  }}
   return est;
+}}
+
+const shortPlace = name => name.replace(/ \\(.*\\)$/, '');
+function nightPlaceNames(est) {{
+  return est.stops.length > 1 ? est.stops.map(s => shortPlace(s.name)).join(' → ') : est.loc.name;
 }}
 
 const AU_HH = d => String(d.getUTCHours()).padStart(2, '0') + ':00';
@@ -1546,7 +1617,7 @@ function renderAurora() {{
     const detailEl = document.getElementById('aurora-detail');
     const daysEl = document.getElementById('aurora-days');
     const srcEl = document.getElementById('aurora-src');
-    const est = nightEstimate(start, nightPlaceKey(isoOf(start)), data);
+    const est = nightEstimate(start, nightStops(isoOf(start)), data);
     verdictEl.className = 'aurora-tonight__verdict';
     if (!est.hours.length) {{
       verdictEl.textContent = 'Stasera a ' + est.loc.name + ': niente buio astronomico';
@@ -1555,9 +1626,10 @@ function renderAurora() {{
       verdictEl.textContent = 'Stasera a ' + est.loc.name + ': previsione non disponibile';
       detailEl.textContent = navigator.onLine ? 'Dati NOAA non ancora ricevuti.' : 'Serve una connessione per scaricare la previsione.';
     }} else {{
-      verdictEl.textContent = 'Stasera a ' + est.loc.name + ': ' + est.level + ' probabilità';
+      verdictEl.textContent = 'Stasera a ' + nightPlaceNames(est) + ': ' + est.level + ' probabilità';
       verdictEl.classList.add('aurora-tonight__verdict--' + est.level);
       const parts = [];
+      if (est.stops.length > 1) est.stops.forEach(st => parts.push(shortPlace(st.name) + ' ' + AU_HH(st.from) + '–' + AU_HH(st.end) + ': ' + st.level));
       if (est.level !== 'nulle' && est.windows.length) parts.push('meglio ' + auroraWindowsText(est));
       parts.push('Kp previsto fino a ' + est.kpMax.toFixed(1).replace('.0', ''));
       parts.push(est.clouds.length ? 'nuvole ' + Math.min(...est.clouds) + '–' + Math.max(...est.clouds) + '%' : 'nuvole non disponibili');
@@ -1567,9 +1639,9 @@ function renderAurora() {{
     // le due notti successive, ognuna nel suo luogo
     const next = [1, 2].map(n => {{
       const ms = start + n * 86400000;
-      const e = nightEstimate(ms, nightPlaceKey(isoOf(ms)), data);
+      const e = nightEstimate(ms, nightStops(isoOf(ms)), data);
       const dn = AU_DAYNAMES[new Date(ms).getUTCDay()];
-      return e.level ? dn + ' a ' + e.loc.name + ': ' + e.level : null;
+      return e.level ? dn + ' a ' + nightPlaceNames(e) + ': ' + e.level : null;
     }}).filter(Boolean);
     daysEl.textContent = next.length ? 'Prossime notti: ' + next.join(' · ') : '';
     if (data.kpAt) {{
@@ -1587,7 +1659,7 @@ function renderAurora() {{
     const el = document.querySelector('[data-aurora-live="' + day.id + '"]');
     if (!el) return;
     const [Y, M, D] = day.dateISO.split('-').map(Number);
-    const e = day.id === 'd8' ? {{}} : nightEstimate(Date.UTC(Y, M - 1, D, 12), day.locKey, data);
+    const e = day.id === 'd8' ? {{}} : nightEstimate(Date.UTC(Y, M - 1, D, 12), nightStops(day.dateISO), data);
     el.textContent = e.level
       ? ' Previsione per questa notte: ' + e.level + ' probabilità' + (e.level !== 'nulle' && e.windows.length ? ', meglio ' + auroraWindowsText(e) : '') + '.'
       : '';

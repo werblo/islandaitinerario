@@ -151,11 +151,13 @@ def archived_forecasts(lat, lon, model, d0, d1):
     url = (f'https://previous-runs-api.open-meteo.com/v1/forecast?latitude={lat}&longitude={lon}'
            f'&hourly={hv}&models={model}&start_date={d0}&end_date={d1}&timezone=UTC')
     h = json.loads(get(url))['hourly']
+    cols = [h.get(v + '_previous_day1') or [None] * len(h['time']) for v in VARS]
+    print(f'    {model}: ' + ', '.join(f'{v} {sum(x is not None for x in c)}/{len(c)}' for v, c in zip(VARS, cols)))
     out = {}
     for i, t in enumerate(h['time']):
-        vals = [h.get(v + '_previous_day1', [None])[i] for v in VARS]
-        if None not in vals:
-            out[t] = [v / 100 for v in vals]
+        vals = [c[i] for c in cols]
+        if vals[0] is not None:
+            out[t] = [None if v is None else v / 100 for v in vals]
     return out
 
 
@@ -163,21 +165,25 @@ def live_forecasts(lat, lon, model):
     url = (f'https://api.open-meteo.com/v1/forecast?latitude={lat}&longitude={lon}'
            f'&hourly={",".join(VARS)}&models={model}&timezone=UTC&forecast_days=2')
     h = json.loads(get(url))['hourly']
-    return {t: [h[v][i] / 100 for v in VARS] for i, t in enumerate(h['time'])
-            if None not in [h[v][i] for v in VARS]}
+    return {t: [None if h[v][i] is None else h[v][i] / 100 for v in VARS]
+            for i, t in enumerate(h['time']) if h['cloud_cover'][i] is not None}
 
 
 def methods(fc):
     """fc: {modello: [tot, low, mid, high]} di un'ora -> stime dei 4 metodi (0..1)."""
     out = {}
+    layered = lambda v: v and None not in v[1:]
     base = fc.get('best_match')
     if base:
         out['totale'] = base[0]
-        out['pesata'] = weighted(*base[1:])
+        if layered(base):
+            out['pesata'] = weighted(*base[1:])
     others = [v for v in fc.values() if v]
     if len(others) >= 3:
         out['media'] = sum(v[0] for v in others) / len(others)
-        out['media_pes'] = sum(weighted(*v[1:]) for v in others) / len(others)
+        lay = [v for v in others if layered(v)]
+        if len(lay) >= 3:
+            out['media_pes'] = sum(weighted(*v[1:]) for v in lay) / len(lay)
     return out
 
 
@@ -221,7 +227,11 @@ def evaluate(fc_by_station, d0, d1, title):
             print(f'METAR {sid}: {e}')
             continue
         rows_tot, rows_eff = [], []
-        for t, fc in sorted(fc_by_station.get(sid, {}).items()):
+        hours = fc_by_station.get(sid, {})
+        n_dark = sum(dark(datetime.fromisoformat(t).replace(tzinfo=timezone.utc), lat, lon) for t in hours)
+        print(f'{sid}: {len(hours)} ore previste, {n_dark} di buio, esempi previsione {sorted(hours)[:2]} '
+              f'osservazione {sorted(obs)[:2]}')
+        for t, fc in sorted(hours.items()):
             when = datetime.fromisoformat(t).replace(tzinfo=timezone.utc)
             if not dark(when, lat, lon):
                 continue
