@@ -152,7 +152,7 @@ def clouds_by_hour(data, trip):
         if v is None:
             v = val('cloud_cover', i)
         if v is not None:
-            out[t] = round(v)
+            out[t] = math.floor(v + 0.5)    # come Math.round nell'app (round() di Python va al pari)
     return out
 
 
@@ -269,6 +269,9 @@ PHRASES = {
         'nulle': ["♨️ Stasera a {luogo} l'aurora dà forfait. Piano B: piscina calda e birra islandese.",
                   "😴 L'aurora si è presa la serata libera. A nanna presto, domani si guida!",
                   "🍲 Niente spettacolo in cielo stasera a {luogo}: concentratevi sulla zuppa di agnello."],
+        'nd': ["🔭 Previsione dell'aurora non disponibile stamattina: in serata guardate l'app o vedur.is/aurora.",
+               "📡 Stamattina i dati sull'aurora non arrivano: ricontrollate l'app prima di cena."],
+        'strada': ["🚗 Stasera il momento migliore potrebbe arrivare lungo la strada per {ultimo}: se il cielo si apre, fermatevi in una piazzola sicura e guardate in alto!"],
         'viaggio': ["🛁 Stasera occhi al cielo già a {migliore}: è la tappa più promettente della serata, poi via verso {ultimo}.",
                     "🚗 Stasera il meglio potrebbe arrivare a {migliore}: guardate in alto prima di ripartire per {ultimo}!"],
     },
@@ -279,6 +282,8 @@ PHRASES = {
                    "🔭 {nome}, stasera serve un pizzico di fortuna: a {luogo} non è detta l'ultima parola."],
         'nulle': ["☁️ {nome}, stasera a {luogo} il cielo è chiuso per ferie. Domani andrà meglio!",
                   "😴 {nome}, l'aurora stasera resta a casa. Goditi la cena a {luogo}!"],
+        'nd': ["🔭 {nome}, stamattina la previsione dell'aurora non arriva: ricontrolla l'app in serata."],
+        'strada': ["🚗 {nome}, stasera il meglio potrebbe arrivare lungo la strada per {ultimo}: se il cielo si apre, fermatevi in una piazzola sicura!"],
         'viaggio': ["🛁 {nome}, stasera guarda in alto già a {migliore}, poi anche lungo la strada per {ultimo}!"],
     },
     'federica': {
@@ -290,7 +295,9 @@ PHRASES = {
                    "🔭 Federica, stasera serve un pizzico di fortuna: a {luogo} non è detta l'ultima parola."],
         'nulle': ["🛌 Fede, stasera niente aurora: è andata a dormire prima di te!",
                   "😴 Fede, l'aurora stasera ha mal di testa: a {luogo} niente spettacolo. Domani ci riprova!"],
-        'viaggio': ["🛁 Fede, stasera guarda in alto già dalla piscina di {migliore}, poi anche lungo la strada per {ultimo}!"],
+        'nd': ["🔭 Fede, stamattina la previsione dell'aurora non arriva: ricontrolla l'app in serata."],
+        'strada': ["🚗 Fede, stasera tieni d'occhio il cielo lungo la strada per {ultimo}: se si apre, fermatevi in una piazzola sicura!"],
+        'viaggio': ["🛁 Fede, stasera guarda in alto già {da_migliore}, poi anche lungo la strada per {ultimo}!"],
     },
 }
 
@@ -299,20 +306,32 @@ MORNING_TITLES = {'buone': '🌅 Aurora stasera: buone probabilità', 'scarse': 
                   'nulle': '🌅 Aurora stasera: quasi impossibile'}
 
 
+def is_federica(name):
+    return re.fullmatch(r'fede(rica)?', name.strip().lower()) is not None
+
+
 def morning_phrase(name, est, night):
     """Frase del mattino per un telefono: stesso giorno e stesso nome -> stessa frase."""
-    pool = PHRASES['federica'] if name.lower().startswith('fede') else PHRASES['nome'] if name else PHRASES['tutti']
-    level = est['level'] or 'nulle'
-    kind = level
+    pool = PHRASES['federica'] if is_federica(name) else PHRASES['nome'] if name else PHRASES['tutti']
+    level = est['level']
+    kind = level or 'nd'
     stops = est['stops']
+    last = stops[-1] if stops else None
+    # tappa migliore: solo se è strettamente meglio dell'ultima (a pari merito vale l'ultima)
     best_stop = max(stops, key=lambda s: s['best']) if stops else None
+    if best_stop and last and best_stop['best'] <= last['best']:
+        best_stop = last
     # sera in movimento e la tappa migliore non è l'ultima: frase "di viaggio"
-    if level != 'nulle' and len(stops) > 1 and best_stop is not stops[-1] and best_stop['level'] != 'nulle':
-        kind = 'viaggio'
+    if level in ('buone', 'scarse') and len(stops) > 1 and best_stop is not last and best_stop['level'] != 'nulle':
+        kind = 'strada' if best_stop['name'].startswith('strada') else 'viaggio'
     text = random.Random(f'{night}|{name}|{kind}').choice(pool[kind])
-    return text.format(nome=name, luogo=place_label(est),
-                       migliore=short_name(best_stop['name']) if best_stop else '',
-                       ultimo=short_name(stops[-1]['name']) if stops else est['last'])
+    migliore = short_name(best_stop['name']) if best_stop else ''
+    # con più tappe {luogo} è la tappa migliore della serata, non tutto il percorso
+    luogo = migliore if len(stops) > 1 else place_label(est)
+    da_migliore = (f'dalla piscina di {migliore}' if best_stop and 'Fontana' in best_stop['name']
+                   else f'a {migliore}')
+    return text.format(nome=name, luogo=luogo, migliore=migliore, da_migliore=da_migliore,
+                       ultimo=short_name(last['name']) if last else est['last'])
 
 
 # ---------- iscrizioni e invio ----------
@@ -331,7 +350,11 @@ def parse_subscriptions(text):
             i += 1
             continue
         if isinstance(obj, dict) and obj.get('endpoint') and (obj.get('keys') or {}).get('p256dh'):
-            label = text[prev:i].strip().splitlines()[-1] if text[prev:i].strip() else ''
+            gap = text[prev:i].replace('\r', '').split('\n')
+            # il testo rimasto sulla riga del codice precedente non è il nome di questo telefono
+            lines = [l.strip() for l in (gap[1:] if prev else gap) if l.strip()]
+            label = lines[-1] if lines else ''
+            label = re.sub(r'^(\d+\s*[).:-]|[-*•])\s*', '', label)      # "1) Federica:", "- Fede"
             name = re.sub(r'[^\wÀ-ÿ\' -]', '', label).strip()
             if obj['endpoint'] not in [s['endpoint'] for _, s in subs]:
                 subs.append((name, obj))
@@ -353,7 +376,7 @@ def send_all(subs, make_payload, ttl):
         payload = make_payload(name)
         try:
             webpush(sub, json.dumps(payload, ensure_ascii=False), vapid_private_key=key,
-                    vapid_claims={'sub': VAPID_SUB}, ttl=ttl, headers={'Urgency': 'high'})
+                    vapid_claims={'sub': VAPID_SUB}, ttl=ttl, headers={'Urgency': 'high'}, timeout=30)
             print(f'{who}: inviata · {payload["title"]} · {payload["body"]}')
             ok += 1
         except WebPushException as e:
@@ -363,6 +386,8 @@ def send_all(subs, make_payload, ttl):
                       'ricopia il codice dall\'app e aggiorna AURORA_SUBSCRIPTIONS')
             else:
                 print(f'::warning::{who}: invio fallito ({code or e})')
+        except Exception as e:     # rete giù, timeout, chiave non valida…: si passa al telefono dopo
+            print(f'::warning::{who}: invio fallito ({type(e).__name__}: {e})')
     return ok
 
 
@@ -383,8 +408,9 @@ def save_state(path, state):
 def main():
     mode = os.environ.get('AURORA_MODE', 'controllo').strip() or 'controllo'
     state_path = os.environ.get('AURORA_STATE', '.aurora-state/state.json')
-    now = (parse_time(os.environ['AURORA_NOW']) if os.environ.get('AURORA_NOW')
+    now = (parse_time(os.environ['AURORA_NOW']).astimezone(timezone.utc) if os.environ.get('AURORA_NOW')
            else datetime.now(timezone.utc)).replace(second=0, microsecond=0)
+    manual = os.environ.get('AURORA_MANUAL') == '1'   # lanciato a mano dalla tab Actions
     trip = trip_data()
 
     # la notte "di stasera" inizia alle 12 UTC di oggi (di notte, prima delle 10, è ancora
@@ -443,31 +469,31 @@ def main():
     done = set(rec['inviati'])
 
     if mode == 'mattino':
-        if not est['level']:
-            body_info = 'Previsione non disponibile al momento: guardate l\'app o vedur.is/aurora in serata.'
-        else:
-            body_info = details(est)
+        body_info = '\n' + details(est) if est['level'] else ''
         ok = send_all(subs, lambda name: {
             'title': MORNING_TITLES.get(est['level'], '🌅 Aurora stasera: previsione non disponibile'),
-            'body': morning_phrase(name, est, night) + '\n' + body_info,
-            'tag': 'aurora-' + night}, ttl=4 * 3600)
-        if ok:
+            'body': morning_phrase(name, est, night) + body_info,
+            'tag': f'aurora-{night}-mattino'}, ttl=4 * 3600)
+        if manual:
+            print('Anteprima lanciata a mano: lo stato della notte non viene toccato.')
+        elif ok:
             rec['mattino'] = est['level']
             done.add('mattino')
-        rec['inviati'] = sorted(done)
-        sent[night] = rec
-        save_state(state_path, sent)
+            rec['inviati'] = sorted(done)
+            sent[night] = rec
+            save_state(state_path, sent)
         return 0 if ok else 1
 
     alerts = []
     morning = rec.get('mattino')
-    # 1) cambio di programma: stanotte "buone", ma al mattino non lo era (o il mattino è mancato)
-    if ('previsione' not in done and est['level'] == 'buone' and morning != 'buone'
+    # 1) cambio di programma: stanotte "buone", ma al mattino non lo era (o il mattino è mancato).
+    #    Solo con dati sulle nuvole: senza, il solo Kp darebbe un falso "buone".
+    if ('previsione' not in done and est['level'] == 'buone' and morning != 'buone' and est['clouds']
             and any(b > now for _, b in est['windows'])):
         title = ('🔄 Cambio di programma: stanotte buone probabilità!' if morning
                  else '🌌 Aurora stanotte: buone probabilità')
         alerts.append(('previsione', {'title': title, 'body': place_label(est) + ' · ' + details(est),
-                                      'tag': 'aurora-' + night}, 6 * 3600))
+                                      'tag': f'aurora-{night}-previsione'}, 6 * 3600))
 
     # 2) adesso: buio, Kp misurato e cielo di quest'ora buoni, dove siete adesso
     place = stop_at(stops, now)['place']
@@ -482,7 +508,7 @@ def main():
                 'body': f'{short_name(loc["name"])}: Kp {fmt_kp(kp_now)} in questo momento'
                         + (f', nuvole {cloud}%' if cloud is not None else '')
                         + '. Allontanatevi dalle luci e guardate verso nord!',
-                'tag': 'aurora-' + night,
+                'tag': f'aurora-{night}-adesso',
             }, 3600))
 
     if not alerts:
@@ -499,9 +525,10 @@ def main():
             done.add(kind)
         else:
             failed = True
-    rec['inviati'] = sorted(done)
-    sent[night] = rec
-    save_state(state_path, sent)
+        # salvato dopo ogni avviso: se qualcosa va storto dopo, non si rimanda lo stesso
+        rec['inviati'] = sorted(done)
+        sent[night] = rec
+        save_state(state_path, sent)
     return 1 if failed else 0
 
 

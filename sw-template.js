@@ -101,6 +101,7 @@ self.addEventListener('fetch', (event) => {
 self.addEventListener('push', (event) => {
   let data = {};
   try { data = event.data ? event.data.json() : {}; } catch (e) { data = { body: event.data && event.data.text() }; }
+  if (!data || typeof data !== 'object') data = { body: typeof data === 'string' ? data : '' };
   event.waitUntil(self.registration.showNotification(data.title || 'Aurora boreale', {
     body: data.body || '',
     tag: data.tag || 'aurora',

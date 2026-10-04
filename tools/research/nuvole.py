@@ -124,7 +124,7 @@ def synop_obs(d0, d1):
         try:
             text = get(url)
         except Exception as e:
-            print(f'  SYNOP {cur}: {e}')
+            print(f'::warning::SYNOP {cur}: {e}')
             text = ''
         for line in text.splitlines():
             p = line.split(',')
@@ -199,23 +199,29 @@ def methods(fc):
 
 # ---------- confronto ----------
 def score(rows, label):
-    """rows: lista di (stime_metodi, verità) -> tabella di errori."""
+    """rows: lista di (stime_metodi, verità) -> tabella di errori.
+    Tutti i metodi sono valutati sulle stesse ore (quelle in cui esistono tutti)."""
     names = ['totale', 'pesata', 'media', 'media_pes']
-    lines = [f'\n### {label} ({len(rows)} ore di buio)\n',
-             '| metodo | errore medio | ore azzeccate (cielo utile sì/no) | cielo aperto previsto e reale | cielo aperto perso |',
-             '|---|---|---|---|---|']
+    present = [m for m in names if any(m in e for e, _ in rows)]
+    common = [(e, t) for e, t in rows if all(m in e for m in present)]
+    nights = len({e.get('_notte') for e, _ in common})
+    lines = [f'\n### {label} ({len(common)} ore di buio in comune, circa {nights} notti)\n',
+             'Le ore della stessa notte si somigliano: differenze di pochi punti non sono significative.\n',
+             '| metodo | errore medio | ore azzeccate (soglia 50%) | ore azzeccate (soglia 30%) | cielo aperto previsto e reale | cielo aperto perso |',
+             '|---|---|---|---|---|---|']
     best = None
-    for m in names:
-        pairs = [(e[m], t) for e, t in rows if m in e]
+    for m in present:
+        pairs = [(e[m], t) for e, t in common]
         if not pairs:
             continue
         mae = sum(abs(f - t) for f, t in pairs) / len(pairs)
         ok = sum((f <= OPEN) == (t <= OPEN) for f, t in pairs) / len(pairs)
+        ok30 = sum((f <= 0.3) == (t <= 0.3) for f, t in pairs) / len(pairs)
         said_open = [(f, t) for f, t in pairs if f <= OPEN]
         prec = sum(t <= OPEN for f, t in said_open) / len(said_open) if said_open else float('nan')
         real_open = [(f, t) for f, t in pairs if t <= OPEN]
         miss = sum(f > OPEN for f, t in real_open) / len(real_open) if real_open else float('nan')
-        lines.append(f'| {m} | {mae*100:.0f} punti | {ok*100:.0f}% | {prec*100:.0f}% ({len(said_open)} ore) | {miss*100:.0f}% di {len(real_open)} ore |')
+        lines.append(f'| {m} | {mae*100:.0f} punti | {ok*100:.0f}% | {ok30*100:.0f}% | {prec*100:.0f}% ({len(said_open)} ore) | {miss*100:.0f}% di {len(real_open)} ore |')
         if best is None or ok > best[1]:
             best = (m, ok)
     return '\n'.join(lines), best
@@ -235,13 +241,15 @@ def evaluate(fc_by_station, d0, d1, title):
         _OBS['synop'] = synop_obs(d0, d1)
     syn = _OBS['synop']
     print('SYNOP Reykjavík:', len(syn), 'osservazioni')
+    if not syn:
+        print('::warning::Nessuna osservazione SYNOP (Ogimet non risponde o limita le richieste)')
     for sid, (name, lat, lon) in STATIONS.items():
         try:
             if sid not in _OBS:
                 _OBS[sid] = metar_obs(sid, d0, d1 + timedelta(days=1))
             obs = _OBS[sid]
         except Exception as e:
-            print(f'METAR {sid}: {e}')
+            print(f'::warning::METAR {sid} non disponibile: {e}')
             continue
         rows_tot, rows_eff = [], []
         hours = fc_by_station.get(sid, {})
@@ -255,6 +263,7 @@ def evaluate(fc_by_station, d0, d1, title):
             est = methods(fc)
             if not est:
                 continue
+            est['_notte'] = (when - timedelta(hours=12)).date().isoformat()
             o = obs.get(t)
             if o:
                 rows_tot.append((est, o['total']))
@@ -286,7 +295,7 @@ def cmd_storico(days):
     # 1) previsioni fatte il giorno prima: solo nuvolosità totale (l'archivio non ha gli strati)
     # 2) previsioni a breve termine: con gli strati, per provare il metodo pesato
     for title, fetch in [('Test veloce A: previsioni fatte il giorno prima (solo totale)', archived_forecasts),
-                         ('Test veloce B: previsioni a breve termine (con gli strati)', short_forecasts)]:
+                         ('Test veloce B: previsioni a brevissimo termine, 0-6 ore (con gli strati) - NON è la previsione delle 7:30', short_forecasts)]:
         fc = {}
         for sid, (name, lat, lon) in STATIONS.items():
             per_hour = {}
@@ -316,24 +325,35 @@ def cmd_raccogli(path):
                 try:
                     data = live_forecasts(lat, lon, m)
                 except Exception as e:
-                    print(f'{sid} {m}: {e}')
+                    print(f'::warning::Previsione {sid} {m} non disponibile: {e}')
                     continue
                 for t, v in data.items():
                     when = datetime.fromisoformat(t).replace(tzinfo=timezone.utc)
                     if now < when <= now + timedelta(hours=24) and dark(when, lat, lon):
-                        w.writerow([now.strftime('%Y-%m-%dT%H:%M'), sid, t, m] + [round(x, 3) for x in v])
+                        w.writerow([now.strftime('%Y-%m-%dT%H:%M'), sid, t, m]
+                                   + ['' if x is None else round(x, 3) for x in v])
                         n += 1
                 time.sleep(1)
     print('righe salvate:', n)
+    if n == 0:
+        print('::error::Nessuna previsione salvata stamattina')
+        sys.exit(1)
 
 
 def cmd_valuta(path):
+    if not os.path.exists(path):
+        return '# Nessuna previsione raccolta finora'
     fc = {}
     dates = []
     with open(path) as f:
         for r in csv.DictReader(f):
-            fc.setdefault(r['stazione'], {}).setdefault(r['ora'], {})[r['modello']] = \
-                [float(r[k]) for k in ('tot', 'low', 'mid', 'high')]
+            try:
+                vals = [float(r[k]) if r[k] not in ('', None) else None for k in ('tot', 'low', 'mid', 'high')]
+            except ValueError:
+                continue    # riga troncata
+            if vals[0] is None:
+                continue
+            fc.setdefault(r['stazione'], {}).setdefault(r['ora'], {})[r['modello']] = vals
             dates.append(r['ora'][:10])
     if not dates:
         return '# Nessuna previsione raccolta'
@@ -343,6 +363,10 @@ def cmd_valuta(path):
 
 if __name__ == '__main__':
     cmd = sys.argv[1] if len(sys.argv) > 1 else 'storico'
+    # i cron si ripetono ogni anno: la ricerca serve solo per il viaggio del 2026
+    if os.environ.get('GITHUB_EVENT_NAME') == 'schedule' and date.today().year != 2026:
+        print('Ricerca nuvole: solo per il 2026, niente da fare.')
+        sys.exit(0)
     if cmd == 'storico':
         text = cmd_storico(int(sys.argv[2]) if len(sys.argv) > 2 else 40)
     elif cmd == 'raccogli':

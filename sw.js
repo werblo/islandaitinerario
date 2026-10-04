@@ -1,5 +1,5 @@
 // Generato da render.py a partire da sw-template.js: non modificare sw.js a mano.
-const VERSION = '8e5223164020';
+const VERSION = '276fd26faea4';
 const APP_CACHE = 'islanda-2026-app-' + VERSION;
 const TILE_CACHE = 'islanda-2026-tiles';
 const LIVE_CACHE = 'islanda-2026-live';
@@ -146,6 +146,7 @@ self.addEventListener('fetch', (event) => {
 self.addEventListener('push', (event) => {
   let data = {};
   try { data = event.data ? event.data.json() : {}; } catch (e) { data = { body: event.data && event.data.text() }; }
+  if (!data || typeof data !== 'object') data = { body: typeof data === 'string' ? data : '' };
   event.waitUntil(self.registration.showNotification(data.title || 'Aurora boreale', {
     body: data.body || '',
     tag: data.tag || 'aurora',
