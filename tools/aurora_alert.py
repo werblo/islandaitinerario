@@ -288,7 +288,7 @@ PHRASES = {
                   "✨ Fede, stasera a {luogo} il cielo si mette in ghingheri per te."],
         'scarse': ["🤞 Fede, stasera l'aurora fa la timida: a {luogo} qualche chance c'è, tieni d'occhio la finestra.",
                    "🔭 Federica, stasera serve un pizzico di fortuna: a {luogo} non è detta l'ultima parola."],
-        'nulle': ["🛌 Niente aurora stasera, Fede: si è infilata sotto il piumone prima di te.",
+        'nulle': ["🛌 Fede, stasera niente aurora: è andata a dormire prima di te!",
                   "😴 Fede, l'aurora stasera ha mal di testa: a {luogo} niente spettacolo. Domani ci riprova!"],
         'viaggio': ["🛁 Fede, stasera guarda in alto già dalla piscina di {migliore}, poi anche lungo la strada per {ultimo}!"],
     },
