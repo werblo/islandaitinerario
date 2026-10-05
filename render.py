@@ -1649,6 +1649,29 @@ function auroraWindowsText(est) {{
   return est.windows.slice(0, 2).map(w => AU_HH(w.from) + '–' + AU_HH(w.end)).join(' e ');
 }}
 
+// Nuvole in breve, invece del minimo–massimo su tutta la notte (es. "0–98%", poco utile):
+// se cambiano poco un valore tipico; se cambiano molto, le nuvole nelle ore migliori
+// e com'è la sera rispetto a dopo mezzanotte.
+const AU_R5 = v => Math.round(v / 5) * 5;
+const auAvg = hs => hs.reduce((a, h) => a + h.cloud, 0) / hs.length;
+function auroraClouds(est) {{
+  const hs = est.withKp.filter(h => h.cloud !== null);
+  if (!hs.length) return {{ variable: false, text: 'nuvole non disponibili' }};
+  const vals = hs.map(h => h.cloud), lo = Math.min(...vals), hi = Math.max(...vals);
+  if (hi - lo < 30) return {{ variable: false, text: 'nuvole ~' + AU_R5(auAvg(hs)) + '%' }};
+  const eve = hs.filter(h => h.t.getUTCHours() >= 12), late = hs.filter(h => h.t.getUTCHours() < 12);
+  const text = eve.length && late.length && Math.abs(auAvg(eve) - auAvg(late)) >= 20
+    ? 'nuvole ~' + AU_R5(auAvg(eve)) + '% in serata, ~' + AU_R5(auAvg(late)) + '% dopo mezzanotte'
+    : 'nuvole variabili, tra ' + lo + ' e ' + hi + '%';
+  return {{ variable: true, text }};
+}}
+function auroraWindowsCloudText(est) {{
+  return est.windows.slice(0, 2).map(w => {{
+    const hs = est.withKp.filter(h => h.cloud !== null && h.t >= w.from && h.t < w.end);
+    return AU_HH(w.from) + '–' + AU_HH(w.end) + (hs.length ? ' (nuvole ~' + AU_R5(auAvg(hs)) + '%)' : '');
+  }}).join(' e ');
+}}
+
 function renderAurora() {{
   const verdictEl = document.getElementById('aurora-verdict');
   const data = auroraLoad();
@@ -1674,10 +1697,10 @@ function renderAurora() {{
       verdictEl.classList.add('aurora-tonight__verdict--' + est.level);
       const parts = [];
       if (est.stops.length > 1) est.stops.forEach(st => parts.push(shortPlace(st.name) + ' ' + AU_HH(st.from) + '–' + AU_HH(st.end) + ': ' + st.level));
-      if (est.level !== 'nulle' && est.windows.length) parts.push('meglio ' + auroraWindowsText(est));
+      const cl = auroraClouds(est);
+      if (est.level !== 'nulle' && est.windows.length) parts.push('meglio ' + (cl.variable ? auroraWindowsCloudText(est) : auroraWindowsText(est)));
       parts.push('Kp previsto fino a ' + est.kpMax.toFixed(1).replace('.0', ''));
-      const cMin = Math.min(...est.clouds), cMax = Math.max(...est.clouds);
-      parts.push(est.clouds.length ? 'nuvole ' + (cMin === cMax ? cMin : cMin + '–' + cMax) + '%' : 'nuvole non disponibili');
+      parts.push(cl.text);
       parts.push('buio ' + AU_HH(est.hours[0].t) + '–' + AU_HH(new Date(est.hours[est.hours.length - 1].t.getTime() + 3600000)) + ' (ora islandese)');
       detailEl.textContent = parts.join(' · ');
     }}
