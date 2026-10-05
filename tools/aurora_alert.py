@@ -233,17 +233,45 @@ def place_label(est):
     return ' → '.join(names) if len(names) > 1 else (names[0] if names else est['last'])
 
 
+def r5(v):
+    return int(5 * math.floor(v / 5 + 0.5))      # come Math.round(v / 5) * 5 nell'app
+
+
+def cloud_summary(est):
+    """Come auroraClouds() nell'app: valore tipico, oppure sera / dopo mezzanotte se cambia molto.
+    Restituisce (testo, nuvole_variabili)."""
+    hs = [h for h in est['hours'] if h['kp'] is not None and h['cloud'] is not None]
+    if not hs:
+        return None, False
+    avg = lambda xs: sum(h['cloud'] for h in xs) / len(xs)
+    lo, hi = min(h['cloud'] for h in hs), max(h['cloud'] for h in hs)
+    if hi - lo < 30:
+        return f'nuvole ~{r5(avg(hs))}%', False
+    eve = [h for h in hs if h['t'].hour >= 12]
+    late = [h for h in hs if h['t'].hour < 12]
+    if eve and late and abs(avg(eve) - avg(late)) >= 20:
+        return f'nuvole ~{r5(avg(eve))}% in serata, ~{r5(avg(late))}% dopo mezzanotte', True
+    return f'nuvole variabili, tra {lo} e {hi}%', True
+
+
 def details(est):
-    """Riga di dettaglio: tappe, ore migliori, Kp, nuvole."""
+    """Riga di dettaglio: tappe, ore migliori (con le loro nuvole), Kp, nuvole."""
     parts = []
     if len(est['stops']) > 1:
         parts += [f'{short_name(s["name"])} {s["from"]:%H}–{s["end"]:%H}: {s["level"]}' for s in est['stops']]
+    clouds, variable = cloud_summary(est)
     if est['level'] != 'nulle' and est['windows']:
-        parts.append('meglio ' + ' e '.join(f'{a:%H}:00–{b:%H}:00' for a, b in est['windows'][:2]))
+        wins = []
+        for a, b in est['windows'][:2]:
+            w = f'{a:%H}:00–{b:%H}:00'
+            hs = [h for h in est['hours'] if h['kp'] is not None and h['cloud'] is not None and a <= h['t'] < b]
+            if variable and hs:
+                w += f' (nuvole ~{r5(sum(h["cloud"] for h in hs) / len(hs))}%)'
+            wins.append(w)
+        parts.append('meglio ' + ' e '.join(wins))
     parts.append('Kp fino a ' + fmt_kp(est['kp_max']))
-    if est['clouds']:
-        lo, hi = min(est['clouds']), max(est['clouds'])
-        parts.append(f'nuvole {lo}%' if lo == hi else f'nuvole {lo}–{hi}%')
+    if clouds:
+        parts.append(clouds)
     return ' · '.join(parts)
 
 
