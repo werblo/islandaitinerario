@@ -350,7 +350,11 @@ Le foto in `images/` restano .jpg (quelle che metti tu, sezione 1): a ogni
 l'orientamento corretto (le foto da telefono a volte sono ruotate solo nei
 metadati). Le foto delle attività, mostrate come miniature quadrate, sono
 ridotte a 400px sul lato corto (da ottobre 2026: foto totali da ~3,3 a
-~1,8 MB, offline più rapido). La copertina si carica subito, le altre foto
+~1,8 MB, offline più rapido). Controllate su uno schermo da telefono ad alta
+densità: restano nitide, perché la miniatura occupa circa 280 pixel reali e la
+foto ne ha almeno 343 (Fontana; tutte le altre 400). Se un giorno sembrassero
+sgranate, basta chiedere a Claude di portarle a 600 pixel (in `render.py`: i due `400`
+delle miniature e `thumb400` → `thumb600`, poi `python3 render.py`). La copertina si carica subito, le altre foto
 solo quando servono. Il sito carica sempre i .webp: più leggeri, stesso aspetto.
 Se una foto non cambia, non viene riconvertita (viene tenuto un piccolo
 elenco di controllo in `images/web/manifest.json`): questo rende il sito
