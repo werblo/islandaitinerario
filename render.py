@@ -655,6 +655,7 @@ html_out = f'''<!DOCTYPE html>
     <div class="offline-status" id="offline-status" aria-live="polite"></div>
     <button type="button" class="offline-btn" id="offline-btn">Prepara offline</button>
     <div class="offline-status" id="app-version"></div>
+    <div class="offline-status" id="app-timing"></div>
   </div>
 
   <div class="panel">

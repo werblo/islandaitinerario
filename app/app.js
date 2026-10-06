@@ -804,6 +804,22 @@ function showAppVersion() {
 })();
 showAppVersion();
 
+// Tab Info: quanto ha impiegato questa apertura, contando da quando il browser
+// ha iniziato a caricare la pagina (il tempo di avvio di Firefox prima non si vede).
+window.addEventListener('load', () => setTimeout(() => {
+  const el = document.getElementById('app-timing');
+  const nav = performance.getEntriesByType && performance.getEntriesByType('navigation')[0];
+  if (!el || !nav) return;
+  const fcp = performance.getEntriesByName('first-contentful-paint')[0];
+  const s = (ms) => (ms / 1000).toFixed(1).replace('.', ',') + ' s';
+  const parts = [];
+  if (nav.workerStart > 0) parts.push('avvio offline ' + s(nav.workerStart));
+  parts.push('pagina letta ' + s(nav.responseEnd));
+  if (fcp) parts.push('prima schermata ' + s(fcp.startTime));
+  parts.push('pronta ' + s(nav.loadEventEnd || performance.now()));
+  el.textContent = 'Apertura: ' + parts.join(' · ');
+}, 0));
+
 function fmtWhen(iso) {
   const d = new Date(iso);
   return String(d.getDate()).padStart(2, '0') + '/' + String(d.getMonth() + 1).padStart(2, '0')
