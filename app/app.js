@@ -801,8 +801,8 @@ function showAppVersion() {
     };
     document.addEventListener('visibilitychange', onVisible);
   } catch (e) { /* storage non disponibile */ }
-  showAppVersion();
 })();
+showAppVersion();
 
 function fmtWhen(iso) {
   const d = new Date(iso);
