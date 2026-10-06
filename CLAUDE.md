@@ -13,7 +13,9 @@ l'utente: `leggimi.md` (lunga: leggi solo la sezione che serve).
 - Non cambiare decisioni sull'itinerario senza chiedere. In particolare:
   Fontana (Giorno 3, ore 15:30) è **prenotata**, quindi non proporre mai di
   scambiare il Giorno 2 con il Giorno 3; la foto della Secret Lagoon va bene così.
-- `CLOUD_METHOD` (in `dati.py`) si cambia solo dopo conferma esplicita di Michele.
+- `CLOUD_METHOD` (in `dati.py`) si cambia solo dopo conferma esplicita di Michele
+  (eccezione già autorizzata: il controllo programmato del 19/10, vedi leggimi
+  "In breve").
 - Il badge senza glutine (`'gf': True`) solo per locali con opzioni senza
   glutine verificate (il celiaco è Michele).
 - Mai mettere segreti nel repo (la chiave privata VAPID sta solo nei secret).
@@ -28,7 +30,8 @@ l'utente: `leggimi.md` (lunga: leggi solo la sezione che serve).
 - `app/stile.css`, `app/app.js` — aspetto e logica della pagina (meteo,
   alba/tramonto, stima aurora, mappe Leaflet, offline, notifiche).
 - Generati, da committare sempre: `index.html`, `sw.js` (da
-  `sw-template.js`), `images/web/*.webp` (dalle foto in `images/`).
+  `sw-template.js`), `images/web/*.webp` (dalle foto in `images/`: 1200px,
+  le miniature delle attività 400px sul lato corto).
 - `routes.json` — percorsi OSRM, aggiornati dal workflow "Aggiorna percorsi mappa".
 - `tools/aurora_alert.py` — notifiche push (legge i dati da `index.html`);
   la sua stima deve restare identica a quella di `app/app.js`.
@@ -44,7 +47,13 @@ l'utente: `leggimi.md` (lunga: leggi solo la sezione che serve).
    `playwright install`) se tocchi l'aspetto o il JS.
 4. Branch della sessione → PR verso `main` → merge squash dopo la verifica
    (Michele è d'accordo), poi attendi il deploy di Pages e avvisalo di
-   chiudere e riaprire l'app.
+   chiudere e riaprire l'app: la versione nuova si scarica alla prima apertura
+   e si vede alla successiva ("Contenuti aggiornati"); per controllare, la
+   tab Info mostra "Versione app" (prime 7 cifre della versione stampata da
+   `render.py`). Su Firefox ~1-2 s di schermata scura all'apertura sono
+   l'avvio del browser (misurato il 6/10), non l'app.
+5. Se cambia `map_points`, ricorda a Michele di ripetere "Prepara offline"
+   (l'app lo chiede da sola: confronta un'impronta dell'elenco dei riquadri).
 
 ## Workflow GitHub (orari UTC = ora islandese)
 - `avvisi-aurora.yml`: mattino 7:15 dal 15 al 21/11, controlli ogni 30 min di

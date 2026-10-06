@@ -3,8 +3,11 @@
 ## In breve (ottobre 2026)
 
 - **Sito:** werblo.github.io/islandaitinerario, pubblicato da `main` con
-  GitHub Pages; installato come app (Firefox su Android), funziona anche
-  offline dopo "Prepara offline" nella tab Info.
+  GitHub Pages; installato come app (Firefox su Android). Testi e foto
+  funzionano offline da soli (provato in modalità aereo); "Prepara offline"
+  nella tab Info aggiunge le mappe e va ripetuto solo se l'app lo chiede
+  (percorso cambiato). Sotto il pulsante c'è la riga "Versione app …":
+  dice quale versione ha il telefono e quando è arrivata (sezione 11).
 - **File (da ottobre 2026):** testi e dati del viaggio in `dati.py`; aspetto
   in `app/stile.css`; funzioni della pagina (aurora, mappe, meteo, offline) in
   `app/app.js`; `render.py` mette tutto insieme. `python3 render.py`
@@ -13,7 +16,11 @@
 - **Avvisi aurora:** notifiche push dal 15 al 22 novembre, con prova
   automatica il 13 novembre alle 18:07 islandesi (19:07 in Italia) — sezione 12.
 - **Ricerca nuvole:** test di ottobre sul metodo per le nuvole, risultato
-  finale il 1° novembre; il metodo in uso cambia solo dopo conferma — sezione 13.
+  finale il 1° novembre — sezione 13. Programmati con Claude: il **19
+  ottobre** passaggio al metodo migliore se supera quello in uso di almeno 3
+  punti (autorizzato da Michele il 6/10); il **2 novembre** risultato finale
+  (conferma o ritorno indietro solo con il suo sì) e cancellazione dei file
+  della ricerca, con test completo e ritorno a prima se qualcosa non va.
 - **Controllo pre-partenza:** ricontrollo automatico l'8 novembre (sezione 4).
 
 ## 1. Aggiungere le foto
