@@ -604,7 +604,6 @@ html_out = f'''<!DOCTYPE html>
 {APP_CSS}
 </style>
 <link rel="stylesheet" href="vendor/leaflet/leaflet.css"/>
-<script src="vendor/leaflet/leaflet.js"></script>
 </head>
 <body>
 
@@ -754,6 +753,8 @@ html_out = f'''<!DOCTYPE html>
   </div>
 </div>
 
+<!-- Leaflet in fondo: non blocca la prima schermata all'apertura -->
+<script src="vendor/leaflet/leaflet.js"></script>
 <script>
 const SEASONAL = {seasonal_js};
 const LOCATIONS = {locations_js};

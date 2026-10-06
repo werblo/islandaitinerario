@@ -771,10 +771,22 @@ function showToast(msg) {
 }
 
 (function announceUpdate() {
+  // La nuova versione di solito si carica mentre l'app è in background:
+  // l'avviso aspetta che la pagina sia visibile, altrimenti nessuno lo vede.
   try {
     const prev = localStorage.getItem(VERSION_KEY);
-    if (prev && prev !== APP_VERSION) showToast('Contenuti aggiornati');
-    localStorage.setItem(VERSION_KEY, APP_VERSION);
+    if (prev === APP_VERSION) return;
+    const announce = () => {
+      if (prev) showToast('Contenuti aggiornati');
+      localStorage.setItem(VERSION_KEY, APP_VERSION);
+    };
+    if (document.visibilityState !== 'hidden') { announce(); return; }
+    const onVisible = () => {
+      if (document.visibilityState === 'hidden') return;
+      document.removeEventListener('visibilitychange', onVisible);
+      setTimeout(announce, 600);   // il tempo di ridisegnare la pagina
+    };
+    document.addEventListener('visibilitychange', onVisible);
   } catch (e) { /* storage non disponibile */ }
 })();
 

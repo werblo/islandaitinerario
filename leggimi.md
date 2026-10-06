@@ -328,6 +328,11 @@ deve dare 404.
 - **Aggiornamento senza interruzioni**: con internet la nuova versione si
   scarica in background e si applica alla riapertura dell'app (o quando
   la metti in background), con un avviso discreto "Contenuti aggiornati".
+  Da ottobre 2026 l'avviso aspetta che l'app sia sullo schermo: prima
+  compariva mentre l'app era in background e nessuno lo vedeva. Leaflet
+  (mappe) ora si carica in fondo alla pagina, così la prima schermata
+  appare un po' prima. La schermata scura dei primi secondi è in gran parte
+  l'avvio di Firefox stesso (colore di sfondo dell'app nel manifest).
   Una foto sostituita con lo stesso nome si aggiorna comunque.
 - **Alba/tramonto** calcolati in locale (algoritmo NOAA), niente più
   chiamate a sunrise-sunset.org. Correzione emersa: i vecchi valori di
