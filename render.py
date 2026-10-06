@@ -648,16 +648,6 @@ html_out = f'''<!DOCTYPE html>
   </div>
 
   <div class="panel">
-    <div class="panel-title">Prepara offline</div>
-    <div class="rune-rule"></div>
-    <div class="line">Salva sul telefono foto, percorsi e mappe lungo tutto il tragitto del viaggio (circa {offline_tiles_label} riquadri di mappa, ~{offline_mb} MB), così l'app funziona anche senza rete. Fallo con il Wi-Fi prima di partire, su entrambi i telefoni.</div>
-    <div class="offline-bar" id="offline-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" hidden><div class="offline-bar__fill" id="offline-fill"></div></div>
-    <div class="offline-status" id="offline-status" aria-live="polite"></div>
-    <button type="button" class="offline-btn" id="offline-btn">Prepara offline</button>
-    <div class="offline-status" id="app-version"></div>
-  </div>
-
-  <div class="panel">
     <div class="panel-title">Cambio Euro &harr; Corona islandese</div>
     <div class="rune-rule"></div>
     <div class="line" style="margin-bottom:10px;">Tasso aggiornato in tempo reale se sei online (fonte: open.er-api.com); altrimenti resta sulla stima approssimativa.</div>
@@ -720,6 +710,17 @@ html_out = f'''<!DOCTYPE html>
     <div class="line">• <strong>Hótel Búrfell (Vík, Giorni 4-5):</strong> <a href="tel:+3544874660">+354 487 4660</a></div>
     <div class="line">• <strong>The Hill Guesthouse (The Hill Hotel, Flúðir, Giorni 6-7):</strong> <a href="tel:+3544864430">+354 486 4430</a></div>
     <div class="line" style="margin-top:6px;font-size:0.8125rem;color:#5c6a78;">Numeri trovati via ricerca online, non verificati con una chiamata diretta: ricontrollateli nelle email di conferma prima di partire.</div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-title">Prepara offline</div>
+    <div class="rune-rule"></div>
+    <div class="line">Salva sul telefono foto, percorsi e mappe lungo tutto il tragitto del viaggio (circa {offline_tiles_label} riquadri di mappa, ~{offline_mb} MB), così l'app funziona anche senza rete. Fallo con il Wi-Fi prima di partire, su entrambi i telefoni.</div>
+    <div class="offline-bar" id="offline-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" hidden><div class="offline-bar__fill" id="offline-fill"></div></div>
+    <div class="offline-status" id="offline-status" aria-live="polite"></div>
+    <button type="button" class="offline-btn" id="offline-btn">Prepara offline</button>
+    <div class="offline-status" id="app-version"></div>
+    <div class="offline-status app-received" id="app-received"></div>
   </div>
 </section>
 

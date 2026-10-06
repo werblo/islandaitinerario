@@ -49,11 +49,17 @@ l'utente: `leggimi.md` (lunga: leggi solo la sezione che serve).
    (Michele è d'accordo), poi attendi il deploy di Pages e avvisalo di
    chiudere e riaprire l'app: la versione nuova si scarica alla prima apertura
    e si vede alla successiva ("Contenuti aggiornati"); per controllare, la
-   tab Info mostra "Versione app" (prime 7 cifre della versione stampata da
+   tab Info (ultimo riquadro) mostra "Versione app" (prime 7 cifre della versione stampata da
    `render.py`). Su Firefox ~1-2 s di schermata scura all'apertura sono
    l'avvio del browser (misurato il 6/10), non l'app.
 5. Se cambia `map_points`, ricorda a Michele di ripetere "Prepara offline"
    (l'app lo chiede da sola: confronta un'impronta dell'elenco dei riquadri).
+
+- Poche PR: raccogli le modifiche di un argomento/sessione sul branch e fai
+  una sola PR alla fine; pubblica più volte solo se serve una prova sul
+  telefono di Michele. Non riscrivere la storia di `main`.
+- Tab Info: "Prepara offline" è l'ultimo riquadro, con sotto "Versione app"
+  e "Ricevuta il".
 
 ## Workflow GitHub (orari UTC = ora islandese)
 - `avvisi-aurora.yml`: mattino 7:15 dal 15 al 21/11, controlli ogni 30 min di

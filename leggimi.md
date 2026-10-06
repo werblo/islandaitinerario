@@ -5,9 +5,10 @@
 - **Sito:** werblo.github.io/islandaitinerario, pubblicato da `main` con
   GitHub Pages; installato come app (Firefox su Android). Testi e foto
   funzionano offline da soli (provato in modalità aereo); "Prepara offline"
-  nella tab Info aggiunge le mappe e va ripetuto solo se l'app lo chiede
-  (percorso cambiato). Sotto il pulsante c'è la riga "Versione app …":
-  dice quale versione ha il telefono e quando è arrivata (sezione 11).
+  (ultimo riquadro della tab Info) aggiunge le mappe e va ripetuto solo se
+  l'app lo chiede (percorso cambiato). Sotto il pulsante: "Versione app …" e
+  "Ricevuta il …", cioè quale versione ha il telefono e quando è arrivata
+  (sezione 11).
 - **File (da ottobre 2026):** testi e dati del viaggio in `dati.py`; aspetto
   in `app/stile.css`; funzioni della pagina (aurora, mappe, meteo, offline) in
   `app/app.js`; `render.py` mette tutto insieme. `python3 render.py`
@@ -340,9 +341,10 @@ deve dare 404.
   (mappe) ora si carica in fondo alla pagina, così la prima schermata
   appare un po' prima. La schermata scura dei primi secondi è in gran parte
   l'avvio di Firefox stesso (colore di sfondo dell'app nel manifest).
-  In fondo al riquadro "Prepara offline" (tab Info) c'è la riga "Versione
-  app … · ricevuta il …": dice quale versione ha il telefono e quando è
-  arrivata (utile per capire se un aggiornamento è stato ricevuto).
+  In fondo al riquadro "Prepara offline" (l'ultimo della tab Info) ci sono
+  le righe "Versione app …" e "Ricevuta il …": dicono quale versione ha il
+  telefono e quando è arrivata (utile per capire se un aggiornamento è
+  stato ricevuto).
   Misura fatta il 6/10 su OnePlus 8 Pro (anche in modalità aereo): la
   pagina arriva dalla copia offline ed è pronta in circa 0,4 s da quando
   Firefox la chiede; circa 1 s prima della richiesta e il resto della
