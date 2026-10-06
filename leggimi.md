@@ -348,7 +348,10 @@ Le foto in `images/` restano .jpg (quelle che metti tu, sezione 1): a ogni
 `python3 render.py` vengono convertite in automatico in **WebP**, dentro
 `images/web/`, ridotte a un massimo di 1200px sul lato lungo e con
 l'orientamento corretto (le foto da telefono a volte sono ruotate solo nei
-metadati). Il sito carica sempre i .webp: più leggeri, stesso aspetto.
+metadati). Le foto delle attività, mostrate come miniature quadrate, sono
+ridotte a 400px sul lato corto (da ottobre 2026: foto totali da ~3,3 a
+~1,8 MB, offline più rapido). La copertina si carica subito, le altre foto
+solo quando servono. Il sito carica sempre i .webp: più leggeri, stesso aspetto.
 Se una foto non cambia, non viene riconvertita (viene tenuto un piccolo
 elenco di controllo in `images/web/manifest.json`): questo rende il sito
 riproducibile, oltre a essere più veloce. Se il .jpg manca, resta il
