@@ -7,6 +7,7 @@ serve internet. Va rilanciata quando cambiano le tappe o le tratte.
 """
 import json
 import os
+import sys
 import time
 import urllib.request
 from pathlib import Path
@@ -19,6 +20,7 @@ def load_render_data():
     src = (ROOT / 'render.py').read_text(encoding='utf-8')
     ns = {}
     os.chdir(ROOT)
+    sys.path.insert(0, str(ROOT))   # per "from dati import *"
     exec(compile(src[:src.index("html_out = f'''")], 'render.py', 'exec'), ns)
     return ns
 

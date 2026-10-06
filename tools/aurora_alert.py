@@ -3,7 +3,7 @@
 Lanciato dal workflow "Avvisi aurora" (.github/workflows/avvisi-aurora.yml).
 Usa la stessa stima dell'app (Kp previsto NOAA × cielo sereno Open-Meteo, solo
 nelle ore di buio) nei posti in cui siete la sera, tappa per tappa
-(evening_stops in render.py; di default l'alloggio della notte). Avvisi:
+(evening_stops in dati.py; di default l'alloggio della notte). Avvisi:
 
 - "mattino":    alle 7:30 di ogni giorno del viaggio, sempre: com'è messa stasera,
                 con una frase scherzosa (personalizzata se il telefono ha un nome);
