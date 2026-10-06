@@ -654,6 +654,7 @@ html_out = f'''<!DOCTYPE html>
     <div class="offline-bar" id="offline-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" hidden><div class="offline-bar__fill" id="offline-fill"></div></div>
     <div class="offline-status" id="offline-status" aria-live="polite"></div>
     <button type="button" class="offline-btn" id="offline-btn">Prepara offline</button>
+    <div class="offline-status" id="app-version"></div>
   </div>
 
   <div class="panel">

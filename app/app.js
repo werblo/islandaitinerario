@@ -759,6 +759,7 @@ const APP_CACHE = 'islanda-2026-app-' + APP_VERSION;
 const TILE_CACHE = 'islanda-2026-tiles';
 const OFFLINE_KEY = 'islanda2026-offline';
 const VERSION_KEY = 'islanda2026-version';
+const UPDATED_KEY = 'islanda2026-updated-at';
 
 function showToast(msg) {
   const t = document.createElement('div');
@@ -770,6 +771,16 @@ function showToast(msg) {
   setTimeout(() => { t.classList.remove('app-toast--show'); setTimeout(() => t.remove(), 400); }, 3500);
 }
 
+// Tab Info: versione in uso e quando il telefono l'ha ricevuta (per capire
+// se un aggiornamento è arrivato).
+function showAppVersion() {
+  const el = document.getElementById('app-version');
+  if (!el) return;
+  let when = null;
+  try { when = localStorage.getItem(UPDATED_KEY); } catch (e) {}
+  el.textContent = 'Versione app ' + APP_VERSION.slice(0, 7) + (when ? ' · ricevuta il ' + fmtWhen(when) : '');
+}
+
 (function announceUpdate() {
   // La nuova versione di solito si carica mentre l'app è in background:
   // l'avviso aspetta che la pagina sia visibile, altrimenti nessuno lo vede.
@@ -779,6 +790,8 @@ function showToast(msg) {
     const announce = () => {
       if (prev) showToast('Contenuti aggiornati');
       localStorage.setItem(VERSION_KEY, APP_VERSION);
+      localStorage.setItem(UPDATED_KEY, new Date().toISOString());
+      showAppVersion();
     };
     if (document.visibilityState !== 'hidden') { announce(); return; }
     const onVisible = () => {
@@ -788,6 +801,7 @@ function showToast(msg) {
     };
     document.addEventListener('visibilitychange', onVisible);
   } catch (e) { /* storage non disponibile */ }
+  showAppVersion();
 })();
 
 function fmtWhen(iso) {
