@@ -180,13 +180,14 @@ def guess_icon(title):
 # inquadratura delle foto principali (ritagliate a 180 px di altezza) dove il centro non basta
 HERO_POS = {'d4': 'center 28%', 'd6': 'center 75%', 'storia': 'center 40%'}
 
-def photo_slot(filename, label, css_class, icon_key='village', pos=None):
+def photo_slot(filename, label, css_class, icon_key='village', pos=None, eager=False):
     bg1, bg2 = ICON_BG.get(icon_key, ('#3a2f22', '#5c4a33'))
     inner = icon_svg(icon_key)
     webp_name = re.sub(r'\.jpg$', '.webp', filename)
     return (f'<div class="photo-slot {css_class}" data-photo="{e(filename)}" '
             f'style="--bg1:{bg1};--bg2:{bg2}">'
-            f'<img src="images/web/{webp_name}" alt="{e(label)}" loading="lazy" '
+            f'<img src="images/web/{webp_name}" alt="{e(label)}" '
+            + ('fetchpriority="high" ' if eager else 'loading="lazy" ')
             + (f'style="object-position:{pos}" ' if pos else '') +
             f'onerror="this.parentElement.classList.add(\'photo-slot--empty\')">'
             f'<div class="photo-slot__ph"><svg viewBox="0 0 64 56" class="photo-slot__icon" aria-hidden="true">{inner}</svg>'
@@ -608,7 +609,7 @@ html_out = f'''<!DOCTYPE html>
 <body>
 
 <div class="hero">
-  {photo_slot('cover.jpg', 'Islanda 2026', 'photo-slot--cover', 'saga')}
+  {photo_slot('cover.jpg', 'Islanda 2026', 'photo-slot--cover', 'saga', eager=True)}
   <div class="hero__scrim"></div>
   <div class="hero__inner">
     <div class="hero__eyebrow">Saga di viaggio</div>
@@ -786,8 +787,9 @@ photo_files = sorted({p for p in re.findall(r'data-photo="([^"]+)"', html_out)
 
 # ------------------------------------------------------------
 # Conversione automatica foto → WebP (images/web/), lato lungo max
-# 1200px, qualità 75 (per stare sui ~3 MB totali), orientamento EXIF. Riconverte solo se
-# il .jpg sorgente è cambiato (hash sha256 salvato in un manifest),
+# 1200px, qualità 75 (per stare sui ~3 MB totali), orientamento EXIF. Le foto usate
+# solo come miniature (92px sullo schermo) bastano a 400px sul lato corto.
+# Riconverte solo se il .jpg sorgente o il formato è cambiato (hash sha256 salvato in un manifest),
 # così due run consecutivi di render.py producono file identici.
 # ------------------------------------------------------------
 from PIL import Image, ImageOps
@@ -801,6 +803,10 @@ try:
 except (FileNotFoundError, json.JSONDecodeError):
     _webp_manifest = {}
 
+# foto che compaiono solo come miniature (non come copertina o foto principale)
+thumb_only = (set(re.findall(r'photo-slot--thumb" data-photo="([^"]+)"', html_out))
+              - set(re.findall(r'photo-slot--(?:hero|cover)" data-photo="([^"]+)"', html_out)))
+
 _new_manifest = {}
 webp_files = []
 for _p in photo_files:
@@ -810,17 +816,22 @@ for _p in photo_files:
     _src_hash = hashlib.sha256(_src_bytes).hexdigest()
     _webp_name = re.sub(r'\.jpg$', '.webp', _p)
     _webp_path = os.path.join(WEBP_DIR, _webp_name)
-    if _webp_manifest.get(_p) != _src_hash or not os.path.isfile(_webp_path):
+    _thumb = _p in thumb_only
+    _key = _src_hash + (':thumb400' if _thumb else '')
+    if _webp_manifest.get(_p) != _key or not os.path.isfile(_webp_path):
         _img = Image.open(_src)
         _img = ImageOps.exif_transpose(_img)
         _img = _img.convert('RGB')
         _w, _h_ = _img.size
         _long = max(_w, _h_)
-        if _long > 1200:
+        if _thumb and min(_w, _h_) > 400:
+            _scale = 400 / min(_w, _h_)
+            _img = _img.resize((max(1, round(_w * _scale)), max(1, round(_h_ * _scale))), Image.LANCZOS)
+        elif _long > 1200:
             _scale = 1200 / _long
             _img = _img.resize((max(1, round(_w * _scale)), max(1, round(_h_ * _scale))), Image.LANCZOS)
         _img.save(_webp_path, 'WEBP', quality=75, method=6)
-    _new_manifest[_p] = _src_hash
+    _new_manifest[_p] = _key
     webp_files.append('web/' + _webp_name)
 _webp_manifest = _new_manifest
 with open(_manifest_path, 'w', encoding='utf-8') as f:
