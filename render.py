@@ -56,7 +56,7 @@ checklist_groups = [
 
 stays = [
     {'name': '46heima Boutique Apartments', 'detail': 'Laugavegur 46, Reykjavík · 15–18 nov (3 notti)'},
-    {'name': 'Hotel Burfell', 'detail': 'Vík í Mýrdal · 18–20 nov (2 notti)'},
+    {'name': 'Hótel Búrfell', 'detail': 'Vík í Mýrdal · 18–20 nov (2 notti)'},
     {'name': 'The Hill Guesthouse', 'detail': 'Flúðir · 20–22 nov (2 notti)'}
 ]
 
@@ -69,10 +69,10 @@ days = [
   'activities':[
     {'time':'11:00','title':'Ritiro auto 4x4','desc':'FairCar, Bogatröð 1, Keflavík. Portare patente, carta di credito intestata al conducente e voucher stampato o digitale.','cost':None},
     {'time':'15:00','title':'Check-in appartamento','desc':"46heima Boutique Apartments, Laugavegur 46. Codice d'accesso via email prima dell'arrivo.",'cost':None},
-    {'time':'16:30','title':'Passeggiata nel centro','desc':'Laugavegur, Hallgrímskirkja (belvedere sulla torre), porto vecchio, Sun Voyager.','cost':'gratis','nav':'Laugavegur Reykjavik'}
+    {'time':'16:30','title':'Passeggiata nel centro','desc':'Laugavegur, Hallgrímskirkja (belvedere sulla torre: in inverno chiude nel tardo pomeriggio, verificate l\'orario e andateci per prima), porto vecchio, Sun Voyager.','cost':'gratis','nav':'Laugavegur Reykjavik'}
   ],
   'food':[
-    {'meal':'Pranzo','place':'Bónus (supermercato) o hot dog da Bæjarins Beztu','note':'Il würstel senza pane non è garantito senza glutine: per un pranzo sicuro meglio il Bónus (prodotti glútenlaust)','cost':'€','gf':False},
+    {'meal':'Pranzo','place':'Bónus (supermercato) o hot dog da Bæjarins Beztu','note':'Il würstel senza pane non è garantito senza glutine: per un pranzo sicuro meglio il Bónus (prodotti "glútenlaust")','cost':'€','gf':False},
     {'meal':'Cena','place':'Brass Kitchen & Bar, Laugavegur 66','note':'A 200 m dall\'appartamento, adatto ai celiaci: friggitrice dedicata, fish & chips, hamburger e pane senza glutine. Alternative vicine: Harry\'s Seafood and Grill (Laugavegur 85, menu senza glutine) e Old Iceland (Laugavegur 72). Segnalate comunque la celiachia','cost':'€€','gf':True}
   ],
   'accommodation':{'name':'46heima Boutique Apartments','detail':'Laugavegur 46, Reykjavík · 3 notti · check-in dalle 15:00','url':'https://www.booking.com/hotel/is/46heima-apartments.en-gb.html'},
@@ -93,7 +93,7 @@ days = [
   'activities':[
     {'time':'10:00','title':'Perlan','desc':'Museo con grotta di ghiaccio artificiale e vista panoramica a 360° sulla città.','cost':'€€ ~4900 ISK / ~34€','link':'https://perlan.is/en','nav':'Perlan Reykjavik parking'},
     {'time':'12:30','title':'Harpa & porto vecchio','desc':'Sala concerti in vetro iridescente, passeggiata sul lungomare.','cost':'gratis','link':'https://www.harpa.is/en/','nav':'Harpa Reykjavik parking'},
-    {'time':'14:00','title':'Reykjanes (mezza giornata fuori città)','desc':"Ponte tra i continenti, Gunnuhver (la pozza di fango più grande d'Islanda) e il faro di Reykjanesviti. ~55 min di guida all'andata e ~1h05 al ritorno, paesaggio lunare e vulcanico diverso da tutto il resto del viaggio. Partite entro le 14:00 per avere luce fino al tramonto (~16:20). Zona geologicamente molto attiva e Grindavík chiusa: andata e ritorno passano da Keflavík e Hafnir (strada 425); verificate lo stato di accesso il giorno stesso su visitreykjanes.is.",'cost':'gratis','link':'https://www.visitreykjanes.is/en/','nav':'Gunnuhver hot springs parking'},
+    {'time':'14:00','title':'Reykjanes (mezza giornata fuori città)','desc':"Ponte tra i continenti, Gunnuhver (la pozza di fango più grande d'Islanda) e il faro di Reykjanesviti. ~55 min di guida all'andata e ~1h05 al ritorno, paesaggio lunare e vulcanico diverso da tutto il resto del viaggio. Partite entro le 14:00 per avere luce fino al tramonto (~16:30). Zona geologicamente molto attiva e Grindavík e le strade vicine possono essere chiuse: andata e ritorno passano da Keflavík e Hafnir (strada 425); verificate lo stato di accesso il giorno stesso su visitreykjanes.is.",'cost':'gratis','link':'https://www.visitreykjanes.is/en/','nav':'Gunnuhver hot springs parking'},
     {'time':'14:00','title':'National Museum of Iceland (facoltativo, se il meteo è brutto)','desc':'Alternativa a Reykjanes in caso di maltempo: storia e cultura islandese dagli insediamenti vichinghi a oggi, al coperto e in città.','cost':'€ ~2900 ISK / ~20€','link':'https://www.thjodminjasafn.is/english','nav':'National Museum of Iceland parking'}
   ],
   'food':[
@@ -102,7 +102,7 @@ days = [
   ],
   'accommodation':{'name':'46heima Boutique Apartments','detail':'2ª notte a Reykjavík','url':'https://www.booking.com/hotel/is/46heima-apartments.en-gb.html'},
   'tips':"Nel pomeriggio si va a Reykjanes (~135 km in tutto tra andata, tappe e ritorno). Se il meteo è brutto, al posto di Reykjanes c'è il National Museum, al coperto in città.",
-  'culture':"Il Perlan racconta la geologia islandese da dentro una grotta di ghiaccio artificiale, costruito sopra sei enormi serbatoi che ancora oggi riscaldano Reykjavík con l'acqua calda del sottosuolo. L'Harpa, sala concerti dalla facciata a nido d'ape ispirata alle colonne di basalto, è diventata il simbolo della rinascita della città dopo la crisi finanziaria del 2008. Al National Museum si ripercorre la storia islandese dai primi coloni vichinghi a oggi. Nel pomeriggio, a Reykjanes, camminerete letteralmente tra due continenti sul Bridge Between Continents, un ponte pedonale sulla stessa faglia di Þingvellir. Qui la terra non è statica: dopo quasi 800 anni di quiete, dal 2021 il vulcanismo è tornato con eruzioni vicino a Grindavík, ripetute più volte tra il 2023 e il 2025. Vedrete il Gunnuhver, la pozza di fango più grande d'Islanda, e il Reykjanesviti, il faro più antico della nazione — tutto dentro un UNESCO Global Geopark dove la terra si sta ancora formando.",
+  'culture':"Il Perlan racconta la geologia islandese da dentro una grotta di ghiaccio artificiale, costruito sopra sei enormi serbatoi che ancora oggi riscaldano Reykjavík con l'acqua calda del sottosuolo. L'Harpa, sala concerti dalla facciata a nido d'ape ispirata alle colonne di basalto, è diventata il simbolo della rinascita della città dopo la crisi finanziaria del 2008. Al National Museum si ripercorre la storia islandese dai primi coloni vichinghi a oggi. Nel pomeriggio, a Reykjanes, camminerete letteralmente tra due continenti sul Bridge Between Continents, un ponte pedonale sullo stesso confine tra placche che attraversa Þingvellir. Qui la terra non è statica: dopo quasi 800 anni di quiete, dal 2021 il vulcanismo è tornato con eruzioni vicino a Grindavík, ripetute più volte tra il 2023 e il 2025. Vedrete il Gunnuhver, la pozza di fango più grande d'Islanda, e il Reykjanesviti, erede del primo faro d'Islanda (1878) — tutto dentro un UNESCO Global Geopark dove la terra si sta ancora formando.",
   'parking_nav':[
     {'label':'Naviga verso zona P2 (per questa notte)','query':'Rauðarárstígur Reykjavik'}
   ]
@@ -123,7 +123,7 @@ days = [
     {'meal':'Cena','place':'Hlemmur Mathöll, Reykjavík','note':'Food hall con vari stand (aperto fino alle 23:00), opzioni senza glutine da chiedere stand per stand. Se rientrate tardi in serata, come piano B ci sono minimarket 10-11 aperti 24/7 o Hagkaup (Skeifan, 24h)','cost':'€€','gf':False}
   ],
   'accommodation':{'name':'46heima Boutique Apartments','detail':'Ultima notte a Reykjavík · check-out domani 09:30-10:00','url':'https://www.booking.com/hotel/is/46heima-apartments.en-gb.html'},
-  'tips':"Giornata più leggera (~160 km totali) e volutamente rilassante: è l'ultima notte a Reykjavík prima dei due giorni più intensi del viaggio (Costa Sud e Jökulsárlón). Tabella di marcia per non perdere le terme prenotate alle 15:30: partenza da Reykjavík verso le 9:45, Þingvellir dalle 10:30 alle 13:30, Laugarvatn verso le 14:05 (~35 min di strada), pranzo e passeggiata sul lago dalle 14:15, alla reception di Fontana alle 15:15. Geysir e Gullfoss li vedrete il Giorno 7 da Flúðir, molto più vicini da lì che da Reykjavík. Se restate fino a tardi la sera, il rientro a Reykjavík (~1h20 da Laugarvatn) va messo in conto: con cielo sereno può valerne la pena per l'aurora. Hlemmur Mathöll chiude alle 23:00: uscendo da Fontana alla chiusura (21:00) arrivate verso le 22:20, ancora in tempo per cena; se fate più tardi, ripiegate su un minimarket 10-11 (24/7) o Hagkaup senza stress.",
+  'tips':"Giornata più leggera (~160 km totali) e volutamente rilassante: è l'ultima notte a Reykjavík prima dei due giorni più intensi del viaggio (Costa Sud e Jökulsárlón). Tabella di marcia per non perdere le terme prenotate alle 15:30: partenza da Reykjavík verso le 9:45, Þingvellir dalle 10:30 alle 13:30 con pranzo al sacco lì, Laugarvatn verso le 14:05 (~35 min di strada), passeggiata sul lago dalle 14:15, alla reception di Fontana alle 15:15. Geysir e Gullfoss li vedrete il Giorno 7 da Flúðir, molto più vicini da lì che da Reykjavík. Se restate fino a tardi la sera, il rientro a Reykjavík (~1h20 da Laugarvatn) va messo in conto: con cielo sereno può valerne la pena per l'aurora. Hlemmur Mathöll chiude alle 23:00 (alcuni stand anche prima): uscendo da Fontana alla chiusura (21:00), tra cambio e parcheggio, arrivate verso le 22:30-22:40, appena in tempo; come piano B c'è sempre un minimarket 10-11 (24/7) o Hagkaup Skeifan (24h).",
   'culture':"A Þingvellir camminerete letteralmente tra due continenti: la faglia che attraversa il parco segna il punto in cui le placche nordamericana ed eurasiatica si allontanano di circa 2 cm l'anno. Qui, nel 930 d.C., nacque l'Alþingi, tra i più antichi parlamenti al mondo ancora in vita — la culla della democrazia islandese che riprenderete più avanti nella tab Storia. Poco più a sud, sul lago di Laugarvatn, la Fontana sfrutta la stessa energia del sottosuolo che alimenta Þingvellir e Geysir.",
   'parking_nav':[
     {'label':'Naviga verso zona P1 (rientro tardi da Fontana, già gratis dopo le 21:00)','query':'Laugavegur 46 Reykjavik'}
@@ -139,9 +139,9 @@ days = [
   ],
   'activities':[
     {'time':'09:30','title':'Check-out appartamento','desc':'','cost':None},
-    {'time':'11:45','title':'Seljalandsfoss','desc':"Cascata che si può costeggiare sul retro (in inverno spesso ghiacciata, occhio al sentiero). A 10 min a piedi c'è Gljúfrabúi, cascata nascosta in un canyon.",'cost':'gratis','link':'https://it.wikipedia.org/wiki/Seljalandsfoss','nav':'Seljalandsfoss parking'},
-    {'time':'13:15','title':'Skógafoss','desc':"Una delle cascate più imponenti d'Islanda, 60m, scalinata panoramica in cima.",'cost':'gratis','link':'https://it.wikipedia.org/wiki/Skogafoss','nav':'Skógafoss parking'},
-    {'time':'14:45','title':'Dyrhólaey','desc':'Promontorio con arco di roccia e vista su Reynisfjara. Da vedere con un po\' di luce ancora buona: il tramonto qui è verso le 16:15.','cost':'gratis','nav':'Dyrhólaey parking'},
+    {'time':'11:45','title':'Seljalandsfoss','desc':"Cascata che si può costeggiare sul retro: in inverno il sentiero dietro la cascata è spesso ghiacciato o chiuso, guardatela dal davanti se è transennato. A 10 min a piedi c'è Gljúfrabúi, cascata nascosta in un canyon.",'cost':'gratis','link':'https://it.wikipedia.org/wiki/Seljalandsfoss','nav':'Seljalandsfoss parking'},
+    {'time':'13:15','title':'Skógafoss','desc':"Una delle cascate più imponenti d'Islanda, 60 m di salto, scalinata panoramica in cima.",'cost':'gratis','link':'https://it.wikipedia.org/wiki/Skogafoss','nav':'Skógafoss parking'},
+    {'time':'14:45','title':'Dyrhólaey','desc':'Sosta breve (~20 min). Promontorio con arco di roccia e vista su Reynisfjara. Da vedere con un po\' di luce ancora buona: il tramonto qui è verso le 16:15.','cost':'gratis','nav':'Dyrhólaey parking'},
     {'time':'15:30','title':'Reynisfjara','desc':'Spiaggia di sabbia nera con colonne basaltiche e i faraglioni di Reynisdrangar. Attenzione alle onde anomale, non voltare le spalle al mare.','cost':'gratis','nav':'Reynisfjara Black Sand Beach parking'},
     {'time':'16:15','title':'Víkurkirkja','desc':"La chiesetta bianca dal tetto rosso su per la collina di Vík, tra le più fotografate d'Islanda: da lassù la vista abbraccia il villaggio, la spiaggia nera e i faraglioni di Reynisdrangar sullo sfondo. Ultima tappa apposta: proprio all'ora del tramonto può regalare una luce spettacolare.",'cost':'gratis','nav':'Víkurkirkja Vík Iceland'}
   ],
@@ -149,7 +149,7 @@ days = [
     {'meal':'Pranzo','place':'Picnic a Skógar','note':'Porta snack dal Bónus di Reykjavík','cost':'€','gf':False},
     {'meal':'Cena','place':'Suður-Vík Restaurant','note':'Opzioni senza glutine segnate nel menu; segnalate la celiachia, in cucina c\'è rischio di contaminazione','cost':'€€','gf':True}
   ],
-  'accommodation':{'name':'Hotel Burfell','detail':'Vík í Mýrdal · 2 notti · parcheggio gratuito incluso','url':'https://hotelburfell.is/'},
+  'accommodation':{'name':'Hótel Búrfell','detail':'Vík í Mýrdal · 2 notti · parcheggio gratuito incluso','url':'https://hotelburfell.is/'},
   'tips':'Il 18 novembre a Vík il sole tramonta verso le 16:15 (molto prima di quanto sembri): Dyrhólaey e Reynisfjara vanno viste per bene entro quell\'ora, la Víkurkirkja invece va benissimo proprio al tramonto/appena dopo, dato che è a due passi dal centro del paese e non richiede tempo di guida extra.',
   'culture':"Oggi si passa dalle cascate alla costa vulcanica. Skógafoss, 60 metri di salto, nasconde secondo la leggenda un forziere vichingo dietro le sue acque. A Reynisfjara la sabbia nera è lava basaltica frantumata da millenni di oceano, e le pareti a colonne esagonali sono le stesse che hanno ispirato l'architettura della Hallgrímskirkja. Al largo, i faraglioni Reynisdrangar sarebbero — dice la leggenda — due troll pietrificati dall'alba mentre trascinavano a riva una nave: attenzione alle onde anomale, il mare qui non scherza. Dyrhólaey, il promontorio con l'arco di roccia, nacque da un'eruzione sottomarina durante l'ultima glaciazione. Vík, il villaggio più a sud dell'isola, vive all'ombra del vulcano Katla, sepolto sotto il ghiacciaio Mýrdalsjökull — e la sua chiesetta rossa e bianca, arroccata sulla collina, era il punto di raccolta designato per gli abitanti in caso di eruzione improvvisa.",
   'parking_nav':[
@@ -163,7 +163,7 @@ days = [
     {'from':'Fjaðrárgljúfur','to':'Vík','km':72,'time':'~55 min'}
   ],
   'activities':[
-    {'time':'07:30','title':'Partenza presto','desc':'Giornata lunga di guida (~6 ore in tutto): si parte con il buio, normale in novembre, e la prima luce arriva verso le 9 (alba alle 9:50). Mezz\'ora prima del solito per avere margine sul canyon nel pomeriggio.','cost':None},
+    {'time':'07:30','title':'Partenza presto','desc':'Giornata lunga di guida (~6 ore in tutto): si parte con il buio, normale in novembre, e la prima luce arriva verso le 9 (alba alle 9:50).','cost':None},
     {'time':'10:30','title':'Jökulsárlón Glacier Lagoon','desc':'Laguna glaciale con iceberg alla deriva verso il mare. Arrivate con la luce dell\'alba, ottima per le foto degli iceberg.','cost':'gratis (parcheggio a pagamento)','nav':'Jökulsárlón Glacier Lagoon parking'},
     {'time':'11:45','title':'Diamond Beach','desc':'Spiaggia nera di fronte alla laguna dove i blocchi di ghiaccio si arenano. Ripartite entro le 12:30: pranzo veloce qui o al sacco in macchina.','cost':'gratis','link':'https://perlan.is/articles/diamond-beach-iceland','nav':'Diamond Beach Iceland parking'},
     {'time':'14:30','title':'Fjaðrárgljúfur','desc':"Canyon serpeggiante con pareti muschiose, punti panoramici accessibili a piedi. Visitato sulla via del ritorno apposta: con la luce del primo mattino (alba verso le 9:50) si vedrebbe pochissimo.",'cost':'gratis','nav':'Fjaðrárgljúfur canyon parking'}
@@ -172,8 +172,8 @@ days = [
     {'meal':'Pranzo','place':'Kaffi Jökulsárlón o pranzo al sacco','note':'Nessuna informazione sul senza glutine trovata: chiedete allo staff e portate un\'alternativa al sacco','cost':'€€','gf':False},
     {'meal':'Cena','place':'Ströndin Bistro, Vík','note':'Opzioni senza glutine (per esempio lo stufato di carne e le costolette d\'agnello): chiedete conferma allo staff','cost':'€€','gf':True}
   ],
-  'accommodation':{'name':'Hotel Burfell','detail':'2ª notte a Vík','url':'https://hotelburfell.is/'},
-  'tips':"~390 km andata/ritorno da Vík, circa 6 ore di guida. Tabella di marcia: partenza alle 7:30, Jökulsárlón verso le 10:30 (~2h55 senza soste, in inverno contate qualcosa in più), Diamond Beach e via entro le 12:30, Fjaðrárgljúfur verso le 14:30 con un'ora abbondante di luce prima del tramonto (16:05), rientro a Vík verso le 16:45. Prima di partire controllate che il sentiero del canyon sia aperto (in inverno a volte viene chiuso per il terreno fradicio) e le strade su road.is; con brutto tempo valutate di fermarvi solo a Jökulsárlón/Diamond Beach.",
+  'accommodation':{'name':'Hótel Búrfell','detail':'2ª notte a Vík','url':'https://hotelburfell.is/'},
+  'tips':"~390 km andata/ritorno da Vík, circa 6 ore di guida. Tabella di marcia: partenza alle 7:30, Jökulsárlón verso le 10:30-10:45 (~2h55 senza soste, in inverno contate qualcosa in più), Diamond Beach e via entro le 12:30, Fjaðrárgljúfur verso le 14:30-14:45 con circa un'ora e mezza di luce prima del tramonto (16:05), rientro a Vík verso le 16:45-17:00. Prima di partire controllate che il sentiero del canyon sia aperto (in inverno a volte viene chiuso per il terreno fradicio) e le strade su road.is; con brutto tempo valutate di fermarvi solo a Jökulsárlón/Diamond Beach.",
   'culture':"Giornata dedicata al ghiaccio. A Jökulsárlón la laguna esiste solo da un secolo: il Vatnajökull, il ghiacciaio più esteso d'Europa, si è ritirato rapidamente da inizio '900 lasciando dietro di sé questo bacino pieno di iceberg alla deriva verso il mare. Quelli che si arenano sulla sabbia nera di Diamond Beach, levigati e trasparenti, possono contenere ghiaccio compresso da centinaia o migliaia di anni. Sulla via del ritorno, il canyon di Fjaðrárgljúfur, scavato da un fiume glaciale in circa due milioni di anni, è diventato famoso di recente anche grazie a un video musicale di Justin Bieber.",
   'parking_nav':[
     {'label':'Naviga verso il parcheggio dell\'hotel (gratuito)','query':'Hotel Burfell Vík Iceland'}
@@ -185,10 +185,10 @@ days = [
     {'from':'Kerið','to':'Flúðir','km':39,'time':'~30 min'}
   ],
   'activities':[
-    {'time':'10:00','title':'Check-out Hotel Burfell','desc':'','cost':None},
+    {'time':'10:00','title':'Check-out Hótel Búrfell','desc':'','cost':None},
     {'time':'12:30','title':'Kerið','desc':'Cratere vulcanico con un lago sul fondo, percorribile a piedi in 15-20 min.','cost':'€ ~400 ISK / ~3€','link':'https://kerid.is/','nav':'Kerið crater parking'},
     {'time':'15:30','title':'Check-in The Hill Guesthouse','desc':'Flúðir','cost':None},
-    {'time':'17:30','title':'Secret Lagoon','desc':"La piscina geotermica più antica d'Islanda, meno turistica ed economica della Blue Lagoon. Il sole è già tramontato da un'ora e mezza, quindi ottima per provare a scorgere l'aurora dall'acqua calda.",'cost':'€ ~4500 ISK / ~31€ a persona, prenotare online','link':'https://secretlagoon.is/','nav':'Secret Lagoon Gamla Laugin Flúðir'}
+    {'time':'17:30','title':'Secret Lagoon','desc':"La piscina geotermica più antica d'Islanda, meno turistica e molto più economica della Blue Lagoon. Alle 17:30 il sole è tramontato da circa un'ora e mezza e il cielo è ormai buio: con cielo sereno potete provare a scorgere l'aurora dall'acqua calda.",'cost':'€ ~4500 ISK / ~31€ a persona, prenotare online','link':'https://secretlagoon.is/','nav':'Secret Lagoon Gamla Laugin Flúðir'}
   ],
   'food':[
     {'meal':'Pranzo','place':'Selfoss (pranzo al sacco o supermercato locale)','note':'Ultima città con supermercati grandi prima di Flúðir, sulla strada da Vík','cost':'€','gf':False},
@@ -196,7 +196,7 @@ days = [
   ],
   'accommodation':{'name':'The Hill Guesthouse','detail':'Flúðir · 2 notti · parcheggio gratuito incluso','url':'https://thehillhotel.is/guesthouse-fludir/'},
   'tips':'Prenota la Secret Lagoon in anticipo online: gli slot serali si esauriscono. A novembre lo slot più tardo disponibile è 17:30, non più tardi.',
-  'culture':"Kerið è un cratere vulcanico di circa 3000 anni, insolito nel colore: la roccia è ricca di scoria rossastra invece del solito basalto nero, e sul fondo si è formato un piccolo lago verde-azzurro alimentato dalla falda. A Flúðir vi aspetta la Secret Lagoon, la piscina geotermica più antica dell'isola: costruita nel 1891 come prima piscina pubblica islandese, oggi resta piccola e informale rispetto alla Blue Lagoon, con l'acqua che sgorga naturalmente a circa 38-40°C da una sorgente a pochi passi dalla vasca.",
+  'culture':"Kerið è un cratere vulcanico di circa 6.500 anni, insolito nel colore: la roccia è ricca di scoria rossastra invece del solito basalto nero, e sul fondo si è formato un piccolo lago verde-azzurro alimentato dalla falda. A Flúðir vi aspetta la Secret Lagoon, la piscina geotermica più antica dell'isola: costruita nel 1891 come prima piscina pubblica islandese, oggi resta piccola e informale rispetto alla Blue Lagoon, con l'acqua che sgorga naturalmente a circa 38-40°C da una sorgente a pochi passi dalla vasca.",
   'parking_nav':[
     {'label':'Naviga verso il parcheggio della guesthouse (gratuito)','query':'The Hill Guesthouse Flúðir'}
   ]
@@ -212,12 +212,12 @@ days = [
   'activities':[
     {'time':'10:30','title':'Geysir & Strokkur','desc':'Area geotermica: Strokkur erutta ogni 5-10 minuti.','cost':'gratis','nav':'Geysir Geothermal Area parking'},
     {'time':'11:30','title':'Gullfoss','desc':"Cascata a doppio salto, spettacolare anche d'inverno con il ghiaccio sulle rocce.",'cost':'gratis','link':'https://it.wikipedia.org/wiki/Gullfoss','nav':'Gullfoss waterfall parking'},
-    {'time':'14:00','title':'Faxi','desc':'Cascata piccola e tranquilla vicino a Flúðir, poco turistica.','cost':'gratis','link':'https://it.wikipedia.org/wiki/Faxi','nav':'Faxi waterfall Iceland parking'},
+    {'time':'14:00','title':'Faxi','desc':'Cascata piccola e tranquilla vicino a Reykholt, sulla strada del ritorno verso Flúðir, poco turistica.','cost':'gratis','link':'https://it.wikipedia.org/wiki/Faxi','nav':'Faxi waterfall Iceland parking'},
     {'time':'15:30','title':'Efstidalur II','desc':"Fattoria con gelateria e vacche visibili da dietro un vetro, ambiente al caldo e informale. Sosta comoda per il buio che cala presto in questo periodo, prima del rientro a Flúðir.",'cost':'€ gelato/spuntino a parte','nav':'Efstidalur II Farm'}
   ],
   'food':[
     {'meal':'Pranzo','place':'Friðheimar, Reykholt','note':'Famosa zuppa di pomodoro in serra, sulla strada per Geysir: hanno pane senza glutine, ma non garantito senza contaminazione; in alternativa c\'è un\'insalata','cost':'€€','gf':True},
-    {'meal':'Cena','place':'Cucina alla guesthouse','note':'Ultima occasione per finire la spesa dal Bónus','cost':'€','gf':False}
+    {'meal':'Cena','place':'Cucina alla guesthouse','note':'Ultima occasione per finire la spesa fatta al Bónus','cost':'€','gf':False}
   ],
   'accommodation':{'name':'The Hill Guesthouse','detail':'Ultima notte a Flúðir · check-out presto domani','url':'https://thehillhotel.is/guesthouse-fludir/'},
   'tips':"Da Flúðir Geysir e Gullfoss sono a un tiro di schioppo (~30-40 km), molto più vicini che da Reykjavík: giornata comoda, e cielo scuro poco inquinato per tenere d'occhio l'aurora la sera.",
@@ -232,11 +232,11 @@ days = [
   ],
   'activities':[
     {'time':'06:45','title':'Partenza da Flúðir','desc':'Partite presto per avere margine: riconsegna auto e imbarco sono molto ravvicinati.','cost':None},
-    {'time':'~09:00','title':'Riconsegna auto FairCar','desc':'Il voucher indica riconsegna alle 11:00, ma il volo parte alle 11:25: verificate con FairCar se potete riconsegnare prima (es. entro le 9:00-9:30) per avere tempo per check-in e imbarco.','cost':None,'nav':'FairCar Bogatröð 1 Keflavík'},
+    {'time':'~09:15','title':'Riconsegna auto FairCar','desc':'Il voucher indica riconsegna alle 11:00, ma il volo parte alle 11:25: verificate con FairCar se potete riconsegnare prima (es. entro le 9:00\u20119:30) per avere tempo per check-in e imbarco. Controllate sul voucher la regola del carburante: se va riconsegnata col pieno, fate benzina a Keflavík/Reykjanesbær prima di arrivare.','cost':None,'nav':'FairCar Bogatröð 1 Keflavík'},
     {'time':'11:25','title':'Volo EJU3970 Keflavík → Milano Malpensa','desc':'Arrivo previsto alle 16:45.','cost':None}
   ],
   'food':[
-    {'meal':'Colazione','place':'Guesthouse o avanzi della spesa','note':'','cost':'€','gf':False}
+    {'meal':'Colazione','place':'Avanzi della spesa','note':'Partendo alle 6:45 la colazione della guesthouse difficilmente è già servita: tenete da parte qualcosa dalla spesa del Bónus','cost':'€','gf':False}
   ],
   'accommodation': None,
   'tips':'Pochissimo margine tra riconsegna auto (11:00) e decollo (11:25): meglio anticipare la riconsegna il più possibile.',
@@ -427,13 +427,17 @@ def guess_icon(title):
             return key
     return 'village'
 
-def photo_slot(filename, label, css_class, icon_key='village'):
+# inquadratura delle foto principali (ritagliate a 180 px di altezza) dove il centro non basta
+HERO_POS = {'d4': 'center 28%', 'd6': 'center 75%', 'storia': 'center 40%'}
+
+def photo_slot(filename, label, css_class, icon_key='village', pos=None):
     bg1, bg2 = ICON_BG.get(icon_key, ('#3a2f22', '#5c4a33'))
     inner = icon_svg(icon_key)
     webp_name = re.sub(r'\.jpg$', '.webp', filename)
     return (f'<div class="photo-slot {css_class}" data-photo="{e(filename)}" '
             f'style="--bg1:{bg1};--bg2:{bg2}">'
             f'<img src="images/web/{webp_name}" alt="{e(label)}" loading="lazy" '
+            + (f'style="object-position:{pos}" ' if pos else '') +
             f'onerror="this.parentElement.classList.add(\'photo-slot--empty\')">'
             f'<div class="photo-slot__ph"><svg viewBox="0 0 64 56" class="photo-slot__icon" aria-hidden="true">{inner}</svg>'
             f'<span>{e(label)}</span></div></div>')
@@ -554,6 +558,7 @@ def render_day_section(day):
     if day.get('tips'):
         tips_html = f'<div class="tip-card"><strong>Consiglio:</strong> {e(day["tips"])}</div>'
 
+    aurora_note_html = '' if day['id'] == 'd8' else f'<div class="aurora-note" data-aurora="{day["id"]}">Calcolo delle ore di buio in corso…</div>'   # l'ultima sera siete in volo
     culture_html = ''
     if day.get('culture'):
         culture_icon = f'<svg viewBox="0 0 64 56" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">{icon_svg("saga")}</svg>'
@@ -568,7 +573,7 @@ def render_day_section(day):
     <div class="day-date">{e(day['dateLabel'])} · Giorno {day['num']}/8</div>
     <div class="day-title">{e(day['title'])}</div>
   </div>
-  {photo_slot(hero_fname, day['title'], 'photo-slot--hero', HERO_ICON.get(day['id'], 'village'))}
+  {photo_slot(hero_fname, day['title'], 'photo-slot--hero', HERO_ICON.get(day['id'], 'village'), HERO_POS.get(day['id']))}
   <div class="map-frame"><div class="day-map" id="day-map-{day['id']}" role="region" aria-label="Mappa del percorso del giorno {day['num']}"></div></div>
   <div class="line" style="margin:6px 0 0;font-size:0.8125rem;color:#5c6a78;">Mappa reale (OpenStreetMap) — zoomabile e trascinabile. Percorso stradale indicativo (disponibile anche offline); per la navigazione vera usa Google Maps offline.</div>
   <div class="grid2">
@@ -584,7 +589,7 @@ def render_day_section(day):
       <div class="info-card__sub" data-daylight="{day['id']}">Calcolo…</div>
     </div>
   </div>
-  <div class="aurora-note" data-aurora="{day['id']}">Calcolo delle ore di buio in corso…</div>
+  {aurora_note_html}
   {culture_html}
   {legs_html}
   <div class="section">
@@ -638,7 +643,7 @@ storia_html = f'''
     <div class="day-date"><span class="rune-mark">ᚨ</span>Infarinatura generale<span class="rune-mark">ᚾ</span></div>
     <div class="day-title"><span class="rune-mark">ᛋ</span>Storia dell'Islanda<span class="rune-mark">ᛁ</span></div>
   </div>
-  {photo_slot('storia-hero.jpg', "Storia dell'Islanda", 'photo-slot--hero', 'saga')}
+  {photo_slot('storia-hero.jpg', "Storia dell'Islanda", 'photo-slot--hero', 'saga', HERO_POS['storia'])}
 
   <div class="panel">
     <div class="panel-title"><span class="rune-mark">ᛒ</span>Un'isola giovanissima</div>
@@ -649,12 +654,12 @@ storia_html = f'''
   <div class="panel">
     <div class="panel-title"><span class="rune-mark">ᛏ</span>Dal primo parlamento all'indipendenza</div>
     <div class="rune-rule"></div>
-    <p class="line">Nel <strong>930 d.C.</strong>, a Þingvellir, i capi dell'isola fondano l'<strong>Alþingi</strong>: un'assemblea annuale all'aperto per fare leggi e giudicare le liti, una delle istituzioni parlamentari più antiche ancora esistenti al mondo. È l'epoca del cosiddetto Commonwealth islandese, senza re né esercito centrale. Nel 1262, dilaniata da faide interne, l'isola giura fedeltà al re di Norvegia; nel 1380 passa sotto la corona danese insieme alla Norvegia. Bisogna aspettare il <strong>1º dicembre 1918</strong> per un regno autonomo (ma ancora legato alla Danimarca), e il <strong>17 giugno 1944</strong> per la Repubblica islandese piena, proclamata con il 97% dei consensi mentre la Danimarca era sotto occupazione tedesca.</p>
+    <p class="line">Nel <strong>930 d.C.</strong>, a Þingvellir, i capi dell'isola fondano l'<strong>Alþingi</strong>: un'assemblea annuale all'aperto per fare leggi e giudicare le liti, una delle istituzioni parlamentari più antiche ancora esistenti al mondo. È l'epoca del cosiddetto Commonwealth islandese, senza re né esercito centrale. Nel 1262, dilaniata da faide interne, l'isola giura fedeltà al re di Norvegia; nel 1380 passa sotto la corona danese insieme alla Norvegia. Bisogna aspettare il <strong>1º dicembre 1918</strong> per un regno autonomo (ma ancora legato alla Danimarca), e il <strong>17 giugno 1944</strong> per la Repubblica islandese piena, approvata al referendum con oltre il 98% dei voti mentre la Danimarca era sotto occupazione tedesca.</p>
   </div>
 
   <div class="culture-card">
     <div class="culture-card__label">{f'<svg viewBox="0 0 64 56" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">{icon_svg("saga")}</svg>'}<span class="rune-mark">ᚱ</span>Le saghe e una lingua rimasta ferma nel tempo</div>
-    <p>Preparatevi a un piccolo miracolo linguistico: l'islandese di oggi è così vicino al norreno medievale che un lettore islandese può ancora leggere le saghe scritte otto secoli fa, senza traduzione — un lusso che i cugini scandinavi hanno perso da tempo. Altrettanto insolito è il sistema dei nomi: niente cognomi di famiglia, solo patronimici o matronimici (un Jónsson è "figlio di Jón"), tanto che l'elenco telefonico islandese è ordinato per nome di battesimo. La popolazione resta minuscola, poco più di 380.000 persone su un'isola grande quanto il Portogallo, con un effetto collaterale gradito: zero zanzare. Gli alberi invece scarseggiano, abbattuti in gran parte dai primi coloni per legna e pascoli.</p>
+    <p>Preparatevi a un piccolo miracolo linguistico: l'islandese di oggi è così vicino al norreno medievale che un lettore islandese può ancora leggere le saghe scritte otto secoli fa, senza traduzione — un lusso che i cugini scandinavi hanno perso da tempo. Altrettanto insolito è il sistema dei nomi: niente cognomi di famiglia, solo patronimici o matronimici (un Jónsson è "figlio di Jón"), tanto che l'elenco telefonico islandese è ordinato per nome di battesimo. La popolazione resta minuscola, circa 390.000 persone su un'isola grande quanto il Portogallo, e fino a poco tempo fa con un primato curioso: nessuna zanzara (le prime sono state trovate solo nel 2025). Gli alberi invece scarseggiano, abbattuti in gran parte dai primi coloni per legna e pascoli.</p>
   </div>
 
   <div class="culture-card">
@@ -665,7 +670,7 @@ storia_html = f'''
   <div class="panel">
     <div class="panel-title"><span class="rune-mark">ᚲ</span>Il paese del fuoco sotto il ghiaccio</div>
     <div class="rune-rule"></div>
-    <p class="line">L'Islanda siede a cavallo della dorsale medio-atlantica, il punto dove le placche nordamericana ed eurasiatica si allontanano di circa 2 cm l'anno: la vedrete a occhio nudo a Þingvellir il Giorno 3. Questa posizione rende l'isola una delle zone vulcaniche più attive del pianeta, con oltre 30 sistemi vulcanici attivi. È lo stesso fuoco sotterraneo, imbrigliato, a rendere l'Islanda quasi autosufficiente: circa l'85% del consumo energetico totale del paese (riscaldamento, industria e trasporti inclusi) viene da fonti rinnovabili, soprattutto geotermia e idroelettrico — la sola elettricità è quasi al 100% rinnovabile. Le stesse sorgenti calde che userete a Fontana e alla Secret Lagoon.</p>
+    <p class="line">L'Islanda siede a cavallo della dorsale medio-atlantica, il punto dove le placche nordamericana ed eurasiatica si allontanano di circa 2 cm l'anno: la vedrete a occhio nudo a Þingvellir il Giorno 3. Questa posizione rende l'isola una delle zone vulcaniche più attive del pianeta, con oltre 30 sistemi vulcanici attivi. È lo stesso fuoco sotterraneo, imbrigliato, a rendere l'Islanda quasi autosufficiente: circa l'85% del consumo energetico totale del paese (riscaldamento, industria e trasporti inclusi) viene da fonti rinnovabili, soprattutto geotermia e idroelettrico — la sola elettricità è quasi al 100% rinnovabile. Sono le stesse sorgenti calde in cui vi immergerete a Fontana e alla Secret Lagoon.</p>
   </div>
 </section>'''
 
@@ -891,7 +896,9 @@ a {{ color:var(--amber-2); }}
 
 main {{ max-width:820px; margin:0 auto; padding:20px 20px 70px; display:flex; flex-direction:column; gap:18px; }}
 .panel {{ background:var(--panel); border:1px solid var(--panel-border); border-radius:8px; padding:18px 20px; }}
-.panel-title {{ font-family:'Cinzel',serif; font-weight:600; font-size:0.9375rem; letter-spacing:.06em; text-transform:uppercase; color:#2c3c4d; margin-bottom:4px; }}
+.panel-title {{ font-family:'Cinzel',serif; font-weight:600; font-size:0.9375rem; letter-spacing:.06em; text-transform:uppercase; color:#2c3c4d; margin-bottom:4px; display:flex; align-items:baseline; }}
+.panel-title .rune-mark:first-child {{ margin-left:0; }}
+.panel > p:last-child {{ margin-bottom:0; }}
 .panel p, .panel div.line {{ font-size:0.96875rem; line-height:1.8; color:#333c46; }}
 .warn-box {{ margin-top:12px; background:var(--amber-soft); border:1px solid var(--amber-soft-border); border-radius:6px; padding:12px 14px; font-size:0.9375rem; line-height:1.6; color:#5c3a1f; }}
 .stay-row {{ border-top:1px solid #e4ddcb; padding-top:10px; font-size:0.96875rem; }}
@@ -1009,7 +1016,7 @@ main {{ max-width:820px; margin:0 auto; padding:20px 20px 70px; display:flex; fl
 .act-body {{ flex:1; min-width:0; }}
 .act-top {{ display:flex; justify-content:space-between; gap:10px; align-items:baseline; }}
 .act-title {{ font-weight:600; font-size:0.96875rem; color:#1f2c39; }}
-.act-title--link {{ text-decoration:none; border-bottom:1px dashed var(--navy); padding-bottom:1px; }}
+.act-title--link {{ text-decoration:underline dashed var(--navy); text-decoration-thickness:1px; text-underline-offset:3px; }}
 .act-title--link:hover {{ border-bottom-style:solid; }}
 .act-title-arrow {{ white-space:nowrap; font-weight:400; color:var(--amber-2); font-size:0.8125rem; }}
 .act-time {{ font-size:0.8125rem; color:#5c6a78; white-space:nowrap; }}
@@ -1084,7 +1091,7 @@ main {{ max-width:820px; margin:0 auto; padding:20px 20px 70px; display:flex; fl
       <div class="aurora-tonight__days" id="aurora-days"></div>
       <div class="aurora-tonight__src" id="aurora-src"></div>
     </div>
-    <p>Indice geomagnetico Kp attuale (NOAA), aggiornato in tempo reale se sei online. La stima di stasera combina Kp previsto (NOAA), copertura nuvolosa oraria (Open-Meteo) e buio astronomico per l'alloggio della notte.</p>
+    <p>Indice geomagnetico Kp attuale (NOAA), aggiornato in tempo reale se sei online. La stima di stasera combina Kp previsto (NOAA), copertura nuvolosa oraria (Open-Meteo) e buio astronomico per il luogo in cui sarete la sera (alloggio o tappe serali, come Fontana il Giorno 3).</p>
     <div class="more">Più vicino alla partenza, controlla <a href="https://en.vedur.is/weather/forecasts/aurora/" target="_blank" rel="noopener">vedur.is/aurora</a> per la previsione reale sulle vostre date e sul cielo sereno.</div>
   </div>
 
@@ -1135,9 +1142,9 @@ main {{ max-width:820px; margin:0 auto; padding:20px 20px 70px; display:flex; fl
     <div class="panel-title">Budget &amp; celiachia</div>
     <div class="rune-rule"></div>
     <div class="line">• Supermercati Bónus (logo maialino rosa) e Krónan sono i più economici per colazioni/pranzi al sacco.</div>
-    <div class="line">• Le stazioni N1 hanno zuppe e hot dog a buon prezzo lungo il Ring Road.</div>
+    <div class="line">• Le stazioni N1 hanno zuppe e hot dog a buon prezzo lungo la Ring Road (strada 1).</div>
     <div class="line">• L'acqua del rubinetto è potabile ovunque: niente acqua in bottiglia.</div>
-    <div class="line">• Cerca la parola <strong>"glútenlaus"</strong> o <strong>"glútenfrítt"</strong> (senza glutine) sui menu — molti locali islandesi la indicano chiaramente.</div>
+    <div class="line">• Cerca la parola <strong>"glútenlaust"</strong> o <strong>"glútenlaus"</strong> (senza glutine) sui menu — molti locali islandesi la indicano chiaramente.</div>
     <div class="line">• Segnalati nell'itinerario i locali con opzioni gluten-free note; conferma comunque con lo staff.</div>
   </div>
 
@@ -1150,7 +1157,7 @@ main {{ max-width:820px; margin:0 auto; padding:20px 20px 70px; display:flex; fl
     <div class="line">• Numero unico di emergenza: <strong>112</strong> (anche via app 112 Iceland).</div>
     <div class="line">• Consolato Onorario d'Italia a Reykjavík: <a href="tel:+3546981223">+354 698 1223</a> · reykjavik.onorario@esteri.it (Bankastræti 7).</div>
     <div class="line">• Con il 4x4 in novembre è normale trovare vento forte e strade bagnate/ghiacciate: guida con margine, specialmente sulla costa sud.</div>
-    <div class="line">• Le mappe di questa pagina sono schizzi del percorso (funzionano sempre, anche offline) ma non sono per la navigazione stradale vera e propria. Per guidare, scarica prima di partire le mappe offline di Google Maps (o Maps.me / Organic Maps) per Islanda.</div>
+    <div class="line">• Le mappe di questa app mostrano il percorso ma non sono per la navigazione stradale vera e propria; offline si vedono solo dopo aver usato "Prepara offline". Per guidare, scarica prima di partire le mappe offline di Google Maps (o Organic Maps) per l'Islanda.</div>
   </div>
 
   <div class="panel">
@@ -1165,7 +1172,7 @@ main {{ max-width:820px; margin:0 auto; padding:20px 20px 70px; display:flex; fl
     <div class="line">• <strong>FairCar (auto):</strong> <a href="tel:+3545717222">+354 571 7222</a> · info@faircar.is</div>
     <div class="line">• <strong>46heima / Heimaleiga (Reykjavík, Giorni 1-3):</strong> <a href="tel:+3544494900">+354 449 4900</a></div>
     <div class="line">• <strong>Hótel Búrfell (Vík, Giorni 4-5):</strong> <a href="tel:+3544874660">+354 487 4660</a></div>
-    <div class="line">• <strong>The Hill Hotel (Flúðir, Giorni 6-7):</strong> <a href="tel:+3544864430">+354 486 4430</a></div>
+    <div class="line">• <strong>The Hill Guesthouse (The Hill Hotel, Flúðir, Giorni 6-7):</strong> <a href="tel:+3544864430">+354 486 4430</a></div>
     <div class="line" style="margin-top:6px;font-size:0.8125rem;color:#5c6a78;">Numeri trovati via ricerca online, non verificati con una chiamata diretta: ricontrollateli nelle email di conferma prima di partire.</div>
   </div>
 </section>
@@ -1227,7 +1234,7 @@ function ensureDayMap(dayId) {{
   if (!el || !points || !points.length || typeof L === 'undefined') return;
   if (dayMaps[dayId]) {{ requestAnimationFrame(() => dayMaps[dayId].invalidateSize()); return; }}
 
-  const map = L.map(el, {{ scrollWheelZoom: false, dragging: false, tap: false, zoomControl: false }});
+  const map = L.map(el, {{ scrollWheelZoom: false, dragging: false, tap: false, zoomControl: false, zoomSnap: 0.25 }});
   L.control.zoom({{ position: 'topleft', zoomInTitle: 'Ingrandisci mappa', zoomOutTitle: 'Riduci mappa' }}).addTo(map);
   dayMaps[dayId] = map;
   L.tileLayer('https://{{s}}.tile.openstreetmap.org/{{z}}/{{x}}/{{y}}.png', {{
@@ -1266,8 +1273,9 @@ function ensureDayMap(dayId) {{
     L.marker([p.lat, p.lon], {{ icon }}).addTo(map).bindPopup(p.name);
   }});
 
-  // margini: a sinistra in alto ci sono i pulsanti +/−, in basso i crediti della mappa
-  map.fitBounds(latlngs, {{ paddingTopLeft: [52, 34], paddingBottomRight: [34, 34] }});
+  // margini: a sinistra in alto ci sono i pulsanti +/−, in basso i crediti della mappa;
+  // l'inquadratura comprende anche la strada, non solo le tappe
+  map.fitBounds(latlngs.concat(DAY_GEOMETRY[dayId] || []), {{ paddingTopLeft: [52, 34], paddingBottomRight: [34, 34] }});
 
   const ROUTE_STYLE = {{ color: '#d9985f', weight: 4, opacity: 0.9, lineCap: 'round' }};
   if (DAY_GEOMETRY[dayId]) {{
@@ -1307,6 +1315,8 @@ function setActive(id, moveFocus) {{
   }});
   document.querySelectorAll('.page-view').forEach(el => {{ el.hidden = el.id !== 'view-' + id; }});
   if (DAYS_META.some(d => d.id === id)) ensureDayMap(id);
+  // la mappa del viaggio creata con la tab Info nascosta va ridimensionata e reinquadrata
+  if (id === 'info' && tripMap) requestAnimationFrame(() => {{ tripMap.invalidateSize(); tripMap.fitBounds(tripBounds, TRIP_FIT); }});
   const fabBtn = document.getElementById('fab-fx-btn');
   const fabPopup = document.getElementById('fab-fx-popup');
   if (fabBtn) fabBtn.hidden = id === 'info';
@@ -1369,8 +1379,8 @@ function renderWeatherAndSun() {{
     if (dlEl) dlEl.textContent = dl + ' di luce';
 
     const auroraEl = document.querySelector('[data-aurora="' + day.id + '"]');
-    if (auroraEl) {{
-      auroraEl.innerHTML = '<strong>Aurora:</strong> Buio da ' + ss + ' a ' + sr + ' del giorno dopo — finestra ampia. Novembre è piena stagione aurora: serve cielo sereno e attività geomagnetica. Controlla vedur.is/aurora nei giorni prima.<span data-aurora-live="' + day.id + '"></span>';
+    if (auroraEl && day.id !== 'd8') {{   // l'ultima sera siete già in volo
+      auroraEl.innerHTML = '<strong>Aurora:</strong> Notte dal tramonto (' + ss + ') all\\'alba (' + sr + ') del giorno dopo; il buio pieno arriva circa un\\'ora e mezza dopo il tramonto — finestra ampia. Novembre è piena stagione aurora: serve cielo sereno e attività geomagnetica. Controlla vedur.is/aurora nei giorni prima.<span data-aurora-live="' + day.id + '"></span>';
     }}
   }});
   if (auroraReady) renderAurora();   // il box aurora dei giorni è appena stato riscritto
@@ -1476,7 +1486,7 @@ async function fetchKp() {{
     state.kpStatus = 'ok';
     state.kpAt = new Date();
   }} catch (e) {{ state.kpStatus = 'error'; }}
-  document.getElementById('kp-value').textContent = state.kpStatus === 'ok' ? ('Kp ' + state.kp) : '—';
+  document.getElementById('kp-value').textContent = state.kpStatus === 'ok' ? ('Kp ' + String(state.kp).replace('.', ',')) : '—';
   let kpText;
   if (state.kpStatus === 'ok') {{
     const t = state.kpAt;
@@ -1676,10 +1686,14 @@ function renderAurora() {{
   const verdictEl = document.getElementById('aurora-verdict');
   const data = auroraLoad();
   const now = new Date();
-  // la notte "di stasera" inizia alle 12 UTC di oggi (prima delle 10 è ancora la notte in corso)
-  const start = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), 12) - (now.getUTCHours() < 10 ? 86400000 : 0);
+  // la notte "di stasera" inizia alle 12 UTC di oggi (prima delle 7, quando arriva l'avviso
+  // del mattino, è ancora la notte in corso)
+  const start = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), 12) - (now.getUTCHours() < 7 ? 86400000 : 0);
   const isoOf = ms => new Date(ms).toISOString().slice(0, 10);
 
+  // dopo l'ultima notte in Islanda (21-22 novembre) la stima non serve più
+  const tonightBox = verdictEl && verdictEl.parentElement;
+  if (tonightBox) tonightBox.hidden = isoOf(start) > '2026-11-21';
   if (verdictEl) {{
     const detailEl = document.getElementById('aurora-detail');
     const daysEl = document.getElementById('aurora-days');
@@ -1699,7 +1713,7 @@ function renderAurora() {{
       if (est.stops.length > 1) est.stops.forEach(st => parts.push(shortPlace(st.name) + ' ' + AU_HH(st.from) + '–' + AU_HH(st.end) + ': ' + st.level));
       const cl = auroraClouds(est);
       if (est.level !== 'nulle' && est.windows.length) parts.push('meglio ' + (cl.variable ? auroraWindowsCloudText(est) : auroraWindowsText(est)));
-      parts.push('Kp previsto fino a ' + est.kpMax.toFixed(1).replace('.0', ''));
+      parts.push('Kp previsto fino a ' + est.kpMax.toFixed(1).replace('.0', '').replace('.', ','));
       parts.push(cl.text);
       parts.push('buio ' + AU_HH(est.hours[0].t) + '–' + AU_HH(new Date(est.hours[est.hours.length - 1].t.getTime() + 3600000)) + ' (ora islandese)');
       detailEl.textContent = parts.join(' · ');
@@ -1815,6 +1829,8 @@ function fabFxSetup() {{
 }}
 fabFxSetup();
 
+let tripMap = null, tripBounds = null;
+const TRIP_FIT = {{ paddingTopLeft: [52, 34], paddingBottomRight: [34, 34] }};
 function initTripMap() {{
   const el = document.getElementById('trip-map');
   if (!el || typeof L === 'undefined') return;
@@ -1826,7 +1842,7 @@ function initTripMap() {{
     {{ key: 'fludir', label: 'Flúðir', n: '4' }}
   ];
 
-  const map = L.map(el, {{ scrollWheelZoom: false, dragging: false, tap: false, zoomControl: false }});
+  const map = L.map(el, {{ scrollWheelZoom: false, dragging: false, tap: false, zoomControl: false, zoomSnap: 0.25 }});
   L.control.zoom({{ position: 'topleft', zoomInTitle: 'Ingrandisci mappa', zoomOutTitle: 'Riduci mappa' }}).addTo(map);
   L.tileLayer('https://{{s}}.tile.openstreetmap.org/{{z}}/{{x}}/{{y}}.png', {{
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors',
@@ -1862,8 +1878,11 @@ function initTripMap() {{
     L.marker([loc.lat, loc.lon], {{ icon }}).addTo(map).bindPopup(s.label);
   }});
 
-  // margini: a sinistra in alto ci sono i pulsanti +/−, in basso i crediti della mappa
-  map.fitBounds(latlngs, {{ paddingTopLeft: [52, 34], paddingBottomRight: [34, 34] }});
+  // margini: a sinistra in alto ci sono i pulsanti +/−, in basso i crediti della mappa;
+  // l'inquadratura comprende anche le strade di tutti i giorni
+  tripBounds = L.latLngBounds(latlngs.concat(...dayLines));
+  map.fitBounds(tripBounds, TRIP_FIT);
+  tripMap = map;
 
   el.addEventListener('touchstart', () => {{ map.scrollWheelZoom.enable(); map.dragging.enable(); }}, {{ once: true, passive: true }});
 }}

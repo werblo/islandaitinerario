@@ -1,5 +1,18 @@
 # Islanda 2026 — webapp del viaggio
 
+## In breve (ottobre 2026)
+
+- **Sito:** werblo.github.io/islandaitinerario, pubblicato da `main` con
+  GitHub Pages; installato come app (Firefox su Android), funziona anche
+  offline dopo "Prepara offline" nella tab Info.
+- **Contenuti:** tutto in `render.py`; `python3 render.py` rigenera
+  `index.html`, `sw.js` e le foto in `images/web/` (sezioni 2-3).
+- **Avvisi aurora:** notifiche push dal 15 al 22 novembre, con prova
+  automatica il 13 novembre alle 18:07 islandesi (19:07 in Italia) — sezione 12.
+- **Ricerca nuvole:** test di ottobre sul metodo per le nuvole, risultato
+  finale il 1° novembre; il metodo in uso cambia solo dopo conferma — sezione 13.
+- **Controllo pre-partenza:** ricontrollo automatico l'8 novembre (sezione 4).
+
 ## 1. Aggiungere le foto
 
 Nella cartella `images/` metti i file **con questi nomi esatti** (formato .jpg,
@@ -56,7 +69,8 @@ I nomi file corrispondono al giorno/attività attuale dell'itinerario: se
 cambi l'ordine o il testo di un'attività in `render.py`, il nome atteso
 cambia di conseguenza (segue il titolo, in minuscolo e senza accenti).
 
-Se preferisci, mandami le foto in chat mano a mano che le hai e te le
+A ottobre 2026 ci sono tutte (le vecchie sostituite sono in
+`images/archivio/`). Se preferisci, mandami le foto in chat e te le
 incorporo/rinomino io.
 
 Le foto restano .jpg come le metti tu: `render.py` le converte da solo in
@@ -73,11 +87,15 @@ Flusso di lavoro per qualunque modifica:
 
 1. Si modifica `render.py` (i dati/testi dell'itinerario) e/o le foto in
    `images/`.
-2. Si rilancia `python3 render.py` per rigenerare `index.html`.
+2. Si rilancia `python3 render.py` (serve Pillow: `pip install Pillow`) per
+   rigenerare `index.html`, `sw.js` e le foto in `images/web/`: vanno nel
+   commit tutti e tre, perché il sito pubblica i file così come sono.
 3. Si apre una pull request verso `main` e la si fa mergiare.
 4. GitHub Pages ripubblica automaticamente il sito aggiornato.
 
 Da telefono, una volta pubblicato il sito:
+- **Android (Firefox, quello che usate):** apri il link → menu ⋮ →
+  "Installa" / "Aggiungi alla schermata principale"
 - **Android (Chrome):** apri il link → menu ⋮ → "Aggiungi a schermata Home"
   / "Installa app"
 - **iPhone (Safari):** apri il link → icona Condividi → "Aggiungi a Home"
@@ -98,8 +116,10 @@ editare l'export di Claude Design.
 
 ## 4. Controllo di coerenza (distanze, orari, luce)
 
-L'itinerario contiene dati che vanno tenuti sincronizzati manualmente quando
-si spostano o si riordinano le tappe: km/tempi di guida in `legs`, orari
+L'itinerario contiene dati che vanno tenuti sincronizzati quando si
+spostano o si riordinano le tappe. Km e tempi di guida in `legs` vengono da
+OSRM (azione "Aggiorna percorsi mappa", vedi sezione 11); a mano restano gli
+orari
 delle `activities` rispetto ad alba/tramonto reali, e l'ordine di
 `map_points` (deve rispecchiare l'ordine reale di visita, altrimenti la
 mappa disegna un percorso sbagliato).
@@ -205,7 +225,9 @@ web) ha trovato due errori reali:
   ma con un pavimento a linea d'aria di 100.9 km. Corretta a 130 km/~1h50
   (verificato via Kirkjubæjarklaustur come riferimento), con l'attività
   Fjaðrárgljúfur del Giorno 5 spostata da 14:30 a 15:00 e il totale
-  km/giorno aggiornato nei tips (~370 → ~395 km).
+  km/giorno aggiornato nei tips (~370 → ~395 km). *Aggiornamento ottobre:
+  oggi il Giorno 5 parte alle 7:30 e Fjaðrárgljúfur è alle 14:30, con km dal
+  calcolo OSRM (~390 km).*
 
 Corretta anche un'incoerenza testuale: l'energia rinnovabile islandese
 era indicata come "quasi 100%" (Giorno 8) e "85%" (tab Storia) senza
@@ -218,8 +240,8 @@ industria, trasporti inclusi).
   tra il 15 e il 22 novembre 2026 (testato con Chromium/Playwright
   simulando diverse date).
 - Ogni attività con una tappa reale ha un link **"Naviga"** che apre
-  Google Maps (22 attività su 8 giorni, incluso il ritiro/riconsegna
-  auto FairCar). Usa una **ricerca testuale** (es. "Skógafoss parking",
+  Google Maps (incluse la riconsegna auto FairCar e i parcheggi degli
+  alloggi). Usa una **ricerca testuale** (es. "Skógafoss parking",
   "Laugarvatn Fontana") invece di coordinate fisse: Google Maps trova
   da solo il pin più preciso su parcheggio/struttura reale, verificato
   via web search per ognuna delle 22 query.
@@ -244,7 +266,7 @@ sotto "Alloggio", con link "Naviga" diretti:
   Hlemmur/Rauðarárstígur (~230 ISK/h, senza limite di 3h) il 15 e 16
   novembre; P1 direttamente sotto casa il 17, perché quella sera si
   rientra da Fontana dopo le 21:00 (già gratis anche lì).
-- **Hotel Burfell (Giorni 4-5)** e **The Hill Guesthouse (Giorni 6-7)**:
+- **Hótel Búrfell (Giorni 4-5)** e **The Hill Guesthouse (Giorni 6-7)**:
   parcheggio gratuito incluso, confermato via web search.
 - La maggior parte delle tappe turistiche lungo il percorso (Þingvellir,
   Seljalandsfoss, Skógafoss, Dyrhólaey, Reynisfjara, Jökulsárlón/Diamond
@@ -255,16 +277,16 @@ sotto "Alloggio", con link "Naviga" diretti:
 
 ## 10. Struttura delle tab
 
-- **Info** — countdown, aurora boreale in tempo reale, mappa del viaggio,
-  cambio EUR/ISK, riepilogo volo/auto, budget, sicurezza, alloggi, numeri
-  utili.
+- **Info** — countdown, aurora boreale in tempo reale con la stima di
+  stasera, mappa del viaggio, "Prepara offline", cambio EUR/ISK, il viaggio
+  in breve, budget e celiachia, sicurezza, alloggi, numeri utili.
 - **Giorno 1–8** — un tab per ogni giornata: attività, spostamenti, mappa
   del percorso, box "Storia & curiosità", pasti, alloggio.
 - **Storia** — panoramica generale sulla storia islandese (colonizzazione,
   Alþingi, lingua, folklore, geologia).
 - **Checklist** — documenti, abbigliamento, tecnologia, con caselle
   spuntabili salvate sul telefono (localStorage) e contatore di
-  avanzamento.
+  avanzamento; in fondo "Quanto manca" e "Avvisi aurora sul telefono".
 
 ## 11. Aggiornamento settembre 2026 (23/09)
 
@@ -445,7 +467,7 @@ Reykjanes (ponte tra i continenti, Gunnuhver, faro di Reykjanesviti) è
 ora l'attività del pomeriggio del 16 novembre, con le tratte in auto
 (~135 km in tutto). Il National Museum resta come alternativa se il meteo
 è brutto. Andata e ritorno passano da Keflavík e Hafnir (strada 425):
-Grindavík è chiusa e la strada 43 può chiudere per l'attività vulcanica.
+Grindavík e la strada 43 possono essere chiuse per l'attività vulcanica.
 Le coordinate delle tappe sulla mappa non sono cambiate, quindi il
 percorso già calcolato resta valido.
 
@@ -485,10 +507,11 @@ sulla riva del lago Laugarvatn accanto a Fontana. Foto attesa:
 Il primo calcolo OSRM tratta per tratta ha corretto alcuni valori, per
 esempio Dyrhólaey → Reynisfjara 20 km (si gira dalla strada 215, non 7 km),
 Faxi → Efstidalur II 16 km (non 9), Þingvellir → Laugarvatn ~35 min.
-Di conseguenza: Seljalandsfoss alle 11:45 (Giorno 4), Jökulsárlón alle
-11:00 (Giorno 5; a ottobre anticipato: partenza 7:30, Jökulsárlón 10:30,
-Fjaðrárgljúfur 14:30 per avere luce sul canyon), arrivo a Laugarvatn verso le 14:05 (Giorno 3), e i
-totali nei consigli dei giorni sono stati riallineati.
+Di conseguenza: Seljalandsfoss alle 11:45 (Giorno 4), arrivo a Laugarvatn
+verso le 14:05 (Giorno 3) e Jökulsárlón alle 11:00 (Giorno 5). A ottobre il
+Giorno 5 è stato anticipato (partenza 7:30, Jökulsárlón 10:30-10:45,
+Fjaðrárgljúfur 14:30-14:45) per avere luce sul canyon. I totali nei consigli
+dei giorni sono stati riallineati.
 
 ### Testi più grandi (23/09)
 I testi da leggere sono stati ingranditi di circa 2 px, per leggerli meglio
@@ -510,17 +533,23 @@ che fa la stessa stima del box "Stasera" dell'app (Kp previsto NOAA × cielo
 sereno Open-Meteo nelle ore di buio) e manda notifiche push ai telefoni
 iscritti. Orari in ora islandese (= UTC):
 
-- **Mattino, verso le 7:30, tutti i giorni (sempre):** com'è messa la sera,
+- **Mattino, verso le 7:30, dal 15 al 21 novembre (sempre):** com'è messa la sera,
   con una frase scherzosa diversa ogni giorno (personalizzata per nome, vedi
   sotto) e il dettaglio: tappe, ore migliori, Kp, nuvole. Il workflow parte
-  alle 7:15 perché GitHub di solito ha qualche minuto di ritardo.
+  alle 7:15 perché GitHub di solito ha qualche minuto di ritardo. Se mancano
+  le nuvole o il Kp, il titolo dice "previsione incompleta" / "non
+  disponibile" invece di dare una stima.
 - **"🔄 Cambio di programma"** (controllo ogni 30 minuti, ai minuti :07 e :37
-  dalle 16:07 alle 3:37): solo se la stima della notte diventa "buone" e al
+  dalle 16:07 alle 3:37, l'ultima la notte tra il 21 e il 22): solo se la stima della notte diventa "buone" e al
   mattino non lo era, e solo se sono arrivati i dati sulle nuvole (con il solo
   Kp sarebbe un falso allarme). Se il messaggio del mattino non è partito, il
   titolo è "🌌 Aurora stanotte: buone probabilità".
 - **"Aurora: condizioni buone adesso"**: quando è buio e il Kp misurato in
   quel momento, insieme alle nuvole di quell'ora, è buono.
+
+- **Prova automatica:** il 13 novembre alle 18:07 (19:07 in Italia) arriva
+  "🔔 Prova avvisi aurora" su tutti i telefoni iscritti: se non arriva,
+  c'è tempo per sistemare prima della partenza.
 
 Ogni tipo di notifica ha la sua etichetta, quindi una non cancella l'altra.
 Se un telefono non risponde, gli altri ricevono comunque la notifica e il
@@ -611,7 +640,11 @@ Open-Meteo è già il DMI HARMONIE, lo stesso tipo di vedur.is), `pesata`
 - **Test approfondito:** ogni mattina di ottobre alle 7:30 (nel 2026 dal 5
   ottobre, il giorno dopo l'attivazione) il workflow salva le previsioni per
   la notte e le confronta con le osservazioni; il 1° novembre fa il confronto
-  finale. Risultati nel riepilogo di ogni esecuzione e nell'artifact
+  finale. GitHub a volte parte con ore di ritardo: la raccolta salva sempre
+  le ore della notte di quel giorno (colonne `notte` e `anticipo_h`), alle
+  10:47 c'è una seconda prova che non fa niente se la prima è andata, e nel
+  confronto, se un'ora è stata salvata due volte, conta la previsione più
+  vecchia. Risultati nel riepilogo di ogni esecuzione e nell'artifact
   `ricerca-nuvole`. Tutti i metodi sono confrontati sulle stesse ore, con due
   soglie di "cielo utile" (50% e 30%: con Kp 3 l'app vuole nuvole sotto il
   30% circa). Gira solo nel 2026.
@@ -636,3 +669,7 @@ Reykjavík e Keflavík, verità = METAR con tutte le nuvole):**
 dei sensori notturni detti sopra; sulle previsioni del giorno prima la media
 non ha fatto meglio del metodo attuale. Il test approfondito usa le
 previsioni delle 7:30: si cambia metodo solo se la differenza è netta.
+
+Dopo il 1° novembre, scelto il metodo, la ricerca non serve più: si possono
+cancellare `tools/research/` e `.github/workflows/ricerca-nuvole.yml` (gli
+avvisi aurora non li usano).

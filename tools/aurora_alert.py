@@ -225,7 +225,7 @@ def night_estimate(start, stops, trip, kp_rows, clouds):
 
 
 def fmt_kp(kp):
-    return f'{kp:.1f}'.replace('.0', '')
+    return f'{kp:.1f}'.replace('.0', '').replace('.', ',')    # all'italiana: 4,3
 
 
 def place_label(est):
@@ -270,8 +270,7 @@ def details(est):
             wins.append(w)
         parts.append('meglio ' + ' e '.join(wins))
     parts.append('Kp fino a ' + fmt_kp(est['kp_max']))
-    if clouds:
-        parts.append(clouds)
+    parts.append(clouds or 'nuvole non disponibili')
     return ' · '.join(parts)
 
 
@@ -297,6 +296,8 @@ PHRASES = {
         'nulle': ["♨️ Stasera a {luogo} l'aurora dà forfait. Piano B: piscina calda e birra islandese.",
                   "😴 L'aurora si è presa la serata libera. A nanna presto, domani si guida!",
                   "🍲 Niente spettacolo in cielo stasera a {luogo}: concentratevi sulla zuppa di agnello."],
+        'nonuvole': ["☁️ Stamattina mancano i dati sulle nuvole: il Kp da solo non basta, ricontrollate l'app prima di cena.",
+                     "📡 Previsione a metà: il Kp c'è, le nuvole no. Un'occhiata all'app in serata e siete a posto."],
         'nd': ["🔭 Previsione dell'aurora non disponibile stamattina: in serata guardate l'app o vedur.is/aurora.",
                "📡 Stamattina i dati sull'aurora non arrivano: ricontrollate l'app prima di cena."],
         'strada': ["🚗 Stasera il momento migliore potrebbe arrivare lungo la strada per {ultimo}: se il cielo si apre, fermatevi in una piazzola sicura e guardate in alto!"],
@@ -310,6 +311,7 @@ PHRASES = {
                    "🔭 {nome}, stasera serve un pizzico di fortuna: a {luogo} non è detta l'ultima parola."],
         'nulle': ["☁️ {nome}, stasera a {luogo} il cielo è chiuso per ferie. Domani andrà meglio!",
                   "😴 {nome}, l'aurora stasera resta a casa. Goditi la cena a {luogo}!"],
+        'nonuvole': ["☁️ {nome}, stamattina mancano i dati sulle nuvole: ricontrolla l'app prima di cena."],
         'nd': ["🔭 {nome}, stamattina la previsione dell'aurora non arriva: ricontrolla l'app in serata."],
         'strada': ["🚗 {nome}, stasera il meglio potrebbe arrivare lungo la strada per {ultimo}: se il cielo si apre, fermatevi in una piazzola sicura!"],
         'viaggio': ["🛁 {nome}, stasera guarda in alto già a {migliore}, poi anche lungo la strada per {ultimo}!"],
@@ -323,6 +325,7 @@ PHRASES = {
                    "🔭 Federica, stasera serve un pizzico di fortuna: a {luogo} non è detta l'ultima parola."],
         'nulle': ["🛌 Fede, stasera niente aurora: è andata a dormire prima di te!",
                   "😴 Fede, l'aurora stasera ha mal di testa: a {luogo} niente spettacolo. Domani ci riprova!"],
+        'nonuvole': ["☁️ Fede, stamattina mancano i dati sulle nuvole: ricontrolla l'app prima di cena."],
         'nd': ["🔭 Fede, stamattina la previsione dell'aurora non arriva: ricontrolla l'app in serata."],
         'strada': ["🚗 Fede, stasera tieni d'occhio il cielo lungo la strada per {ultimo}: se si apre, fermatevi in una piazzola sicura!"],
         'viaggio': ["🛁 Fede, stasera guarda in alto già {da_migliore}, poi anche lungo la strada per {ultimo}!"],
@@ -335,14 +338,16 @@ MORNING_TITLES = {'buone': '🌅 Aurora stasera: buone probabilità', 'scarse': 
 
 
 def is_federica(name):
-    return re.fullmatch(r'fede(rica)?', name.strip().lower()) is not None
+    return re.match(r'fede(rica)?\b', name.strip().lower()) is not None
 
 
-def morning_phrase(name, est, night):
+def morning_phrase(name, est, night, last_night=False):
     """Frase del mattino per un telefono: stesso giorno e stesso nome -> stessa frase."""
     pool = PHRASES['federica'] if is_federica(name) else PHRASES['nome'] if name else PHRASES['tutti']
     level = est['level']
     kind = level or 'nd'
+    if level and not est.get('clouds'):
+        kind = 'nonuvole'      # c'è il Kp ma non le nuvole: niente verdetto
     stops = est['stops']
     last = stops[-1] if stops else None
     # tappa migliore: solo se è strettamente meglio dell'ultima (a pari merito vale l'ultima)
@@ -350,12 +355,21 @@ def morning_phrase(name, est, night):
     if best_stop and last and best_stop['best'] <= last['best']:
         best_stop = last
     # sera in movimento e la tappa migliore non è l'ultima: frase "di viaggio"
-    if level in ('buone', 'scarse') and len(stops) > 1 and best_stop is not last and best_stop['level'] != 'nulle':
+    if kind in ('buone', 'scarse') and len(stops) > 1 and best_stop is not last and best_stop['level'] != 'nulle':
         kind = 'strada' if best_stop['name'].startswith('strada') else 'viaggio'
-    text = random.Random(f'{night}|{name}|{kind}').choice(pool[kind])
+    choices = pool[kind]
+    if last_night:      # l'ultima notte non c'è un "domani" per l'aurora
+        choices = [c for c in choices if 'omani' not in c] or choices
+    text = random.Random(f'{night}|{name}|{kind}').choice(choices)
     migliore = short_name(best_stop['name']) if best_stop else ''
-    # con più tappe {luogo} è la tappa migliore della serata, non tutto il percorso
-    luogo = migliore if len(stops) > 1 else place_label(est)
+    # con più tappe {luogo} è la tappa migliore della serata, non tutto il percorso;
+    # senza probabilità (o se la migliore è la strada) vale dove passate la serata
+    if len(stops) > 1 and kind in ('buone', 'scarse', 'strada', 'viaggio') and not migliore.startswith('strada'):
+        luogo = migliore
+    elif len(stops) > 1 and last:
+        luogo = short_name(last['name'])
+    else:
+        luogo = place_label(est)
     da_migliore = (f'dalla piscina di {migliore}' if best_stop and 'Fontana' in best_stop['name']
                    else f'a {migliore}')
     return text.format(nome=name, luogo=luogo, migliore=migliore, da_migliore=da_migliore,
@@ -383,7 +397,7 @@ def parse_subscriptions(text):
             lines = [l.strip() for l in (gap[1:] if prev else gap) if l.strip()]
             label = lines[-1] if lines else ''
             label = re.sub(r'^(\d+\s*[).:-]|[-*•])\s*', '', label)      # "1) Federica:", "- Fede"
-            name = re.sub(r'[^\wÀ-ÿ\' -]', '', label).strip()
+            name = ' '.join(re.sub(r'[^\wÀ-ÿ\' -]', '', label).split())
             if obj['endpoint'] not in [s['endpoint'] for _, s in subs]:
                 subs.append((name, obj))
         i = prev = end
@@ -447,7 +461,7 @@ def main():
     start = now.replace(hour=12, minute=0) - timedelta(days=1 if now.hour < 10 and mode != 'mattino' else 0)
     night = start.strftime('%Y-%m-%d')
     trip_nights = {d['dateISO'] for d in trip['days'] if d['id'] != 'd8'}
-    if mode == 'controllo' and night not in trip_nights:
+    if night not in trip_nights and (mode == 'controllo' or (mode == 'mattino' and not manual)):
         print(f'Notte del {night}: fuori dalle date del viaggio, nessun controllo.')
         return 0
 
@@ -502,14 +516,19 @@ def main():
 
     if mode == 'mattino':
         body_info = '\n' + details(est) if est['level'] else ''
+        complete = bool(est['level'] and est['clouds'])
+        title = (MORNING_TITLES[est['level']] if complete
+                 else '🌅 Aurora stasera: previsione incompleta' if est['level']
+                 else '🌅 Aurora stasera: previsione non disponibile')
+        last_night = night == max(trip_nights)
         ok = send_all(subs, lambda name: {
-            'title': MORNING_TITLES.get(est['level'], '🌅 Aurora stasera: previsione non disponibile'),
-            'body': morning_phrase(name, est, night) + body_info,
+            'title': title,
+            'body': morning_phrase(name, est, night, last_night) + body_info,
             'tag': f'aurora-{night}-mattino'}, ttl=4 * 3600)
         if manual:
             print('Anteprima lanciata a mano: lo stato della notte non viene toccato.')
         elif ok:
-            rec['mattino'] = est['level']
+            rec['mattino'] = est['level'] if complete else None
             done.add('mattino')
             rec['inviati'] = sorted(done)
             sent[night] = rec
@@ -537,8 +556,8 @@ def main():
         if kp_factor(kp_now) * sky >= GOOD:
             alerts.append(('adesso', {
                 'title': '🌌 Aurora: condizioni buone adesso',
-                'body': f'{short_name(loc["name"])}: Kp {fmt_kp(kp_now)} in questo momento'
-                        + (f', nuvole {cloud}%' if cloud is not None else '')
+                'body': f'{short_name(loc["name"])[:1].upper()}{short_name(loc["name"])[1:]}: Kp {fmt_kp(kp_now)} in questo momento'
+                        + (f', nuvole {cloud}%' if cloud is not None else ' (dati sulle nuvole non disponibili: guardate se il cielo è sereno)')
                         + '. Allontanatevi dalle luci e guardate verso nord!',
                 'tag': f'aurora-{night}-adesso',
             }, 3600))
