@@ -349,7 +349,12 @@ deve dare 404.
   di mappa (~15 MB) lungo un corridoio stretto attorno al percorso, zoom
   6-12, massimo 2 download alla volta (tile usage policy OSM). Da fare
   con il Wi-Fi prima di partire, su entrambi i telefoni. Ingrandendo oltre
-  lo zoom 12 senza rete la mappa resta grigia.
+  lo zoom 12 senza rete la mappa resta grigia. L'app salva un'impronta
+  dell'elenco preciso dei riquadri (da ottobre 2026; prima contava solo
+  quanti erano): se il percorso cambia, la tab Info chiede di ripetere
+  "Prepara offline", che scarica solo i riquadri mancanti. I riquadri
+  si sovrascrivono, non si creano copie; la pagina e le foto si aggiornano
+  da sole e la versione vecchia viene cancellata.
 - **Spazio**: il pacchetto totale resta sotto i 30 MB, ben dentro i limiti
   di Android (Chrome) e iPhone (Safari). Su iPhone i dati offline restano
   al sicuro se l'app è **aggiunta alla schermata Home**; da Safari normale

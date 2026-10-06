@@ -810,12 +810,20 @@ function fmtWhen(iso) {
        + ' alle ' + String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
 }
 
+// Impronta dell'elenco preciso dei riquadri di mappa: cambia con qualunque
+// modifica del percorso, anche se il numero di riquadri resta uguale.
+const OFFLINE_TILES_KEY = (() => {
+  let h = 2166136261;
+  for (const ch of OFFLINE_TILES.join(',')) { h ^= ch.charCodeAt(0); h = Math.imul(h, 16777619); }
+  return (h >>> 0).toString(16);
+})();
+
 async function showOfflineState() {
   const status = document.getElementById('offline-status');
   if (!status) return;
   let saved = null;
   try { saved = JSON.parse(localStorage.getItem(OFFLINE_KEY) || 'null'); } catch (e) {}
-  if (saved && saved.tiles === OFFLINE_TILES.length) {
+  if (saved && saved.tilesKey === OFFLINE_TILES_KEY) {
     let used = '';
     try {
       const est = await navigator.storage.estimate();
@@ -870,7 +878,7 @@ async function prepareOffline() {
     status.textContent = failed + ' elementi non scaricati: riprova con una connessione migliore (quelli già salvati restano).';
     return;
   }
-  try { localStorage.setItem(OFFLINE_KEY, JSON.stringify({ at: new Date().toISOString(), tiles: OFFLINE_TILES.length })); } catch (e) {}
+  try { localStorage.setItem(OFFLINE_KEY, JSON.stringify({ at: new Date().toISOString(), tiles: OFFLINE_TILES.length, tilesKey: OFFLINE_TILES_KEY })); } catch (e) {}
   bar.hidden = true;
   showOfflineState();
 }
