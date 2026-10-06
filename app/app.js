@@ -778,7 +778,9 @@ function showAppVersion() {
   if (!el) return;
   let when = null;
   try { when = localStorage.getItem(UPDATED_KEY); } catch (e) {}
-  el.textContent = 'Versione app ' + APP_VERSION.slice(0, 7) + (when ? ' · ricevuta il ' + fmtWhen(when) : '');
+  el.textContent = 'Versione app ' + APP_VERSION.slice(0, 7);
+  const rec = document.getElementById('app-received');
+  if (rec) rec.textContent = when ? 'Ricevuta il ' + fmtWhen(when) : '';
 }
 
 (function announceUpdate() {
