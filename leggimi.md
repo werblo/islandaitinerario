@@ -333,6 +333,9 @@ deve dare 404.
   (mappe) ora si carica in fondo alla pagina, così la prima schermata
   appare un po' prima. La schermata scura dei primi secondi è in gran parte
   l'avvio di Firefox stesso (colore di sfondo dell'app nel manifest).
+  In fondo al riquadro "Prepara offline" (tab Info) c'è la riga "Versione
+  app … · ricevuta il …": dice quale versione ha il telefono e quando è
+  arrivata (utile per capire se un aggiornamento è stato ricevuto).
   Una foto sostituita con lo stesso nome si aggiorna comunque.
 - **Alba/tramonto** calcolati in locale (algoritmo NOAA), niente più
   chiamate a sunrise-sunset.org. Correzione emersa: i vecchi valori di
