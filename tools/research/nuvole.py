@@ -311,29 +311,68 @@ def cmd_storico(days):
     return '\n\n'.join(out)
 
 
+HEADER = ['emessa', 'stazione', 'ora', 'modello', 'tot', 'low', 'mid', 'high', 'notte', 'anticipo_h']
+
+
+def night_of(ora):
+    """Data della notte a cui appartiene un'ora UTC (la notte va dalle 12 alle 12)."""
+    return (datetime.fromisoformat(ora) - timedelta(hours=12)).date().isoformat()
+
+
+def lead_hours(emessa, ora):
+    return round((datetime.fromisoformat(ora) - datetime.fromisoformat(emessa)).total_seconds() / 3600, 1)
+
+
+def read_rows(path):
+    """Righe del CSV; quelle salvate prima delle colonne notte/anticipo_h vengono completate."""
+    if not os.path.exists(path):
+        return []
+    with open(path, newline='') as f:
+        rows = list(csv.DictReader(f))
+    for r in rows:
+        try:
+            if not r.get('notte'):
+                r['notte'] = night_of(r['ora'])
+            if not r.get('anticipo_h'):
+                r['anticipo_h'] = lead_hours(r['emessa'], r['ora'])
+        except (TypeError, ValueError):
+            pass    # riga troncata: la scarta cmd_valuta
+    return rows
+
+
 def cmd_raccogli(path):
-    """Salva le previsioni attuali per le ore di buio delle prossime 24 h (lanciato alle 7:30)."""
+    """Salva le previsioni per le ore di buio della notte di oggi (lanciato alle 7:30, con una
+    seconda prova alle 10:47 se GitHub ritarda: la seconda non fa niente se la prima è andata)."""
     now = datetime.now(timezone.utc)
-    new = os.path.exists(path)
-    with open(path, 'a', newline='') as f:
-        w = csv.writer(f)
-        if not new:
-            w.writerow(['emessa', 'stazione', 'ora', 'modello', 'tot', 'low', 'mid', 'high'])
-        n = 0
-        for sid, (name, lat, lon) in STATIONS.items():
-            for m in MODELS:
-                try:
-                    data = live_forecasts(lat, lon, m)
-                except Exception as e:
-                    print(f'::warning::Previsione {sid} {m} non disponibile: {e}')
-                    continue
-                for t, v in data.items():
-                    when = datetime.fromisoformat(t).replace(tzinfo=timezone.utc)
-                    if now < when <= now + timedelta(hours=24) and dark(when, lat, lon):
-                        w.writerow([now.strftime('%Y-%m-%dT%H:%M'), sid, t, m]
-                                   + ['' if x is None else round(x, 3) for x in v])
-                        n += 1
-                time.sleep(1)
+    tonight = now.date().isoformat()
+    rows = read_rows(path)
+    if any(r.get('notte') == tonight for r in rows):
+        print(f'Previsioni per la notte del {tonight} già salvate: niente da fare.')
+        return
+    if now.hour >= 10:
+        print(f'::warning::Raccolta partita in ritardo ({now:%H:%M} UTC): previsioni con meno anticipo del solito')
+    emessa = now.strftime('%Y-%m-%dT%H:%M')
+    n = 0
+    for sid, (name, lat, lon) in STATIONS.items():
+        for m in MODELS:
+            try:
+                data = live_forecasts(lat, lon, m)
+            except Exception as e:
+                print(f'::warning::Previsione {sid} {m} non disponibile: {e}')
+                continue
+            for t, v in data.items():
+                when = datetime.fromisoformat(t).replace(tzinfo=timezone.utc)
+                # solo la notte di oggi (dalle 12 UTC alle 12 UTC di domani), anche se GitHub ritarda
+                if when > now and night_of(t) == tonight and dark(when, lat, lon):
+                    rows.append(dict(zip(HEADER, [emessa, sid, t, m]
+                                         + ['' if x is None else round(x, 3) for x in v]
+                                         + [tonight, lead_hours(emessa, t)])))
+                    n += 1
+            time.sleep(1)
+    with open(path, 'w', newline='') as f:
+        w = csv.DictWriter(f, fieldnames=HEADER, extrasaction='ignore')
+        w.writeheader()
+        w.writerows(rows)
     print('righe salvate:', n)
     if n == 0:
         print('::error::Nessuna previsione salvata stamattina')
@@ -344,17 +383,21 @@ def cmd_valuta(path):
     if not os.path.exists(path):
         return '# Nessuna previsione raccolta finora'
     fc = {}
+    issued = {}     # per ogni ora la previsione più vecchia (quella della mattina), se salvata due volte
     dates = []
-    with open(path) as f:
-        for r in csv.DictReader(f):
-            try:
-                vals = [float(r[k]) if r[k] not in ('', None) else None for k in ('tot', 'low', 'mid', 'high')]
-            except ValueError:
-                continue    # riga troncata
-            if vals[0] is None:
-                continue
-            fc.setdefault(r['stazione'], {}).setdefault(r['ora'], {})[r['modello']] = vals
-            dates.append(r['ora'][:10])
+    for r in read_rows(path):
+        try:
+            vals = [float(r[k]) if r[k] not in ('', None) else None for k in ('tot', 'low', 'mid', 'high')]
+        except (TypeError, ValueError):
+            continue    # riga troncata
+        if vals[0] is None:
+            continue
+        key = (r['stazione'], r['ora'], r['modello'])
+        if key in issued and issued[key] <= r['emessa']:
+            continue
+        issued[key] = r['emessa']
+        fc.setdefault(r['stazione'], {}).setdefault(r['ora'], {})[r['modello']] = vals
+        dates.append(r['ora'][:10])
     if not dates:
         return '# Nessuna previsione raccolta'
     d0, d1 = date.fromisoformat(min(dates)), date.fromisoformat(max(dates))
@@ -378,5 +421,6 @@ if __name__ == '__main__':
         with open(os.environ['GITHUB_STEP_SUMMARY'], 'a') as f:
             f.write(text + '\n')
     if os.environ.get('REPORT'):
+        os.makedirs(os.path.dirname(os.environ['REPORT']) or '.', exist_ok=True)
         with open(os.environ['REPORT'], 'w') as f:
             f.write(text + '\n')

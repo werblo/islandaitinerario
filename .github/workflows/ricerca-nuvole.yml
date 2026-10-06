@@ -3,12 +3,15 @@ name: Ricerca nuvole
 # Test approfondito del metodo per le nuvole (tools/research/nuvole.py):
 # ogni mattina di ottobre alle 7:30 salva le previsioni per la notte, poi le
 # confronta con il cielo osservato nei giorni già passati. Il 1° novembre fa
-# il confronto finale. Risultati: nel riepilogo di ogni esecuzione (tab
+# il confronto finale. GitHub a volte parte con ore di ritardo: alle 10:47 c'è
+# una seconda prova, che non fa niente se le previsioni del giorno ci sono già.
+# Risultati: nel riepilogo di ogni esecuzione (tab
 # Actions) e nell'artifact "ricerca-nuvole". Non tocca il sito né gli avvisi.
 # A mano: "storico" = test veloce sulle previsioni d'archivio degli ultimi 40 giorni.
 on:
   schedule:
     - cron: '30 7 * 10 *'
+    - cron: '47 10 * 10 *'
     - cron: '30 9 1 11 *'
   workflow_dispatch:
     inputs:
@@ -29,8 +32,8 @@ jobs:
     runs-on: ubuntu-24.04   # fisso: ubuntu-latest passa a una nuova versione a metà ottobre 2026
     timeout-minutes: 30
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: '3.12'
       # previsioni raccolte nei giorni precedenti: cache, niente commit nel repo
@@ -46,11 +49,11 @@ jobs:
         if: github.event_name == 'schedule' && steps.dati.outputs.cache-matched-key == ''
         run: echo "::warning::Cache dei dati non trovata - si riparte da zero (copia nei vecchi artifact)"
       - name: Salva le previsioni di stamattina per stanotte
-        if: github.event.schedule == '30 7 * 10 *'
+        if: github.event.schedule == '30 7 * 10 *' || github.event.schedule == '47 10 * 10 *'
         run: mkdir -p ricerca-dati && python tools/research/nuvole.py raccogli ricerca-dati/previsioni.csv
       - name: Confronta con il cielo osservato
         if: always() && (github.event_name == 'schedule' || inputs.azione == 'valuta')
-        run: python tools/research/nuvole.py valuta ricerca-dati/previsioni.csv
+        run: mkdir -p ricerca-dati && python tools/research/nuvole.py valuta ricerca-dati/previsioni.csv
         env:
           REPORT: ricerca-dati/RISULTATI.md
       - name: Test veloce sulle previsioni d'archivio
