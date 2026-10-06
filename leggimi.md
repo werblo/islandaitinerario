@@ -5,8 +5,11 @@
 - **Sito:** werblo.github.io/islandaitinerario, pubblicato da `main` con
   GitHub Pages; installato come app (Firefox su Android), funziona anche
   offline dopo "Prepara offline" nella tab Info.
-- **Contenuti:** tutto in `render.py`; `python3 render.py` rigenera
-  `index.html`, `sw.js` e le foto in `images/web/` (sezioni 2-3).
+- **File (da ottobre 2026):** testi e dati del viaggio in `dati.py`; aspetto
+  in `app/stile.css`; funzioni della pagina (aurora, mappe, meteo, offline) in
+  `app/app.js`; `render.py` mette tutto insieme. `python3 render.py`
+  rigenera `index.html`, `sw.js` e le foto in `images/web/` (sezioni 2-3).
+  Per le sessioni con Claude c'è `CLAUDE.md`, un promemoria breve.
 - **Avvisi aurora:** notifiche push dal 15 al 22 novembre, con prova
   automatica il 13 novembre alle 18:07 islandesi (19:07 in Italia) — sezione 12.
 - **Ricerca nuvole:** test di ottobre sul metodo per le nuvole, risultato
@@ -85,7 +88,7 @@ manualmente file da nessuna parte.
 
 Flusso di lavoro per qualunque modifica:
 
-1. Si modifica `render.py` (i dati/testi dell'itinerario) e/o le foto in
+1. Si modifica `dati.py` (i dati/testi dell'itinerario) e/o le foto in
    `images/`.
 2. Si rilancia `python3 render.py` (serve Pillow: `pip install Pillow`) per
    rigenerare `index.html`, `sw.js` e le foto in `images/web/`: vanno nel
@@ -109,7 +112,7 @@ mostrano l'ultimo dato salvato.
 ## 3. Aggiornare i contenuti in futuro
 
 Tutto il testo dell'itinerario (giorni, attività, box "Storia & curiosità",
-alloggi, checklist, tab Storia) è dentro `render.py`. Se cambia qualcosa
+alloggi, checklist) è dentro `dati.py` (la tab Storia è ancora in `render.py`). Se cambia qualcosa
 (orari, tappe, alloggi), basta modificare i dati lì e rilanciare
 `python3 render.py` per rigenerare `index.html` — molto più leggero che
 editare l'export di Claude Design.
@@ -560,7 +563,7 @@ cron, cambialo anche nella riga `AURORA_MODE` dello stesso file, che
 confronta il testo esatto.
 
 **Tappe serali.** La stima segue dove siete davvero la sera, ora per ora:
-`evening_stops` in `render.py` (oggi il giorno 3: Fontana a Laugarvatn fino
+`evening_stops` in `dati.py` (oggi il giorno 3: Fontana a Laugarvatn fino
 alle 21, la strada del ritorno per Þingvellir fino alle 22, poi Reykjavík).
 I giorni non elencati usano l'alloggio della notte. Vale per l'app (box
 "Stasera" e tab dei giorni) e per tutte le notifiche.
@@ -573,8 +576,8 @@ repo: niente commit e il sito non viene ripubblicato.
 1. **Chiave privata.** Nel repo: Settings → Secrets and variables →
    Actions → *New repository secret*, nome `VAPID_PRIVATE_KEY`. Come valore
    metti la chiave privata che corrisponde a `VAPID_PUBLIC_KEY` in
-   `render.py`. Se la perdi, genera una nuova coppia di chiavi, sostituisci
-   la pubblica in `render.py`, rilancia `render.py` e riattiva gli avvisi
+   `dati.py`. Se la perdi, genera una nuova coppia di chiavi, sostituisci
+   la pubblica in `dati.py`, rilancia `render.py` e riattiva gli avvisi
    su ogni telefono.
 2. **Iscrivere i telefoni.** Su ogni telefono: apri l'app installata → tab
    Checklist → in fondo, "Avvisi aurora sul telefono" →
@@ -649,7 +652,7 @@ Open-Meteo è già il DMI HARMONIE, lo stesso tipo di vedur.is), `pesata`
   soglie di "cielo utile" (50% e 30%: con Kp 3 l'app vuole nuvole sotto il
   30% circa). Gira solo nel 2026.
 
-Il metodo in uso si sceglie con `CLOUD_METHOD` in `render.py` (`'totale'`,
+Il metodo in uso si sceglie con `CLOUD_METHOD` in `dati.py` (`'totale'`,
 `'pesata'`, `'media'` o `'media_pes'`; pesi `CLOUD_W_MID` e `CLOUD_W_HIGH`,
 modelli `CLOUD_MODELS`) e vale per app e notifiche: dopo averlo cambiato
 rilancia `python3 render.py` e fai il commit anche di `index.html`, perché le
