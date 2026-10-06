@@ -336,6 +336,10 @@ deve dare 404.
   In fondo al riquadro "Prepara offline" (tab Info) c'è la riga "Versione
   app … · ricevuta il …": dice quale versione ha il telefono e quando è
   arrivata (utile per capire se un aggiornamento è stato ricevuto).
+  Misura fatta il 6/10 su OnePlus 8 Pro (anche in modalità aereo): la
+  pagina arriva dalla copia offline ed è pronta in circa 0,4 s da quando
+  Firefox la chiede; circa 1 s prima della richiesta e il resto della
+  schermata scura sono l'avvio di Firefox, non dipendono dall'app.
   Una foto sostituita con lo stesso nome si aggiorna comunque.
 - **Alba/tramonto** calcolati in locale (algoritmo NOAA), niente più
   chiamate a sunrise-sunset.org. Correzione emersa: i vecchi valori di
