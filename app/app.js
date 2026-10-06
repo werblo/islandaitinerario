@@ -813,7 +813,13 @@ window.addEventListener('load', () => setTimeout(() => {
   const fcp = performance.getEntriesByName('first-contentful-paint')[0];
   const s = (ms) => (ms / 1000).toFixed(1).replace('.', ',') + ' s';
   const parts = [];
+  // da dove arriva la pagina: dalla copia offline (service worker) o da internet
+  const sw = navigator.serviceWorker && navigator.serviceWorker.controller;
+  parts.push(sw ? 'da copia offline' : 'da internet');
+  if (nav.transferSize > 0) parts.push(Math.round(nav.transferSize / 1024) + ' KB scaricati');
   if (nav.workerStart > 0) parts.push('avvio offline ' + s(nav.workerStart));
+  parts.push('richiesta ' + s(nav.requestStart || nav.fetchStart));
+  parts.push('risposta ' + s(nav.responseStart));
   parts.push('pagina letta ' + s(nav.responseEnd));
   if (fcp) parts.push('prima schermata ' + s(fcp.startTime));
   parts.push('pronta ' + s(nav.loadEventEnd || performance.now()));
