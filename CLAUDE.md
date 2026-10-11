@@ -22,11 +22,11 @@ l'utente: `leggimi.md` (lunga: leggi solo la sezione che serve).
 
 ## File
 - `dati.py` — tutti i dati e testi del viaggio: giorni, attività, pasti,
-  tratte, `map_points`, checklist, tappe serali (`evening_stops`),
+  tratte, `map_points`, tappe serali (`evening_stops`), link alla pagina
+  Notion (`NOTION_CHECKLIST_URL`),
   configurazione nuvole e chiave pubblica VAPID. **Quasi tutte le modifiche
   sono qui.**
-- `render.py` — genera la pagina: HTML dei giorni, tab Storia, Info,
-  checklist. Inserisce `app/stile.css` e `app/app.js` così come sono.
+- `render.py` — genera la pagina: HTML dei giorni, tab Storia, Info. Inserisce `app/stile.css` e `app/app.js` così come sono.
 - `app/stile.css`, `app/app.js` — aspetto e logica della pagina (meteo,
   alba/tramonto, stima aurora, mappe Leaflet, offline, notifiche).
 - Generati, da committare sempre: `index.html`, `sw.js` (da
@@ -58,8 +58,11 @@ l'utente: `leggimi.md` (lunga: leggi solo la sezione che serve).
 - Poche PR: raccogli le modifiche di un argomento/sessione sul branch e fai
   una sola PR alla fine; pubblica più volte solo se serve una prova sul
   telefono di Michele. Non riscrivere la storia di `main`.
-- Tab Info: "Prepara offline" è l'ultimo riquadro, con sotto "Versione app"
-  e "Ricevuta il".
+- Tab Info: "Avvisi aurora sul telefono" sotto l'aurora; "Prepara offline" è
+  l'ultimo riquadro, con sotto "Versione app" e "Ricevuta il".
+- Checklist (da fare, valigia) e biglietti: **solo su Notion**, pagina
+  "Islanda · 15-22 novembre 2026" (decisione di Michele, 11/10). Non
+  rimetterla nell'app; l'itinerario invece sta solo nell'app, non su Notion.
 
 ## Workflow GitHub (orari UTC = ora islandese)
 - `avvisi-aurora.yml`: mattino 7:15 dal 15 al 21/11, controlli ogni 30 min di

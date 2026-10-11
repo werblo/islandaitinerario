@@ -386,7 +386,6 @@ for d in days:
     aria_label = f"Giorno {d['num']}, {weekday_full} {parts[1]} {month_full}: {d['title']}"
     nav_items.append(_tab_btn(d['id'], e(label), aria_label, False))
 nav_items.append(_tab_btn('storia', 'Storia', 'Storia dell\'Islanda', False))
-nav_items.append(_tab_btn('checklist', 'Checklist', 'Checklist', False))
 nav_html = ''.join(nav_items)
 
 days_sections_html = ''.join(render_day_section(d) for d in days)
@@ -425,54 +424,6 @@ storia_html = f'''
     <div class="panel-title"><span class="rune-mark">ᚲ</span>Il paese del fuoco sotto il ghiaccio</div>
     <div class="rune-rule"></div>
     <p class="line">L'Islanda siede a cavallo della dorsale medio-atlantica, il punto dove le placche nordamericana ed eurasiatica si allontanano di circa 2 cm l'anno: la vedrete a occhio nudo a Þingvellir il Giorno 3. Questa posizione rende l'isola una delle zone vulcaniche più attive del pianeta, con oltre 30 sistemi vulcanici attivi. È lo stesso fuoco sotterraneo, imbrigliato, a rendere l'Islanda quasi autosufficiente: circa l'85% del consumo energetico totale del paese (riscaldamento, industria e trasporti inclusi) viene da fonti rinnovabili, soprattutto geotermia e idroelettrico — la sola elettricità è quasi al 100% rinnovabile. Sono le stesse sorgenti calde in cui vi immergerete a Fontana e alla Secret Lagoon.</p>
-  </div>
-</section>'''
-
-def render_checklist_group(group, group_idx):
-    items_html = ''
-    for item_idx, text in enumerate(group['items']):
-        item_id = f'chk-{group_idx}-{item_idx}'
-        items_html += (f'<label class="chk-item" for="{item_id}">'
-                        f'<input type="checkbox" id="{item_id}" class="chk-box" data-chk-id="{item_id}">'
-                        f'<span>{e(text)}</span></label>')
-    return (f'<div class="panel">'
-            f'<div class="panel-title">{e(group["title"])}</div>'
-            f'<div class="rune-rule"></div>'
-            f'<div class="chk-list">{items_html}</div>'
-            f'</div>')
-
-checklist_groups_html = ''.join(render_checklist_group(g, i) for i, g in enumerate(checklist_groups))
-
-checklist_html = f'''
-<section class="page-view" id="view-checklist" role="tabpanel" aria-labelledby="tab-checklist" hidden>
-  <div class="day-head">
-    <div class="day-date">Prima di partire</div>
-    <div class="day-title">Checklist</div>
-  </div>
-
-  <div class="panel">
-    <div class="panel-title">Quanto manca</div>
-    <div class="rune-rule"></div>
-    <div class="line" id="chk-progress" aria-live="polite">Caricamento…</div>
-  </div>
-
-  {checklist_groups_html}
-
-  <div class="tip-card">
-    <strong>Colonnine di benzina:</strong> in Islanda sono quasi tutte self-service e chiedono una carta con PIN attivo (niente carte prepagate senza PIN o solo contactless). Se avete una carta di credito o debito normale con PIN funziona senza problemi — verificate solo di avere il PIN a mente prima di partire.
-  </div>
-
-  <div class="panel aurora-push" id="aurora-push">
-    <div class="panel-title">Avvisi aurora sul telefono</div>
-    <div class="rune-rule"></div>
-    <div class="line">Nei giorni del viaggio, anche ad app chiusa: ogni mattina verso le 7:30 com'è messa la sera dove sarete, la sera un avviso solo se la previsione migliora, e &laquo;adesso&raquo; quando le condizioni sono buone. Serve la connessione per riceverle.</div>
-    <div class="aurora-push__status" id="aurora-push-status" aria-live="polite"></div>
-    <div class="aurora-push__btns">
-      <button type="button" class="aurora-push__btn" id="aurora-push-on">Attiva avvisi aurora</button>
-      <button type="button" class="aurora-push__btn" id="aurora-push-copy" hidden>Copia codice</button>
-      <button type="button" class="aurora-push__btn aurora-push__btn--ghost" id="aurora-push-off" hidden>Disattiva</button>
-    </div>
-    <textarea class="aurora-push__code" id="aurora-push-code" readonly hidden aria-label="Codice di iscrizione agli avvisi aurora"></textarea>
   </div>
 </section>'''
 
@@ -640,6 +591,19 @@ html_out = f'''<!DOCTYPE html>
     <div class="more">Più vicino alla partenza, controlla <a href="https://en.vedur.is/weather/forecasts/aurora/" target="_blank" rel="noopener">vedur.is/aurora</a> per la previsione reale sulle vostre date e sul cielo sereno.</div>
   </div>
 
+  <div class="panel aurora-push" id="aurora-push">
+    <div class="panel-title">Avvisi aurora sul telefono</div>
+    <div class="rune-rule"></div>
+    <div class="line">Nei giorni del viaggio, anche ad app chiusa: ogni mattina verso le 7:30 com'è messa la sera dove sarete, la sera un avviso solo se la previsione migliora, e &laquo;adesso&raquo; quando le condizioni sono buone. Serve la connessione per riceverle.</div>
+    <div class="aurora-push__status" id="aurora-push-status" aria-live="polite"></div>
+    <div class="aurora-push__btns">
+      <button type="button" class="aurora-push__btn" id="aurora-push-on">Attiva avvisi aurora</button>
+      <button type="button" class="aurora-push__btn" id="aurora-push-copy" hidden>Copia codice</button>
+      <button type="button" class="aurora-push__btn aurora-push__btn--ghost" id="aurora-push-off" hidden>Disattiva</button>
+    </div>
+    <textarea class="aurora-push__code" id="aurora-push-code" readonly hidden aria-label="Codice di iscrizione agli avvisi aurora"></textarea>
+  </div>
+
   <div class="panel">
     <div class="panel-title">Mappa del viaggio</div>
     <div class="rune-rule"></div>
@@ -696,6 +660,10 @@ html_out = f'''<!DOCTYPE html>
     <div class="line">• Le mappe di questa app mostrano il percorso ma non sono per la navigazione stradale vera e propria; offline si vedono solo dopo aver usato "Prepara offline". Per guidare, scarica prima di partire le mappe offline di Google Maps (o Organic Maps) per l'Islanda.</div>
   </div>
 
+  <div class="tip-card">
+    <strong>Colonnine di benzina:</strong> in Islanda sono quasi tutte self-service e chiedono una carta con PIN attivo (niente carte prepagate senza PIN o solo contactless). Se avete una carta di credito o debito normale con PIN funziona senza problemi — verificate solo di avere il PIN a mente prima di partire.
+  </div>
+
   <div class="panel">
     <div class="panel-title">Dove dormite</div>
     <div class="rune-rule"></div>
@@ -710,6 +678,12 @@ html_out = f'''<!DOCTYPE html>
     <div class="line">• <strong>Hótel Búrfell (Vík, Giorni 4-5):</strong> <a href="tel:+3544874660">+354 487 4660</a></div>
     <div class="line">• <strong>The Hill Guesthouse (The Hill Hotel, Flúðir, Giorni 6-7):</strong> <a href="tel:+3544864430">+354 486 4430</a></div>
     <div class="line" style="margin-top:6px;font-size:0.8125rem;color:#5c6a78;">Numeri trovati via ricerca online, non verificati con una chiamata diretta: ricontrollateli nelle email di conferma prima di partire.</div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-title">Checklist e documenti</div>
+    <div class="rune-rule"></div>
+    <div class="line">La checklist (cose da fare, valigia) e i biglietti sono su Notion, condivisi tra voi due: <a href="{NOTION_CHECKLIST_URL}" target="_blank" rel="noopener">apri la pagina Notion ↗</a></div>
   </div>
 
   <div class="panel">
@@ -728,7 +702,6 @@ html_out = f'''<!DOCTYPE html>
 
 {storia_html}
 
-{checklist_html}
 
 </main>
 
