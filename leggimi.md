@@ -14,6 +14,8 @@
   `app/app.js`; `render.py` mette tutto insieme. `python3 render.py`
   rigenera `index.html`, `sw.js` e le foto in `images/web/` (sezioni 2-3).
   Per le sessioni con Claude c'è `CLAUDE.md`, un promemoria breve.
+- **Checklist e biglietti:** su Notion (pagina "Islanda · 15-22 novembre
+  2026", condivisa), non più nell'app; nella tab Info c'è il link.
 - **Avvisi aurora:** notifiche push dal 15 al 22 novembre, con prova
   automatica il 13 novembre alle 18:07 islandesi (19:07 in Italia) — sezione 12.
 - **Ricerca nuvole:** test di ottobre sul metodo per le nuvole, risultato
@@ -120,7 +122,7 @@ mostrano l'ultimo dato salvato.
 ## 3. Aggiornare i contenuti in futuro
 
 Tutto il testo dell'itinerario (giorni, attività, box "Storia & curiosità",
-alloggi, checklist) è dentro `dati.py` (la tab Storia è ancora in `render.py`). Se cambia qualcosa
+alloggi) è dentro `dati.py` (la tab Storia è ancora in `render.py`). Se cambia qualcosa
 (orari, tappe, alloggi), basta modificare i dati lì e rilanciare
 `python3 render.py` per rigenerare `index.html` — molto più leggero che
 editare l'export di Claude Design.
@@ -295,9 +297,12 @@ sotto "Alloggio", con link "Naviga" diretti:
   del percorso, box "Storia & curiosità", pasti, alloggio.
 - **Storia** — panoramica generale sulla storia islandese (colonizzazione,
   Alþingi, lingua, folklore, geologia).
-- **Checklist** — documenti, abbigliamento, tecnologia, con caselle
-  spuntabili salvate sul telefono (localStorage) e contatore di
-  avanzamento; in fondo "Quanto manca" e "Avvisi aurora sul telefono".
+- **Checklist** — tolta l'11 ottobre 2026: la checklist (cose da fare,
+  valigia) e i biglietti sono ora su Notion, nella pagina "Islanda · 15-22
+  novembre 2026", condivisa tra Michele e Federica. Nella tab Info c'è il
+  riquadro "Checklist e documenti" con il link; "Avvisi aurora sul
+  telefono" è passato nella tab Info, subito sotto l'aurora, e il consiglio
+  sulle colonnine di benzina sotto "Sicurezza & risorse utili".
 
 ## 11. Aggiornamento settembre 2026 (23/09)
 
@@ -613,7 +618,7 @@ repo: niente commit e il sito non viene ripubblicato.
    la pubblica in `dati.py`, rilancia `render.py` e riattiva gli avvisi
    su ogni telefono.
 2. **Iscrivere i telefoni.** Su ogni telefono: apri l'app installata → tab
-   Checklist → in fondo, "Avvisi aurora sul telefono" →
+   Info → "Avvisi aurora sul telefono" (sotto l'aurora) →
    **"Attiva avvisi aurora"** → consenti le notifiche →
    **"Copia codice"**. Crea il secret `AURORA_SUBSCRIPTIONS` e incollaci i
    codici di tutti i telefoni, uno dopo l'altro, ognuno con il **nome

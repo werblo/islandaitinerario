@@ -715,42 +715,6 @@ function jumpToTodayIfInTrip() {
 initTripMap();          // prima del salto al giorno: con la tab Info nascosta la mappa resterebbe vuota
 jumpToTodayIfInTrip();
 
-const CHK_STORAGE_KEY = 'islanda2026-checklist';
-function loadChecklist() {
-  try {
-    const raw = localStorage.getItem(CHK_STORAGE_KEY);
-    return raw ? JSON.parse(raw) : {};
-  } catch (e) { return {}; }
-}
-function saveChecklist(state) {
-  try { localStorage.setItem(CHK_STORAGE_KEY, JSON.stringify(state)); } catch (e) { /* storage non disponibile */ }
-}
-function updateChecklistProgress() {
-  const boxes = document.querySelectorAll('.chk-box');
-  const el = document.getElementById('chk-progress');
-  if (!el || !boxes.length) return;
-  const total = boxes.length;
-  const checked = document.querySelectorAll('.chk-box:checked').length;
-  el.textContent = checked + ' su ' + total + ' completati'
-    + (checked === total ? ' \u2014 pronti per partire!' : '');
-}
-function setupChecklist() {
-  const boxes = document.querySelectorAll('.chk-box');
-  if (!boxes.length) return;
-  const saved = loadChecklist();
-  boxes.forEach((box) => {
-    const id = box.dataset.chkId;
-    if (saved[id]) box.checked = true;
-    box.addEventListener('change', () => {
-      const state = loadChecklist();
-      state[id] = box.checked;
-      saveChecklist(state);
-      updateChecklistProgress();
-    });
-  });
-  updateChecklistProgress();
-}
-setupChecklist();
 
 refreshLiveData(true);
 

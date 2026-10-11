@@ -17,35 +17,9 @@ seasonal = {
     'keflavik': {'tmax': 4, 'tmin': -1, 'desc': 'Piovoso e ventoso, zona costiera aperta', 'wind': 'forte'}
 }
 
-checklist_groups = [
-    {'title': 'Documenti', 'items': [
-        "Carta d'identità o passaporto in corso di validità",
-        'Patente di guida (valida in Islanda, non serve il permesso internazionale per cittadini UE)',
-        'Carta di credito intestata al conducente, per il noleggio auto',
-        'Voucher noleggio auto FairCar, stampato o salvato offline',
-        'Conferme di prenotazione degli alloggi',
-        'Biglietti aerei / carte d\'imbarco',
-        'Assicurazione di viaggio (verifica che copra guida invernale/neve)',
-        "Itinerario registrato su safetravel.is",
-    ]},
-    {'title': 'Abbigliamento', 'items': [
-        'Giacca impermeabile e antivento (guscio esterno)',
-        'Strato termico o pile sotto la giacca',
-        'Scarponcini impermeabili con buon grip su ghiaccio',
-        'Guanti, berretto, sciarpa',
-        'Calzini di ricambio (pioggia/neve)',
-        'Costume da bagno (per Fontana e Secret Lagoon)',
-        'Asciugamano compatto a rapida asciugatura',
-    ]},
-    {'title': 'Tecnologia & varie', 'items': [
-        'Power bank (il freddo scarica le batterie più in fretta)',
-        'Torcia frontale, comoda a mani libere col buio che scende presto',
-        'Mappe offline di Google Maps scaricate per l\'Islanda',
-        'App 112 Iceland installata',
-        'Carta con PIN attivo per le colonnine self-service (vedi nota sotto)',
-        'Un po\' di contanti, anche se l\'Islanda è quasi completamente cashless',
-    ]},
-]
+# Checklist (da fare, valigia) e biglietti: su Notion, condivisi tra Michele e
+# Federica. Nell'app resta solo il link (tab Info).
+NOTION_CHECKLIST_URL = 'https://www.notion.so/3f66b411a944814e8d3ae850ce49a9fb'
 
 stays = [
     {'name': '46heima Boutique Apartments', 'detail': 'Laugavegur 46, Reykjavík · 15–18 nov (3 notti)'},
