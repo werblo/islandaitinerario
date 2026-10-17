@@ -51,7 +51,8 @@ Questo file descrive **com'è il progetto oggi**. La storia delle modifiche
 minuscolo e senza accenti (es. `d4-skogafoss.jpg`, `d2-hero.jpg` per la foto
 grande del giorno, `storia-hero.jpg`, `cover.jpg`). Se una foto manca compare
 un segnaposto con un'icona. `render.py` converte le foto in WebP: 1200 px per
-quelle grandi, 400 px sul lato corto per le miniature.
+quelle grandi, 400 px sul lato corto per le miniature (nelle schede delle
+attività si vedono piccole, 64 px, a sinistra del testo).
 
 **Testi.** I box "Storia & curiosità" e la tab Storia sono in stile
 enciclopedico (come Wikipedia), con sotto i link alle voci di Wikipedia in
