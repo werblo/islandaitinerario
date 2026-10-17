@@ -162,7 +162,7 @@ main { max-width:820px; margin:0 auto; padding:20px 20px 70px; display:flex; fle
 .food-top { display:flex; justify-content:space-between; gap:10px; color:#28323e; }
 .food-cost { color:#5c6a78; white-space:nowrap; }
 .food-note { color:#4a5361; margin-top:4px; }
-.gf-badge { display:inline-block; margin-top:6px; background:#cde6d1; border:1px solid #3f8a51; border-radius:5px; padding:2px 8px; font-size:0.75rem; font-weight:600; color:#174d24; }
+.gf-badge { display:inline-block; margin-top:6px; background:#cde6d1; border:1px solid #3f8a51; border-radius:5px; padding:2px 8px; font-size:0.8125rem; font-weight:600; color:#174d24; }
 
 .acc-card { background:var(--navy); border-radius:8px; padding:14px 16px; font-size:0.9375rem; }
 .acc-name { font-weight:600; color:#f2ede2; }

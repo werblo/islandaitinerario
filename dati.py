@@ -47,8 +47,8 @@ days = [
   'culture':"Secondo il Landnámabók, il «Libro degli insediamenti», Reykjavík fu fondata nell'874 da Ingólfur Arnarson, considerato il primo colono stabile dell'isola. Il nome significa «baia dei fumi» e deriva dal vapore delle sorgenti calde della zona. Oggi è la capitale e la città più popolosa del paese.\n\nLa Hallgrímskirkja, progettata dall'architetto Guðjón Samúelsson e dedicata al poeta Hallgrímur Pétursson, è la chiesa più grande d'Islanda: la sua torre è alta 73 metri e la facciata riprende la forma delle colonne di basalto. Sul lungomare si trova il Sólfar (Sun Voyager), scultura in acciaio di Jón Gunnar Árnason a forma di scafo vichingo.",
   'culture_links':[("Reykjavík", "https://it.wikipedia.org/wiki/Reykjavik"), ("Colonizzazione dell'Islanda", "https://it.wikipedia.org/wiki/Colonizzazione_dell'Islanda")],
   'parking_nav':[
-    {'label':'Naviga verso zona P2 (15-16 nov)','query':'Rauðarárstígur Reykjavik'},
-    {'label':'Naviga verso zona P1 (17 nov)','query':'Laugavegur 46 Reykjavik'}
+    {'label':'Naviga a P2 (15-16 nov)','query':'Rauðarárstígur Reykjavik'},
+    {'label':'Naviga a P1 (17 nov)','query':'Laugavegur 46 Reykjavik'}
   ]
  },
  {'id':'d2','num':2,'dateISO':'2026-11-16','dateLabel':'Lun 16 nov','title':'Reykjavík: cultura e Reykjanes','locKey':'reykjavik',
@@ -68,12 +68,12 @@ days = [
     {'meal':'Pranzo','place':'Hlemmur Mathöll','note':'Food hall con vari stand: chiedete stand per stand, nessuna opzione senza glutine confermata','cost':'€€','gf':False},
     {'meal':'Cena','place':'Sushi Social o cucina in appartamento','note':'Opzioni senza glutine non confermate: chiedete allo staff (la salsa di soia normale contiene glutine, chiedete tamari)','cost':'€€€','gf':False}
   ],
-  'accommodation':{'name':'46heima Boutique Apartments','detail':'2ª notte a Reykjavík','url':'https://www.booking.com/hotel/is/46heima-apartments.en-gb.html'},
+  'accommodation':{'name':'46heima Boutique Apartments','detail':'2ª notte a Reykjavík · stanotte parcheggio in zona P2','url':'https://www.booking.com/hotel/is/46heima-apartments.en-gb.html'},
   'tips':"Nel pomeriggio si va a Reykjanes (circa 135 km in tutto tra andata, tappe e ritorno). Se il meteo è brutto, al posto di Reykjanes c'è il National Museum, al coperto in città.",
   'culture':"Il Perlan sorge sulla collina di Öskjuhlíð, sopra i serbatoi che conservano l'acqua calda geotermica usata per il riscaldamento di Reykjavík. All'interno ospita una mostra sulla natura islandese con una grotta di ghiaccio artificiale.\n\nL'Harpa è la sala concerti e centro congressi della città, inaugurata nel 2011: la facciata in vetro è stata progettata con l'artista Ólafur Elíasson e nel 2013 ha ricevuto il Premio Mies van der Rohe. Il Museo nazionale d'Islanda conserva reperti che vanno dalla colonizzazione vichinga ai giorni nostri.\n\nLa penisola di Reykjanes si trova sulla dorsale medio-atlantica, lungo lo stesso confine tra placca nordamericana ed eurasiatica che attraversa Þingvellir; il Bridge Between Continents è un ponte pedonale costruito sopra una fessura di questo confine. Dopo circa 800 anni senza eruzioni, l'attività vulcanica nella penisola è ripresa nel 2021, con più eruzioni nei pressi di Grindavík tra il 2023 e il 2025. Nella zona si trovano anche il Gunnuhver, la pozza di fango bollente più grande d'Islanda, e il faro di Reykjanesviti, che ha sostituito il primo faro del paese, del 1878. L'area fa parte del Reykjanes UNESCO Global Geopark.",
   'culture_links':[("Museo nazionale d'Islanda", "https://it.wikipedia.org/wiki/Museo_nazionale_d'Islanda"), ("Ólafur Elíasson", "https://it.wikipedia.org/wiki/Ólafur_Elíasson"), ("Vulcani dell'Islanda", "https://it.wikipedia.org/wiki/Vulcani_dell'Islanda")],
   'parking_nav':[
-    {'label':'Naviga verso zona P2 (per questa notte)','query':'Rauðarárstígur Reykjavik'}
+    {'label':'Naviga al parcheggio P2','query':'Rauðarárstígur Reykjavik'}
   ]
  },
  {'id':'d3','num':3,'dateISO':'2026-11-17','dateLabel':'Mar 17 nov','title':'Þingvellir & relax serale','locKey':'reykjavik',
@@ -91,12 +91,12 @@ days = [
     {'meal':'Pranzo','place':'Pranzo al sacco / Bónus','note':'Porta qualcosa dal Bónus di Reykjavík, comodo per una sosta veloce vicino a Þingvellir','cost':'€','gf':False},
     {'meal':'Cena','place':'Hlemmur Mathöll, Reykjavík','note':'Food hall con vari stand (aperto fino alle 23:00), opzioni senza glutine da chiedere stand per stand. Se rientrate tardi in serata, come piano B ci sono minimarket 10-11 aperti 24/7 o Hagkaup (Skeifan, 24h)','cost':'€€','gf':False}
   ],
-  'accommodation':{'name':'46heima Boutique Apartments','detail':'Ultima notte a Reykjavík · check-out domani 09:30-10:00','url':'https://www.booking.com/hotel/is/46heima-apartments.en-gb.html'},
+  'accommodation':{'name':'46heima Boutique Apartments','detail':'Ultima notte a Reykjavík · check-out domani 09:30-10:00 · stanotte parcheggio in zona P1 sotto casa (rientrando da Fontana dopo le 21:00 è già gratis)','url':'https://www.booking.com/hotel/is/46heima-apartments.en-gb.html'},
   'tips':"Giornata più leggera (circa 160 km totali) e volutamente rilassante: è l'ultima notte a Reykjavík prima dei due giorni più intensi del viaggio (Costa Sud e Jökulsárlón). Tabella di marcia per non perdere le terme prenotate alle 15:30: partenza da Reykjavík verso le 9:45, Þingvellir dalle 10:30 alle 13:30 con pranzo al sacco lì, Laugarvatn verso le 14:05 (circa 35 min di strada), passeggiata sul lago dalle 14:15, alla reception di Fontana alle 15:15. Geysir e Gullfoss li vedrete il Giorno 7 da Flúðir, molto più vicini da lì che da Reykjavík. Se restate fino a tardi la sera, il rientro a Reykjavík (circa 1h20 da Laugarvatn) va messo in conto: con cielo sereno può valerne la pena per l'aurora. Hlemmur Mathöll chiude alle 23:00 (alcuni stand anche prima): uscendo da Fontana alla chiusura (21:00), tra cambio e parcheggio, arrivate verso le 22:30-22:40, appena in tempo; come piano B c'è sempre un minimarket 10-11 (24/7) o Hagkaup Skeifan (24h).",
   'culture':"Il Parco nazionale Þingvellir si trova sulla dorsale medio-atlantica, nel punto in cui le placche nordamericana ed eurasiatica si allontanano di circa 2 cm all'anno; la gola di Almannagjá è la frattura più nota.\n\nNel 930 vi si riunì per la prima volta l'Alþingi, l'assemblea generale dell'isola, che si tenne a Þingvellir ogni estate fino al 1799 ed è considerata uno dei parlamenti più antichi del mondo. Il 17 giugno 1944 a Þingvellir fu proclamata la Repubblica d'Islanda. Il parco è patrimonio dell'umanità UNESCO dal 2004. Il lago di Laugarvatn, poco più a est, è alimentato da sorgenti calde; le terme di Fontana sfruttano questa stessa energia geotermica.",
   'culture_links':[("Parco nazionale Þingvellir", "https://it.wikipedia.org/wiki/Parco_nazionale_Þingvellir"), ("Alþingi", "https://it.wikipedia.org/wiki/Parlamento_islandese")],
   'parking_nav':[
-    {'label':'Naviga verso zona P1 (rientro tardi da Fontana, già gratis dopo le 21:00)','query':'Laugavegur 46 Reykjavik'}
+    {'label':'Naviga al parcheggio P1','query':'Laugavegur 46 Reykjavik'}
   ]
  },
  {'id':'d4','num':4,'dateISO':'2026-11-18','dateLabel':'Mer 18 nov','title':'Reykjavík → Vík: Costa Sud','locKey':'vik',
@@ -124,7 +124,7 @@ days = [
   'culture':"Seljalandsfoss e Skógafoss scendono dall'altopiano ai piedi del ghiacciaio Eyjafjallajökull, lungo l'antica linea di costa: il mare, ritirandosi, ha lasciato una serie di cascate sulla parete rocciosa. Skógafoss è larga 25 metri e alta 60; secondo una leggenda il colono Þrasi vi nascose dietro un forziere d'oro.\n\nLa spiaggia di Reynisfjara è formata da sabbia basaltica nera e chiusa dalle colonne di basalto del monte Reynisfjall; al largo si trovano i faraglioni Reynisdrangar, che la tradizione popolare descrive come troll pietrificati dalla luce del giorno.\n\nIl promontorio di Dyrhólaey, con il suo arco di roccia, si è formato da un'eruzione sottomarina. Vík í Mýrdal è il villaggio più meridionale d'Islanda e si trova vicino al vulcano Katla, coperto dal ghiacciaio Mýrdalsjökull; secondo i piani di emergenza la chiesa sulla collina è il punto di raccolta degli abitanti in caso di eruzione.",
   'culture_links':[("Skógafoss", "https://it.wikipedia.org/wiki/Skogafoss"), ("Eyjafjallajökull", "https://it.wikipedia.org/wiki/Eyjafjallajokull"), ("Cascate dell'Islanda", "https://it.wikipedia.org/wiki/Cascate_dell'Islanda")],
   'parking_nav':[
-    {'label':'Naviga verso il parcheggio dell\'hotel (gratuito)','query':'Hotel Burfell Vík Iceland'}
+    {'label':'Naviga al parcheggio dell\'hotel','query':'Hotel Burfell Vík Iceland'}
   ]
  },
  {'id':'d5','num':5,'dateISO':'2026-11-19','dateLabel':'Gio 19 nov','title':'Escursione a Jökulsárlón','locKey':'vik',
@@ -143,12 +143,12 @@ days = [
     {'meal':'Pranzo','place':'Kaffi Jökulsárlón o pranzo al sacco','note':'Nessuna informazione sul senza glutine trovata: chiedete allo staff e portate un\'alternativa al sacco','cost':'€€','gf':False},
     {'meal':'Cena','place':'Ströndin Bistro, Vík','note':'Opzioni senza glutine (per esempio lo stufato di carne e le costolette d\'agnello): chiedete conferma allo staff','cost':'€€','gf':True}
   ],
-  'accommodation':{'name':'Hótel Búrfell','detail':'2ª notte a Vík','url':'https://hotelburfell.is/'},
+  'accommodation':{'name':'Hótel Búrfell','detail':'2ª notte a Vík · parcheggio gratuito','url':'https://hotelburfell.is/'},
   'tips':"Circa 390 km andata/ritorno da Vík, circa 6 ore di guida. Tabella di marcia: partenza alle 7:30, Jökulsárlón verso le 10:30-10:45 (circa 2h55 senza soste, in inverno contate qualcosa in più), Diamond Beach e via entro le 12:30, Fjaðrárgljúfur verso le 14:30-14:45 con circa un'ora e mezza di luce prima del tramonto (16:05), rientro a Vík verso le 16:45-17:00. Prima di partire controllate che il sentiero del canyon sia aperto (in inverno a volte viene chiuso per il terreno fradicio) e le strade su road.is; con brutto tempo valutate di fermarvi solo a Jökulsárlón/Diamond Beach.",
   'culture':"Jökulsárlón è una laguna glaciale formata a partire dagli anni Trenta del Novecento, quando la lingua del ghiacciaio Breiðamerkurjökull ha cominciato a ritirarsi. È collegata all'oceano Atlantico da un breve canale: gli iceberg che si staccano dal ghiacciaio attraversano la laguna e arrivano sulla spiaggia di sabbia nera di fronte, nota come Diamond Beach.\n\nIl Breiðamerkurjökull è una lingua del Vatnajökull, il ghiacciaio più esteso d'Europa, che si trova all'interno del Parco nazionale del Vatnajökull, patrimonio dell'umanità UNESCO dal 2019. Il canyon di Fjaðrárgljúfur, profondo fino a circa 100 metri, è stato scavato dal fiume Fjaðrá nel corso di circa due milioni di anni.",
   'culture_links':[("Parco nazionale del Vatnajökull", "https://it.wikipedia.org/wiki/Parco_nazionale_del_Vatnajökull"), ("Ghiacciai dell'Islanda", "https://it.wikipedia.org/wiki/Ghiacciai_dell'Islanda")],
   'parking_nav':[
-    {'label':'Naviga verso il parcheggio dell\'hotel (gratuito)','query':'Hotel Burfell Vík Iceland'}
+    {'label':'Naviga al parcheggio dell\'hotel','query':'Hotel Burfell Vík Iceland'}
   ]
  },
  {'id':'d6','num':6,'dateISO':'2026-11-20','dateLabel':'Ven 20 nov','title':'Vík → Flúðir','locKey':'fludir',
@@ -171,7 +171,7 @@ days = [
   'culture':"Kerið è un cratere vulcanico di circa 6.500 anni con un piccolo lago sul fondo, alimentato dalla falda. Le pareti sono formate da scorie di colore rosso, diverse dal basalto nero più comune nella zona. La Secret Lagoon di Flúðir, in islandese Gamla Laugin («la vecchia piscina»), fu costruita nel 1891 ed è considerata la piscina pubblica più antica d'Islanda; l'acqua arriva da sorgenti calde vicine a una temperatura di circa 38-40 °C.",
   'culture_links':[("Lago craterico", "https://it.wikipedia.org/wiki/Lago_craterico")],
   'parking_nav':[
-    {'label':'Naviga verso il parcheggio della guesthouse (gratuito)','query':'The Hill Guesthouse Flúðir'}
+    {'label':'Naviga al parcheggio','query':'The Hill Guesthouse Flúðir'}
   ]
  },
  {'id':'d7','num':7,'dateISO':'2026-11-21','dateLabel':'Sab 21 nov','title':'Geysir & Gullfoss e sorgenti calde','locKey':'fludir',
@@ -192,12 +192,12 @@ days = [
     {'meal':'Pranzo','place':'Friðheimar, Reykholt','note':'Famosa zuppa di pomodoro in serra, sulla strada per Geysir: hanno pane senza glutine, ma non garantito senza contaminazione; in alternativa c\'è un\'insalata','cost':'€€','gf':True},
     {'meal':'Cena','place':'Cucina alla guesthouse','note':'Ultima occasione per finire la spesa fatta al Bónus','cost':'€','gf':False}
   ],
-  'accommodation':{'name':'The Hill Guesthouse','detail':'Ultima notte a Flúðir · check-out presto domani','url':'https://thehillhotel.is/guesthouse-fludir/'},
+  'accommodation':{'name':'The Hill Guesthouse','detail':'Ultima notte a Flúðir · check-out presto domani · parcheggio gratuito','url':'https://thehillhotel.is/guesthouse-fludir/'},
   'tips':"Da Flúðir Geysir e Gullfoss sono a un tiro di schioppo (circa 30-40 km), molto più vicini che da Reykjavík: giornata comoda, e cielo scuro poco inquinato per tenere d'occhio l'aurora la sera.",
   'culture':"Il Cerchio d'Oro è il percorso turistico che collega il Parco nazionale Þingvellir, la cascata di Gullfoss e l'area geotermica di Haukadalur; il nome è nato per scopi promozionali.\n\nA Haukadalur si trova il Geysir, la sorgente da cui deriva la parola «geyser», oggi quasi sempre inattivo, e lo Strokkur, che erutta ogni 5-10 minuti.\n\nGullfoss («cascata d'oro») è formata dal fiume Hvítá con due salti di circa 11 e 20 metri; secondo la tradizione la sua tutela si deve a Sigríður Tómasdóttir, che all'inizio del Novecento si oppose allo sfruttamento della cascata per produrre energia. A Flúðir l'acqua calda del sottosuolo riscalda le serre, dove si coltivano ortaggi anche in inverno. Faxi è una piccola cascata sul fiume Tungufljót, vicino a Reykholt.",
   'culture_links':[("Cerchio d'Oro", "https://it.wikipedia.org/wiki/Cerchio_d'Oro"), ("Cascate dell'Islanda", "https://it.wikipedia.org/wiki/Cascate_dell'Islanda")],
   'parking_nav':[
-    {'label':'Naviga verso il parcheggio della guesthouse (gratuito)','query':'The Hill Guesthouse Flúðir'}
+    {'label':'Naviga al parcheggio','query':'The Hill Guesthouse Flúðir'}
   ]
  },
  {'id':'d8','num':8,'dateISO':'2026-11-22','dateLabel':'Dom 22 nov','title':'Flúðir → Keflavík → Volo di ritorno','locKey':'keflavik',
