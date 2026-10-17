@@ -323,8 +323,9 @@ def render_day_section(day):
     culture_html = ''
     if day.get('culture'):
         culture_icon = f'<svg viewBox="0 0 64 56" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">{icon_svg("saga")}</svg>'
+        paragraphs = ''.join(f'<p>{e(par)}</p>' for par in day['culture'].split('\n\n'))
         culture_html = (f'<div class="culture-card"><div class="culture-card__label">{culture_icon}Storia &amp; curiosità</div>'
-                         ''.join(f'<p>{e(par)}</p>' for par in day["culture"].split('\n\n')) + f'{wiki_links(day.get("culture_links"))}</div>')
+                        f'{paragraphs}{wiki_links(day.get("culture_links"))}</div>')
 
     hero_fname = f"{day['id']}-hero.jpg"
 
@@ -351,12 +352,12 @@ def render_day_section(day):
     </div>
   </div>
   {aurora_note_html}
-  {culture_html}
   {legs_html}
   <div class="section">
     <div class="section-title">Itinerario</div>
     <div class="stack">{acts_html}</div>
   </div>
+  {culture_html}
   <div class="section">
     <div class="section-title">Dove mangiare</div>
     <div class="stack">{food_html}</div>
