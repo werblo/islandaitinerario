@@ -1,758 +1,171 @@
-# Islanda 2026 — webapp del viaggio
-
-## In breve (ottobre 2026)
-
-- **Sito:** werblo.github.io/islandaitinerario, pubblicato da `main` con
-  GitHub Pages; installato come app (Firefox su Android). Testi e foto
-  funzionano offline da soli (provato in modalità aereo); "Prepara offline"
-  (ultimo riquadro della tab Info) aggiunge le mappe e va ripetuto solo se
-  l'app lo chiede (percorso cambiato). Sotto il pulsante: "Versione app …" e
-  "Ricevuta il …", cioè quale versione ha il telefono e quando è arrivata
-  (sezione 11).
-- **File (da ottobre 2026):** testi e dati del viaggio in `dati.py`; aspetto
-  in `app/stile.css`; funzioni della pagina (aurora, mappe, meteo, offline) in
-  `app/app.js`; `render.py` mette tutto insieme. `python3 render.py`
-  rigenera `index.html`, `sw.js` e le foto in `images/web/` (sezioni 2-3).
-  Per le sessioni con Claude c'è `CLAUDE.md`, un promemoria breve.
-- **Checklist e biglietti:** su Notion (pagina "Islanda · 15-22 novembre
-  2026", condivisa), non più nell'app; nella tab Info c'è il link.
-- **Avvisi aurora:** notifiche push dal 15 al 22 novembre, con prova
-  automatica il 13 novembre alle 18:07 islandesi (19:07 in Italia) — sezione 12.
-- **Ricerca nuvole:** test di ottobre sul metodo per le nuvole, risultato
-  finale il 1° novembre — sezione 13. Programmati con Claude: il **19
-  ottobre** passaggio al metodo migliore se supera quello in uso di almeno 3
-  punti (autorizzato da Michele il 6/10); il **2 novembre** risultato finale
-  (conferma o ritorno indietro solo con il suo sì) e cancellazione dei file
-  della ricerca, con test completo e ritorno a prima se qualcosa non va.
-- **Controllo pre-partenza:** ricontrollo automatico l'8 novembre (sezione 4).
-- **Aspetto e testi (17 ottobre):** tema scuro automatico quando il telefono
-  è in modalità scura; box "Storia & curiosità" e tab Storia in stile
-  enciclopedico con i link alle voci di Wikipedia in italiano (sezione 14).
-
-## 1. Aggiungere le foto
-
-Nella cartella `images/` metti i file **con questi nomi esatti** (formato .jpg,
-va bene anche una foto già scattata col telefono). L'app li mostra da sola
-appena li trova — non serve toccare il codice.
-
-```
-cover.jpg                                   → copertina (aurora o paesaggio a piacere)
-
-d1-hero.jpg                                 → Arrivo & Reykjavík
-d1-passeggiata-nel-centro.jpg               → Passeggiata nel centro
-
-d2-hero.jpg                                 → Reykjavík: cultura e Reykjanes
-d2-perlan.jpg                               → Perlan
-d2-harpa-porto-vecchio.jpg                  → Harpa & porto vecchio
-d2-national-museum-of-iceland.jpg           → National Museum
-d2-reykjanes.jpg                            → Reykjanes
-
-d3-hero.jpg                                 → Þingvellir & relax serale
-d3-thingvellir-national-park.jpg            → Þingvellir
-d3-passeggiata-sul-lago-laugarvatn.jpg      → Passeggiata sul lago Laugarvatn
-d3-fontana-geothermal-baths.jpg             → Fontana Geothermal Baths
-
-d4-hero.jpg                                 → Costa Sud
-d4-seljalandsfoss.jpg                       → Seljalandsfoss
-d4-skogafoss.jpg                            → Skógafoss
-d4-reynisfjara.jpg                          → Reynisfjara
-d4-dyrholaey.jpg                            → Dyrhólaey
-d4-vikurkirkja.jpg                          → Víkurkirkja
-
-d5-hero.jpg                                 → Escursione a Jökulsárlón
-d5-fjadrargljufur.jpg                       → Fjaðrárgljúfur
-d5-jokulsarlon-glacier-lagoon.jpg           → Jökulsárlón
-d5-diamond-beach.jpg                        → Diamond Beach
-
-d6-hero.jpg                                 → Vík → Flúðir
-d6-kerid.jpg                                → Kerið
-d6-secret-lagoon.jpg                        → Secret Lagoon
-
-d7-hero.jpg                                 → Geysir & Gullfoss e sorgenti calde
-d7-geysir-strokkur.jpg                      → Geysir & Strokkur
-d7-gullfoss.jpg                             → Gullfoss
-d7-faxi.jpg                                 → Faxi
-d7-efstidalur-ii.jpg                        → Efstidalur II
-
-d8-hero.jpg                                 → Rientro
-
-storia-hero.jpg                             → Tab "Storia" (Alþingi, saghe, paesaggio storico a piacere)
-```
-
-Finché una foto non c'è, al suo posto compare un placeholder con un'icona
-illustrata e il nome del posto — non si rompe niente, l'app resta usabile.
-I nomi file corrispondono al giorno/attività attuale dell'itinerario: se
-cambi l'ordine o il testo di un'attività in `render.py`, il nome atteso
-cambia di conseguenza (segue il titolo, in minuscolo e senza accenti).
-
-A ottobre 2026 ci sono tutte (le vecchie sostituite sono in
-`images/archivio/`). Se preferisci, mandami le foto in chat e te le
-incorporo/rinomino io.
-
-Le foto restano .jpg come le metti tu: `render.py` le converte da solo in
-formato più leggero per il sito (vedi sezione 11).
-
-## 2. Come funziona online (GitHub Pages)
-
-Il sito è pubblicato su **GitHub Pages** dal branch `main` di questo
-repository: ogni volta che `index.html` viene aggiornato su `main`, il sito
-pubblico si aggiorna da solo in pochi minuti, senza bisogno di caricare
-manualmente file da nessuna parte.
-
-Flusso di lavoro per qualunque modifica:
-
-1. Si modifica `dati.py` (i dati/testi dell'itinerario) e/o le foto in
-   `images/`.
-2. Si rilancia `python3 render.py` (serve Pillow: `pip install Pillow`) per
-   rigenerare `index.html`, `sw.js` e le foto in `images/web/`: vanno nel
-   commit tutti e tre, perché il sito pubblica i file così come sono.
-3. Si apre una pull request verso `main` e la si fa mergiare.
-4. GitHub Pages ripubblica automaticamente il sito aggiornato.
-
-Da telefono, una volta pubblicato il sito:
-- **Android (Firefox, quello che usate):** apri il link → menu ⋮ →
-  "Installa" / "Aggiungi alla schermata principale"
-- **Android (Chrome):** apri il link → menu ⋮ → "Aggiungi a schermata Home"
-  / "Installa app"
-- **iPhone (Safari):** apri il link → icona Condividi → "Aggiungi a Home"
-
-Da quel momento l'icona sarà sulla home come un'app vera, e dopo la prima
-apertura online funzionerà anche offline: foto, percorsi, alba/tramonto
-sempre; le mappe lungo tutto il tragitto dopo aver premuto "Prepara
-offline" nella tab Info (vedi sezione 11); meteo, aurora e cambio valuta
-mostrano l'ultimo dato salvato.
-
-## 3. Aggiornare i contenuti in futuro
-
-Tutto il testo dell'itinerario (giorni, attività, box "Storia & curiosità",
-alloggi) è dentro `dati.py` (la tab Storia è ancora in `render.py`). Se cambia qualcosa
-(orari, tappe, alloggi), basta modificare i dati lì e rilanciare
-`python3 render.py` per rigenerare `index.html` — molto più leggero che
-editare l'export di Claude Design.
-
-## 4. Controllo di coerenza (distanze, orari, luce)
-
-L'itinerario contiene dati che vanno tenuti sincronizzati quando si
-spostano o si riordinano le tappe. Km e tempi di guida in `legs` vengono da
-OSRM (azione "Aggiorna percorsi mappa", vedi sezione 11); a mano restano gli
-orari
-delle `activities` rispetto ad alba/tramonto reali, e l'ordine di
-`map_points` (deve rispecchiare l'ordine reale di visita, altrimenti la
-mappa disegna un percorso sbagliato).
-
-Un controllo di questo tipo è stato fatto una volta a fondo (fine agosto
-2026) e ha trovato/corretto diversi errori: distanze sbagliate rispetto al
-reale (es. Kerið→Flúðir dichiarato più corto della sola linea d'aria,
-quindi impossibile), attività programmate prima dell'alba o dopo il
-tramonto reale (calcolato per le coordinate esatte, non per le città
-capoluogo), e un `map_points` rimasto disallineato dopo un riordino delle
-attività.
-
-È programmato un ricontrollo automatico una settimana prima della
-partenza (8 novembre 2026, promemoria anche su calendario) per rifare la
-stessa verifica nel caso qualcosa cambi nei mesi prima del viaggio. Se
-si sposta o si inverte una tappa manualmente, vale la pena rifare almeno
-il controllo su `legs`/`map_points` di quel giorno.
-
-I punti di ripristino sono **tag git**, non più una cartella copiata a
-mano. Un tag "fotografa" tutti i file del repository a un certo commit,
-con un nome facile da ricordare (per esempio `v1-stabile` = versione
-stabile del 23/09/2026, prima della pulizia del repo).
-
-Per recuperare una versione da un tag:
-- da GitHub: menu dei branch (in alto a sinistra sopra la lista file) →
-  scheda **"Tags"** → scegli il tag (es. `v1-stabile`) → vedi e scarichi i
-  file com'erano a quel punto;
-- da terminale, per riprendere un solo file: `git checkout v1-stabile --
-  render.py`.
-
-Per crearne uno nuovo dopo una modifica importante confermata come
-funzionante:
-- da GitHub: **Releases** → **"Draft a new release"** → **"Choose a
-  tag"** → scrivi il nome nuovo del tag → target `main` → **Publish**;
-- da terminale: `git tag nome-tag && git push origin nome-tag`.
-
-## 5. Prenotazioni
-
-Entrambe le soste terme in programma (Fontana al Giorno 3, Secret Lagoon al
-Giorno 6) sono prenotate. I voucher **non** stanno in questo repository,
-che è pubblico: sono conservati solo fuori da GitHub (telefono/Drive).
-Non aggiungere mai al repo voucher, conferme di prenotazione o altri
-documenti con dati personali: tutto ciò che viene committato qui è
-leggibile da chiunque.
-
-Durante la prenotazione sono emerse due correzioni ai dati in `render.py`,
-poi applicate: l'orario della Secret Lagoon (19:00 → 17:30, il sito non
-offriva slot più tardi) e il prezzo (4500 ISK/persona).
-
-## 6. Mappe e fix mobile (settembre 2026)
-
-Le mappe (ogni giorno + "Mappa del viaggio" nella tab Info) usano Leaflet
-con tile OpenStreetMap standard, gratuiti e senza chiave di accesso — un
-primo tentativo con CARTO Voyager è stato scartato perché quell'endpoint
-richiede ora una API key, mostrando "API key required" al posto della
-mappa.
-
-Un audit mirato all'uso su telefono ha trovato e corretto due bug:
-- le mappe avevano il drag/pan sempre attivo, quindi uno swipe verticale
-  che partiva sulla mappa la spostava invece di scrollare la pagina;
-  ora dragging e zoom si riattivano solo al primo tocco intenzionale
-  sulla mappa;
-- i pulsanti di navigazione dei giorni e le checkbox della checklist
-  avevano un'area toccabile sotto i 44px consigliati per il tocco su
-  telefono — alzati entrambi.
-
-Ogni mappa vive nel proprio contesto di stacking (`isolation:isolate`)
-apposta per evitare che i controlli interni di Leaflet finiscano sopra
-il menu dei giorni durante lo scroll (bug corretto in precedenza).
-
-## 7. Giorno 7: Passeggiata a Flúðir sostituita con Efstidalur II
-
-La vecchia attività "Passeggiata a Flúðir" (15:30) è stata sostituita con
-**Efstidalur II**, fattoria con gelateria e vacche visibili da dietro un
-vetro (~9 km da Faxi, ~20 km da Efstidalur a Flúðir — corretto da un
-refuso nelle coordinate di Faxi, vedi sezione 8).
-
-Motivo: un controllo ha confermato che il centro di Flúðir offre poco
-oltre alla Secret Lagoon (già coperta al Giorno 6) — niente borgo
-pittoresco, solo una collina panoramica (Miðfell) e un fiume. Efstidalur
-è aperta tutto l'anno ed è una sosta calda/comoda per il pomeriggio buio
-di novembre. Scartata anche l'idea di un sito vichingo (Þjóðveldisbærinn
-Stöng, a ~45 min): chiuso da ottobre a maggio, non visitabile a novembre.
-
-Nota a margine: esiste anche **Laugarás Lagoon**, una laguna termale
-moderna a due livelli aperta da ottobre 2025 vicino a Skálholt — più
-scenografica della Secret Lagoon ma quasi il triplo del prezzo (da 6900
-ISK contro 4500 ISK). Non inserita nell'itinerario perché la Secret
-Lagoon è già prenotata e pagata; resta un'opzione da considerare per un
-eventuale viaggio futuro.
-
-## 8. Correzioni distanze e funzionalità aggiunte (settembre 2026)
-
-Un debug incrociato con più controlli indipendenti (haversine + verifica
-web) ha trovato due errori reali:
-
-- **Coordinate di Faxi sbagliate** in `map_points['d7']` da tempo
-  (puntavano vicino a Flúðir invece che al vero Faxi vicino a Reykholt).
-  Questo aveva reso "impossibile" per errore la distanza Gullfoss→Faxi
-  (in realtà corretta, 21 km) e sballata la tappa Faxi→Efstidalur II
-  (28 km/25 min errati, corretto a 9 km/12 min con le coordinate giuste).
-- **Jökulsárlón→Fjaðrárgljúfur davvero impossibile**: dichiarata 100 km
-  ma con un pavimento a linea d'aria di 100.9 km. Corretta a 130 km/~1h50
-  (verificato via Kirkjubæjarklaustur come riferimento), con l'attività
-  Fjaðrárgljúfur del Giorno 5 spostata da 14:30 a 15:00 e il totale
-  km/giorno aggiornato nei tips (~370 → ~395 km). *Aggiornamento ottobre:
-  oggi il Giorno 5 parte alle 7:30 e Fjaðrárgljúfur è alle 14:30, con km dal
-  calcolo OSRM (~390 km).*
-
-Corretta anche un'incoerenza testuale: l'energia rinnovabile islandese
-era indicata come "quasi 100%" (Giorno 8) e "85%" (tab Storia) senza
-spiegare la differenza — ora è chiaro che il 100% riguarda la sola
-elettricità, l'85% il consumo energetico totale (riscaldamento,
-industria, trasporti inclusi).
-
-**Nuove funzionalità:**
-- L'app salta automaticamente alla tab del giorno corrente se aperta
-  tra il 15 e il 22 novembre 2026 (testato con Chromium/Playwright
-  simulando diverse date).
-- Ogni attività con una tappa reale ha un link **"Naviga"** che apre
-  Google Maps (incluse la riconsegna auto FairCar e i parcheggi degli
-  alloggi). Usa una **ricerca testuale** (es. "Skógafoss parking",
-  "Laugarvatn Fontana") invece di coordinate fisse: Google Maps trova
-  da solo il pin più preciso su parcheggio/struttura reale, verificato
-  via web search per ognuna delle 22 query.
-- Un pulsante flottante (FAB) per il cambio Euro/Corona è visibile su
-  tutte le tab tranne Info (dove il convertitore è già un pannello),
-  con un link rapido a road.is per lo stato delle strade.
-- Rune vichinghe decorative (Futhark) nella sola tab Storia, e un
-  paragrafo su Hrafna-Flóki Vilgerðarson, il navigatore che diede il
-  nome "Ísland" all'isola prima della colonizzazione di Ingólfur
-  Arnarson.
-
-## 9. Parcheggi
-
-Ogni giorno con un pernottamento (Giorni 1-7) ha una sezione parcheggio
-sotto "Alloggio", con link "Naviga" diretti:
-
-- **Reykjavík (Giorni 1-3)**: l'appartamento 46heima non ha parcheggio
-  incluso ed è in zona P1 (~650 ISK/h, max 3h consecutive, gratis
-  21:00-9:00 nei feriali/sabato e prima delle 10:00/dopo le 21:00 la
-  domenica — orari da riconfermare su reykjavik.is/en/parking vicino
-  alla partenza). Strategia notte per notte: zona P2 verso
-  Hlemmur/Rauðarárstígur (~230 ISK/h, senza limite di 3h) il 15 e 16
-  novembre; P1 direttamente sotto casa il 17, perché quella sera si
-  rientra da Fontana dopo le 21:00 (già gratis anche lì).
-- **Hótel Búrfell (Giorni 4-5)** e **The Hill Guesthouse (Giorni 6-7)**:
-  parcheggio gratuito incluso, confermato via web search.
-- La maggior parte delle tappe turistiche lungo il percorso (Þingvellir,
-  Seljalandsfoss, Skógafoss, Dyrhólaey, Reynisfjara, Jökulsárlón/Diamond
-  Beach, Fjaðrárgljúfur, Geysir) ha un parcheggio a pagamento a sé
-  (500-1000 ISK circa, spesso tramite l'app Parka con lettura targa) —
-  si paga sempre con carta, l'Islanda è quasi cashless anche ai
-  distributori dei parcheggi.
-
-## 10. Struttura delle tab
-
-- **Info** — countdown, aurora boreale in tempo reale con la stima di
-  stasera, mappa del viaggio, "Prepara offline", cambio EUR/ISK, il viaggio
-  in breve, budget e celiachia, sicurezza, alloggi, numeri utili.
-- **Giorno 1–8** — un tab per ogni giornata: attività, spostamenti (con i
-  pulsanti Strade, Allerte meteo e Sicurezza), mappa del percorso, box
-  "Storia & curiosità" con i link a Wikipedia, pasti, alloggio.
-- **Storia** — panoramica generale sulla storia islandese (colonizzazione,
-  Alþingi, lingua, folclore, geologia), con i link a Wikipedia.
-- **Checklist** — tolta l'11 ottobre 2026: la checklist (cose da fare,
-  valigia) e i biglietti sono ora su Notion, nella pagina "Islanda · 15-22
-  novembre 2026", condivisa tra Michele e Federica. Nella tab Info c'è il
-  riquadro "Checklist e documenti" con il link; "Avvisi aurora sul
-  telefono" è passato nella tab Info, subito sotto l'aurora, e il consiglio
-  sulle colonnine di benzina sotto "Sicurezza & risorse utili".
-
-## 11. Aggiornamento settembre 2026 (23/09)
-
-### Dati sensibili rimossi
-I voucher che stavano in `segreto/` sono stati tolti dal repository e da
-tutta la cronologia git (riscritta con `git filter-repo`; nei commit
-l'email personale è stata sostituita con l'indirizzo "noreply" di GitHub).
-Una copia completa del repository com'era prima, voucher inclusi, è
-conservata solo in locale (backup scaricato il 23/09). Il repository è
-pubblico: non aggiungere mai file con dati personali.
-
-Seconda pulizia (23/09, pomeriggio): i commit di merge delle PR #55-#68,
-creati da GitHub, avevano di nuovo l'email personale come autore. La
-cronologia è stata riscritta ancora (stesso metodo) e sull'account GitHub
-è attiva **"Keep my email addresses private"** (Settings → Emails): da
-allora anche i merge fatti da GitHub usano l'indirizzo noreply (verificato
-con la PR #69). Il tag `v1-stabile` è stato ricreato sul commit
-equivalente della nuova cronologia. Un secondo backup completo è stato
-scaricato in locale.
-
-**Da fare**: inviare al supporto GitHub
-(support.github.com/contact → Repository → Eliminazioni) la richiesta di
-cancellare le "cached views" e i riferimenti delle vecchie PR (#26-#68),
-che tengono ancora raggiungibili i vecchi commit (voucher ed email) da chi
-conosce l'URL esatto. Dopo l'intervento, l'URL raw di un vecchio commit
-deve dare 404.
-
-### Offline completo
-- **Tutto in cache all'installazione**: pagina, Leaflet (ora nel repo in
-  `vendor/leaflet/`, non più da unpkg) e tutte le foto usate.
-- **Versione automatica**: `render.py` calcola un'impronta (hash) di
-  pagina, foto, percorsi e file statici e la scrive in `sw.js` (generato
-  da `sw-template.js`: **non modificare `sw.js` a mano**). Ogni modifica
-  pubblicata cambia l'impronta e i telefoni scaricano la nuova versione da
-  soli.
-- **Aggiornamento senza interruzioni**: con internet la nuova versione si
-  scarica in background e si applica alla riapertura dell'app (o quando
-  la metti in background), con un avviso discreto "Contenuti aggiornati".
-  Da ottobre 2026 l'avviso aspetta che l'app sia sullo schermo: prima
-  compariva mentre l'app era in background e nessuno lo vedeva. Leaflet
-  (mappe) ora si carica in fondo alla pagina, così la prima schermata
-  appare un po' prima. La schermata scura dei primi secondi è in gran parte
-  l'avvio di Firefox stesso (colore di sfondo dell'app nel manifest).
-  In fondo al riquadro "Prepara offline" (l'ultimo della tab Info) ci sono
-  le righe "Versione app …" e "Ricevuta il …": dicono quale versione ha il
-  telefono e quando è arrivata (utile per capire se un aggiornamento è
-  stato ricevuto).
-  Misura fatta il 6/10 su OnePlus 8 Pro (anche in modalità aereo): la
-  pagina arriva dalla copia offline ed è pronta in circa 0,4 s da quando
-  Firefox la chiede; circa 1 s prima della richiesta e il resto della
-  schermata scura sono l'avvio di Firefox, non dipendono dall'app.
-  Una foto sostituita con lo stesso nome si aggiorna comunque.
-- **Alba/tramonto** calcolati in locale (algoritmo NOAA), niente più
-  chiamate a sunrise-sunset.org. Correzione emersa: i vecchi valori di
-  riserva del Giorno 6 e del Giorno 8 erano calcolati per Vík e Flúðir
-  invece che per Flúðir e Keflavík.
-- **Pulsante "Prepara offline"** (tab Info): salva foto e circa un migliaio di riquadri
-  di mappa (~15 MB) lungo un corridoio stretto attorno al percorso, zoom
-  6-12, massimo 2 download alla volta (tile usage policy OSM). Da fare
-  con il Wi-Fi prima di partire, su entrambi i telefoni. Ingrandendo oltre
-  lo zoom 12 senza rete la mappa resta grigia. L'app salva un'impronta
-  dell'elenco preciso dei riquadri (da ottobre 2026; prima contava solo
-  quanti erano): se il percorso cambia, la tab Info chiede di ripetere
-  "Prepara offline", che scarica solo i riquadri mancanti. I riquadri
-  si sovrascrivono, non si creano copie; la pagina e le foto si aggiornano
-  da sole e la versione vecchia viene cancellata.
-- **Spazio**: il pacchetto totale resta sotto i 30 MB, ben dentro i limiti
-  di Android (Chrome) e iPhone (Safari). Su iPhone i dati offline restano
-  al sicuro se l'app è **aggiunta alla schermata Home**; da Safari normale
-  iOS può cancellarli dopo alcune settimane di non utilizzo.
-
-### Immagini
-Le foto in `images/` restano .jpg (quelle che metti tu, sezione 1): a ogni
-`python3 render.py` vengono convertite in automatico in **WebP**, dentro
-`images/web/`, ridotte a un massimo di 1200px sul lato lungo e con
-l'orientamento corretto (le foto da telefono a volte sono ruotate solo nei
-metadati). Le foto delle attività, mostrate come miniature quadrate, sono
-ridotte a 400px sul lato corto (da ottobre 2026: foto totali da ~3,3 a
-~1,8 MB, offline più rapido). Controllate su uno schermo da telefono ad alta
-densità: restano nitide, perché la miniatura occupa circa 280 pixel reali e la
-foto ne ha almeno 343 (Fontana; tutte le altre 400). Se un giorno sembrassero
-sgranate, basta chiedere a Claude di portarle a 600 pixel (in `render.py`: i due `400`
-delle miniature e `thumb400` → `thumb600`, poi `python3 render.py`). La copertina si carica subito, le altre foto
-solo quando servono. Il sito carica sempre i .webp: più leggeri, stesso aspetto.
-Se una foto non cambia, non viene riconvertita (viene tenuto un piccolo
-elenco di controllo in `images/web/manifest.json`): questo rende il sito
-riproducibile, oltre a essere più veloce. Se il .jpg manca, resta il
-placeholder come prima.
-
-Le foto scattate ma non usate nell'itinerario (per esempio quando
-un'attività è stata sostituita) sono spostate in `images/archivio/`: restano
-nel repository come ricordo/scorta, ma non vengono convertite né incluse nel
-sito o nell'offline.
-
-### Percorsi mappa precalcolati
-Il percorso stradale di ogni giorno non si calcola più al momento
-(server demo OSRM), ma una volta sola e resta dentro la pagina, così
-funziona offline. Si aggiorna dalla tab **Actions** di GitHub →
-**"Aggiorna percorsi mappa"** → **Run workflow**: l'azione scarica i
-percorsi (`tools/fetch_routes.py` → `routes.json`), rigenera `index.html` e
-pubblica. **Va rilanciata ogni volta che cambiano le tappe** in
-`map_points`: finché non lo fai, il giorno modificato torna al calcolo
-online (con la linea tratteggiata di riserva se sei offline).
-
-### Pulizia repo
-La cartella `backup-pre-storia/` (copie manuali di render.py, index.html,
-sw.js, leggimi.md, icone, font, immagini) è stata eliminata. Al suo posto
-c'è il tag git `v1-stabile`, creato su GitHub sulla versione stabile del
-23/09/2026. Vedi la sezione 4 per come si usa un tag.
-
-### Accessibilità
-Aggiunte "invisibili" (nessun pixel cambiato, verificato con screenshot
-prima/dopo): chi usa uno screen reader o solo la tastiera ora può
-orientarsi meglio nella pagina.
-- **Barra in alto (Info, giorni, Storia, Checklist)**: ora si comporta
-  come un vero elenco di schede ("tab") per la tastiera e per lo screen
-  reader. Con Tab ci si arriva una volta sola, poi con le frecce
-  sinistra/destra (e Home/End) ci si sposta tra le schede senza dover
-  premere Tab più volte; lo screen reader annuncia quale scheda è
-  selezionata. Ogni pulsante ha anche una descrizione più chiara di quella
-  scritta (es. "Giorno 1, domenica 15 novembre: Arrivo & Reykjavík" invece
-  di leggere solo "15 nov").
-- **Pulsante cambio valuta (€↔kr)**: ora annuncia se il popup è aperto o
-  chiuso, e si può chiudere anche con il tasto **Esc** (prima solo
-  cliccando fuori o sulla ×).
-- **Mappe**: i pulsanti +/- per zoomare ora hanno un titolo in italiano
-  ("Ingrandisci mappa" / "Riduci mappa") letto al passaggio del mouse o
-  dallo screen reader; la mappa stessa è annunciata come "Mappa del
-  percorso del giorno N" (o "Mappa del viaggio" nella tab Info). Nessun
-  cambiamento allo stile, ai percorsi o al comportamento al tocco.
-- **Checklist**: la riga "Quanto manca" ora viene letta automaticamente
-  dallo screen reader quando cambia (spuntando una casella).
-- **Prepara offline**: lo stato del download e la barra di avanzamento
-  sono ora letti automaticamente dallo screen reader mentre procedono.
-- **Icone decorative** (disegni SVG nei segnaposto foto e nelle schede
-  "Storia & curiosità"): nascoste allo screen reader, che quindi non
-  perde tempo a descriverle inutilmente (le foto vere hanno già una
-  descrizione testuale).
-
-**Verifiche fatte, non modifiche visibili applicate:**
-- **Contrasto colori**: alcuni testi grigi chiari su sfondo chiaro sono
-  sotto la soglia consigliata (AA, 4.5:1) e restano difficili da leggere
-  con lo schermo al minimo della luminosità. I principali, con una
-  proposta di colore più scuro (a parità di stile) da valutare in futuro:
-  - Testo grigio delle didascalie sotto le mappe e dello stato offline
-    (`#7c8794` su sfondo chiaro, rapporto ~3.1-3.4:1) → proposta `#5c6a78`
-    (già usato altrove nel sito, rapporto ~5:1).
-  - Link color ambra (`#b5673a`) su sfondo pagina chiaro (~3.6:1) →
-    proposta `#8f4d29` (già definito come `--amber-2`, rapporto più alto).
-  - Testo bianco caldo sul pulsante di scheda attiva (`#fffaf2` su
-    `#b5673a`, ~4.1:1, appena sotto soglia) → proposta scurire leggermente
-    lo sfondo attivo o schiarire il testo.
-- **Zoom testo**: con la pagina ingrandita al 200% su schermo 360×640
-  compare scorrimento orizzontale (il contenitore centrale ha una
-  larghezza massima fissa in px, non pensata per zoom estremi). I
-  font-size del sito sono quasi tutti in `px`, non in `rem`/`em`: questo
-  significa che l'impostazione "dimensione testo" di sistema di
-  Android/iOS (che di norma scala i `rem`) probabilmente non ha alcun
-  effetto sul testo di questa pagina. Proposta per il futuro: convertire i
-  font-size principali da `px` a `rem`.
-- **Tastiera**: verificato con test automatico che Tab raggiunge la barra
-  delle schede, le frecce/Home/End spostano il focus e attivano la
-  scheda, Invio/Spazio attivano il pulsante €↔kr, e il popup valuta è
-  raggiungibile e richiudibile (anche con Esc, aggiunto).
-
-### Indice aurora
-Nella tab Info, sotto il Kp attuale (che resta in evidenza), c'è la stima
-**"Stasera a …: buone / scarse / nulle probabilità"** con le fasce orarie
-migliori, e sotto quella delle **due notti successive**. La località
-segue il viaggio notte per notte: prima della partenza è Reykjavík (dati
-reali di oggi), durante il viaggio è l'alloggio di quella notte
-(Reykjavík, poi Vík, poi Flúðir), oppure le tappe serali ora per ora dove
-sono indicate (il giorno 3: Fontana, la strada del ritorno, Reykjavík; vedi
-sezione 12). La stima combina:
-- il **Kp previsto** a intervalli di 3 ore (NOAA, fino a 3 giorni);
-- la **copertura nuvolosa oraria** (Open-Meteo, lo stesso servizio del
-  meteo);
-- il **buio astronomico** (sole sotto -18°), calcolato in locale.
-Anche nel box aurora di ogni giorno compare la stima per quella notte,
-appena la previsione arriva a coprirla (circa 3 giorni prima). Offline si
-vede l'ultimo dato salvato, con data e ora in cui è stato scaricato.
-La stima è indicativa: in Islanda l'aurora si vede spesso già con Kp 2-3
-se il cielo è sereno.
-
-### Strade e meteo per tappa
-In fondo alla sezione "Spostamenti in auto" di ogni giorno c'è una riga
-con due piccoli link, validi per tutta l'Islanda: "Strade ↗" (mappa in
-tempo reale dello stato delle strade della Vegagerðin, umferdin.is, lo
-stesso servizio di road.is) e "Allerte meteo ↗" (avvisi vento/meteo
-dell'Ufficio meteorologico, en.vedur.is/alerts). Una volta per giorno, non
-sotto ogni tratta, perché le pagine sono nazionali. Sono volutamente
-piccoli e grigi, ben distinti dai pulsanti "Naviga", che restano
-invariati. Compaiono solo nei giorni con
-spostamenti in auto.
-
-### Diario del viaggio (rimosso)
-Il diario (note, voti e sincronizzazione su Gist) era stato aggiunto il
-23/09 e poi tolto su richiesta perché non serviva: niente tab Diario e
-nessun token da creare.
-
-### Giorno 2: Reykjanes confermato
-Reykjanes (ponte tra i continenti, Gunnuhver, faro di Reykjanesviti) è
-ora l'attività del pomeriggio del 16 novembre, con le tratte in auto
-(~135 km in tutto). Il National Museum resta come alternativa se il meteo
-è brutto. Andata e ritorno passano da Keflavík e Hafnir (strada 425):
-Grindavík e la strada 43 possono essere chiuse per l'attività vulcanica.
-Le coordinate delle tappe sulla mappa non sono cambiate, quindi il
-percorso già calcolato resta valido.
-
-### Revisione generale: correzioni approvate
-- **Km e tempi delle tratte** ("Spostamenti in auto"): ora vengono da OSRM
-  come i percorsi. L'azione "Aggiorna percorsi mappa" calcola anche ogni
-  singola tratta (partenza e arrivo presi dalle tappe della mappa o dalle
-  località; nomi diversi come "Ponte tra i continenti" sono collegati in
-  `LEG_ALIASES` in `render.py`). Le tratte senza coordinate note (es. la
-  navetta FairCar) tengono i valori scritti a mano. Il controllo aveva
-  trovato, ad esempio, Faxi → Efstidalur II dichiarata 9 km, pari alla
-  sola linea d'aria. **Dopo ogni modifica a tappe o tratte rilancia
-  l'azione.**
-- **Mappa del Giorno 2**: il percorso ora torna a Reykjavík; il National
-  Museum è un segnaposto "+" fuori dal percorso (tappe con `'extra': True`
-  in `map_points`).
-- **Mappa del viaggio** (tab Info): disegna le strade reali di tutti i
-  giorni invece delle linee tratteggiate tra le città.
-- **Leggibilità**: testi grigi, link e scheda attiva leggermente più scuri
-  (contrasto AA); dimensioni dei testi in `rem`, così rispettano la
-  dimensione dei caratteri scelta nel telefono.
-- **Kp**: se NOAA non risponde da online, il messaggio dice "non
-  disponibile al momento" invece di "offline".
-- **Orari**: Þingvellir e Geysir alle 10:30 invece delle 10:00, con più
-  luce (alba verso le 10:05).
-- **Foto**: `render.py` cancella da `images/web/` i WebP delle foto non più
-  usate.
-
-### Giorno 3: tabella di marcia per Fontana
-Le terme di Fontana sono prenotate alle 15:30. Il Giorno 3 ora ha una
-tabella di marcia nel consiglio del giorno (Þingvellir 10:30-13:30,
-Laugarvatn verso le 14:05) e una nuova attività alle 14:15: passeggiata
-sulla riva del lago Laugarvatn accanto a Fontana. Foto attesa:
-`d3-passeggiata-sul-lago-laugarvatn.jpg`.
-
-### Km e tempi reali (azione del 23/09)
-Il primo calcolo OSRM tratta per tratta ha corretto alcuni valori, per
-esempio Dyrhólaey → Reynisfjara 20 km (si gira dalla strada 215, non 7 km),
-Faxi → Efstidalur II 16 km (non 9), Þingvellir → Laugarvatn ~35 min.
-Di conseguenza: Seljalandsfoss alle 11:45 (Giorno 4), arrivo a Laugarvatn
-verso le 14:05 (Giorno 3) e Jökulsárlón alle 11:00 (Giorno 5). A ottobre il
-Giorno 5 è stato anticipato (partenza 7:30, Jökulsárlón 10:30-10:45,
-Fjaðrárgljúfur 14:30-14:45) per avere luce sul canyon. I totali nei consigli
-dei giorni sono stati riallineati.
-
-### Testi più grandi (23/09)
-I testi da leggere sono stati ingranditi di circa 2 px, per leggerli meglio
-sul telefono anche all'aperto, in macchina o con poca luminosità:
-- descrizioni delle attività, consigli del giorno, box aurora e curiosità:
-  13 → 15 px;
-- testo normale e titoli delle attività: 14 → 15,5 px;
-- orari, costi e link (compresi i "Naviga", cambiati solo di dimensione):
-  12-12,5 → 13-13,5 px.
-Invariati: titoli grandi, barra delle tab, testata, foto e mappe. Le
-dimensioni sono in `rem` in `render.py`, quindi seguono anche la grandezza
-dei caratteri impostata nel telefono.
-
-## 12. Avvisi aurora sul telefono (notifiche push)
-
-Nei giorni del viaggio (15–21 novembre) il workflow **"Avvisi aurora"**
-(`.github/workflows/avvisi-aurora.yml`) lancia su GitHub `tools/aurora_alert.py`,
-che fa la stessa stima del box "Stasera" dell'app (Kp previsto NOAA × cielo
-sereno Open-Meteo nelle ore di buio) e manda notifiche push ai telefoni
-iscritti. Orari in ora islandese (= UTC):
-
-- **Mattino, verso le 7:30, dal 15 al 21 novembre (sempre):** com'è messa la sera,
-  con una frase scherzosa diversa ogni giorno (personalizzata per nome, vedi
-  sotto) e il dettaglio: tappe, ore migliori, Kp, nuvole. Il workflow parte
-  alle 7:15 perché GitHub di solito ha qualche minuto di ritardo. Se mancano
-  le nuvole o il Kp, il titolo dice "previsione incompleta" / "non
-  disponibile" invece di dare una stima.
-- **"🔄 Cambio di programma"** (controllo ogni 30 minuti, ai minuti :07 e :37
-  dalle 16:07 alle 3:37, l'ultima la notte tra il 21 e il 22): solo se la stima della notte diventa "buone" e al
-  mattino non lo era, e solo se sono arrivati i dati sulle nuvole (con il solo
-  Kp sarebbe un falso allarme). Se il messaggio del mattino non è partito, il
-  titolo è "🌌 Aurora stanotte: buone probabilità".
-- **"Aurora: condizioni buone adesso"**: quando è buio e il Kp misurato in
-  quel momento, insieme alle nuvole di quell'ora, è buono.
-
-- **Prova automatica:** il 13 novembre alle 18:07 (19:07 in Italia) arriva
-  "🔔 Prova avvisi aurora" su tutti i telefoni iscritti: se non arriva,
-  c'è tempo per sistemare prima della partenza.
-
-Ogni tipo di notifica ha la sua etichetta, quindi una non cancella l'altra.
-Se un telefono non risponde, gli altri ricevono comunque la notifica e il
-giro non si blocca. L'anteprima "mattino" lanciata a mano non cambia lo stato
-della notte. I workflow girano su `ubuntu-24.04` (fisso: `ubuntu-latest`
-cambia versione da metà ottobre 2026). Se cambi l'orario del mattino nel
-cron, cambialo anche nella riga `AURORA_MODE` dello stesso file, che
-confronta il testo esatto.
-
-**Tappe serali.** La stima segue dove siete davvero la sera, ora per ora:
-`evening_stops` in `dati.py` (oggi il giorno 3: Fontana a Laugarvatn fino
-alle 21, la strada del ritorno per Þingvellir fino alle 22, poi Reykjavík).
-I giorni non elencati usano l'alloggio della notte. Vale per l'app (box
-"Stasera" e tab dei giorni) e per tutte le notifiche.
-
-Gli avvisi già mandati si salvano nella cache di GitHub Actions, non nel
-repo: niente commit e il sito non viene ripubblicato.
-
-### Configurazione (una volta sola)
-
-1. **Chiave privata.** Nel repo: Settings → Secrets and variables →
-   Actions → *New repository secret*, nome `VAPID_PRIVATE_KEY`. Come valore
-   metti la chiave privata che corrisponde a `VAPID_PUBLIC_KEY` in
-   `dati.py`. Se la perdi, genera una nuova coppia di chiavi, sostituisci
-   la pubblica in `dati.py`, rilancia `render.py` e riattiva gli avvisi
-   su ogni telefono.
-2. **Iscrivere i telefoni.** Su ogni telefono: apri l'app installata → tab
-   Info → "Avvisi aurora sul telefono" (sotto l'aurora) →
-   **"Attiva avvisi aurora"** → consenti le notifiche →
-   **"Copia codice"**. Crea il secret `AURORA_SUBSCRIPTIONS` e incollaci i
-   codici di tutti i telefoni, uno dopo l'altro, ognuno con il **nome
-   davanti** (serve per le frasi personalizzate; con "Fede..." arrivano
-   quelle per Federica):
-
+# Islanda 2026 · webapp del viaggio
+
+App del viaggio di Michele e Federica in Islanda, 15-22 novembre 2026.
+Questo file descrive **com'è il progetto oggi**. La storia delle modifiche
+(cosa è cambiato, quando e perché) è su GitHub: tab **Pull requests** →
+*Closed*, oppure la cronologia dei commit di `main`.
+
+## 1. In breve
+
+- **Sito:** werblo.github.io/islandaitinerario, pubblicato con GitHub Pages
+  dal branch `main`. Installato come app con Firefox su Android (menu ⋮ →
+  "Installa").
+- **Tab:** Info (countdown, aurora, avvisi aurora, mappa del viaggio, cambio
+  €/ISK, budget e celiachia, sicurezza, alloggi, numeri utili, Prepara
+  offline), Giorno 1-8, Storia.
+- **Checklist e biglietti:** solo su Notion, pagina "Islanda · 15-22 novembre
+  2026", condivisa; nella tab Info c'è il link.
+- **Aspetto:** tema scuro automatico quando il telefono è in modalità scura.
+- **Date da ricordare:**
+  - 2 novembre: risultato finale della ricerca sulle nuvole (sezione 6).
+  - 8 novembre: ricontrollo automatico pre-partenza (Routine su claude.ai).
+  - 13 novembre, 19:07 ora italiana: notifica di prova degli avvisi aurora
+    su entrambi i telefoni (sezione 5).
+
+## 2. File
+
+| File | Cosa contiene |
+|---|---|
+| `dati.py` | Tutti i dati e i testi: giorni, attività, pasti, tratte, `map_points`, tappe serali, metodo nuvole, chiave pubblica VAPID. Quasi tutte le modifiche si fanno qui. |
+| `render.py` | Genera la pagina: giorni, tab Storia, tab Info. |
+| `app/stile.css`, `app/app.js` | Aspetto e funzioni della pagina (meteo, alba/tramonto, aurora, mappe, offline, notifiche). |
+| `index.html`, `sw.js`, `images/web/` | **Generati** da `render.py`: non si modificano a mano, ma vanno sempre nel commit. |
+| `images/` | Foto originali in .jpg; `images/archivio/` foto non più usate. |
+| `routes.json` | Percorsi stradali precalcolati (sezione 4). |
+| `tools/aurora_alert.py` | Avvisi aurora (sezione 5). |
+| `tools/research/` | Ricerca sulle nuvole (sezione 6), da cancellare dopo il 2 novembre. |
+| `CLAUDE.md` | Promemoria breve per le sessioni con Claude. |
+
+## 3. Come si modifica
+
+1. Si cambia `dati.py` (o le foto in `images/`).
+2. Si lancia `python3 render.py` (serve Pillow: `pip install Pillow`), che
+   rigenera `index.html`, `sw.js` e le foto in `images/web/`.
+3. Pull request verso `main` e merge: GitHub Pages ripubblica il sito in
+   pochi minuti.
+4. Sul telefono la nuova versione si scarica alla prima apertura e si vede
+   alla successiva (avviso "Contenuti aggiornati"). In fondo alla tab Info,
+   "Versione app" e "Ricevuta il" dicono quale versione ha il telefono.
+
+**Foto.** Il nome del file segue il giorno e il titolo dell'attività, in
+minuscolo e senza accenti (es. `d4-skogafoss.jpg`, `d2-hero.jpg` per la foto
+grande del giorno, `storia-hero.jpg`, `cover.jpg`). Se una foto manca compare
+un segnaposto con un'icona. `render.py` converte le foto in WebP: 1200 px per
+quelle grandi, 400 px sul lato corto per le miniature.
+
+**Testi.** I box "Storia & curiosità" e la tab Storia sono in stile
+enciclopedico (come Wikipedia), con sotto i link alle voci di Wikipedia in
+italiano (`culture_links` in `dati.py`), solo se la voce esiste. Nei box si
+va a capo con una riga vuota (`\n\n`). Nelle descrizioni si scrive "circa";
+"~" resta solo in tratte e costi.
+
+**Tema scuro.** Ogni nuovo colore aggiunto in `app/stile.css` va ripetuto
+nel blocco `prefers-color-scheme: dark` in fondo al file.
+
+**Ripristino.** I punti di ripristino sono tag git (es. `v1-stabile`). Da
+GitHub: menu dei branch → scheda "Tags". Per crearne uno: Releases → "Draft a
+new release" → nuovo tag su `main`.
+
+**Privacy.** Il repository è pubblico: niente voucher, conferme di
+prenotazione o dati personali (stanno su telefono, Drive o Notion). *Da fare:*
+chiedere al supporto GitHub (support.github.com/contact → Repository →
+Eliminazioni) di cancellare le "cached views" delle vecchie PR #26-#68, che
+tengono ancora raggiungibili vecchi commit con voucher ed email.
+
+## 4. Mappe, percorsi e offline
+
+- **Mappe:** Leaflet con le mappe OpenStreetMap (senza chiave). Si spostano
+  dopo il primo tocco; i pulsanti +/− sono in basso a sinistra.
+- **Percorsi e km:** calcolati una volta con OSRM e salvati in `routes.json`.
+  Se cambiano tappe o coordinate in `map_points`: tab Actions → "Aggiorna
+  percorsi mappa" → Run workflow (ricalcola percorsi, km e tempi delle
+  tratte e ripubblica). L'ordine di `map_points` deve seguire l'ordine reale
+  di visita.
+- **Offline:** pagina, foto e Leaflet funzionano offline da soli. Il pulsante
+  "Prepara offline" (ultimo riquadro della tab Info) salva anche circa 930
+  riquadri di mappa (circa 15 MB) lungo il percorso: va fatto con il Wi-Fi su
+  entrambi i telefoni e ripetuto solo se l'app lo chiede (percorso cambiato).
+  Meteo, aurora e cambio mostrano offline l'ultimo dato salvato.
+- **Alba e tramonto** sono calcolati dall'app (formula NOAA), anche offline.
+- Ogni giorno ha i pulsanti "Strade" (umferdin.is), "Allerte meteo"
+  (vedur.is) e "Sicurezza" (safetravel.is), e un link "Naviga" per ogni tappa
+  che apre Google Maps con una ricerca testuale.
+
+## 5. Aurora e avvisi sul telefono
+
+**Stima nell'app.** Nella tab Info: "Stasera a …: buone / scarse / nulle
+probabilità" con le ore migliori, più le due notti successive; nella tab di
+ogni giorno la stima di quella notte. Combina Kp previsto (NOAA, fino a 3
+giorni), nuvole ora per ora (Open-Meteo) e buio astronomico. La località
+segue il viaggio: l'alloggio della notte, oppure le tappe serali ora per ora
+(`evening_stops` in `dati.py`; oggi solo il Giorno 3: Fontana fino alle 21,
+strada del ritorno fino alle 22, poi Reykjavík).
+
+**Notifiche** (workflow "Avvisi aurora", `tools/aurora_alert.py`, orari in
+ora islandese = UTC):
+
+- **Mattino**, verso le 7:30 dal 15 al 21 novembre: com'è messa la sera, con
+  una frase scherzosa personalizzata per nome. Se mancano nuvole o Kp, il
+  titolo dice "previsione incompleta" o "non disponibile".
+- **"🔄 Cambio di programma"**: controlli ogni 30 minuti (16:07-3:37); solo
+  se la stima diventa "buone" e al mattino non lo era.
+- **"Aurora: condizioni buone adesso"**: quando è buio e Kp e nuvole del
+  momento sono buoni.
+- **Prova automatica**: 13 novembre alle 18:07 (19:07 in Italia).
+
+La stima delle notifiche è la stessa dell'app: se si cambia in
+`app/app.js`, va cambiata anche in `tools/aurora_alert.py`. La riga
+`AURORA_MODE` del workflow confronta il testo esatto dei cron: se cambi un
+orario, cambialo anche lì. Gli avvisi già mandati sono salvati nella cache di
+GitHub Actions, non nel repo.
+
+**Configurazione** (già fatta):
+
+1. Secret `VAPID_PRIVATE_KEY` (Settings → Secrets and variables → Actions):
+   la chiave privata che corrisponde a `VAPID_PUBLIC_KEY` in `dati.py`. Se si
+   perde, si crea una nuova coppia, si aggiorna la pubblica, si rilancia
+   `render.py` e si riattivano gli avvisi su ogni telefono.
+2. Secret `AURORA_SUBSCRIPTIONS`: un telefono per riga, con il nome davanti
+   (con "Fede…" arrivano le frasi per Federica):
    ```
    Michele: {"endpoint":"https://...","keys":{...}}
    Federica: {"endpoint":"https://...","keys":{...}}
    ```
+   Il codice si copia dall'app: tab Info → "Avvisi aurora sul telefono" →
+   "Attiva avvisi aurora" → "Copia codice". I secret non si rileggono: per
+   aggiungere un telefono si reincollano tutti i codici.
+3. Prova a mano: tab Actions → "Avvisi aurora" → Run workflow → `prova`.
 
-   I secret non si possono rileggere: per aggiungere un telefono in seguito,
-   reincolla tutti i codici. Il codice di ogni telefono resta visibile
-   nell'app, sotto "Copia codice".
-3. **Prova.** Tab Actions → "Avvisi aurora" → *Run workflow* → modalità
-   `prova`. Deve arrivare subito "🔔 Prova avvisi aurora" su ogni telefono.
-   Falla con il browser chiuso e il telefono in standby: se arriva così,
-   arriverà anche in Islanda.
+**Firefox su Android:** notifiche di Firefox attive, batteria di Firefox su
+"Senza restrizioni", dati di Firefox non cancellati alla chiusura (si
+perderebbero iscrizione e copia offline). Se nel log compare "iscrizione
+scaduta", su quel telefono si tocca di nuovo "Attiva avvisi aurora" e si
+aggiorna il secret.
 
-Il workflow programmato gira solo dal branch `main`, quindi funziona dopo il
-merge.
+## 6. Ricerca sulle nuvole (fino al 2 novembre)
 
-### Firefox su Android
+`tools/research/nuvole.py` e il workflow "Ricerca nuvole" confrontano le
+previsioni delle nuvole delle 7:30 con il cielo osservato (METAR di Reykjavík
+e Keflavík, SYNOP di Reykjavík), per scegliere il metodo usato da app e
+notifiche: `CLOUD_METHOD` in `dati.py` (`'totale'`, `'pesata'`, `'media'`,
+`'media_pes'`). Raccolta ogni mattina di ottobre (alle 10:47 c'è una seconda
+prova se GitHub ritarda), risultati nel riepilogo di ogni esecuzione e
+nell'artifact `ricerca-nuvole`.
 
-Le notifiche passano dal servizio push di Mozilla e funzionano come su
-Chrome. Controlla però che:
-- le notifiche di Firefox siano attive (Impostazioni Android → App →
-  Firefox → Notifiche);
-- la batteria per Firefox sia su "Senza restrizioni", altrimenti Android può
-  ritardare o bloccare le notifiche ad app chiusa;
-- i dati di Firefox non vengano cancellati alla chiusura: si perderebbe
-  l'iscrizione, oltre alla cache offline.
+Programmati con Claude: il 19 ottobre passaggio al metodo migliore se supera
+quello in uso di almeno 3 punti (autorizzato da Michele il 6/10); il 2
+novembre risultato finale (conferma o ritorno indietro solo con il sì di
+Michele) e cancellazione di `tools/research/` e `ricerca-nuvole.yml`, con
+test completo. Dopo un cambio di metodo si rilancia `render.py` e si fa il
+commit di `index.html`, perché le notifiche leggono il valore da lì.
 
-Se nel log del workflow compare "iscrizione scaduta", su quel telefono
-tocca di nuovo "Attiva avvisi aurora" e aggiorna `AURORA_SUBSCRIPTIONS`.
-Per ricevere le notifiche serve la connessione (in Islanda il roaming UE
-vale come a casa).
+## 7. Prenotazioni e alloggi
 
-## 13. Ricerca: quale stima delle nuvole funziona meglio
-
-`tools/research/nuvole.py` confronta, nelle ore di buio, le previsioni delle
-nuvole con il cielo osservato davvero: METAR degli aeroporti di Reykjavík e
-Keflavík (strati di nuvole con l'altezza; Vestmannaeyjar ha bollettini solo
-di giorno) e SYNOP della stazione di Reykjavík (nuvolosità totale). Le
-stazioni automatiche vicino a Vík e Flúðir non misurano le nuvole, quindi il
-confronto valuta il *metodo*. Limiti da tenere presenti: di notte i sensori
-automatici degli aeroporti spesso non vedono le nuvole alte (risultano
-"sereno"), e questo favorisce i metodi che le pesano poco; le ore della
-stessa notte si somigliano, quindi i campioni veri sono le notti (qualche
-decina), e differenze di pochi punti non sono significative.
-Metodi: `totale` (quello in uso: per l'Islanda il modello automatico di
-Open-Meteo è già il DMI HARMONIE, lo stesso tipo di vedur.is), `pesata`
-(nuvole alte e medie contano meno), `media` e `media_pes` (media di 6 modelli).
-
-- **Test veloce:** tab Actions → "Ricerca nuvole" → *Run workflow* →
-  `storico`: ultimi 40 giorni, in due parti. A = previsioni fatte il giorno
-  prima (solo nuvolosità totale: l'archivio non ha gli strati); B =
-  previsioni a brevissimo termine, 0-6 ore (con gli strati), che **non**
-  rappresentano la previsione delle 7:30 per la sera.
-- **Test approfondito:** ogni mattina di ottobre alle 7:30 (nel 2026 dal 5
-  ottobre, il giorno dopo l'attivazione) il workflow salva le previsioni per
-  la notte e le confronta con le osservazioni; il 1° novembre fa il confronto
-  finale. GitHub a volte parte con ore di ritardo: la raccolta salva sempre
-  le ore della notte di quel giorno (colonne `notte` e `anticipo_h`), alle
-  10:47 c'è una seconda prova che non fa niente se la prima è andata, e nel
-  confronto, se un'ora è stata salvata due volte, conta la previsione più
-  vecchia. Risultati nel riepilogo di ogni esecuzione e nell'artifact
-  `ricerca-nuvole`. Tutti i metodi sono confrontati sulle stesse ore, con due
-  soglie di "cielo utile" (50% e 30%: con Kp 3 l'app vuole nuvole sotto il
-  30% circa). Gira solo nel 2026.
-
-Il metodo in uso si sceglie con `CLOUD_METHOD` in `dati.py` (`'totale'`,
-`'pesata'`, `'media'` o `'media_pes'`; pesi `CLOUD_W_MID` e `CLOUD_W_HIGH`,
-modelli `CLOUD_MODELS`) e vale per app e notifiche: dopo averlo cambiato
-rilancia `python3 render.py` e fai il commit anche di `index.html`, perché le
-notifiche leggono il valore da lì. Per ora resta `'totale'`.
-
-**Risultati del test veloce (4 ottobre 2026, 40 notti, 521 ore di buio a
-Reykjavík e Keflavík, verità = METAR con tutte le nuvole):**
-
-| metodo | B, 0-6 ore: ore azzeccate / errore medio | A, giorno prima |
-|---|---|---|
-| totale (in uso) | 75% / 29 punti | 77% / 28 punti |
-| pesata | 77% / 25 punti | — (l'archivio non ha gli strati) |
-| media | 81% / 21 punti | 77% / 24 punti |
-| media_pes | **82% / 18 punti** | — |
-
-`media_pes` sembra la migliore a brevissimo termine, ma in parte per i limiti
-dei sensori notturni detti sopra; sulle previsioni del giorno prima la media
-non ha fatto meglio del metodo attuale. Il test approfondito usa le
-previsioni delle 7:30: si cambia metodo solo se la differenza è netta.
-
-Dopo il 1° novembre, scelto il metodo, la ricerca non serve più: si possono
-cancellare `tools/research/` e `.github/workflows/ricerca-nuvole.yml` (gli
-avvisi aurora non li usano).
-
-## 14. Aspetto e testi (17 ottobre 2026)
-
-Dopo una revisione del design fatta con un sottoagente (prove su telefono e
-computer, tema scuro, testo ingrandito):
-
-- **Tema scuro:** se il telefono è in modalità scura l'app usa colori scuri
-  (blocco `@media (prefers-color-scheme: dark)` in fondo a `app/stile.css`),
-  così la sera, in attesa dell'aurora, lo schermo non abbaglia. Le mappe
-  sono leggermente scurite. Ogni nuovo colore aggiunto allo stile va
-  ripetuto anche in quel blocco.
-- **Pulsante €↔kr** leggermente trasparente (torna pieno quando è aperto),
-  stessa misura di prima.
-- **Link "Scopri di più" e "Naviga"** un po' più alti e grandi, sempre
-  affiancati sulla stessa riga (controllato a 360 px).
-- **Badge "senza glutine"** con colori più contrastati, stessa misura.
-- **Testi piccoli** (etichette meteo, calcolatrice, pulsanti Strade/Allerte/
-  Sicurezza, scritta sopra il titolo) portati ad almeno 13 px.
-- **Barra dei giorni** con una sfumatura ai bordi, che fa capire che scorre.
-- **Ritocchi:** la × della calcolatrice è più facile da toccare; i pulsanti
-  +/− delle mappe sono in basso a sinistra (in alto coprivano la partenza).
-- Restano com'erano, per scelta di Michele: la mappa (si trascina dopo il
-  primo tocco), i numeri utili della tab Info e l'ordine delle sezioni dei
-  giorni. Le schede delle attività restano con la foto a sinistra finché
-  Michele non sceglie tra foto più piccola o foto sopra il testo.
-
-**Testi.** I box "Storia & curiosità" dei giorni e la tab Storia sono scritti
-in stile enciclopedico, come una voce di Wikipedia: terza persona, frasi
-informative, niente lineette lunghe né frasi a effetto. I box lunghi sono
-divisi in paragrafi (in `dati.py` si va a capo con una riga vuota, `\n\n`).
-Sotto ogni box c'è "Su Wikipedia" con le voci in italiano collegate
-(`culture_links` in `dati.py`; nella tab Storia direttamente in `render.py`):
-solo voci che esistono davvero. Per Perlan, Harpa, Hallgrímskirkja,
-Seljalandsfoss, Gullfoss, Geysir, Jökulsárlón, Kerið, Reynisfjara, Flúðir e
-la penisola di Reykjanes non c'è una voce in italiano, quindi si usano voci
-più generali (es. "Cascate dell'Islanda", "Cerchio d'Oro"). Nelle
-descrizioni delle attività "~" è diventato "circa"; nelle tratte e nei costi
-resta "~".
+- Fontana (Giorno 3, 15:30) e Secret Lagoon (Giorno 6, 17:30) sono
+  **prenotate**; i voucher non sono nel repo.
+- Reykjavík (Giorni 1-3): 46heima, senza parcheggio incluso. Le zone e la
+  strategia per la notte sono nel consiglio del Giorno 1.
+- Hótel Búrfell (Giorni 4-5) e The Hill Guesthouse (Giorni 6-7): parcheggio
+  gratuito.
+- Giorno 8: la riconsegna dell'auto da voucher è alle 11:00 con volo alle
+  11:25; nell'app c'è l'invito a chiedere a FairCar di anticipare.

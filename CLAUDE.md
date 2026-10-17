@@ -3,7 +3,7 @@
 App (PWA) del viaggio in Islanda di Michele e Federica, 15–22 novembre 2026.
 Sito: https://werblo.github.io/islandaitinerario (GitHub Pages da `main`),
 installato con Firefox su due telefoni Android. Documentazione completa per
-l'utente: `leggimi.md` (lunga: leggi solo la sezione che serve).
+l'utente: `leggimi.md` (breve: com'è il progetto oggi).
 
 ## Regole
 - Rispondi sempre in **italiano**, in modo semplice (Michele non è uno sviluppatore).
@@ -15,7 +15,7 @@ l'utente: `leggimi.md` (lunga: leggi solo la sezione che serve).
   scambiare il Giorno 2 con il Giorno 3; la foto della Secret Lagoon va bene così.
 - `CLOUD_METHOD` (in `dati.py`) si cambia solo dopo conferma esplicita di Michele
   (eccezione già autorizzata: il controllo programmato del 19/10, vedi leggimi
-  "In breve").
+  sezione 6).
 - Il badge senza glutine (`'gf': True`) solo per locali con opzioni senza
   glutine verificate (il celiaco è Michele).
 - Mai mettere segreti nel repo (la chiave privata VAPID sta solo nei secret).
@@ -24,7 +24,8 @@ l'utente: `leggimi.md` (lunga: leggi solo la sezione che serve).
   i link alle voci di Wikipedia **in italiano**, solo se la voce esiste davvero.
 - Tema scuro: ogni nuovo colore va ripetuto nel blocco
   `prefers-color-scheme: dark` in fondo a `app/stile.css`.
-- Tieni sempre aggiornato `leggimi.md` con le modifiche fatte.
+- Tieni sempre aggiornato `leggimi.md`, ma corto: descrive com'è il progetto
+  oggi, non la cronologia (quella sta nelle PR su GitHub).
 - Prima di modificare i file `.py` spiega a Michele cosa cambia (pro e contro)
   e aspetta il suo ok, salvo richieste esplicite.
 
