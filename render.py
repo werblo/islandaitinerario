@@ -285,6 +285,13 @@ def render_food(f):
             f'<div><strong>{e(f["meal"])}</strong> — {e(f["place"])}</div>'
             f'<div class="food-cost">{e(f["cost"])}</div></div>{note}{gf}</div>')
 
+def wiki_links(links):
+    """Riga "Su Wikipedia" sotto i box di storia (voci in italiano verificate)."""
+    if not links:
+        return ''
+    items = ' · '.join(f'<a href="{e(url)}" target="_blank" rel="noopener">{e(label)}</a>' for label, url in links)
+    return f'<div class="culture-card__src">Su Wikipedia: {items}</div>'
+
 def render_day_section(day):
     legs_html = ''
     if day['legs']:
@@ -317,7 +324,7 @@ def render_day_section(day):
     if day.get('culture'):
         culture_icon = f'<svg viewBox="0 0 64 56" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">{icon_svg("saga")}</svg>'
         culture_html = (f'<div class="culture-card"><div class="culture-card__label">{culture_icon}Storia &amp; curiosità</div>'
-                         f'<p>{e(day["culture"])}</p></div>')
+                         ''.join(f'<p>{e(par)}</p>' for par in day["culture"].split('\n\n')) + f'{wiki_links(day.get("culture_links"))}</div>')
 
     hero_fname = f"{day['id']}-hero.jpg"
 
@@ -329,7 +336,7 @@ def render_day_section(day):
   </div>
   {photo_slot(hero_fname, day['title'], 'photo-slot--hero', HERO_ICON.get(day['id'], 'village'), HERO_POS.get(day['id']))}
   <div class="map-frame"><div class="day-map" id="day-map-{day['id']}" role="region" aria-label="Mappa del percorso del giorno {day['num']}"></div></div>
-  <div class="line" style="margin:6px 0 0;font-size:0.8125rem;color:#5c6a78;">Mappa reale (OpenStreetMap) — zoomabile e trascinabile. Percorso stradale indicativo (disponibile anche offline); per la navigazione vera usa Google Maps offline.</div>
+  <div class="line" style="margin:6px 0 0;font-size:0.8125rem;color:var(--muted-2);">Mappa reale (OpenStreetMap), zoomabile e trascinabile. Percorso stradale indicativo (disponibile anche offline); per la navigazione vera usa Google Maps offline.</div>
   <div class="grid2">
     <div class="info-card">
       <div class="info-card__label">Meteo · {e(locations[day['locKey']]['name'])}</div>
@@ -401,29 +408,33 @@ storia_html = f'''
   <div class="panel">
     <div class="panel-title"><span class="rune-mark">ᛒ</span>Un'isola giovanissima</div>
     <div class="rune-rule"></div>
-    <p class="line">L'Islanda entra nella storia scritta molto tardi rispetto al resto d'Europa. Tra i primi ad avvistarla, intorno all'<strong>868 d.C.</strong>, è il navigatore norvegese <strong>Hrafna-Flóki Vilgerðarson</strong> ("Flóki dei corvi", dai tre corvi che portava con sé per trovare la rotta): dopo un inverno durissimo passato a osservare i fiordi pieni di ghiaccio alla deriva, se ne va deluso e ribattezza l'isola <strong>Ísland</strong>, "terra di ghiaccio" — il nome che porta ancora oggi. Solo pochi anni dopo, nell'<strong>874 d.C.</strong>, il norvegese Ingólfur Arnarson vi fonda il primo insediamento permanente, proprio dove oggi sorge Reykjavík. Secondo l'usanza vichinga, aveva lanciato in mare i pilastri del suo trono cerimoniale e costruito casa dove le correnti li avevano portati a riva. Nei decenni successivi arrivano altre migliaia di coloni, soprattutto dalla Norvegia, insieme a genti e schiavi dalle isole britanniche: da questo mix nasce la popolazione islandese.</p>
+    <p class="line">L'Islanda fu una delle ultime terre d'Europa a essere abitate. Secondo le fonti medievali, intorno all'<strong>868</strong> il navigatore norvegese <strong>Hrafna-Flóki Vilgerðarson</strong> («Flóki dei corvi», dai corvi che usava per orientarsi) trascorse un inverno sull'isola e, vedendo un fiordo pieno di ghiaccio, la chiamò <strong>Ísland</strong>, «terra di ghiaccio». Nell'<strong>874</strong> Ingólfur Arnarson fondò il primo insediamento stabile nel luogo dell'attuale Reykjavík; secondo la tradizione scelse il posto seguendo i pilastri del suo seggio, gettati in mare e portati a riva dalle correnti. Nei decenni successivi arrivarono migliaia di coloni, in gran parte dalla Norvegia, insieme a persone provenienti dalle isole britanniche, molte delle quali schiavi.</p>
+    {wiki_links([("Colonizzazione dell'Islanda", "https://it.wikipedia.org/wiki/Colonizzazione_dell'Islanda"), ("Storia dell'Islanda", "https://it.wikipedia.org/wiki/Storia_dell'Islanda")])}
   </div>
 
   <div class="panel">
     <div class="panel-title"><span class="rune-mark">ᛏ</span>Dal primo parlamento all'indipendenza</div>
     <div class="rune-rule"></div>
-    <p class="line">Nel <strong>930 d.C.</strong>, a Þingvellir, i capi dell'isola fondano l'<strong>Alþingi</strong>: un'assemblea annuale all'aperto per fare leggi e giudicare le liti, una delle istituzioni parlamentari più antiche ancora esistenti al mondo. È l'epoca del cosiddetto Commonwealth islandese, senza re né esercito centrale. Nel 1262, dilaniata da faide interne, l'isola giura fedeltà al re di Norvegia; nel 1380 passa sotto la corona danese insieme alla Norvegia. Bisogna aspettare il <strong>1º dicembre 1918</strong> per un regno autonomo (ma ancora legato alla Danimarca), e il <strong>17 giugno 1944</strong> per la Repubblica islandese piena, approvata al referendum con oltre il 98% dei voti mentre la Danimarca era sotto occupazione tedesca.</p>
+    <p class="line">Nel <strong>930</strong> i capi dell'isola istituirono a Þingvellir l'<strong>Alþingi</strong>, un'assemblea che si riuniva ogni estate per approvare le leggi e risolvere le controversie; è considerato uno dei parlamenti più antichi del mondo. Il periodo successivo, noto come Stato libero islandese, non ebbe né un re né un esercito centrale. Nel 1262, dopo anni di conflitti tra le famiglie più potenti, l'Islanda accettò la sovranità del re di Norvegia e nel 1380 passò con la Norvegia sotto la corona danese. Il <strong>1º dicembre 1918</strong> divenne un regno sovrano unito alla Danimarca nella persona del re; il <strong>17 giugno 1944</strong>, mentre la Danimarca era occupata dalla Germania, fu proclamata a Þingvellir la Repubblica d'Islanda, dopo un referendum approvato con oltre il 98% dei voti.</p>
+    {wiki_links([('Alþingi', 'https://it.wikipedia.org/wiki/Parlamento_islandese'), ('Parco nazionale Þingvellir', 'https://it.wikipedia.org/wiki/Parco_nazionale_Þingvellir')])}
   </div>
 
   <div class="culture-card">
-    <div class="culture-card__label">{f'<svg viewBox="0 0 64 56" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">{icon_svg("saga")}</svg>'}<span class="rune-mark">ᚱ</span>Le saghe e una lingua rimasta ferma nel tempo</div>
-    <p>Preparatevi a un piccolo miracolo linguistico: l'islandese di oggi è così vicino al norreno medievale che un lettore islandese può ancora leggere le saghe scritte otto secoli fa, senza traduzione — un lusso che i cugini scandinavi hanno perso da tempo. Altrettanto insolito è il sistema dei nomi: niente cognomi di famiglia, solo patronimici o matronimici (un Jónsson è "figlio di Jón"), tanto che l'elenco telefonico islandese è ordinato per nome di battesimo. La popolazione resta minuscola, circa 390.000 persone su un'isola grande quanto il Portogallo, e fino a poco tempo fa con un primato curioso: nessuna zanzara (le prime sono state trovate solo nel 2025). Gli alberi invece scarseggiano, abbattuti in gran parte dai primi coloni per legna e pascoli.</p>
+    <div class="culture-card__label">{f'<svg viewBox="0 0 64 56" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">{icon_svg("saga")}</svg>'}<span class="rune-mark">ᚱ</span>Le saghe e la lingua</div>
+    <p>L'islandese moderno è rimasto molto vicino al norreno medievale: grazie all'isolamento e a una forte tradizione scritta, un islandese di oggi può leggere le saghe del XIII secolo senza grandi difficoltà. Nel 1944 la costituzione lo ha stabilito come lingua ufficiale. Il sistema dei nomi non usa cognomi di famiglia ma patronimici o matronimici (Jónsson significa «figlio di Jón», Jónsdóttir «figlia di Jón»); per questo l'elenco telefonico è ordinato per nome di battesimo. L'isola ha circa 390.000 abitanti su una superficie di poco superiore a quella del Portogallo. Fino a tempi recenti era nota per l'assenza di zanzare, le prime sono state trovate nel 2025; i boschi sono scarsi, in gran parte abbattuti dai primi coloni per ricavare legna e pascoli.</p>
+    {wiki_links([('Lingua islandese', 'https://it.wikipedia.org/wiki/Lingua_islandese'), ('Storia della lingua islandese', 'https://it.wikipedia.org/wiki/Storia_della_lingua_islandese')])}
   </div>
 
   <div class="culture-card">
-    <div class="culture-card__label">{f'<svg viewBox="0 0 64 56" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">{icon_svg("saga")}</svg>'}<span class="rune-mark">ᛟ</span>Troll, elfi e le luci del cielo</div>
-    <p>La tradizione islandese abbonda di creature che spiegano il paesaggio prima ancora della geologia. I <strong>troll</strong> vivono nelle scogliere e nelle montagne ma temono la luce del sole: chi viene sorpreso all'alba resta pietrificato per sempre — da qui nascono formazioni come i faraglioni di Reynisfjara, che vedrete il Giorno 4. Accanto a loro vive un popolo più discreto, gli <strong>Huldufólk</strong> ("il popolo nascosto"): elfi che abitano rocce e colline e si mostrano solo quando lo scelgono loro. La credenza è ancora abbastanza radicata che alcuni progetti stradali islandesi siano stati deviati proprio per non disturbarli.</p>
+    <div class="culture-card__label">{f'<svg viewBox="0 0 64 56" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">{icon_svg("saga")}</svg>'}<span class="rune-mark">ᛟ</span>Troll ed elfi</div>
+    <p>Il folclore islandese spiega molte forme del paesaggio con creature leggendarie. Secondo la tradizione i <strong>troll</strong> vivono nelle montagne e si trasformano in pietra se vengono sorpresi dalla luce del sole: così vengono spiegati, per esempio, i faraglioni Reynisdrangar davanti a Reynisfjara. Gli <strong>Huldufólk</strong> («popolo nascosto») sono elfi che abitano rocce e colline e si mostrano solo quando vogliono. Questa credenza è ancora diffusa al punto che, in alcuni casi, il tracciato di nuove strade è stato modificato per non disturbare le rocce considerate abitate dagli elfi.</p>
   </div>
 
   <div class="panel">
-    <div class="panel-title"><span class="rune-mark">ᚲ</span>Il paese del fuoco sotto il ghiaccio</div>
+    <div class="panel-title"><span class="rune-mark">ᚲ</span>Fuoco e ghiaccio</div>
     <div class="rune-rule"></div>
-    <p class="line">L'Islanda siede a cavallo della dorsale medio-atlantica, il punto dove le placche nordamericana ed eurasiatica si allontanano di circa 2 cm l'anno: la vedrete a occhio nudo a Þingvellir il Giorno 3. Questa posizione rende l'isola una delle zone vulcaniche più attive del pianeta, con oltre 30 sistemi vulcanici attivi. È lo stesso fuoco sotterraneo, imbrigliato, a rendere l'Islanda quasi autosufficiente: circa l'85% del consumo energetico totale del paese (riscaldamento, industria e trasporti inclusi) viene da fonti rinnovabili, soprattutto geotermia e idroelettrico — la sola elettricità è quasi al 100% rinnovabile. Sono le stesse sorgenti calde in cui vi immergerete a Fontana e alla Secret Lagoon.</p>
+    <p class="line">L'Islanda si trova sulla dorsale medio-atlantica, dove le placche nordamericana ed eurasiatica si allontanano di circa 2 cm all'anno; il confine tra le due placche è visibile a Þingvellir. Per questo è una delle zone vulcaniche più attive della Terra, con oltre 30 sistemi vulcanici attivi. Circa l'85% dell'energia consumata nel paese, compresi riscaldamento, industria e trasporti, proviene da fonti rinnovabili, soprattutto geotermia e idroelettrico, e la produzione di elettricità è quasi interamente rinnovabile. La stessa acqua calda del sottosuolo alimenta le piscine e le terme come Fontana e la Secret Lagoon.</p>
+    {wiki_links([("Vulcani dell'Islanda", "https://it.wikipedia.org/wiki/Vulcani_dell'Islanda"), ("Geografia dell'Islanda", "https://it.wikipedia.org/wiki/Geografia_dell'Islanda")])}
   </div>
 </section>'''
 
@@ -608,7 +619,7 @@ html_out = f'''<!DOCTYPE html>
     <div class="panel-title">Mappa del viaggio</div>
     <div class="rune-rule"></div>
     <div id="trip-map" role="region" aria-label="Mappa del viaggio" style="position:relative;isolation:isolate;z-index:0;height:260px;border-radius:8px;overflow:hidden;border:2px solid var(--navy);box-shadow:0 4px 16px rgba(0,0,0,.12);background:#e4e6e3;"></div>
-    <div class="line" style="margin-top:10px;font-size:0.8125rem;color:#5c6a78;">Mappa reale (OpenStreetMap) — zoomabile e trascinabile. Tocca un marker per il nome della tappa. Per la navigazione stradale vera e propria usa Google Maps offline.</div>
+    <div class="line" style="margin-top:10px;font-size:0.8125rem;color:var(--muted-2);">Mappa reale (OpenStreetMap), zoomabile e trascinabile. Tocca un marker per il nome della tappa. Per la navigazione stradale vera e propria usa Google Maps offline.</div>
   </div>
 
   <div class="panel">
@@ -635,7 +646,7 @@ html_out = f'''<!DOCTYPE html>
     <div class="line"><strong>Volo andata:</strong> EJU3969 Milano Malpensa → Keflavík, dom 15 nov, 07:00 → 10:35</div>
     <div class="line"><strong>Volo ritorno:</strong> EJU3970 Keflavík → Milano Malpensa, dom 22 nov, 11:25 → 16:45</div>
     <div class="line"><strong>Auto:</strong> 4x4 (FairCar) · ritiro Keflavík 15 nov ore 11:00 · riconsegna Keflavík 22 nov ore 11:00</div>
-    <div class="warn-box"><strong>Attenzione:</strong> il voucher auto indica riconsegna alle 11:00, ma il volo decolla alle 11:25 — margine quasi nullo. Contatta FairCar per riconsegnare prima (vedi Giorno 8).</div>
+    <div class="warn-box"><strong>Attenzione:</strong> il voucher auto indica riconsegna alle 11:00, ma il volo decolla alle 11:25: margine quasi nullo. Contatta FairCar per riconsegnare prima (vedi Giorno 8).</div>
   </div>
 
   <div class="panel">
@@ -644,16 +655,16 @@ html_out = f'''<!DOCTYPE html>
     <div class="line">• Supermercati Bónus (logo maialino rosa) e Krónan sono i più economici per colazioni/pranzi al sacco.</div>
     <div class="line">• Le stazioni N1 hanno zuppe e hot dog a buon prezzo lungo la Ring Road (strada 1).</div>
     <div class="line">• L'acqua del rubinetto è potabile ovunque: niente acqua in bottiglia.</div>
-    <div class="line">• Cerca la parola <strong>"glútenlaust"</strong> o <strong>"glútenlaus"</strong> (senza glutine) sui menu — molti locali islandesi la indicano chiaramente.</div>
+    <div class="line">• Cerca la parola <strong>"glútenlaust"</strong> o <strong>"glútenlaus"</strong> (senza glutine) sui menu: molti locali islandesi la indicano chiaramente.</div>
     <div class="line">• Segnalati nell'itinerario i locali con opzioni gluten-free note; conferma comunque con lo staff.</div>
   </div>
 
   <div class="panel">
     <div class="panel-title">Sicurezza &amp; risorse utili</div>
     <div class="rune-rule"></div>
-    <div class="line">• <a href="https://www.safetravel.is" target="_blank" rel="noopener">safetravel.is</a> — registra il vostro itinerario (gratis, consigliato per la guida invernale).</div>
-    <div class="line">• <a href="https://www.road.is" target="_blank" rel="noopener">road.is</a> — condizioni stradali in tempo reale.</div>
-    <div class="line">• <a href="https://en.vedur.is" target="_blank" rel="noopener">vedur.is</a> — meteo, vento e aurora ufficiali islandesi.</div>
+    <div class="line">• <a href="https://www.safetravel.is" target="_blank" rel="noopener">safetravel.is</a>: registra il vostro itinerario (gratis, consigliato per la guida invernale).</div>
+    <div class="line">• <a href="https://www.road.is" target="_blank" rel="noopener">road.is</a>: condizioni stradali in tempo reale.</div>
+    <div class="line">• <a href="https://en.vedur.is" target="_blank" rel="noopener">vedur.is</a>: meteo, vento e aurora ufficiali islandesi.</div>
     <div class="line">• Numero unico di emergenza: <strong>112</strong> (anche via app 112 Iceland).</div>
     <div class="line">• Consolato Onorario d'Italia a Reykjavík: <a href="tel:+3546981223">+354 698 1223</a> · reykjavik.onorario@esteri.it (Bankastræti 7).</div>
     <div class="line">• Con il 4x4 in novembre è normale trovare vento forte e strade bagnate/ghiacciate: guida con margine, specialmente sulla costa sud.</div>
@@ -677,7 +688,7 @@ html_out = f'''<!DOCTYPE html>
     <div class="line">• <strong>46heima / Heimaleiga (Reykjavík, Giorni 1-3):</strong> <a href="tel:+3544494900">+354 449 4900</a></div>
     <div class="line">• <strong>Hótel Búrfell (Vík, Giorni 4-5):</strong> <a href="tel:+3544874660">+354 487 4660</a></div>
     <div class="line">• <strong>The Hill Guesthouse (The Hill Hotel, Flúðir, Giorni 6-7):</strong> <a href="tel:+3544864430">+354 486 4430</a></div>
-    <div class="line" style="margin-top:6px;font-size:0.8125rem;color:#5c6a78;">Numeri trovati via ricerca online, non verificati con una chiamata diretta: ricontrollateli nelle email di conferma prima di partire.</div>
+    <div class="line" style="margin-top:6px;font-size:0.8125rem;color:var(--muted-2);">Numeri trovati via ricerca online, non verificati con una chiamata diretta: ricontrollateli nelle email di conferma prima di partire.</div>
   </div>
 
   <div class="panel">

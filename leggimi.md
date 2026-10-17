@@ -25,6 +25,9 @@
   (conferma o ritorno indietro solo con il suo sì) e cancellazione dei file
   della ricerca, con test completo e ritorno a prima se qualcosa non va.
 - **Controllo pre-partenza:** ricontrollo automatico l'8 novembre (sezione 4).
+- **Aspetto e testi (17 ottobre):** tema scuro automatico quando il telefono
+  è in modalità scura; box "Storia & curiosità" e tab Storia in stile
+  enciclopedico con i link alle voci di Wikipedia in italiano (sezione 14).
 
 ## 1. Aggiungere le foto
 
@@ -293,10 +296,11 @@ sotto "Alloggio", con link "Naviga" diretti:
 - **Info** — countdown, aurora boreale in tempo reale con la stima di
   stasera, mappa del viaggio, "Prepara offline", cambio EUR/ISK, il viaggio
   in breve, budget e celiachia, sicurezza, alloggi, numeri utili.
-- **Giorno 1–8** — un tab per ogni giornata: attività, spostamenti, mappa
-  del percorso, box "Storia & curiosità", pasti, alloggio.
+- **Giorno 1–8** — un tab per ogni giornata: attività, spostamenti (con i
+  pulsanti Strade, Allerte meteo e Sicurezza), mappa del percorso, box
+  "Storia & curiosità" con i link a Wikipedia, pasti, alloggio.
 - **Storia** — panoramica generale sulla storia islandese (colonizzazione,
-  Alþingi, lingua, folklore, geologia).
+  Alþingi, lingua, folclore, geologia), con i link a Wikipedia.
 - **Checklist** — tolta l'11 ottobre 2026: la checklist (cose da fare,
   valigia) e i biglietti sono ora su Notion, nella pagina "Islanda · 15-22
   novembre 2026", condivisa tra Michele e Federica. Nella tab Info c'è il
@@ -714,3 +718,41 @@ previsioni delle 7:30: si cambia metodo solo se la differenza è netta.
 Dopo il 1° novembre, scelto il metodo, la ricerca non serve più: si possono
 cancellare `tools/research/` e `.github/workflows/ricerca-nuvole.yml` (gli
 avvisi aurora non li usano).
+
+## 14. Aspetto e testi (17 ottobre 2026)
+
+Dopo una revisione del design fatta con un sottoagente (prove su telefono e
+computer, tema scuro, testo ingrandito):
+
+- **Tema scuro:** se il telefono è in modalità scura l'app usa colori scuri
+  (blocco `@media (prefers-color-scheme: dark)` in fondo a `app/stile.css`),
+  così la sera, in attesa dell'aurora, lo schermo non abbaglia. Le mappe
+  sono leggermente scurite. Ogni nuovo colore aggiunto allo stile va
+  ripetuto anche in quel blocco.
+- **Pulsante €↔kr** leggermente trasparente (torna pieno quando è aperto),
+  stessa misura di prima.
+- **Link "Scopri di più" e "Naviga"** un po' più alti e grandi, sempre
+  affiancati sulla stessa riga (controllato a 360 px).
+- **Badge "senza glutine"** con colori più contrastati, stessa misura.
+- **Testi piccoli** (etichette meteo, calcolatrice, pulsanti Strade/Allerte/
+  Sicurezza, scritta sopra il titolo) portati ad almeno 13 px.
+- **Barra dei giorni** con una sfumatura ai bordi, che fa capire che scorre.
+- **Ritocchi:** la × della calcolatrice è più facile da toccare; i pulsanti
+  +/− delle mappe sono in basso a sinistra (in alto coprivano la partenza).
+- Restano com'erano, per scelta di Michele: la mappa (si trascina dopo il
+  primo tocco), i numeri utili della tab Info e l'ordine delle sezioni dei
+  giorni. Le schede delle attività restano con la foto a sinistra finché
+  Michele non sceglie tra foto più piccola o foto sopra il testo.
+
+**Testi.** I box "Storia & curiosità" dei giorni e la tab Storia sono scritti
+in stile enciclopedico, come una voce di Wikipedia: terza persona, frasi
+informative, niente lineette lunghe né frasi a effetto. I box lunghi sono
+divisi in paragrafi (in `dati.py` si va a capo con una riga vuota, `\n\n`).
+Sotto ogni box c'è "Su Wikipedia" con le voci in italiano collegate
+(`culture_links` in `dati.py`; nella tab Storia direttamente in `render.py`):
+solo voci che esistono davvero. Per Perlan, Harpa, Hallgrímskirkja,
+Seljalandsfoss, Gullfoss, Geysir, Jökulsárlón, Kerið, Reynisfjara, Flúðir e
+la penisola di Reykjanes non c'è una voce in italiano, quindi si usano voci
+più generali (es. "Cascate dell'Islanda", "Cerchio d'Oro"). Nelle
+descrizioni delle attività "~" è diventato "circa"; nelle tratte e nei costi
+resta "~".

@@ -10,7 +10,7 @@ function ensureDayMap(dayId) {
   if (dayMaps[dayId]) { requestAnimationFrame(() => dayMaps[dayId].invalidateSize()); return; }
 
   const map = L.map(el, { scrollWheelZoom: false, dragging: false, tap: false, zoomControl: false, zoomSnap: 0.25 });
-  L.control.zoom({ position: 'topleft', zoomInTitle: 'Ingrandisci mappa', zoomOutTitle: 'Riduci mappa' }).addTo(map);
+  L.control.zoom({ position: 'bottomleft', zoomInTitle: 'Ingrandisci mappa', zoomOutTitle: 'Riduci mappa' }).addTo(map);
   dayMaps[dayId] = map;
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors',
@@ -48,7 +48,7 @@ function ensureDayMap(dayId) {
     L.marker([p.lat, p.lon], { icon }).addTo(map).bindPopup(p.name);
   });
 
-  // margini: a sinistra in alto ci sono i pulsanti +/−, in basso i crediti della mappa;
+  // margini: a sinistra in basso ci sono i pulsanti +/−, a destra in basso i crediti della mappa;
   // l'inquadratura comprende anche la strada, non solo le tappe
   map.fitBounds(latlngs.concat(DAY_GEOMETRY[dayId] || []), { paddingTopLeft: [52, 34], paddingBottomRight: [34, 34] });
 
@@ -618,7 +618,7 @@ function initTripMap() {
   ];
 
   const map = L.map(el, { scrollWheelZoom: false, dragging: false, tap: false, zoomControl: false, zoomSnap: 0.25 });
-  L.control.zoom({ position: 'topleft', zoomInTitle: 'Ingrandisci mappa', zoomOutTitle: 'Riduci mappa' }).addTo(map);
+  L.control.zoom({ position: 'bottomleft', zoomInTitle: 'Ingrandisci mappa', zoomOutTitle: 'Riduci mappa' }).addTo(map);
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors',
     subdomains: 'abc',
@@ -653,7 +653,7 @@ function initTripMap() {
     L.marker([loc.lat, loc.lon], { icon }).addTo(map).bindPopup(s.label);
   });
 
-  // margini: a sinistra in alto ci sono i pulsanti +/−, in basso i crediti della mappa;
+  // margini: a sinistra in basso ci sono i pulsanti +/−, a destra in basso i crediti della mappa;
   // l'inquadratura comprende anche le strade di tutti i giorni
   tripBounds = L.latLngBounds(latlngs.concat(...dayLines));
   map.fitBounds(tripBounds, TRIP_FIT);

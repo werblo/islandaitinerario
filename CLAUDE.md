@@ -19,6 +19,14 @@ l'utente: `leggimi.md` (lunga: leggi solo la sezione che serve).
 - Il badge senza glutine (`'gf': True`) solo per locali con opzioni senza
   glutine verificate (il celiaco è Michele).
 - Mai mettere segreti nel repo (la chiave privata VAPID sta solo nei secret).
+- Testi "Storia & curiosità" e tab Storia: stile enciclopedico (come Wikipedia),
+  terza persona, niente lineette lunghe "—" né frasi a effetto; sotto ogni box
+  i link alle voci di Wikipedia **in italiano**, solo se la voce esiste davvero.
+- Tema scuro: ogni nuovo colore va ripetuto nel blocco
+  `prefers-color-scheme: dark` in fondo a `app/stile.css`.
+- Tieni sempre aggiornato `leggimi.md` con le modifiche fatte.
+- Prima di modificare i file `.py` spiega a Michele cosa cambia (pro e contro)
+  e aspetta il suo ok, salvo richieste esplicite.
 
 ## File
 - `dati.py` — tutti i dati e testi del viaggio: giorni, attività, pasti,
