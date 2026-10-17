@@ -54,6 +54,10 @@ un segnaposto con un'icona. `render.py` converte le foto in WebP: 1200 px per
 quelle grandi, 400 px sul lato corto per le miniature (nelle schede delle
 attività si vedono piccole, 64 px, a sinistra del testo).
 
+**Ordine di un giorno.** Foto, mappa, meteo e alba/tramonto, nota aurora,
+Spostamenti in auto, Itinerario, Storia & curiosità, Dove mangiare, alloggio,
+consiglio del giorno.
+
 **Testi.** I box "Storia & curiosità" e la tab Storia sono in stile
 enciclopedico (come Wikipedia), con sotto i link alle voci di Wikipedia in
 italiano (`culture_links` in `dati.py`), solo se la voce esiste. Nei box si
