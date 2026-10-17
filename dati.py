@@ -244,7 +244,7 @@ evening_stops = {
            {'place': 'thingvellir', 'until': 22},    # ~1h20 di strada verso Reykjavík
            {'place': 'reykjavik'}],
 }
-# Stima delle nuvole (vedi tools/research/nuvole.py e leggimi sezione 13):
+# Stima delle nuvole (vedi tools/research/nuvole.py e leggimi sezione 6):
 #   'totale'    nuvolosità totale del modello automatico (DMI HARMONIE in Islanda)
 #   'pesata'    stesso modello, strati pesati: bassi contano tutti, medi e alti meno
 #   'media'     media della nuvolosità totale dei CLOUD_MODELS
@@ -254,5 +254,5 @@ CLOUD_W_MID, CLOUD_W_HIGH = 0.8, 0.3
 CLOUD_MODELS = ['best_match', 'ecmwf_ifs025', 'icon_seamless', 'ukmo_seamless', 'metno_seamless', 'gfs_seamless']
 
 # Chiave pubblica VAPID degli avvisi aurora: la privata corrispondente sta solo
-# nel secret VAPID_PRIVATE_KEY del repo (vedi leggimi, sezione 12).
+# nel secret VAPID_PRIVATE_KEY del repo (vedi leggimi, sezione 5).
 VAPID_PUBLIC_KEY = 'BMOzcfKagfPhm6Ax0MRUig7SvV7LoQjp2WzP-YWybYEE0TVCguWI11MTKxO5i2UslqyvHeG6HOtsN08FVa_6yZk'
