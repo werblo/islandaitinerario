@@ -422,7 +422,7 @@ storia_html = f'''
 
   <div class="culture-card">
     <div class="culture-card__label">{f'<svg viewBox="0 0 64 56" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">{icon_svg("saga")}</svg>'}<span class="rune-mark">ᚱ</span>Le saghe e la lingua</div>
-    <p>L'islandese moderno è rimasto molto vicino al norreno medievale: grazie all'isolamento e a una forte tradizione scritta, un islandese di oggi può leggere le saghe del XIII secolo senza grandi difficoltà. Nel 1944 la costituzione lo ha stabilito come lingua ufficiale. Il sistema dei nomi non usa cognomi di famiglia ma patronimici o matronimici (Jónsson significa «figlio di Jón», Jónsdóttir «figlia di Jón»); per questo l'elenco telefonico è ordinato per nome di battesimo. L'isola ha circa 390.000 abitanti su una superficie di poco superiore a quella del Portogallo. Fino a tempi recenti era nota per l'assenza di zanzare, le prime sono state trovate nel 2025; i boschi sono scarsi, in gran parte abbattuti dai primi coloni per ricavare legna e pascoli.</p>
+    <p>L'islandese moderno è rimasto molto vicino al norreno medievale: grazie all'isolamento e a una forte tradizione scritta, un islandese di oggi può leggere le saghe del XIII secolo senza grandi difficoltà. Una legge del 2011 lo ha stabilito come lingua ufficiale. Il sistema dei nomi non usa cognomi di famiglia ma patronimici o matronimici (Jónsson significa «figlio di Jón», Jónsdóttir «figlia di Jón»); per questo l'elenco telefonico è ordinato per nome di battesimo. L'isola ha circa 390.000 abitanti su una superficie di poco superiore a quella del Portogallo. Fino a tempi recenti era nota per l'assenza di zanzare, le prime sono state trovate nel 2025; i boschi sono scarsi, in gran parte abbattuti dai primi coloni per ricavare legna e pascoli.</p>
     {wiki_links([('Lingua islandese', 'https://it.wikipedia.org/wiki/Lingua_islandese'), ('Storia della lingua islandese', 'https://it.wikipedia.org/wiki/Storia_della_lingua_islandese')])}
   </div>
 
@@ -617,12 +617,12 @@ html_out = f'''<!DOCTYPE html>
     <div class="fx-row">
       <div class="fx-field">
         <label for="fx-eur">Euro (EUR)</label>
-        <input type="number" id="fx-eur" inputmode="decimal" value="10" min="0" step="1">
+        <input type="text" id="fx-eur" inputmode="decimal" autocomplete="off" value="10">
       </div>
       <div class="fx-arrow">&harr;</div>
       <div class="fx-field">
         <label for="fx-isk">Corone (ISK)</label>
-        <input type="number" id="fx-isk" inputmode="decimal" value="0" min="0" step="1">
+        <input type="text" id="fx-isk" inputmode="decimal" autocomplete="off" value="0">
       </div>
     </div>
     <div class="fx-rate" id="fx-rate-label">1 € &asymp; … ISK &middot; caricamento tasso…</div>
@@ -725,12 +725,12 @@ html_out = f'''<!DOCTYPE html>
   <div class="fx-row">
     <div class="fx-field">
       <label for="fab-fx-eur">Euro (EUR)</label>
-      <input type="number" id="fab-fx-eur" inputmode="decimal" value="10" min="0" step="1">
+      <input type="text" id="fab-fx-eur" inputmode="decimal" autocomplete="off" value="10">
     </div>
     <div class="fx-arrow">&harr;</div>
     <div class="fx-field">
       <label for="fab-fx-isk">Corone (ISK)</label>
-      <input type="number" id="fab-fx-isk" inputmode="decimal" value="0" min="0" step="1">
+      <input type="text" id="fab-fx-isk" inputmode="decimal" autocomplete="off" value="0">
     </div>
   </div>
   <div class="fx-rate" id="fab-fx-rate-label">1 € &asymp; … ISK</div>
