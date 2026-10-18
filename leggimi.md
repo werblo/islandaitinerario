@@ -10,9 +10,10 @@ Questo file descrive **com'è il progetto oggi**. La storia delle modifiche
 - **Sito:** werblo.github.io/islandaitinerario, pubblicato con GitHub Pages
   dal branch `main`. Installato come app con Firefox su Android (menu ⋮ →
   "Installa").
-- **Tab:** Info (countdown, aurora, avvisi aurora, mappa del viaggio, cambio
-  €/ISK, budget e celiachia, sicurezza, alloggi, numeri utili, Prepara
-  offline), Giorno 1-8, Storia.
+- **Tab:** Info (countdown, aurora, mappa del viaggio, cambio €/ISK, budget
+  e celiachia, sicurezza, alloggi, numeri utili, checklist su Notion, avvisi
+  aurora in una riga che si apre toccandola, Prepara offline), Giorno 1-8,
+  Storia.
 - **Checklist e biglietti:** solo su Notion, pagina "Islanda · 15-22 novembre
   2026", condivisa; nella tab Info c'è il link.
 - **Aspetto:** tema scuro automatico quando il telefono è in modalità scura.
@@ -136,7 +137,7 @@ GitHub Actions, non nel repo.
    Michele: {"endpoint":"https://...","keys":{...}}
    Federica: {"endpoint":"https://...","keys":{...}}
    ```
-   Il codice si copia dall'app: tab Info → "Avvisi aurora sul telefono" →
+   Il codice si copia dall'app: tab Info → riga "🔔 Avvisi aurora" in fondo (toccala per aprirla) →
    "Attiva avvisi aurora" → "Copia codice". I secret non si rileggono: per
    aggiungere un telefono si reincollano tutti i codici.
 3. Prova a mano: tab Actions → "Avvisi aurora" → Run workflow → `prova`.

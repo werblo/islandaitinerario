@@ -869,8 +869,12 @@ function b64urlToBytes(s) {
   const code = document.getElementById('aurora-push-code');
   if (!status) return;
   const say = (msg, ok) => { status.textContent = msg; status.classList.toggle('aurora-push__status--ok', !!ok); };
+  // riga chiusa del riquadro: dice subito se gli avvisi sono attivi su questo telefono
+  const sumEl = document.getElementById('aurora-push-sum');
+  const sum = text => { if (sumEl) sumEl.textContent = text; };
   if (!('serviceWorker' in navigator) || !('PushManager' in window) || !('Notification' in window)) {
     onBtn.hidden = true;
+    sum('non disponibili');
     say('Questo browser non supporta le notifiche push. Su iPhone aggiungi prima l’app alla schermata Home.');
     return;
   }
@@ -880,6 +884,7 @@ function b64urlToBytes(s) {
     onBtn.hidden = on;
     copyBtn.hidden = offBtn.hidden = code.hidden = !on;
     code.value = on ? JSON.stringify(sub) : '';
+    sum(on ? 'attivi su questo telefono' : Notification.permission === 'denied' ? 'notifiche bloccate' : 'non attivi');
     if (on) say('✓ Avvisi attivi su questo telefono. Se non l’hai già fatto, copia il codice e incollalo nel secret AURORA_SUBSCRIPTIONS del repo (istruzioni nel leggimi).', true);
     else if (Notification.permission === 'denied') say('Notifiche bloccate: riattivale dalle impostazioni del sito nel browser, poi riprova.');
     else say('');
