@@ -111,14 +111,17 @@ strada del ritorno fino alle 22, poi Reykjavík).
 ora islandese = UTC):
 
 - **Mattino**, alle 7:37 dal 15 al 21 novembre (se il turno parte tardi, appena
-  parte, fino alle 15): com'è messa la sera, con
+  parte, fino alle 15; se alle 7:37 mancano i dati, riprova ogni mezz'ora fino
+  alle 10): com'è messa la sera, con
   una frase scherzosa personalizzata per nome. Se mancano nuvole o Kp, il
   titolo dice "previsione incompleta" o "non disponibile".
 - **"🔄 Cambio di programma"**: controlli ogni 30 minuti (16:07-3:37); solo
   se la stima diventa "buone" e al mattino non lo era.
 - **"Aurora: condizioni buone adesso"**: quando è buio e Kp e nuvole del
   momento sono buoni.
-- **Prova automatica**: 13 novembre dalle 18:07 (19:07 in Italia).
+- **Prova automatica**: 13 novembre dalle 18:07 (19:07 in Italia), una volta
+  sola anche se un telefono non la riceve (in quel caso il turno su GitHub
+  risulta in rosso: ricontrollate l'iscrizione di quel telefono).
 
 **Turni.** GitHub fa partire le esecuzioni programmate anche con 4-12 ore di
 ritardo (misurato a ottobre). Per questo ogni esecuzione è un "turno" che resta
@@ -149,7 +152,9 @@ cambiata anche in `tools/aurora_alert.py`.
    "Attiva avvisi aurora" → "Copia codice". I secret non si rileggono: per
    aggiungere un telefono si reincollano tutti i codici.
 3. Prova a mano: tab Actions → "Avvisi aurora" → Run workflow → `prova`
-   (`turno` con una durata breve, es. 40 minuti, prova il giro dei controlli).
+   (`turno` con una durata breve, es. 40 minuti, prova il giro dei controlli,
+   ma solo fuori dalle date del viaggio: dal 13 al 22 novembre è bloccato per
+   non mandare avvisi doppi; per un controllo in più usate `controllo`).
 
 **Firefox su Android:** notifiche di Firefox attive, batteria di Firefox su
 "Senza restrizioni", dati di Firefox non cancellati alla chiusura (si

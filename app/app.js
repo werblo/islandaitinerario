@@ -155,7 +155,7 @@ function renderWeatherAndSun() {
 
     const auroraEl = document.querySelector('[data-aurora="' + day.id + '"]');
     if (auroraEl && day.id !== 'd8') {   // l'ultima sera siete già in volo
-      auroraEl.innerHTML = '<strong>Aurora:</strong> Notte dal tramonto (' + ss + ') all\'alba (' + sr + ') del giorno dopo; il buio pieno arriva circa due ore e mezza dopo il tramonto: finestra ampia. Novembre è piena stagione aurora: serve cielo sereno e attività geomagnetica. Controlla vedur.is/aurora nei giorni prima.<span data-aurora-live="' + day.id + '"></span>';
+      auroraEl.innerHTML = '<strong>Aurora:</strong> Notte dal tramonto (' + ss + ') all\'alba (' + sr + ') del giorno dopo; il buio pieno arriva circa tre ore dopo il tramonto: finestra ampia. Novembre è piena stagione aurora: serve cielo sereno e attività geomagnetica. Controlla vedur.is/aurora nei giorni prima.<span data-aurora-live="' + day.id + '"></span>';
     }
   });
   if (auroraReady) renderAurora();   // il box aurora dei giorni è appena stato riscritto
@@ -546,7 +546,7 @@ const FX_PAIRS = [['fx-eur', 'fx-isk'], ['fab-fx-eur', 'fab-fx-isk']];
 
 // numeri scritti all'italiana: "12,5", "1.500" (punto delle migliaia); niente negativi
 function fxParse(v) {
-  let t = String(v).trim().replace(/\s/g, '');
+  let t = String(v).replace(/[^\d.,-]/g, '');   // via spazi, simboli (€, kr) e lettere
   if (/^\d{1,3}(\.\d{3})+(,\d*)?$/.test(t)) t = t.replace(/\./g, '');
   const n = parseFloat(t.replace(',', '.'));
   return isFinite(n) && n >= 0 ? n : NaN;

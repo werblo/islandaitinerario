@@ -12,14 +12,15 @@ name: Avvisi aurora
 # GitHub ritarda. Fuori dalle date del viaggio il turno non fa niente.
 # A mano (tab Actions -> "Avvisi aurora" -> Run workflow): "prova" manda subito una
 # notifica di prova, "mattino" un'anteprima del messaggio del mattino, "controllo" un
-# controllo come di notte, "turno" un turno completo.
+# controllo come di notte, "turno" una prova del giro dei controlli (non durante il
+# viaggio, per non mandare avvisi doppi).
 on:
   schedule:
     - cron: '7 */2 13-22 11 *'
   workflow_dispatch:
     inputs:
       modalita:
-        description: 'prova = notifica subito · mattino = anteprima del messaggio delle 7:30 · controllo = come di notte · turno = 5 ore e mezza di controlli'
+        description: 'prova = notifica subito · mattino = anteprima del messaggio delle 7:37 · controllo = come di notte · turno = prova del giro dei controlli (solo fuori dalle date del viaggio)'
         type: choice
         options: [prova, mattino, controllo, turno]
         default: prova

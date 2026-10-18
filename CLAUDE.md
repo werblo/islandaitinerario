@@ -79,8 +79,10 @@ l'utente: `leggimi.md` (breve: com'è il progetto oggi).
   quindi ogni esecuzione è un "turno" (`AURORA_MODE=turno`, 330 minuti) che fa
   da solo, ai minuti :07 e :37, i controlli notturni (16:07-3:37), il mattino
   (dalle 7:37, fino alle 15) e la prova del 13/11 (dalle 18:07). Cron ogni 2
-  ore dal 13 al 22/11, in coda con `concurrency`. Prove: a mano con
-  `modalita` e `durata`, o in locale con `AURORA_TURNO_SIMULA=1`.
+  ore dal 13 al 22/11, in coda con `concurrency`. Mattino senza dati: riprova
+  fino alle 10. Prove: a mano con `modalita` e `durata` (il `turno` a mano è
+  bloccato dal 13 al 22/11 per evitare doppioni), o in locale con
+  `AURORA_TURNO_SIMULA=1`.
   Secret: `VAPID_PRIVATE_KEY`, `AURORA_SUBSCRIPTIONS` (righe "Nome: {json}").
 - `ricerca-nuvole.yml`: ottobre 2026; ultima esecuzione 1/11, revisione con
   Michele il 2/11 (le esecuzioni partono con ore di ritardo: le previsioni
