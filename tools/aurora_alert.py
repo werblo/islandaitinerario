@@ -5,7 +5,7 @@ Usa la stessa stima dell'app (Kp previsto NOAA × cielo sereno Open-Meteo, solo
 nelle ore di buio) nei posti in cui siete la sera, tappa per tappa
 (evening_stops in dati.py; di default l'alloggio della notte). Avvisi:
 
-- "mattino":    alle 7:30 di ogni giorno del viaggio, sempre: com'è messa stasera,
+- "mattino":    dalle 7:37 di ogni giorno del viaggio, sempre: com'è messa stasera,
                 con una frase scherzosa (personalizzata se il telefono ha un nome);
 - "previsione": la sera, solo se la stima diventa "buone" e al mattino non lo era
                 (cambio di programma in meglio);
@@ -462,9 +462,14 @@ def main():
     mode = os.environ.get('AURORA_MODE', 'controllo').strip() or 'controllo'
     now = (parse_time(os.environ['AURORA_NOW']).astimezone(timezone.utc) if os.environ.get('AURORA_NOW')
            else datetime.now(timezone.utc)).replace(second=0, microsecond=0)
-    if mode == 'turno':
-        return turno(now)
     manual = os.environ.get('AURORA_MANUAL') == '1'   # lanciato a mano dalla tab Actions
+    if mode == 'turno':
+        if manual and datetime(2026, 11, 13, tzinfo=timezone.utc) <= now < datetime(2026, 11, 23, tzinfo=timezone.utc):
+            # in parallelo ai turni programmati manderebbe avvisi doppi
+            print('::error::Il turno a mano non si usa durante il viaggio: per un controllo in più '
+                  'scegli "controllo", per una notifica di prova "prova".')
+            return 1
+        return turno(now)
     return run(mode, now, manual)
 
 
@@ -484,7 +489,7 @@ def next_slot(t):
 def turno(now):
     state_path = os.environ.get('AURORA_STATE', '.aurora-state/state.json')
     simulate = os.environ.get('AURORA_TURNO_SIMULA') == '1'
-    deadline = now + timedelta(minutes=int(os.environ.get('AURORA_TURNO_MIN', '330')))
+    deadline = now + timedelta(minutes=min(330, int(os.environ.get('AURORA_TURNO_MIN') or 330)))   # GitHub ferma i job a 360
     trip_nights = {d['dateISO'] for d in trip_data()['days'] if d['id'] != 'd8'}
     print(f'Turno dalle {now:%d/%m %H:%M} alle {deadline:%d/%m %H:%M} UTC')
     failed = False
@@ -511,7 +516,7 @@ def turno(now):
             except Exception as e:     # un errore non deve fermare il turno
                 print(f'::error::{job} alle {t:%H:%M}: {e}')
                 rc = 1
-            if job == 'prova' and rc == 0:
+            if job == 'prova' and rc in (0, 3):   # 3 = arrivata solo ad alcuni telefoni: non ripeterla
                 st = load_state(state_path)
                 st['_prova_auto'] = t.strftime('%Y-%m-%d %H:%M')
                 save_state(state_path, st)
@@ -585,7 +590,7 @@ def run(mode, now, manual=False):
             'body': (f'Ciao {name}! ' if name else '') + 'Le notifiche funzionano.'
                     + (' Stanotte a ' + summary if est['level'] else '')}, ttl=3600)
         print(f'Prova inviata a {ok} telefoni su {len(subs)}.')
-        return 0 if ok == len(subs) else 1
+        return 0 if ok == len(subs) else 3 if ok else 1
 
     sent = load_state(state_path)
     rec = sent.get(night)
@@ -593,6 +598,11 @@ def run(mode, now, manual=False):
     done = set(rec['inviati'])
 
     if mode == 'mattino':
+        if not manual and not (est['level'] and est['clouds']) and now.hour < 10:
+            # dati NOAA o nuvole mancanti (rete o servizio giù): il turno riprova al prossimo
+            # controllo; dalle 10 manda comunque il messaggio con quello che c'è
+            print('Previsione incompleta: riprovo al prossimo controllo (fino alle 10).')
+            return 0
         body_info = '\n' + details(est) if est['level'] else ''
         complete = bool(est['level'] and est['clouds'])
         title = (MORNING_TITLES[est['level']] if complete
