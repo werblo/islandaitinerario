@@ -11,17 +11,28 @@ nelle ore di buio) nei posti in cui siete la sera, tappa per tappa
                 (cambio di programma in meglio);
 - "adesso":     quando è buio e Kp misurato + nuvole di quest'ora sono buoni.
 
+Le esecuzioni programmate di GitHub partono spesso con ore di ritardo: per questo il
+workflow lancia dei "turni" (AURORA_MODE=turno) che restano accesi circa 5 ore e mezza e
+fanno da soli i controlli ogni 30 minuti (ai minuti :07 e :37), il messaggio del mattino
+(dalle 7:37) e la prova automatica del 13 novembre (dalle 18:07). I turni partono ogni 2
+ore e si mettono in coda uno dopo l'altro: anche se uno parte tardi, quello già acceso
+copre le ore in cui serve.
+
 Variabili d'ambiente:
   VAPID_PRIVATE_KEY     chiave privata VAPID (secret del repo)
   AURORA_SUBSCRIPTIONS  codici copiati dall'app ("Attiva avvisi aurora"), uno dopo
                         l'altro; un nome davanti ("Federica: {...}") personalizza le frasi
-  AURORA_MODE           "controllo" (default), "mattino" oppure "prova" (notifica subito)
+  AURORA_MODE           "turno" (esecuzioni programmate), "controllo" (default), "mattino"
+                        oppure "prova" (notifica subito)
+  AURORA_TURNO_MIN      durata di un turno in minuti (default 330)
+  AURORA_TURNO_SIMULA   solo per test: "1" = il turno non aspetta davvero, fa avanzare
+                        l'orologio da AURORA_NOW
   AURORA_STATE          file con gli avvisi già inviati (default .aurora-state/state.json)
   AURORA_NOW            solo per test: istante da simulare (ISO, UTC)
 
 Uso: python3 tools/aurora_alert.py  (dalla radice del repo, dopo render.py)
 """
-import json, math, os, random, re, sys, urllib.request
+import json, math, os, random, re, sys, time, urllib.request
 from datetime import datetime, timedelta, timezone
 
 VAPID_SUB = 'https://werblo.github.io'   # contatto per i servizi push (solo dominio)
@@ -449,10 +460,77 @@ def save_state(path, state):
 
 def main():
     mode = os.environ.get('AURORA_MODE', 'controllo').strip() or 'controllo'
-    state_path = os.environ.get('AURORA_STATE', '.aurora-state/state.json')
     now = (parse_time(os.environ['AURORA_NOW']).astimezone(timezone.utc) if os.environ.get('AURORA_NOW')
            else datetime.now(timezone.utc)).replace(second=0, microsecond=0)
+    if mode == 'turno':
+        return turno(now)
     manual = os.environ.get('AURORA_MANUAL') == '1'   # lanciato a mano dalla tab Actions
+    return run(mode, now, manual)
+
+
+# ---------- turno: controlli ogni 30 minuti per ~5 ore e mezza ----------
+PROVA_AUTO = (2026, 11, 13, 18, 7)    # prova automatica: 13 novembre 2026 dalle 18:07
+MORNING_FROM, MORNING_UNTIL = (7, 25), (15, 0)   # messaggio del mattino: dalle 7:37 (slot) alle 15
+
+
+def next_slot(t):
+    """Prossimo controllo dopo t, ai minuti :07 e :37."""
+    for m in (7, 37, 67):
+        cand = t.replace(minute=0, second=0, microsecond=0) + timedelta(minutes=m)
+        if cand > t:
+            return cand
+
+
+def turno(now):
+    state_path = os.environ.get('AURORA_STATE', '.aurora-state/state.json')
+    simulate = os.environ.get('AURORA_TURNO_SIMULA') == '1'
+    deadline = now + timedelta(minutes=int(os.environ.get('AURORA_TURNO_MIN', '330')))
+    trip_nights = {d['dateISO'] for d in trip_data()['days'] if d['id'] != 'd8'}
+    print(f'Turno dalle {now:%d/%m %H:%M} alle {deadline:%d/%m %H:%M} UTC')
+    failed = False
+    t = now
+    while True:
+        jobs = []
+        hm = (t.hour, t.minute)
+        prova = datetime(*PROVA_AUTO, tzinfo=timezone.utc)
+        if prova <= t < prova + timedelta(hours=6) and '_prova_auto' not in load_state(state_path):
+            jobs.append('prova')
+        tonight = t.strftime('%Y-%m-%d')
+        rec = load_state(state_path).get(tonight) or {}
+        if (tonight in trip_nights and MORNING_FROM <= hm < MORNING_UNTIL
+                and 'mattino' not in (rec.get('inviati', rec) if isinstance(rec, dict) else rec)):
+            jobs.append('mattino')
+        if t.hour >= 16 or t.hour < 4:
+            jobs.append('controllo')
+        if not jobs:
+            print(f'--- {t:%d/%m %H:%M} UTC: niente da fare a quest\'ora')
+        for job in jobs:
+            print(f'--- {t:%d/%m %H:%M} UTC: {job}')
+            try:
+                rc = run(job, t, manual=False)
+            except Exception as e:     # un errore non deve fermare il turno
+                print(f'::error::{job} alle {t:%H:%M}: {e}')
+                rc = 1
+            if job == 'prova' and rc == 0:
+                st = load_state(state_path)
+                st['_prova_auto'] = t.strftime('%Y-%m-%d %H:%M')
+                save_state(state_path, st)
+            failed = failed or rc != 0
+        t = next_slot(t)
+        if t > deadline:
+            break
+        if simulate:
+            continue
+        wait = (t - datetime.now(timezone.utc)).total_seconds()
+        if wait > 0:
+            time.sleep(wait)
+        t = datetime.now(timezone.utc).replace(second=0, microsecond=0)
+    print('Fine del turno.')
+    return 1 if failed else 0
+
+
+def run(mode, now, manual=False):
+    state_path = os.environ.get('AURORA_STATE', '.aurora-state/state.json')
     trip = trip_data()
 
     # la notte "di stasera" inizia alle 12 UTC di oggi (di notte, prima delle 10, è ancora

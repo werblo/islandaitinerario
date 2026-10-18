@@ -155,7 +155,7 @@ function renderWeatherAndSun() {
 
     const auroraEl = document.querySelector('[data-aurora="' + day.id + '"]');
     if (auroraEl && day.id !== 'd8') {   // l'ultima sera siete già in volo
-      auroraEl.innerHTML = '<strong>Aurora:</strong> Notte dal tramonto (' + ss + ') all\'alba (' + sr + ') del giorno dopo; il buio pieno arriva circa un\'ora e mezza dopo il tramonto — finestra ampia. Novembre è piena stagione aurora: serve cielo sereno e attività geomagnetica. Controlla vedur.is/aurora nei giorni prima.<span data-aurora-live="' + day.id + '"></span>';
+      auroraEl.innerHTML = '<strong>Aurora:</strong> Notte dal tramonto (' + ss + ') all\'alba (' + sr + ') del giorno dopo; il buio pieno arriva circa due ore e mezza dopo il tramonto: finestra ampia. Novembre è piena stagione aurora: serve cielo sereno e attività geomagnetica. Controlla vedur.is/aurora nei giorni prima.<span data-aurora-live="' + day.id + '"></span>';
     }
   });
   if (auroraReady) renderAurora();   // il box aurora dei giorni è appena stato riscritto
@@ -336,7 +336,7 @@ function kpFactor(kp) {
   return 0.15;
 }
 
-// Tappe della sera (vedi evening_stops in render.py): di default l'alloggio della notte.
+// Tappe della sera (vedi evening_stops in dati.py): di default l'alloggio della notte.
 function nightStops(dateISO) {
   return NIGHT_STOPS[dateISO] || [{ place: nightPlaceKey(dateISO) }];
 }
@@ -346,7 +346,7 @@ function stopAt(stops, t) {
   return stops.find(s => s.until === undefined || off < (s.until + 12) % 24) || stops[stops.length - 1];
 }
 
-// Nuvole "efficaci" per l'aurora in un'ora secondo CLOUD_METHOD (vedi render.py):
+// Nuvole "efficaci" per l'aurora in un'ora secondo CLOUD_METHOD (vedi dati.py):
 // gli strati alti e medi pesano meno perché le nuvole alte sottili lasciano vedere.
 function layeredCloud(c, idx, sfx) {
   const l = (c['cloud_cover_low' + sfx] || [])[idx], m = (c['cloud_cover_mid' + sfx] || [])[idx], h = (c['cloud_cover_high' + sfx] || [])[idx];
@@ -439,6 +439,9 @@ function auroraWindowsText(est) {
 // e com'è la sera rispetto a dopo mezzanotte.
 const AU_R5 = v => Math.round(v / 5) * 5;
 const auAvg = hs => hs.reduce((a, h) => a + h.cloud, 0) / hs.length;
+// stima senza dati sulle nuvole: come le notifiche, "previsione incompleta" e niente verdetto
+function auroraNoClouds(est) { return !est.withKp.some(h => h.cloud !== null); }
+
 function auroraClouds(est) {
   const hs = est.withKp.filter(h => h.cloud !== null);
   if (!hs.length) return { variable: false, text: 'nuvole non disponibili' };
@@ -465,6 +468,8 @@ function renderAurora() {
   // del mattino, è ancora la notte in corso)
   const start = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), 12) - (now.getUTCHours() < 7 ? 86400000 : 0);
   const isoOf = ms => new Date(ms).toISOString().slice(0, 10);
+  // prima delle 7 la notte in corso è "stanotte", non "stasera"
+  const tonight = now.getUTCHours() < 7 ? 'Stanotte' : 'Stasera';
 
   // dopo l'ultima notte in Islanda (21-22 novembre) la stima non serve più
   const tonightBox = verdictEl && verdictEl.parentElement;
@@ -476,13 +481,17 @@ function renderAurora() {
     const est = nightEstimate(start, nightStops(isoOf(start)), data);
     verdictEl.className = 'aurora-tonight__verdict';
     if (!est.hours.length) {
-      verdictEl.textContent = 'Stasera a ' + est.loc.name + ': niente buio astronomico';
+      verdictEl.textContent = tonight + ' a ' + est.loc.name + ': niente buio astronomico';
       detailEl.textContent = '';
     } else if (!est.level) {
-      verdictEl.textContent = 'Stasera a ' + est.loc.name + ': previsione non disponibile';
+      verdictEl.textContent = tonight + ' a ' + est.loc.name + ': previsione non disponibile';
       detailEl.textContent = navigator.onLine ? 'Dati NOAA non ancora ricevuti.' : 'Serve una connessione per scaricare la previsione.';
+    } else if (auroraNoClouds(est)) {
+      verdictEl.textContent = tonight + ' a ' + nightPlaceNames(est) + ': previsione incompleta';
+      detailEl.textContent = 'Kp previsto fino a ' + est.kpMax.toFixed(1).replace('.0', '').replace('.', ',')
+        + ' · nuvole non disponibili' + (navigator.onLine ? '' : ' (sei offline)') + ': guardate se il cielo è sereno';
     } else {
-      verdictEl.textContent = 'Stasera a ' + nightPlaceNames(est) + ': ' + est.level + ' probabilità';
+      verdictEl.textContent = tonight + ' a ' + nightPlaceNames(est) + ': ' + est.level + ' probabilità';
       verdictEl.classList.add('aurora-tonight__verdict--' + est.level);
       const parts = [];
       if (est.stops.length > 1) est.stops.forEach(st => parts.push(shortPlace(st.name) + ' ' + AU_HH(st.from) + '–' + AU_HH(st.end) + ': ' + st.level));
@@ -498,7 +507,7 @@ function renderAurora() {
       const ms = start + n * 86400000;
       const e = nightEstimate(ms, nightStops(isoOf(ms)), data);
       const dn = AU_DAYNAMES[new Date(ms).getUTCDay()];
-      return e.level ? dn + ' a ' + nightPlaceNames(e) + ': ' + e.level : null;
+      return e.level ? dn + ' a ' + nightPlaceNames(e) + ': ' + (auroraNoClouds(e) ? 'incompleta' : e.level) : null;
     }).filter(Boolean);
     daysEl.textContent = next.length ? 'Prossime notti: ' + next.join(' · ') : '';
     if (data.kpAt) {
@@ -519,7 +528,9 @@ function renderAurora() {
     if (!el) return;
     const [Y, M, D] = day.dateISO.split('-').map(Number);
     const e = day.id === 'd8' ? {} : nightEstimate(Date.UTC(Y, M - 1, D, 12), nightStops(day.dateISO), data);
-    el.textContent = e.level
+    el.textContent = e.level && auroraNoClouds(e)
+      ? ' Previsione per questa notte: incompleta (mancano i dati sulle nuvole).'
+      : e.level
       ? ' Previsione per questa notte: ' + e.level + ' probabilità' + (e.level !== 'nulle' && e.windows.length ? ', meglio ' + auroraWindowsText(e) : '')
         + (e.stops.length > 1 ? ' (' + e.stops.map(st => shortPlace(st.name) + ' ' + st.level).join(', ') + ')' : '') + '.'
       : '';
@@ -533,16 +544,24 @@ const FX_FALLBACK_RATE = 145.5; // stima approssimativa EUR->ISK, usata se offli
 let fxRate = FX_FALLBACK_RATE;
 const FX_PAIRS = [['fx-eur', 'fx-isk'], ['fab-fx-eur', 'fab-fx-isk']];
 
+// numeri scritti all'italiana: "12,5", "1.500" (punto delle migliaia); niente negativi
+function fxParse(v) {
+  let t = String(v).trim().replace(/\s/g, '');
+  if (/^\d{1,3}(\.\d{3})+(,\d*)?$/.test(t)) t = t.replace(/\./g, '');
+  const n = parseFloat(t.replace(',', '.'));
+  return isFinite(n) && n >= 0 ? n : NaN;
+}
+
 function fxUpdateFrom(source, eurId, iskId) {
   const eurEl = document.getElementById(eurId);
   const iskEl = document.getElementById(iskId);
   if (!eurEl || !iskEl) return;
   if (source === 'eur') {
-    const eur = parseFloat(eurEl.value);
+    const eur = fxParse(eurEl.value);
     iskEl.value = isFinite(eur) ? Math.round(eur * fxRate) : '';
   } else {
-    const isk = parseFloat(iskEl.value);
-    eurEl.value = isFinite(isk) ? Math.round((isk / fxRate) * 100) / 100 : '';
+    const isk = fxParse(iskEl.value);
+    eurEl.value = isFinite(isk) ? String(Math.round((isk / fxRate) * 100) / 100).replace('.', ',') : '';
   }
 }
 
@@ -575,15 +594,15 @@ async function fetchFxRate() {
       fxRate = json.rates.ISK;
       const when = json.time_last_update_utc ? new Date(json.time_last_update_utc) : new Date();
       const hh = String(when.getHours()).padStart(2, '0') + ':' + String(when.getMinutes()).padStart(2, '0');
-      if (label) label.textContent = '1 € \u2248 ' + fxRate.toFixed(1) + ' ISK \u00b7 aggiornato alle ' + hh;
-      if (fabLabel) fabLabel.textContent = '1 € \u2248 ' + fxRate.toFixed(1) + ' ISK';
+      if (label) label.textContent = '1 € \u2248 ' + fxRate.toFixed(1).replace('.', ',') + ' ISK \u00b7 aggiornato alle ' + hh;
+      if (fabLabel) fabLabel.textContent = '1 € \u2248 ' + fxRate.toFixed(1).replace('.', ',') + ' ISK';
       fxUpdateAll('eur');
       return;
     }
     throw new Error('no rate');
   } catch (e) {
-    if (label) label.textContent = '1 € \u2248 ' + FX_FALLBACK_RATE.toFixed(1) + ' ISK \u00b7 stima offline, verifica il tasso reale prima di partire';
-    if (fabLabel) fabLabel.textContent = '1 € \u2248 ' + FX_FALLBACK_RATE.toFixed(1) + ' ISK (stima offline)';
+    if (label) label.textContent = '1 € \u2248 ' + FX_FALLBACK_RATE.toFixed(1).replace('.', ',') + ' ISK \u00b7 stima offline, verifica il tasso reale prima di partire';
+    if (fabLabel) fabLabel.textContent = '1 € \u2248 ' + FX_FALLBACK_RATE.toFixed(1).replace('.', ',') + ' ISK (stima offline)';
   }
 }
 
@@ -706,14 +725,25 @@ function updateCountdown() {
 updateCountdown();
 setInterval(updateCountdown, 3600000);
 
+function localISO(d) {
+  return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+}
+let jumpedISO = localISO(new Date());
 function jumpToTodayIfInTrip() {
-  const now = new Date();
-  const todayISO = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0');
-  const match = DAYS_META.find(d => d.dateISO === todayISO);
+  jumpedISO = localISO(new Date());
+  const match = DAYS_META.find(d => d.dateISO === jumpedISO);
   if (match) setActive(match.id);
 }
 initTripMap();          // prima del salto al giorno: con la tab Info nascosta la mappa resterebbe vuota
 jumpToTodayIfInTrip();
+// app lasciata aperta la sera e ripresa la mattina dopo: passa da sola al giorno nuovo
+// (solo se è cambiata la data, così durante il giorno non sposta la tab scelta)
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible' && localISO(new Date()) !== jumpedISO) {
+    updateCountdown();
+    jumpToTodayIfInTrip();
+  }
+});
 
 
 refreshLiveData(true);

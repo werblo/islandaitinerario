@@ -110,20 +110,28 @@ strada del ritorno fino alle 22, poi Reykjavík).
 **Notifiche** (workflow "Avvisi aurora", `tools/aurora_alert.py`, orari in
 ora islandese = UTC):
 
-- **Mattino**, verso le 7:30 dal 15 al 21 novembre: com'è messa la sera, con
+- **Mattino**, alle 7:37 dal 15 al 21 novembre (se il turno parte tardi, appena
+  parte, fino alle 15): com'è messa la sera, con
   una frase scherzosa personalizzata per nome. Se mancano nuvole o Kp, il
   titolo dice "previsione incompleta" o "non disponibile".
 - **"🔄 Cambio di programma"**: controlli ogni 30 minuti (16:07-3:37); solo
   se la stima diventa "buone" e al mattino non lo era.
 - **"Aurora: condizioni buone adesso"**: quando è buio e Kp e nuvole del
   momento sono buoni.
-- **Prova automatica**: 13 novembre alle 18:07 (19:07 in Italia).
+- **Prova automatica**: 13 novembre dalle 18:07 (19:07 in Italia).
 
-La stima delle notifiche è la stessa dell'app: se si cambia in
-`app/app.js`, va cambiata anche in `tools/aurora_alert.py`. La riga
-`AURORA_MODE` del workflow confronta il testo esatto dei cron: se cambi un
-orario, cambialo anche lì. Gli avvisi già mandati sono salvati nella cache di
-GitHub Actions, non nel repo.
+**Turni.** GitHub fa partire le esecuzioni programmate anche con 4-12 ore di
+ritardo (misurato a ottobre). Per questo ogni esecuzione è un "turno" che resta
+acceso 5 ore e mezza e fa da solo tutti i controlli, ai minuti :07 e :37. I
+turni partono ogni 2 ore dal 13 al 22 novembre e si mettono in coda: quando uno
+finisce parte il successivo, così le ore utili restano coperte anche se GitHub
+ritarda. Gli avvisi già mandati sono salvati nella cache di GitHub Actions, non
+nel repo, e non si ripetono tra un turno e l'altro.
+
+Nell'app, se mancano i dati sulle nuvole la stima dice "previsione incompleta",
+come le notifiche; prima delle 7 di mattina il riquadro parla di "Stanotte". La
+stima delle notifiche è la stessa dell'app: se si cambia in `app/app.js`, va
+cambiata anche in `tools/aurora_alert.py`.
 
 **Configurazione** (già fatta):
 
@@ -140,7 +148,8 @@ GitHub Actions, non nel repo.
    Il codice si copia dall'app: tab Info → riga "🔔 Avvisi aurora" in fondo (toccala per aprirla) →
    "Attiva avvisi aurora" → "Copia codice". I secret non si rileggono: per
    aggiungere un telefono si reincollano tutti i codici.
-3. Prova a mano: tab Actions → "Avvisi aurora" → Run workflow → `prova`.
+3. Prova a mano: tab Actions → "Avvisi aurora" → Run workflow → `prova`
+   (`turno` con una durata breve, es. 40 minuti, prova il giro dei controlli).
 
 **Firefox su Android:** notifiche di Firefox attive, batteria di Firefox su
 "Senza restrizioni", dati di Firefox non cancellati alla chiusura (si
