@@ -53,6 +53,7 @@ jobs:
       - name: Controlla l'aurora e manda gli avvisi
         run: python tools/aurora_alert.py
         env:
+          PYTHONUNBUFFERED: '1'   # registro scritto man mano, non tutto alla fine del turno
           AURORA_MODE: ${{ github.event_name == 'schedule' && 'turno' || inputs.modalita || 'turno' }}
           VAPID_PRIVATE_KEY: ${{ secrets.VAPID_PRIVATE_KEY }}
           AURORA_SUBSCRIPTIONS: ${{ secrets.AURORA_SUBSCRIPTIONS }}
