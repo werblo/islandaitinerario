@@ -231,3 +231,12 @@ main { max-width:820px; margin:0 auto; padding:20px 20px 70px; display:flex; fle
 .culture-card__src, .panel .culture-card__src { margin-top:10px; font-size:0.8125rem; line-height:1.9; color:var(--muted-2); }
 .culture-card__src a { color:var(--teal); font-weight:600; }
 .panel .culture-card__src a { color:var(--amber-2); }
+
+/* Avvisi aurora: riquadro chiuso in una riga, si apre toccandolo */
+.aurora-push { padding:0 20px; }
+.aurora-push__summary { list-style:none; display:flex; align-items:center; gap:8px; min-height:52px; cursor:pointer; font-size:0.96875rem; font-weight:600; color:var(--ink); }
+.aurora-push__summary::-webkit-details-marker { display:none; }
+.aurora-push__summary::after { content:'▸'; margin-left:auto; color:var(--muted-2); transition:transform .2s; }
+.aurora-push[open] .aurora-push__summary::after { transform:rotate(90deg); }
+.aurora-push[open] { padding-bottom:18px; }
+#aurora-push-sum { font-weight:400; color:var(--muted-2); }

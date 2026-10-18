@@ -67,8 +67,9 @@ l'utente: `leggimi.md` (breve: com'è il progetto oggi).
 - Poche PR: raccogli le modifiche di un argomento/sessione sul branch e fai
   una sola PR alla fine; pubblica più volte solo se serve una prova sul
   telefono di Michele. Non riscrivere la storia di `main`.
-- Tab Info: "Avvisi aurora sul telefono" sotto l'aurora; "Prepara offline" è
-  l'ultimo riquadro, con sotto "Versione app" e "Ricevuta il".
+- Tab Info: "🔔 Avvisi aurora" è una riga chiusa (si apre toccandola, mostra se
+  sono attivi) subito prima di "Prepara offline", che resta l'ultimo
+  riquadro, con sotto "Versione app" e "Ricevuta il".
 - Checklist (da fare, valigia) e biglietti: **solo su Notion**, pagina
   "Islanda · 15-22 novembre 2026" (decisione di Michele, 11/10). Non
   rimetterla nell'app; l'itinerario invece sta solo nell'app, non su Notion.

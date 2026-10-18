@@ -603,19 +603,6 @@ html_out = f'''<!DOCTYPE html>
     <div class="more">Più vicino alla partenza, controlla <a href="https://en.vedur.is/weather/forecasts/aurora/" target="_blank" rel="noopener">vedur.is/aurora</a> per la previsione reale sulle vostre date e sul cielo sereno.</div>
   </div>
 
-  <div class="panel aurora-push" id="aurora-push">
-    <div class="panel-title">Avvisi aurora sul telefono</div>
-    <div class="rune-rule"></div>
-    <div class="line">Nei giorni del viaggio, anche ad app chiusa: ogni mattina verso le 7:30 com'è messa la sera dove sarete, la sera un avviso solo se la previsione migliora, e &laquo;adesso&raquo; quando le condizioni sono buone. Serve la connessione per riceverle.</div>
-    <div class="aurora-push__status" id="aurora-push-status" aria-live="polite"></div>
-    <div class="aurora-push__btns">
-      <button type="button" class="aurora-push__btn" id="aurora-push-on">Attiva avvisi aurora</button>
-      <button type="button" class="aurora-push__btn" id="aurora-push-copy" hidden>Copia codice</button>
-      <button type="button" class="aurora-push__btn aurora-push__btn--ghost" id="aurora-push-off" hidden>Disattiva</button>
-    </div>
-    <textarea class="aurora-push__code" id="aurora-push-code" readonly hidden aria-label="Codice di iscrizione agli avvisi aurora"></textarea>
-  </div>
-
   <div class="panel">
     <div class="panel-title">Mappa del viaggio</div>
     <div class="rune-rule"></div>
@@ -697,6 +684,18 @@ html_out = f'''<!DOCTYPE html>
     <div class="rune-rule"></div>
     <div class="line">La checklist (cose da fare, valigia) e i biglietti sono su Notion, condivisi tra voi due: <a href="{NOTION_CHECKLIST_URL}" target="_blank" rel="noopener">apri la pagina Notion ↗</a></div>
   </div>
+
+  <details class="panel aurora-push" id="aurora-push">
+    <summary class="aurora-push__summary">🔔 Avvisi aurora: <span id="aurora-push-sum">…</span></summary>
+    <div class="line">Nei giorni del viaggio, anche ad app chiusa: ogni mattina verso le 7:30 com'è messa la sera dove sarete, la sera un avviso solo se la previsione migliora, e &laquo;adesso&raquo; quando le condizioni sono buone. Serve la connessione per riceverle.</div>
+    <div class="aurora-push__status" id="aurora-push-status" aria-live="polite"></div>
+    <div class="aurora-push__btns">
+      <button type="button" class="aurora-push__btn" id="aurora-push-on">Attiva avvisi aurora</button>
+      <button type="button" class="aurora-push__btn" id="aurora-push-copy" hidden>Copia codice</button>
+      <button type="button" class="aurora-push__btn aurora-push__btn--ghost" id="aurora-push-off" hidden>Disattiva</button>
+    </div>
+    <textarea class="aurora-push__code" id="aurora-push-code" readonly hidden aria-label="Codice di iscrizione agli avvisi aurora"></textarea>
+  </details>
 
   <div class="panel">
     <div class="panel-title">Prepara offline</div>
