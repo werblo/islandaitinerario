@@ -215,7 +215,8 @@ def night_estimate(start, stops, trip, kp_rows, clouds):
         kp = next((k for rt, k in kp_rows if rt <= t < rt + timedelta(hours=3)), None)
         hours.append({'t': t, 'place': place, 'kp': kp, 'cloud': clouds.get(place, {}).get(hour_key(t))})
     with_kp = [h for h in hours if h['kp'] is not None]
-    est = {'hours': hours, 'level': None, 'stops': [], 'last': places[stops[-1]['place']]['name']}
+    est = {'hours': hours, 'level': None, 'stops': [], 'last': places[stops[-1]['place']]['name'],
+           'route': [places[s['place']]['name'] for s in stops]}
     if not with_kp:
         return est
     has_clouds = any(h['cloud'] is not None for h in with_kp)
@@ -240,8 +241,9 @@ def fmt_kp(kp):
 
 
 def place_label(est):
-    names = [short_name(s['name']) for s in est['stops']]
-    return ' → '.join(names) if len(names) > 1 else (names[0] if names else est['last'])
+    # come nightPlaceNames()/stopsLabel() nell'app: senza dati valgono le tappe previste
+    names = [short_name(s['name']) for s in est['stops']] or [short_name(n) for n in est['route']]
+    return ' → '.join(names) if len(names) > 1 else (names[0] if est['stops'] else est['last'])
 
 
 def r5(v):

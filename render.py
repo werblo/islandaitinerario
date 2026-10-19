@@ -652,7 +652,7 @@ html_out = f'''<!DOCTYPE html>
     <div class="panel-title">Sicurezza &amp; risorse utili</div>
     <div class="rune-rule"></div>
     <div class="line">• <a href="https://www.safetravel.is" target="_blank" rel="noopener">safetravel.is</a>: registra il vostro itinerario (gratis, consigliato per la guida invernale).</div>
-    <div class="line">• <a href="https://www.road.is" target="_blank" rel="noopener">road.is</a>: condizioni stradali in tempo reale.</div>
+    <div class="line">• <a href="https://umferdin.is/en" target="_blank" rel="noopener">umferdin.is</a>: condizioni stradali in tempo reale.</div>
     <div class="line">• <a href="https://en.vedur.is" target="_blank" rel="noopener">vedur.is</a>: meteo, vento e aurora ufficiali islandesi.</div>
     <div class="line">• Numero unico di emergenza: <strong>112</strong> (anche via app 112 Iceland).</div>
     <div class="line">• Consolato Onorario d'Italia a Reykjavík: <a href="tel:+3546981223">+354 698 1223</a> · reykjavik.onorario@esteri.it (Bankastræti 7).</div>
@@ -736,7 +736,7 @@ html_out = f'''<!DOCTYPE html>
   </div>
   <div class="fx-rate" id="fab-fx-rate-label">1 € &asymp; … ISK</div>
   <div class="fab-fx-quick">
-    <a href="https://road.is" target="_blank" rel="noopener" class="fab-fx-quick__btn">Stato strade (road.is)</a>
+    <a href="https://umferdin.is/en" target="_blank" rel="noopener" class="fab-fx-quick__btn">Stato strade (umferdin.is)</a>
   </div>
 </div>
 
