@@ -249,7 +249,7 @@ evening_stops = {
 #   'pesata'    stesso modello, strati pesati: bassi contano tutti, medi e alti meno
 #   'media'     media della nuvolosità totale dei CLOUD_MODELS
 #   'media_pes' media dei CLOUD_MODELS, ognuno con gli strati pesati
-CLOUD_METHOD = 'totale'
+CLOUD_METHOD = 'media_pes'
 CLOUD_W_MID, CLOUD_W_HIGH = 0.8, 0.3
 CLOUD_MODELS = ['best_match', 'ecmwf_ifs025', 'icon_seamless', 'ukmo_seamless', 'metno_seamless', 'gfs_seamless']
 

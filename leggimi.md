@@ -172,8 +172,10 @@ notifiche: `CLOUD_METHOD` in `dati.py` (`'totale'`, `'pesata'`, `'media'`,
 prova se GitHub ritarda), risultati nel riepilogo di ogni esecuzione e
 nell'artifact `ricerca-nuvole`.
 
-Programmati con Claude: il 19 ottobre passaggio al metodo migliore se supera
-quello in uso di almeno 3 punti (autorizzato da Michele il 6/10); il 2
+Metodo in uso dal 19 ottobre: **`media_pes`** (prima `'totale'`). Confronto
+del 18/10 (circa 13 notti, Reykjavík + Keflavík, soglia 30%): ore azzeccate
+92% contro 84% di `'totale'`, errore medio 17 punti contro 25.
+Programmati con Claude: il 2
 novembre risultato finale (conferma o ritorno indietro solo con il sì di
 Michele) e cancellazione di `tools/research/` e `ricerca-nuvole.yml`, con
 test completo. Dopo un cambio di metodo si rilancia `render.py` e si fa il
