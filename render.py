@@ -417,7 +417,7 @@ storia_html = f'''
     <div class="panel-title"><span class="rune-mark">ᛏ</span>Dal primo parlamento all'indipendenza</div>
     <div class="rune-rule"></div>
     <p class="line">Nel <strong>930</strong> i capi dell'isola istituirono a Þingvellir l'<strong>Alþingi</strong>, un'assemblea che si riuniva ogni estate per approvare le leggi e risolvere le controversie; è considerato uno dei parlamenti più antichi del mondo. Il periodo successivo, noto come Stato libero islandese, non ebbe né un re né un esercito centrale. Nel 1262, dopo anni di conflitti tra le famiglie più potenti, l'Islanda accettò la sovranità del re di Norvegia e nel 1380 passò con la Norvegia sotto la corona danese. Il <strong>1º dicembre 1918</strong> divenne un regno sovrano unito alla Danimarca nella persona del re; il <strong>17 giugno 1944</strong>, mentre la Danimarca era occupata dalla Germania, fu proclamata a Þingvellir la Repubblica d'Islanda, dopo un referendum approvato con oltre il 98% dei voti.</p>
-    {wiki_links([('Alþingi', 'https://it.wikipedia.org/wiki/Parlamento_islandese'), ('Parco nazionale Þingvellir', 'https://it.wikipedia.org/wiki/Parco_nazionale_Þingvellir')])}
+    {wiki_links([('Alþingi', 'https://it.wikipedia.org/wiki/Alþingi'), ('Parco nazionale Þingvellir', 'https://it.wikipedia.org/wiki/Parco_nazionale_Þingvellir')])}
   </div>
 
   <div class="culture-card">
@@ -428,7 +428,8 @@ storia_html = f'''
 
   <div class="culture-card">
     <div class="culture-card__label">{f'<svg viewBox="0 0 64 56" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">{icon_svg("saga")}</svg>'}<span class="rune-mark">ᛟ</span>Troll ed elfi</div>
-    <p>Il folclore islandese spiega molte forme del paesaggio con creature leggendarie. Secondo la tradizione i <strong>troll</strong> vivono nelle montagne e si trasformano in pietra se vengono sorpresi dalla luce del sole: così vengono spiegati, per esempio, i faraglioni Reynisdrangar davanti a Reynisfjara. Gli <strong>Huldufólk</strong> («popolo nascosto») sono elfi che abitano rocce e colline e si mostrano solo quando vogliono. Questa credenza è ancora diffusa al punto che, in alcuni casi, il tracciato di nuove strade è stato modificato per non disturbare le rocce considerate abitate dagli elfi.</p>
+    <p>Il folclore islandese spiega molte forme del paesaggio con creature leggendarie. Secondo la tradizione i <strong>troll</strong> vivono nelle montagne e si trasformano in pietra se vengono sorpresi dalla luce del sole: così vengono spiegati, per esempio, i faraglioni Reynisdrangar davanti a Reynisfjara. Gli <strong>Huldufólk</strong> («popolo nascosto») sono, secondo la tradizione, elfi che abitano rocce e colline e si mostrano solo quando vogliono. Questa credenza è ancora diffusa al punto che, in alcuni casi, il tracciato di nuove strade è stato modificato per non disturbare le rocce considerate abitate dagli elfi.</p>
+    {wiki_links([('Troll (mitologia)', 'https://it.wikipedia.org/wiki/Troll_(mitologia)')])}
   </div>
 
   <div class="panel">
