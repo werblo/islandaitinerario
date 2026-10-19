@@ -268,10 +268,11 @@ def cloud_summary(est):
 def details(est):
     """Riga di dettaglio: tappe, ore migliori (con le loro nuvole), Kp, nuvole."""
     parts = []
-    if len(est['stops']) > 1:
-        parts += [f'{short_name(s["name"])} {s["from"]:%H}–{s["end"]:%H}: {s["level"]}' for s in est['stops']]
     clouds, variable = cloud_summary(est)
-    if est['level'] != 'nulle' and est['windows']:
+    # senza nuvole livelli e ore migliori verrebbero dal solo Kp: come l'app, solo Kp e "nuvole non disponibili"
+    if clouds and len(est['stops']) > 1:
+        parts += [f'{short_name(s["name"])} {s["from"]:%H}–{s["end"]:%H}: {s["level"]}' for s in est['stops']]
+    if clouds and est['level'] != 'nulle' and est['windows']:
         wins = []
         for a, b in est['windows'][:2]:
             w = f'{a:%H}:00–{b:%H}:00'
@@ -290,6 +291,8 @@ def describe(est):
         return f'{est["last"]}: niente buio astronomico stanotte.'
     if not est['level']:
         return f'{place_label(est)}: previsione non disponibile.'
+    if not est['clouds']:      # come l'app: senza nuvole niente verdetto
+        return f'{place_label(est)}: previsione incompleta · ' + details(est)
     return f'{place_label(est)}: {est["level"]} probabilità · ' + details(est)
 
 
