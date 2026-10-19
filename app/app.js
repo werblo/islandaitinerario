@@ -259,15 +259,18 @@ async function fetchKp() {
     const last = json[json.length - 1];
     state.kp = Math.round(last.kp_index * 10) / 10;
     state.kpStatus = 'ok';
-    state.kpAt = new Date();
+    // ora del dato NOAA (UTC), non dell'apertura: offline la copia salvata può essere vecchia
+    const at = last.time_tag ? new Date(String(last.time_tag).replace(' ', 'T') + (/Z|[+-]\d\d:?\d\d$/.test(last.time_tag) ? '' : 'Z')) : null;
+    state.kpAt = at && isFinite(at) ? at : new Date();
   } catch (e) { state.kpStatus = 'error'; }
   document.getElementById('kp-value').textContent = state.kpStatus === 'ok' ? ('Kp ' + String(state.kp).replace('.', ',')) : '—';
   let kpText;
   if (state.kpStatus === 'ok') {
     const t = state.kpAt;
-    const hh = String(t.getHours()).padStart(2, '0') + ':' + String(t.getMinutes()).padStart(2, '0');
+    const hh = String(t.getUTCHours()).padStart(2, '0') + ':' + String(t.getUTCMinutes()).padStart(2, '0');
+    const dd = String(t.getUTCDate()).padStart(2, '0') + '/' + String(t.getUTCMonth() + 1).padStart(2, '0');
     kpText = (state.kp >= 4 ? 'Attività alta' : 'Attività bassa/moderata')
-           + (navigator.onLine ? ' · aggiornato alle ' + hh : ' · ultimo dato salvato, sei offline');
+           + (navigator.onLine ? ' · aggiornato alle ' + hh + ' (ora islandese)' : ' · dato del ' + dd + ' alle ' + hh + ', sei offline');
   } else {
     kpText = navigator.onLine ? 'Dato non disponibile al momento (NOAA non risponde)' : 'Dato non disponibile offline';
   }
@@ -423,6 +426,10 @@ function nightEstimate(startMs, stops, data) {
 }
 
 const shortPlace = name => name.replace(/ \(.*\)$/, '');
+// nomi delle tappe di una notte, anche senza dati (est.stops si riempie solo con il Kp)
+function stopsLabel(stops) {
+  return stops.length > 1 ? stops.map(s => shortPlace(AURORA_PLACES[s.place].name)).join(' → ') : AURORA_PLACES[stops[0].place].name;
+}
 function nightPlaceNames(est) {
   if (est.stops.length > 1) return est.stops.map(s => shortPlace(s.name)).join(' → ');
   return est.stops.length === 1 ? est.stops[0].name : est.loc.name;
@@ -481,10 +488,10 @@ function renderAurora() {
     const est = nightEstimate(start, nightStops(isoOf(start)), data);
     verdictEl.className = 'aurora-tonight__verdict';
     if (!est.hours.length) {
-      verdictEl.textContent = tonight + ' a ' + est.loc.name + ': niente buio astronomico';
+      verdictEl.textContent = tonight + ' a ' + stopsLabel(nightStops(isoOf(start))) + ': niente buio astronomico';
       detailEl.textContent = '';
     } else if (!est.level) {
-      verdictEl.textContent = tonight + ' a ' + est.loc.name + ': previsione non disponibile';
+      verdictEl.textContent = tonight + ' a ' + stopsLabel(nightStops(isoOf(start))) + ': previsione non disponibile';
       detailEl.textContent = navigator.onLine ? 'Dati NOAA non ancora ricevuti.' : 'Serve una connessione per scaricare la previsione.';
     } else if (auroraNoClouds(est)) {
       verdictEl.textContent = tonight + ' a ' + nightPlaceNames(est) + ': previsione incompleta';
@@ -551,6 +558,8 @@ function fxParse(v) {
   const n = parseFloat(t.replace(',', '.'));
   return isFinite(n) && n >= 0 ? n : NaN;
 }
+// punto delle migliaia (1.442), che fxParse rilegge
+const fxFmt = s => s.replace(/^\d+/, d => d.replace(/\B(?=(\d{3})+$)/g, '.'));
 
 function fxUpdateFrom(source, eurId, iskId) {
   const eurEl = document.getElementById(eurId);
@@ -558,10 +567,10 @@ function fxUpdateFrom(source, eurId, iskId) {
   if (!eurEl || !iskEl) return;
   if (source === 'eur') {
     const eur = fxParse(eurEl.value);
-    iskEl.value = isFinite(eur) ? Math.round(eur * fxRate) : '';
+    iskEl.value = isFinite(eur) ? fxFmt(String(Math.round(eur * fxRate))) : '';
   } else {
     const isk = fxParse(iskEl.value);
-    eurEl.value = isFinite(isk) ? String(Math.round((isk / fxRate) * 100) / 100).replace('.', ',') : '';
+    eurEl.value = isFinite(isk) ? fxFmt(String(Math.round((isk / fxRate) * 100) / 100).replace('.', ',')) : '';
   }
 }
 
@@ -601,7 +610,7 @@ async function fetchFxRate() {
     }
     throw new Error('no rate');
   } catch (e) {
-    if (label) label.textContent = '1 € \u2248 ' + FX_FALLBACK_RATE.toFixed(1).replace('.', ',') + ' ISK \u00b7 stima offline, verifica il tasso reale prima di partire';
+    if (label) label.textContent = '1 € \u2248 ' + FX_FALLBACK_RATE.toFixed(1).replace('.', ',') + ' ISK \u00b7 stima offline, non è il tasso di oggi';
     if (fabLabel) fabLabel.textContent = '1 € \u2248 ' + FX_FALLBACK_RATE.toFixed(1).replace('.', ',') + ' ISK (stima offline)';
   }
 }
