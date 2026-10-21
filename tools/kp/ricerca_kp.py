@@ -21,7 +21,7 @@ Uso:
   python tools/kp/ricerca_kp.py valuta DIR           confronta i dati raccolti, scrive DIR/RISULTATI.md
   python tools/kp/ricerca_kp.py prova -              mostra il formato di ogni fonte
 """
-import csv, json, math, os, sys, time, urllib.request
+import csv, json, math, os, sys, time, urllib.error, urllib.request
 from datetime import datetime, timedelta, timezone
 
 UTC = timezone.utc
@@ -34,12 +34,12 @@ KP_FORECAST = 'https://services.swpc.noaa.gov/products/noaa-planetary-k-index-fo
 KP_OBSERVED = 'https://services.swpc.noaa.gov/products/noaa-planetary-k-index.json'
 KP_1M = 'https://services.swpc.noaa.gov/json/planetary_k_index_1m.json'
 OVATION = 'https://services.swpc.noaa.gov/json/ovation_aurora_latest.json'
-MAG = 'https://services.swpc.noaa.gov/products/solar-wind/mag-2-hour.json'
-PLASMA = 'https://services.swpc.noaa.gov/products/solar-wind/plasma-2-hour.json'
-GFZ = 'https://kp.gfz-potsdam.de/app/json/?start={start}&end={end}&index={index}'
+MAG = 'https://services.swpc.noaa.gov/json/rtsw/rtsw_mag_1m.json'        # vento solare in tempo reale (L1)
+PLASMA = 'https://services.swpc.noaa.gov/json/rtsw/rtsw_wind_1m.json'
+GFZ = 'https://kp.gfz.de/app/json/?start={start}&end={end}&index={index}'
 LRV = ('https://imag-data.bgs.ac.uk/GIN_V1/GINServices?Request=GetData&format=json'
-       '&testObsys=0&observatoryIagaCode=LRV&samplesPerDay=minute&publicationState=adj-or-rep'
-       '&dataStartDate={day}&dataDuration=1&orientation=native')
+       '&testObsys=0&observatoryIagaCode=LRV&samplesPerDay=minute&publicationState=best-avail'
+       '&dataStartDate={day}&dataDuration=1')
 
 
 def get_json(url, tries=2):
@@ -48,6 +48,11 @@ def get_json(url, tries=2):
             req = urllib.request.Request(url, headers={'User-Agent': 'islanda-2026-ricerca-kp'})
             with urllib.request.urlopen(req, timeout=30) as r:
                 return json.loads(r.read().decode('utf-8', 'replace'))
+        except urllib.error.HTTPError as e:
+            if i == tries - 1:
+                body = e.read().decode('utf-8', 'replace')[:300]
+                raise RuntimeError(f'HTTP {e.code}: {body}') from None
+            time.sleep(5)
         except Exception as e:
             if i == tries - 1:
                 raise
@@ -172,6 +177,9 @@ def ovation_probs(data):
 
 
 def last_valid(rows, key):
+    # il più recente: alcuni prodotti sono dal più vecchio, altri (rtsw) dal più nuovo e con più satelliti
+    if rows and 'time_tag' in rows[0]:
+        rows = sorted((r for r in rows if r.get('active', True) is not False), key=lambda r: str(r['time_tag']))
     for r in reversed(rows):
         v = num(r.get(key))
         if v is not None:
@@ -214,7 +222,7 @@ def save_nowcast(d, now):
         'kp_1m': lambda: last_valid(rows_of(get_json(KP_1M), []), 'kp_index'),     # lo stesso valore della riga "ora" dell'app
         'ovation': lambda: ovation_probs(get_json(OVATION)),
         'mag': lambda: rows_of(get_json(MAG), []),
-        'vento': lambda: last_valid(rows_of(get_json(PLASMA), []), 'speed'),
+        'vento': lambda: last_valid(rows_of(get_json(PLASMA), []), 'proton_speed') or last_valid(rows_of(get_json(PLASMA), []), 'speed'),
         'lrv': lambda: lrv_range(now),
         'hp30': lambda: hp30_now(now),
     }
@@ -404,7 +412,9 @@ def prova():
                                             end=now.strftime('%Y-%m-%dT%H:%M:00Z'), index='Kp')),
                       ('gfz Hp30', GFZ.format(start=(now - timedelta(hours=3)).strftime('%Y-%m-%dT%H:%M:00Z'),
                                               end=now.strftime('%Y-%m-%dT%H:%M:00Z'), index='Hp30')),
-                      ('lrv', LRV.format(day=now.date().isoformat())), ('ovation', OVATION)):
+                      ('lrv', LRV.format(day=now.date().isoformat())),
+                      ('gin osservatori', 'https://imag-data.bgs.ac.uk/GIN_V1/GINServices?Request=GetCapabilities&format=json'),
+                      ('ovation', OVATION)):
         print(f'… {name}', flush=True)
         t0 = time.time()
         try:
