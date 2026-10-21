@@ -178,7 +178,7 @@ def guess_icon(title):
     return 'village'
 
 # inquadratura delle foto principali (ritagliate a 180 px di altezza) dove il centro non basta
-HERO_POS = {'d4': 'center 28%', 'd6': 'center 75%', 'storia': 'center 40%'}
+HERO_POS = {'d4': 'center 28%', 'd6': 'center 75%'}
 
 def illus(filename, label):
     # illustrazione dei box della tab Storia (images/storia-*.jpg); senza file niente riquadro
@@ -408,7 +408,6 @@ storia_html = f'''
     <div class="day-date"><span class="rune-mark">ᚨ</span>Infarinatura generale<span class="rune-mark">ᚾ</span></div>
     <div class="day-title"><span class="rune-mark">ᛋ</span>Storia dell'Islanda<span class="rune-mark">ᛁ</span></div>
   </div>
-  {photo_slot('storia-hero.jpg', "Storia dell'Islanda", 'photo-slot--hero', 'saga', HERO_POS['storia'])}
 
   <div class="panel">
     <div class="panel-title"><span class="rune-mark">ᛒ</span>Un'isola giovanissima</div>
