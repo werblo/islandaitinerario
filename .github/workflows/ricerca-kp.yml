@@ -1,0 +1,67 @@
+name: Ricerca Kp
+
+# Quanto ci si può fidare del Kp (tools/kp/ricerca_kp.py), ottobre-novembre 2026.
+# Punto 1 (fino al 14/11): salva al mattino il Kp previsto per la notte e lo confronta
+# con quello misurato. Punto 2 (22-29/10): di notte, ogni 10 minuti, salva gli indicatori
+# "di adesso" (Kp al minuto, OVATION, vento solare) e li confronta con il magnetometro
+# islandese di Leirvogur. GitHub parte con ore di ritardo: ogni esecuzione è un "turno"
+# (fino a 170 minuti di notte, pochi secondi di giorno), in coda con concurrency.
+# Risultati: riepilogo di ogni esecuzione (tab Actions) e artifact "ricerca-kp".
+# Non tocca il sito né gli avvisi.
+on:
+  schedule:
+    - cron: '7 */3 22-31 10 *'
+    - cron: '7 */3 1-14 11 *'
+  workflow_dispatch:
+    inputs:
+      azione:
+        description: 'prova = mostra il formato di ogni fonte · turno = raccolta breve · valuta = solo confronto'
+        type: choice
+        options: [prova, turno, valuta]
+        default: prova
+      minuti:
+        description: 'solo per "turno": durata in minuti'
+        default: '20'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ricerca-kp-${{ github.event_name == 'schedule' && 'turno' || github.run_id }}
+
+jobs:
+  ricerca:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 200
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - uses: actions/cache/restore@v4
+        with:
+          path: ricerca-kp
+          key: ricerca-kp-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: ricerca-kp-
+      - name: Mostra il formato delle fonti
+        if: inputs.azione == 'prova'
+        run: python tools/kp/ricerca_kp.py prova -
+      - name: Raccogli i dati
+        if: github.event_name == 'schedule' || inputs.azione == 'turno'
+        run: python tools/kp/ricerca_kp.py turno ricerca-kp ${{ github.event_name == 'schedule' && '170' || inputs.minuti }}
+        env:
+          PYTHONUNBUFFERED: '1'
+      - name: Confronta
+        if: always() && inputs.azione != 'prova'
+        run: mkdir -p ricerca-kp && python tools/kp/ricerca_kp.py valuta ricerca-kp
+      - uses: actions/cache/save@v4
+        if: always() && hashFiles('ricerca-kp/*.csv') != ''
+        with:
+          path: ricerca-kp
+          key: ricerca-kp-${{ github.run_id }}-${{ github.run_attempt }}
+      - uses: actions/upload-artifact@v4
+        if: always() && hashFiles('ricerca-kp/*.csv') != ''
+        with:
+          name: ricerca-kp
+          path: ricerca-kp
+          retention-days: 90

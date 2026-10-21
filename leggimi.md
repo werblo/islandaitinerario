@@ -36,6 +36,7 @@ Questo file descrive **com'è il progetto oggi**. La storia delle modifiche
 | `routes.json` | Percorsi stradali precalcolati (sezione 4). |
 | `tools/aurora_alert.py` | Avvisi aurora (sezione 5). |
 | `tools/research/` | Ricerca sulle nuvole (sezione 6), da cancellare dopo il 2 novembre. |
+| `tools/kp/` | Ricerca sul Kp (sezione 6), fino al 14 novembre. |
 | `CLAUDE.md` | Promemoria breve per le sessioni con Claude. |
 
 ## 3. Come si modifica
@@ -181,6 +182,15 @@ novembre risultato finale (conferma o ritorno indietro solo con il sì di
 Michele) e cancellazione di `tools/research/` e `ricerca-nuvole.yml`, con
 test completo. Dopo un cambio di metodo si rilancia `render.py` e si fa il
 commit di `index.html`, perché le notifiche leggono il valore da lì.
+
+**Ricerca sul Kp** (`tools/kp/ricerca_kp.py`, workflow "Ricerca Kp", fino al
+14 novembre; cartella separata, non va cancellata con quella delle nuvole).
+Punto 1: il Kp previsto al mattino (quello di app e avvisi) contro il Kp
+misurato la notte dopo. Punto 2, dal 22 al 29 ottobre: ogni 10 minuti di notte
+Kp al minuto, OVATION e vento solare contro il magnetometro islandese di
+Leirvogur, per capire quale dato "di adesso" segue meglio l'Islanda. Risultati
+nel riepilogo di ogni esecuzione e nell'artifact `ricerca-kp`; decisioni (es.
+una frase "previsione incerta") solo con il sì di Michele.
 
 ## 7. Prenotazioni e alloggi
 
