@@ -31,7 +31,8 @@ Questo file descrive **com'è il progetto oggi**. La storia delle modifiche
 | `render.py` | Genera la pagina: giorni, tab Storia, tab Info. |
 | `app/stile.css`, `app/app.js` | Aspetto e funzioni della pagina (meteo, alba/tramonto, aurora, mappe, offline, notifiche). |
 | `index.html`, `sw.js`, `images/web/` | **Generati** da `render.py`: non si modificano a mano, ma vanno sempre nel commit. |
-| `images/` | Foto originali in .jpg; `images/archivio/` foto non più usate. |
+| `images/` | Foto originali in .jpg; `images/archivio/` foto non più usate. Le `storia-*.jpg` dei box della tab Storia sono illustrazioni minimal fatte con Canva (ottobre 2026): il riquadro compare solo se il file esiste. |
+| `icons/` | Icona dell'app (Canva, ottobre 2026): `icon-180/192/512.png` e le `-maskable` per Android. Dopo un cambio d'icona il telefono la aggiorna solo reinstallando l'app. |
 | `routes.json` | Percorsi stradali precalcolati (sezione 4). |
 | `tools/aurora_alert.py` | Avvisi aurora (sezione 5). |
 | `tools/research/` | Ricerca sulle nuvole (sezione 6), da cancellare dopo il 2 novembre. |
