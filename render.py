@@ -561,8 +561,8 @@ html_out = f'''<!DOCTYPE html>
 <meta name="apple-mobile-web-app-title" content="Islanda 2026">
 <title>Islanda 2026 · Federica &amp; Michele</title>
 <link rel="manifest" href="manifest.json">
-<link rel="apple-touch-icon" href="icons/icon-180.png">
-<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/aurora-180.png">
+<link rel="icon" href="icons/aurora-192.png">
 <style>
 @font-face {{
   font-family:'Cinzel'; font-style:normal; font-weight:500 700; font-display:swap;
@@ -838,8 +838,8 @@ for _f in sorted(os.listdir(WEBP_DIR)):
     if _f.endswith('.webp') and 'web/' + _f not in webp_files:
         os.remove(os.path.join(WEBP_DIR, _f))
 
-STATIC_FILES = ['manifest.json', 'icons/icon-180.png', 'icons/icon-192.png', 'icons/icon-512.png',
-                'icons/icon-192-maskable.png', 'icons/icon-512-maskable.png',
+STATIC_FILES = ['manifest.json', 'icons/aurora-180.png', 'icons/aurora-192.png', 'icons/aurora-512.png',
+                'icons/aurora-192-maskable.png', 'icons/aurora-512-maskable.png',
                 'vendor/leaflet/leaflet.js', 'vendor/leaflet/leaflet.css',
                 'vendor/leaflet/images/layers.png', 'vendor/leaflet/images/layers-2x.png']
 SW_TEMPLATE = open('sw-template.js', encoding='utf-8').read()

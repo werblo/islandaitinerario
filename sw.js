@@ -1,5 +1,5 @@
 // Generato da render.py a partire da sw-template.js: non modificare sw.js a mano.
-const VERSION = 'e40d72116ae0';
+const VERSION = 'f7b33f0b87cb';
 const APP_CACHE = 'islanda-2026-app-' + VERSION;
 const TILE_CACHE = 'islanda-2026-tiles';
 const LIVE_CACHE = 'islanda-2026-live';
@@ -10,11 +10,11 @@ const PRECACHE = [
   "./",
   "index.html",
   "manifest.json",
-  "icons/icon-180.png",
-  "icons/icon-192.png",
-  "icons/icon-512.png",
-  "icons/icon-192-maskable.png",
-  "icons/icon-512-maskable.png",
+  "icons/aurora-180.png",
+  "icons/aurora-192.png",
+  "icons/aurora-512.png",
+  "icons/aurora-192-maskable.png",
+  "icons/aurora-512-maskable.png",
   "vendor/leaflet/leaflet.js",
   "vendor/leaflet/leaflet.css",
   "vendor/leaflet/images/layers.png",
@@ -154,7 +154,7 @@ self.addEventListener('push', (event) => {
     body: data.body || '',
     tag: data.tag || 'aurora',
     renotify: true,
-    icon: 'icons/icon-192.png',
+    icon: 'icons/aurora-192.png',
     lang: 'it',
   }));
 });

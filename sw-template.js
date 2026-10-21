@@ -106,7 +106,7 @@ self.addEventListener('push', (event) => {
     body: data.body || '',
     tag: data.tag || 'aurora',
     renotify: true,
-    icon: 'icons/icon-192.png',
+    icon: 'icons/aurora-192.png',
     lang: 'it',
   }));
 });
