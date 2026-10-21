@@ -442,6 +442,7 @@ storia_html = f'''
   <div class="panel">
     <div class="panel-title"><span class="rune-mark">ᚲ</span>Fuoco e ghiaccio</div>
     <div class="rune-rule"></div>
+    {illus('storia-fuoco-ghiaccio.jpg', 'Illustrazione: vulcano con colata di lava e ghiacciaio con iceberg')}
     <p class="line">L'Islanda si trova sulla dorsale medio-atlantica, dove le placche nordamericana ed eurasiatica si allontanano di circa 2 cm all'anno; il confine tra le due placche è visibile a Þingvellir. Per questo è una delle zone vulcaniche più attive della Terra, con oltre 30 sistemi vulcanici attivi. Circa l'85% dell'energia consumata nel paese, compresi riscaldamento, industria e trasporti, proviene da fonti rinnovabili, soprattutto geotermia e idroelettrico, e la produzione di elettricità è quasi interamente rinnovabile. La stessa acqua calda del sottosuolo alimenta le piscine e le terme come Fontana e la Secret Lagoon.</p>
     {wiki_links([("Vulcani dell'Islanda", "https://it.wikipedia.org/wiki/Vulcani_dell'Islanda"), ("Geografia dell'Islanda", "https://it.wikipedia.org/wiki/Geografia_dell'Islanda")])}
   </div>
