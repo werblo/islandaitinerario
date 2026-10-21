@@ -42,16 +42,16 @@ LRV = ('https://imag-data.bgs.ac.uk/GIN_V1/GINServices?Request=GetData&format=js
        '&dataStartDate={day}&dataDuration=1&orientation=native')
 
 
-def get_json(url, tries=3):
+def get_json(url, tries=2):
     for i in range(tries):
         try:
             req = urllib.request.Request(url, headers={'User-Agent': 'islanda-2026-ricerca-kp'})
-            with urllib.request.urlopen(req, timeout=60) as r:
+            with urllib.request.urlopen(req, timeout=30) as r:
                 return json.loads(r.read().decode('utf-8', 'replace'))
         except Exception as e:
             if i == tries - 1:
                 raise
-            time.sleep(5 * (i + 1))
+            time.sleep(5)
 
 
 def parse_time(s):
@@ -405,8 +405,11 @@ def prova():
                       ('gfz Hp30', GFZ.format(start=(now - timedelta(hours=3)).strftime('%Y-%m-%dT%H:%M:00Z'),
                                               end=now.strftime('%Y-%m-%dT%H:%M:00Z'), index='Hp30')),
                       ('lrv', LRV.format(day=now.date().isoformat())), ('ovation', OVATION)):
+        print(f'… {name}', flush=True)
+        t0 = time.time()
         try:
             g = get_json(url)
+            print(f'  ({time.time() - t0:.0f} s)')
             if isinstance(g, dict):
                 desc = {k: (v[:2] + ['…', v[-1]] if isinstance(v, list) and len(v) > 3 else v) for k, v in g.items()}
                 print(f'{name}: dict {json.dumps(desc, default=str)[:700]}')
