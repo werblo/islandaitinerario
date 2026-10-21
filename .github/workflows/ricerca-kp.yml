@@ -45,7 +45,9 @@ jobs:
           restore-keys: ricerca-kp-
       - name: Mostra il formato delle fonti
         if: inputs.azione == 'prova'
-        run: python tools/kp/ricerca_kp.py prova -
+        run: timeout 600 python tools/kp/ricerca_kp.py prova -
+        env:
+          PYTHONUNBUFFERED: '1'
       - name: Raccogli i dati
         if: github.event_name == 'schedule' || inputs.azione == 'turno'
         run: python tools/kp/ricerca_kp.py turno ricerca-kp ${{ github.event_name == 'schedule' && '170' || inputs.minuti }}

@@ -10,18 +10,18 @@ Punto 2 (una settimana, 22-29/10): ogni 10 minuti, di notte, si salvano gli indi
   ovation     probabilità di aurora sopra Reykjavík del modello OVATION (NOAA, 30-90 minuti avanti)
   ovation_n   come sopra ma il massimo poco più a nord (aurora visibile all'orizzonte nord)
   bz, vento   campo magnetico (Bz, negativo = favorevole) e velocità del vento solare (satellite in L1)
-e si confrontano con quello che succede davvero sopra l'Islanda: il magnetometro di
-Leirvogur (LRV, vicino a Reykjavík, rete INTERMAGNET), che si agita quando l'aurora è
-sopra la zona. Se LRV non è disponibile si usa l'indice Hp30 (GFZ, ogni mezz'ora).
-Non esiste un registro automatico di "aurora vista": il magnetometro è il dato misurato
-più vicino.
+e si confrontano con quello che succede davvero vicino all'Islanda: i magnetometri di
+Narsarsuaq (sud della Groenlandia, latitudine magnetica simile all'Islanda) e di Abisko
+(Lapponia), che si agitano quando l'aurora è sopra la zona. Leirvogur, vicino a Reykjavík,
+non pubblica i dati in tempo reale. Non esiste un registro automatico di "aurora vista":
+il magnetometro è il dato misurato più vicino.
 
 Uso:
   python tools/kp/ricerca_kp.py turno DIR [minuti]   raccolta (mattino + ogni 10 minuti di notte)
   python tools/kp/ricerca_kp.py valuta DIR           confronta i dati raccolti, scrive DIR/RISULTATI.md
   python tools/kp/ricerca_kp.py prova -              mostra il formato di ogni fonte
 """
-import csv, json, math, os, sys, time, urllib.request
+import csv, json, math, os, sys, time, urllib.error, urllib.request
 from datetime import datetime, timedelta, timezone
 
 UTC = timezone.utc
@@ -34,24 +34,31 @@ KP_FORECAST = 'https://services.swpc.noaa.gov/products/noaa-planetary-k-index-fo
 KP_OBSERVED = 'https://services.swpc.noaa.gov/products/noaa-planetary-k-index.json'
 KP_1M = 'https://services.swpc.noaa.gov/json/planetary_k_index_1m.json'
 OVATION = 'https://services.swpc.noaa.gov/json/ovation_aurora_latest.json'
-MAG = 'https://services.swpc.noaa.gov/products/solar-wind/mag-2-hour.json'
-PLASMA = 'https://services.swpc.noaa.gov/products/solar-wind/plasma-2-hour.json'
-GFZ = 'https://kp.gfz-potsdam.de/app/json/?start={start}&end={end}&index={index}'
-LRV = ('https://imag-data.bgs.ac.uk/GIN_V1/GINServices?Request=GetData&format=json'
-       '&testObsys=0&observatoryIagaCode=LRV&samplesPerDay=minute&publicationState=adj-or-rep'
-       '&dataStartDate={day}&dataDuration=1&orientation=native')
+MAG = 'https://services.swpc.noaa.gov/json/rtsw/rtsw_mag_1m.json'        # vento solare in tempo reale (L1)
+PLASMA = 'https://services.swpc.noaa.gov/json/rtsw/rtsw_wind_1m.json'
+MAGOBS = ('https://imag-data.bgs.ac.uk/GIN_V1/GINServices?Request=GetData&format=json'
+          '&testObsys=0&observatoryIagaCode={code}&samplesPerDay=minute&publicationState=best-avail'
+          '&dataStartDate={day}&dataDuration=1')
+# osservatori magnetici in tempo reale più vicini all'Islanda (Leirvogur non pubblica in tempo reale):
+# Narsarsuaq (sud della Groenlandia, latitudine magnetica simile) e Abisko (Lapponia svedese)
+OBS = (('naq', 'NAQ', 'Narsarsuaq'), ('abk', 'ABK', 'Abisko'))
 
 
-def get_json(url, tries=3):
+def get_json(url, tries=2):
     for i in range(tries):
         try:
             req = urllib.request.Request(url, headers={'User-Agent': 'islanda-2026-ricerca-kp'})
-            with urllib.request.urlopen(req, timeout=60) as r:
+            with urllib.request.urlopen(req, timeout=30) as r:
                 return json.loads(r.read().decode('utf-8', 'replace'))
+        except urllib.error.HTTPError as e:
+            if i == tries - 1:
+                body = e.read().decode('utf-8', 'replace')[:300]
+                raise RuntimeError(f'HTTP {e.code}: {body}') from None
+            time.sleep(5)
         except Exception as e:
             if i == tries - 1:
                 raise
-            time.sleep(5 * (i + 1))
+            time.sleep(5)
 
 
 def parse_time(s):
@@ -125,7 +132,7 @@ def save_forecast(d, now):
 
 
 def save_observed(d):
-    """Kp misurato (NOAA, ultimi 7 giorni) e Kp della GFZ (il riferimento ufficiale)."""
+    """Kp misurato (NOAA, ultimi 7 giorni; la GFZ non risponde da GitHub)."""
     path = os.path.join(d, 'kp_osservato.csv')
     have = {(r['fonte'], r['fascia']) for r in read(path)}
     n = 0
@@ -139,22 +146,11 @@ def save_observed(d):
                 append(path, ['fonte', 'fascia', 'kp'], {'fonte': key[0], 'fascia': key[1], 'kp': kp}); have.add(key); n += 1
     except Exception as e:
         print(f'::warning::Kp osservato NOAA non disponibile: {e}')
-    try:
-        end = datetime.now(UTC)
-        url = GFZ.format(start=(end - timedelta(days=7)).strftime('%Y-%m-%dT00:00:00Z'),
-                         end=end.strftime('%Y-%m-%dT%H:%M:00Z'), index='Kp')
-        g = get_json(url)
-        for t, kp in zip(g.get('datetime', []), g.get('Kp', [])):
-            key = ('gfz', parse_time(t).strftime('%Y-%m-%dT%H:%M'))
-            if num(kp) is not None and key not in have:
-                append(path, ['fonte', 'fascia', 'kp'], {'fonte': key[0], 'fascia': key[1], 'kp': kp}); have.add(key); n += 1
-    except Exception as e:
-        print(f'::warning::Kp GFZ non disponibile: {e}')
     print(f'Kp osservato: {n} valori nuovi')
 
 
 # ---------- punto 2: indicatori "di adesso" ogni 10 minuti ----------
-F_NOW = ['ora', 'kp_1m', 'ovation', 'ovation_n', 'bz', 'bt', 'vento', 'lrv_range60', 'lrv_minuti', 'hp30']
+F_NOW = ['ora', 'kp_1m', 'ovation', 'ovation_n', 'bz', 'bt', 'vento', 'naq_range60', 'abk_range60']
 
 
 def ovation_probs(data):
@@ -172,6 +168,9 @@ def ovation_probs(data):
 
 
 def last_valid(rows, key):
+    # il più recente: alcuni prodotti sono dal più vecchio, altri (rtsw) dal più nuovo e con più satelliti
+    if rows and 'time_tag' in rows[0]:
+        rows = sorted((r for r in rows if r.get('active', True) is not False), key=lambda r: str(r['time_tag']))
     for r in reversed(rows):
         v = num(r.get(key))
         if v is not None:
@@ -179,33 +178,20 @@ def last_valid(rows, key):
     return None
 
 
-def lrv_range(now):
-    """Escursione della componente orizzontale a Leirvogur nell'ultima ora (nT) e minuti validi."""
+def mag_range(now, code):
+    """Escursione della componente orizzontale (H = radice di X² + Y²) nell'ultima ora, in nT,
+    e minuti validi, per un osservatorio INTERMAGNET (servizio GIN del British Geological Survey)."""
     vals = []
     for day in sorted({(now - timedelta(minutes=60)).date(), now.date()}):
-        g = get_json(LRV.format(day=day.isoformat()))
-        times = g.get('datetime') or g.get('times')
-        t0 = parse_time(g['startDate']) if g.get('startDate') else None
-        if not times and t0 is None:
-            raise ValueError('formato LRV sconosciuto: ' + str(list(g))[:200])
-        comps = g.get('dataComponents') or g.get('data') or {}
-        if isinstance(comps, list):    # [{"component":"X","data":[...]}, ...]
-            comps = {c.get('component', '').upper(): c.get('data', []) for c in comps}
-        x = comps.get('X') or comps.get('H') or []
-        for i, v in enumerate(x):
-            t = parse_time(times[i]) if times else t0 + timedelta(minutes=i)
-            v = num(v)
-            if v is not None and abs(v) < 99999 and now - timedelta(minutes=60) <= t <= now:
-                vals.append(v)
+        g = get_json(MAGOBS.format(code=code, day=day.isoformat()))
+        times, xs, ys = g.get('datetime') or [], g.get('X') or [], g.get('Y') or []
+        for t, x, y in zip(times, xs, ys):
+            x, y = num(x), num(y)
+            if x is None or y is None or abs(x) > 90000 or abs(y) > 90000:
+                continue
+            if now - timedelta(minutes=60) <= parse_time(t) <= now:
+                vals.append(math.hypot(x, y))
     return (round(max(vals) - min(vals), 1), len(vals)) if len(vals) >= 20 else (None, len(vals))
-
-
-def hp30_now(now):
-    url = GFZ.format(start=(now - timedelta(hours=2)).strftime('%Y-%m-%dT%H:%M:00Z'),
-                     end=now.strftime('%Y-%m-%dT%H:%M:00Z'), index='Hp30')
-    g = get_json(url)
-    v = [num(x) for x in g.get('Hp30', []) if num(x) is not None]
-    return v[-1] if v else None
 
 
 def save_nowcast(d, now):
@@ -214,9 +200,9 @@ def save_nowcast(d, now):
         'kp_1m': lambda: last_valid(rows_of(get_json(KP_1M), []), 'kp_index'),     # lo stesso valore della riga "ora" dell'app
         'ovation': lambda: ovation_probs(get_json(OVATION)),
         'mag': lambda: rows_of(get_json(MAG), []),
-        'vento': lambda: last_valid(rows_of(get_json(PLASMA), []), 'speed'),
-        'lrv': lambda: lrv_range(now),
-        'hp30': lambda: hp30_now(now),
+        'vento': lambda: last_valid(rows_of(get_json(PLASMA), []), 'proton_speed') or last_valid(rows_of(get_json(PLASMA), []), 'speed'),
+        'naq': lambda: mag_range(now, 'NAQ')[0],
+        'abk': lambda: mag_range(now, 'ABK')[0],
     }
     for k, f in tries.items():
         try:
@@ -225,8 +211,8 @@ def save_nowcast(d, now):
                 row['ovation'], row['ovation_n'] = v
             elif k == 'mag':
                 row['bz'], row['bt'] = last_valid(v, 'bz_gsm'), last_valid(v, 'bt')
-            elif k == 'lrv':
-                row['lrv_range60'], row['lrv_minuti'] = v
+            elif k in ('naq', 'abk'):
+                row[k + '_range60'] = v
             else:
                 row[k] = v
         except Exception as e:
@@ -289,16 +275,52 @@ def spearman(a, b):
     return num_ / den if den else None
 
 
+# soglie "dice di sì" di ogni indicatore (quelle consigliate di solito dai siti dell'aurora)
+YES = (('kp_1m', 'Kp al minuto ≥ 4', lambda v: v >= 4, 0),
+       ('ovation', 'OVATION sopra Reykjavík ≥ 10%', lambda v: v >= 10, 0),
+       ('ovation_n', 'OVATION a nord ≥ 10%', lambda v: v >= 10, 0),
+       ('bz', 'Bz ≤ −5 nT (riferimento 30 minuti dopo)', lambda v: v <= -5, 30))
+ACTIVE_NT = 150     # "attività": il magnetometro si muove più di 150 nT in un'ora
+
+
+def hit_table(rows, ref):
+    """Quante volte ogni indicatore "ci azzecca": sì quando c'è attività, no quando non c'è."""
+    thr, ref_text = ACTIVE_NT, f'{dict((c, n) for c, _, n in OBS)[ref[:3]]} si muove più di {ACTIVE_NT} nT in un\'ora'
+    by_time = {r['ora']: r for r in rows}
+    out = [f'**Chi ci azzecca più spesso.** "Attività" = {ref_text}. Per ogni indicatore: '
+           'quante volte ha detto la cosa giusta, quante volte l\'attività c\'era davvero quando diceva sì, '
+           'e quante attività ha visto in anticipo o in tempo. Il Bz si confronta con 30 minuti dopo, '
+           'perché il vento solare arriva in Islanda con un po\' di ritardo.', '',
+           '| indicatore | misure | azzeccate | quando dice sì, c\'è davvero | attività viste |', '|---|---|---|---|---|']
+    for k, label, yes, lag in YES:
+        if k == ref:
+            continue
+        tp = fp = fn = tn = 0
+        for r in rows:
+            if not r.get(k):
+                continue
+            later = by_time.get((parse_time(r['ora']) + timedelta(minutes=lag)).strftime('%Y-%m-%dT%H:%M')) if lag else r
+            if not later or not later.get(ref):
+                continue
+            said, real = yes(float(r[k])), float(later[ref]) >= thr
+            tp += said and real; fp += said and not real; fn += real and not said; tn += not said and not real
+        n = tp + fp + fn + tn
+        pct = lambda a, b: f'{100 * a / b:.0f}%' if b else '–'
+        out.append(f'| {label} | {n} | {pct(tp + tn, n)} | {pct(tp, tp + fp)} | {pct(tp, tp + fn)} |')
+    out.append('')
+    return out
+
+
 def valuta(d):
     out = ['# Ricerca Kp: risultati', '']
     obs = {}
     for r in read(os.path.join(d, 'kp_osservato.csv')):
         obs.setdefault(r['fascia'], {})[r['fonte']] = float(r['kp'])
-    truth = {k: v.get('gfz', v.get('noaa')) for k, v in obs.items()}
+    truth = {k: v.get('noaa') for k, v in obs.items()}
     prev = read(os.path.join(d, 'kp_previsioni.csv'))
 
     out += ['## Punto 1: la previsione del mattino è affidabile?', '',
-            'Kp previsto al mattino (NOAA) contro Kp misurato (GFZ, o NOAA se manca), nelle fasce di buio.',
+            'Kp previsto al mattino (NOAA) contro Kp misurato (NOAA), nelle fasce di buio.',
             '"Stessa fascia dell\'app" = stessa soglia della stima (<2, 2-3, 3-4, 4-5, 5+).', '',
             '| anticipo | fasce | notti | errore medio | in media | entro ±1 | stessa fascia dell\'app | notti "Kp 4+" previste / misurate / entrambe |',
             '|---|---|---|---|---|---|---|---|']
@@ -329,25 +351,26 @@ def valuta(d):
     if not rows:
         out.append('Nessun dato raccolto.')
     else:
-        ref = 'lrv_range60' if sum(bool(r.get('lrv_range60')) for r in rows) >= max(10, len(rows) // 2) else 'hp30'
-        ref_name = ('escursione del magnetometro di Leirvogur nell\'ultima ora (nT)' if ref == 'lrv_range60'
-                    else 'indice Hp30 della GFZ (Leirvogur non disponibile)')
-        out += [f'{len(rows)} misure di notte. Riferimento: {ref_name}.', '',
-                'Correlazione di Spearman (1 = va su e giù insieme al riferimento, 0 = nessun legame; '
-                'per il Bz conta il segno meno: più negativo = più attività).', '',
-                '| indicatore | misure | correlazione |', '|---|---|---|']
-        for k, label, sign in (('kp_1m', 'Kp stimato al minuto (NOAA, riga "ora" dell\'app)', 1),
-                               ('ovation', 'OVATION sopra Reykjavík', 1),
-                               ('ovation_n', 'OVATION a nord di Reykjavík', 1),
-                               ('bz', 'Bz del vento solare (segno invertito)', -1),
-                               ('vento', 'velocità del vento solare', 1),
-                               ('hp30', 'Hp30 (GFZ, ogni 30 minuti)', 1)):
-            if k == ref:
+        out.append(f'{len(rows)} misure di notte.')
+        for code, _, name in OBS:
+            ref = code + '_range60'
+            if sum(bool(r.get(ref)) for r in rows) < 10:
+                out += ['', f'### Riferimento {name}: dati insufficienti.']
                 continue
-            a = [(sign * float(r[k]), float(r[ref])) for r in rows if r.get(k) and r.get(ref)]
-            c = spearman([x for x, _ in a], [y for _, y in a]) if a else None
-            out.append(f'| {label} | {len(a)} | {"–" if c is None else f"{c:.2f}"} |')
-        out.append('')
+            out += ['', f'### Riferimento: magnetometro di {name} (escursione nell\'ultima ora)', '',
+                    'Correlazione di Spearman (1 = va su e giù insieme al riferimento, 0 = nessun legame; '
+                    'per il Bz conta il segno meno: più negativo = più attività).', '',
+                    '| indicatore | misure | correlazione |', '|---|---|---|']
+            for k, label, sign in (('kp_1m', 'Kp stimato al minuto (NOAA, riga "ora" dell\'app)', 1),
+                                   ('ovation', 'OVATION sopra Reykjavík', 1),
+                                   ('ovation_n', 'OVATION a nord di Reykjavík', 1),
+                                   ('bz', 'Bz del vento solare (segno invertito)', -1),
+                                   ('vento', 'velocità del vento solare', 1)):
+                a = [(sign * float(r[k]), float(r[ref])) for r in rows if r.get(k) and r.get(ref)]
+                c = spearman([x for x, _ in a], [y for _, y in a]) if a else None
+                out.append(f'| {label} | {len(a)} | {"–" if c is None else f"{c:.2f}"} |')
+            out.append('')
+            out += hit_table(rows, ref)
     text = '\n'.join(out)
     print(text)
     with open(os.path.join(d, 'RISULTATI.md'), 'w', encoding='utf-8') as f:
@@ -358,29 +381,18 @@ def valuta(d):
 
 
 def prova():
-    """Mostra com'è fatta la risposta di ogni fonte (per controllare i formati)."""
-    now = datetime.now(UTC)
+    """Controlla che ogni fonte risponda e mostra i valori di adesso."""
+    now = datetime.now(UTC).replace(second=0, microsecond=0)
     for name, url in (('kp previsto', KP_FORECAST), ('kp osservato', KP_OBSERVED), ('kp 1m', KP_1M),
-                      ('mag', MAG), ('plasma', PLASMA),
-                      ('gfz Kp', GFZ.format(start=(now - timedelta(days=1)).strftime('%Y-%m-%dT00:00:00Z'),
-                                            end=now.strftime('%Y-%m-%dT%H:%M:00Z'), index='Kp')),
-                      ('gfz Hp30', GFZ.format(start=(now - timedelta(hours=3)).strftime('%Y-%m-%dT%H:%M:00Z'),
-                                              end=now.strftime('%Y-%m-%dT%H:%M:00Z'), index='Hp30')),
-                      ('lrv', LRV.format(day=now.date().isoformat())), ('ovation', OVATION)):
+                      ('vento solare (mag)', MAG), ('vento solare (plasma)', PLASMA), ('ovation', OVATION)):
+        t0 = time.time()
         try:
             g = get_json(url)
-            if isinstance(g, dict):
-                desc = {k: (v[:2] + ['…', v[-1]] if isinstance(v, list) and len(v) > 3 else v) for k, v in g.items()}
-                print(f'{name}: dict {json.dumps(desc, default=str)[:700]}')
-            else:
-                print(f'{name}: list di {len(g)} · primo {json.dumps(g[0])[:200]} · ultimo {json.dumps(g[-1])[:200]}')
+            print(f'{name}: ok ({time.time() - t0:.0f} s, {len(g)} elementi)')
         except Exception as e:
             print(f'{name}: ERRORE {type(e).__name__}: {e}'[:300])
-    for f, args in ((ovation_probs, (get_json(OVATION),)), (lrv_range, (now,)), (hp30_now, (now,))):
-        try:
-            print(f.__name__, '->', f(*args))
-        except Exception as e:
-            print(f.__name__, '-> ERRORE', type(e).__name__, str(e)[:200])
+    print('Valori di adesso:')
+    save_nowcast('/tmp', now)
 
 
 if __name__ == '__main__':
