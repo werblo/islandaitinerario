@@ -51,7 +51,7 @@ Questo file descrive **com'è il progetto oggi**. La storia delle modifiche
 
 **Foto.** Il nome del file segue il giorno e il titolo dell'attività, in
 minuscolo e senza accenti (es. `d4-skogafoss.jpg`, `d2-hero.jpg` per la foto
-grande del giorno, `storia-hero.jpg`, `cover.jpg`). Se una foto manca compare
+grande del giorno, `cover.jpg`). Se una foto manca compare
 un segnaposto con un'icona. `render.py` converte le foto in WebP: 1200 px per
 quelle grandi, 400 px sul lato corto per le miniature (nelle schede delle
 attività si vedono piccole, 64 px, a sinistra del testo).
