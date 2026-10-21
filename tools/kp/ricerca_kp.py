@@ -187,11 +187,11 @@ def last_valid(rows, key):
     return None
 
 
-def lrv_range(now):
-    """Escursione della componente orizzontale a Leirvogur nell'ultima ora (nT) e minuti validi."""
+def lrv_range(now, code='LRV'):
+    """Escursione della componente orizzontale nell'ultima ora (nT) e minuti validi, osservatorio INTERMAGNET."""
     vals = []
     for day in sorted({(now - timedelta(minutes=60)).date(), now.date()}):
-        g = get_json(LRV.format(day=day.isoformat()))
+        g = get_json(LRV.format(day=day.isoformat()).replace('Code=LRV', 'Code=' + code))
         times = g.get('datetime') or g.get('times')
         t0 = parse_time(g['startDate']) if g.get('startDate') else None
         if not times and t0 is None:
@@ -427,6 +427,25 @@ def prova():
                 print(f'{name}: list di {len(g)} · primo {json.dumps(g[0])[:200]} · ultimo {json.dumps(g[-1])[:200]}')
         except Exception as e:
             print(f'{name}: ERRORE {type(e).__name__}: {e}'[:300])
+    try:
+        obs = get_json('https://imag-data.bgs.ac.uk/GIN_V1/GINServices?Request=GetCapabilities&format=json')['ObservatoryList']
+        print('Osservatori sopra 55° N:', ', '.join(f"{o['IagaCode']} {o['Name']} ({o['Latitude']:.1f}, {o['Longitude']:.1f}, ritardo {o['DataEmbargoHours']} h)"
+                                               for o in obs if o['Latitude'] > 55))
+    except Exception as e:
+        print('elenco osservatori: ERRORE', e)
+    for code in ('NAQ', 'LER', 'TRO', 'ABK', 'SOD'):
+        try:
+            print(code, '-> escursione ultima ora', lrv_range(now, code))
+        except Exception as e:
+            print(code, '-> ERRORE', str(e)[:150])
+    for url in ('https://kp.gfz-potsdam.de/app/files/Hp30_ap30_nowcast.txt', 'https://kp.gfz.de/app/files/Hp30_ap30_nowcast.txt'):
+        try:
+            req = urllib.request.Request(url, headers={'User-Agent': 'islanda-2026-ricerca-kp'})
+            with urllib.request.urlopen(req, timeout=30) as r:
+                lines = r.read().decode('utf-8', 'replace').strip().splitlines()
+            print(url, '-> ultime righe:', lines[-2:])
+        except Exception as e:
+            print(url, '-> ERRORE', type(e).__name__, str(e)[:120])
     for f, args in ((ovation_probs, (get_json(OVATION),)), (lrv_range, (now,)), (hp30_now, (now,))):
         try:
             print(f.__name__, '->', f(*args))
