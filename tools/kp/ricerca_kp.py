@@ -408,10 +408,6 @@ def prova():
     now = datetime.now(UTC)
     for name, url in (('kp previsto', KP_FORECAST), ('kp osservato', KP_OBSERVED), ('kp 1m', KP_1M),
                       ('mag', MAG), ('plasma', PLASMA),
-                      ('gfz Kp', GFZ.format(start=(now - timedelta(days=1)).strftime('%Y-%m-%dT00:00:00Z'),
-                                            end=now.strftime('%Y-%m-%dT%H:%M:00Z'), index='Kp')),
-                      ('gfz Hp30', GFZ.format(start=(now - timedelta(hours=3)).strftime('%Y-%m-%dT%H:%M:00Z'),
-                                              end=now.strftime('%Y-%m-%dT%H:%M:00Z'), index='Hp30')),
                       ('lrv', LRV.format(day=now.date().isoformat())),
                       ('gin osservatori', 'https://imag-data.bgs.ac.uk/GIN_V1/GINServices?Request=GetCapabilities&format=json'),
                       ('ovation', OVATION)):
@@ -433,12 +429,19 @@ def prova():
                                                for o in obs if o['Latitude'] > 55))
     except Exception as e:
         print('elenco osservatori: ERRORE', e)
-    for code in ('NAQ', 'LER', 'TRO', 'ABK', 'SOD'):
+    try:
+        g = get_json(LRV.format(day=now.date().isoformat()).replace('Code=LRV', 'Code=NAQ'))
+        print('NAQ formato:', json.dumps({k: (v[:3] + ['…'] if isinstance(v, list) else
+                                              {kk: (vv[:3] if isinstance(vv, list) else vv) for kk, vv in v.items()} if isinstance(v, dict) else v)
+                                          for k, v in g.items()}, default=str)[:1500])
+    except Exception as e:
+        print('NAQ formato: ERRORE', e)
+    for code in ('NAQ', 'ABK', 'KIR'):
         try:
             print(code, '-> escursione ultima ora', lrv_range(now, code))
         except Exception as e:
             print(code, '-> ERRORE', str(e)[:150])
-    for url in ('https://kp.gfz-potsdam.de/app/files/Hp30_ap30_nowcast.txt', 'https://kp.gfz.de/app/files/Hp30_ap30_nowcast.txt'):
+    for url in ():
         try:
             req = urllib.request.Request(url, headers={'User-Agent': 'islanda-2026-ricerca-kp'})
             with urllib.request.urlopen(req, timeout=30) as r:
@@ -446,7 +449,7 @@ def prova():
             print(url, '-> ultime righe:', lines[-2:])
         except Exception as e:
             print(url, '-> ERRORE', type(e).__name__, str(e)[:120])
-    for f, args in ((ovation_probs, (get_json(OVATION),)), (lrv_range, (now,)), (hp30_now, (now,))):
+    for f, args in ((ovation_probs, (get_json(OVATION),)),):
         try:
             print(f.__name__, '->', f(*args))
         except Exception as e:
