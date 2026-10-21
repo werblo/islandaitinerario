@@ -1,4 +1,4 @@
-import json, html, math, re, urllib.parse
+import json, html, math, os, re, urllib.parse
 
 with open('cinzel.b64') as f:
     cinzel_b64 = f.read().strip()
@@ -179,6 +179,10 @@ def guess_icon(title):
 
 # inquadratura delle foto principali (ritagliate a 180 px di altezza) dove il centro non basta
 HERO_POS = {'d4': 'center 28%', 'd6': 'center 75%', 'storia': 'center 40%'}
+
+def illus(filename, label):
+    # illustrazione dei box della tab Storia (images/storia-*.jpg); senza file niente riquadro
+    return photo_slot(filename, label, 'photo-slot--illus', 'saga') if os.path.exists(os.path.join('images', filename)) else ''
 
 def photo_slot(filename, label, css_class, icon_key='village', pos=None, eager=False):
     bg1, bg2 = ICON_BG.get(icon_key, ('#3a2f22', '#5c4a33'))
@@ -409,6 +413,7 @@ storia_html = f'''
   <div class="panel">
     <div class="panel-title"><span class="rune-mark">ᛒ</span>Un'isola giovanissima</div>
     <div class="rune-rule"></div>
+    {illus('storia-isola.jpg', "Illustrazione: nave vichinga verso un'isola vulcanica")}
     <p class="line">L'Islanda fu una delle ultime terre d'Europa a essere abitate. Secondo le fonti medievali, intorno all'<strong>868</strong> il navigatore norvegese <strong>Hrafna-Flóki Vilgerðarson</strong> («Flóki dei corvi», dai corvi che usava per orientarsi) trascorse un inverno sull'isola e, vedendo un fiordo pieno di ghiaccio, la chiamò <strong>Ísland</strong>, «terra di ghiaccio». Nell'<strong>874</strong> Ingólfur Arnarson fondò il primo insediamento stabile nel luogo dell'attuale Reykjavík; secondo la tradizione scelse il posto seguendo i pilastri del suo seggio, gettati in mare e portati a riva dalle correnti. Nei decenni successivi arrivarono migliaia di coloni, in gran parte dalla Norvegia, insieme a persone provenienti dalle isole britanniche, molte delle quali schiavi.</p>
     {wiki_links([("Colonizzazione dell'Islanda", "https://it.wikipedia.org/wiki/Colonizzazione_dell'Islanda"), ("Storia dell'Islanda", "https://it.wikipedia.org/wiki/Storia_dell'Islanda")])}
   </div>
@@ -416,18 +421,21 @@ storia_html = f'''
   <div class="panel">
     <div class="panel-title"><span class="rune-mark">ᛏ</span>Dal primo parlamento all'indipendenza</div>
     <div class="rune-rule"></div>
+    {illus('storia-parlamento.jpg', 'Illustrazione: la spaccatura di Þingvellir con la bandiera islandese')}
     <p class="line">Nel <strong>930</strong> i capi dell'isola istituirono a Þingvellir l'<strong>Alþingi</strong>, un'assemblea che si riuniva ogni estate per approvare le leggi e risolvere le controversie; è considerato uno dei parlamenti più antichi del mondo. Il periodo successivo, noto come Stato libero islandese, non ebbe né un re né un esercito centrale. Nel 1262, dopo anni di conflitti tra le famiglie più potenti, l'Islanda accettò la sovranità del re di Norvegia e nel 1380 passò con la Norvegia sotto la corona danese. Il <strong>1º dicembre 1918</strong> divenne un regno sovrano unito alla Danimarca nella persona del re; il <strong>17 giugno 1944</strong>, mentre la Danimarca era occupata dalla Germania, fu proclamata a Þingvellir la Repubblica d'Islanda, dopo un referendum approvato con oltre il 98% dei voti.</p>
     {wiki_links([('Alþingi', 'https://it.wikipedia.org/wiki/Alþingi'), ('Parco nazionale Þingvellir', 'https://it.wikipedia.org/wiki/Parco_nazionale_Þingvellir')])}
   </div>
 
   <div class="culture-card">
     <div class="culture-card__label">{f'<svg viewBox="0 0 64 56" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">{icon_svg("saga")}</svg>'}<span class="rune-mark">ᚱ</span>Le saghe e la lingua</div>
+    {illus('storia-saghe.jpg', "Illustrazione: libro antico, casa col tetto d'erba e nave vichinga")}
     <p>L'islandese moderno è rimasto molto vicino al norreno medievale: grazie all'isolamento e a una forte tradizione scritta, un islandese di oggi può leggere le saghe del XIII secolo senza grandi difficoltà. Una legge del 2011 lo ha stabilito come lingua ufficiale. Il sistema dei nomi non usa cognomi di famiglia ma patronimici o matronimici (Jónsson significa «figlio di Jón», Jónsdóttir «figlia di Jón»); per questo l'elenco telefonico è ordinato per nome di battesimo. L'isola ha circa 390.000 abitanti su una superficie di poco superiore a quella del Portogallo. Fino a tempi recenti era nota per l'assenza di zanzare, le prime sono state trovate nel 2025; i boschi sono scarsi, in gran parte abbattuti dai primi coloni per ricavare legna e pascoli.</p>
     {wiki_links([('Lingua islandese', 'https://it.wikipedia.org/wiki/Lingua_islandese'), ('Storia della lingua islandese', 'https://it.wikipedia.org/wiki/Storia_della_lingua_islandese')])}
   </div>
 
   <div class="culture-card">
     <div class="culture-card__label">{f'<svg viewBox="0 0 64 56" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">{icon_svg("saga")}</svg>'}<span class="rune-mark">ᛟ</span>Troll ed elfi</div>
+    {illus('storia-troll.jpg', 'Illustrazione: faraglioni a forma di troll e porta degli elfi')}
     <p>Il folclore islandese spiega molte forme del paesaggio con creature leggendarie. Secondo la tradizione i <strong>troll</strong> vivono nelle montagne e si trasformano in pietra se vengono sorpresi dalla luce del sole: così vengono spiegati, per esempio, i faraglioni Reynisdrangar davanti a Reynisfjara. Gli <strong>Huldufólk</strong> («popolo nascosto») sono, secondo la tradizione, elfi che abitano rocce e colline e si mostrano solo quando vogliono. Questa credenza è ancora diffusa al punto che, in alcuni casi, il tracciato di nuove strade è stato modificato per non disturbare le rocce considerate abitate dagli elfi.</p>
     {wiki_links([('Troll (mitologia)', 'https://it.wikipedia.org/wiki/Troll_(mitologia)')])}
   </div>
