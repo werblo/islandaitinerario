@@ -289,6 +289,43 @@ def spearman(a, b):
     return num_ / den if den else None
 
 
+# soglie "dice di sì" di ogni indicatore (quelle consigliate di solito dai siti dell'aurora)
+YES = (('kp_1m', 'Kp al minuto ≥ 4', lambda v: v >= 4, 0),
+       ('ovation', 'OVATION sopra Reykjavík ≥ 10%', lambda v: v >= 10, 0),
+       ('ovation_n', 'OVATION a nord ≥ 10%', lambda v: v >= 10, 0),
+       ('bz', 'Bz ≤ −5 nT (riferimento 30 minuti dopo)', lambda v: v <= -5, 30),
+       ('hp30', 'Hp30 ≥ 4', lambda v: v >= 4, 0))
+ACTIVE = {'lrv_range60': (150, 'Leirvogur si muove più di 150 nT in un\'ora'), 'hp30': (4, 'Hp30 ≥ 4')}
+
+
+def hit_table(rows, ref):
+    """Quante volte ogni indicatore "ci azzecca": sì quando c'è attività, no quando non c'è."""
+    thr, ref_text = ACTIVE[ref]
+    by_time = {r['ora']: r for r in rows}
+    out = [f'**Chi ci azzecca più spesso.** "Attività in Islanda" = {ref_text}. Per ogni indicatore: '
+           'quante volte ha detto la cosa giusta, quante volte l\'attività c\'era davvero quando diceva sì, '
+           'e quante attività ha visto in anticipo o in tempo. Il Bz si confronta con 30 minuti dopo, '
+           'perché il vento solare arriva in Islanda con un po\' di ritardo.', '',
+           '| indicatore | misure | azzeccate | quando dice sì, c\'è davvero | attività viste |', '|---|---|---|---|---|']
+    for k, label, yes, lag in YES:
+        if k == ref:
+            continue
+        tp = fp = fn = tn = 0
+        for r in rows:
+            if not r.get(k):
+                continue
+            later = by_time.get((parse_time(r['ora']) + timedelta(minutes=lag)).strftime('%Y-%m-%dT%H:%M')) if lag else r
+            if not later or not later.get(ref):
+                continue
+            said, real = yes(float(r[k])), float(later[ref]) >= thr
+            tp += said and real; fp += said and not real; fn += real and not said; tn += not said and not real
+        n = tp + fp + fn + tn
+        pct = lambda a, b: f'{100 * a / b:.0f}%' if b else '–'
+        out.append(f'| {label} | {n} | {pct(tp + tn, n)} | {pct(tp, tp + fp)} | {pct(tp, tp + fn)} |')
+    out.append('')
+    return out
+
+
 def valuta(d):
     out = ['# Ricerca Kp: risultati', '']
     obs = {}
@@ -348,6 +385,7 @@ def valuta(d):
             c = spearman([x for x, _ in a], [y for _, y in a]) if a else None
             out.append(f'| {label} | {len(a)} | {"–" if c is None else f"{c:.2f}"} |')
         out.append('')
+        out += hit_table(rows, ref)
     text = '\n'.join(out)
     print(text)
     with open(os.path.join(d, 'RISULTATI.md'), 'w', encoding='utf-8') as f:
