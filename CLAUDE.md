@@ -46,6 +46,8 @@ l'utente: `leggimi.md` (breve: com'è il progetto oggi).
   la sua stima deve restare identica a quella di `app/app.js`.
 - `tools/research/` + workflow `ricerca-nuvole.yml` — ricerca di ottobre sul
   metodo delle nuvole; dopo la scelta del 1° novembre si possono cancellare.
+- `tools/kp/` + workflow `ricerca-kp.yml` — ricerca sull'affidabilità del Kp
+  (fino al 14/11): non cancellarla insieme a `tools/research/`.
 
 ## Come si lavora
 1. `pip install Pillow` (e `pywebpush` solo per provare gli avvisi).
