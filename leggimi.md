@@ -121,6 +121,10 @@ ora islandese = UTC):
   se la stima diventa "buone" e al mattino non lo era.
 - **"Aurora: condizioni buone adesso"**: quando è buio e Kp e nuvole del
   momento sono buoni.
+- **Anteprima prima del viaggio** (22 ottobre - 12 novembre): di notte, tutta la
+  notte, solo l'avviso "adesso" per Reykjavík (Kp e nuvole di quel momento), al
+  massimo uno per notte e solo ai telefoni che non sono di Federica: serve a
+  guardare le webcam e a provare gli avvisi prima di partire.
 - **Prova automatica**: 13 novembre dalle 18:07 (19:07 in Italia), una volta
   sola anche se un telefono non la riceve (in quel caso il turno su GitHub
   risulta in rosso: ricontrollate l'iscrizione di quel telefono).

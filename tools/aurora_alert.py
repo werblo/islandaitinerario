@@ -480,6 +480,9 @@ def main():
 
 # ---------- turno: controlli ogni 30 minuti per ~5 ore e mezza ----------
 PROVA_AUTO = (2026, 11, 13, 18, 7)    # prova automatica: 13 novembre 2026 dalle 18:07
+# anteprima prima del viaggio (chiesta da Michele il 22/10): di notte solo l'avviso "adesso"
+# per Reykjavík, solo ai telefoni che non sono di Federica, per guardare le webcam
+ANTEPRIMA = ('2026-10-22', '2026-11-12')
 MORNING_FROM, MORNING_UNTIL = (7, 25), (15, 0)   # messaggio del mattino: dalle 7:37 (slot) alle 15
 
 
@@ -549,12 +552,16 @@ def run(mode, now, manual=False):
     start = now.replace(hour=12, minute=0) - timedelta(days=1 if now.hour < 10 and mode != 'mattino' else 0)
     night = start.strftime('%Y-%m-%d')
     trip_nights = {d['dateISO'] for d in trip['days'] if d['id'] != 'd8'}
-    if night not in trip_nights and (mode == 'controllo' or (mode == 'mattino' and not manual)):
+    preview = mode == 'controllo' and night not in trip_nights and ANTEPRIMA[0] <= night <= ANTEPRIMA[1]
+    if night not in trip_nights and not preview and (mode == 'controllo' or (mode == 'mattino' and not manual)):
         print(f'Notte del {night}: fuori dalle date del viaggio, nessun controllo.')
         return 0
 
-    stops = night_stops(night, trip)
+    stops = [{'place': 'reykjavik'}] if preview else night_stops(night, trip)
     subs = parse_subscriptions(os.environ.get('AURORA_SUBSCRIPTIONS'))
+    if preview:
+        print('Anteprima prima del viaggio: solo l\'avviso "adesso" per Reykjavík, Federica esclusa.')
+        subs = [(n, s) for n, s in subs if not is_federica(n)]
     names = ', '.join(n or '(senza nome)' for n, _ in subs)
     print(f'Notte del {night} · tappe: {" → ".join(s["place"] for s in stops)} · {now:%H:%M} UTC'
           f' · nuvole: {trip["method"]} · telefoni: {len(subs)} ({names})')
@@ -632,7 +639,7 @@ def run(mode, now, manual=False):
     morning = rec.get('mattino')
     # 1) cambio di programma: stanotte "buone", ma al mattino non lo era (o il mattino è mancato).
     #    Solo con dati sulle nuvole: senza, il solo Kp darebbe un falso "buone".
-    if ('previsione' not in done and est['level'] == 'buone' and morning != 'buone' and est['clouds']
+    if (not preview and 'previsione' not in done and est['level'] == 'buone' and morning != 'buone' and est['clouds']
             and any(b > now for _, b in est['windows'])):
         title = ('🔄 Cambio di programma: stanotte buone probabilità!' if morning
                  else '🌌 Aurora stanotte: buone probabilità')
@@ -651,7 +658,8 @@ def run(mode, now, manual=False):
                 'title': '🌌 Aurora: condizioni buone adesso',
                 'body': f'{short_name(loc["name"])[:1].upper()}{short_name(loc["name"])[1:]}: Kp {fmt_kp(kp_now)} in questo momento'
                         + (f', nuvole {cloud}%' if cloud is not None else ' (dati sulle nuvole non disponibili: guardate se il cielo è sereno)')
-                        + '. Allontanatevi dalle luci e guardate verso nord!',
+                        + ('. Guarda le webcam verso nord (livefromiceland.is)!' if preview
+                           else '. Allontanatevi dalle luci e guardate verso nord!'),
                 'tag': f'aurora-{night}-adesso',
             }, 3600))
 
