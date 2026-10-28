@@ -828,7 +828,7 @@ async function showOfflineState() {
   if (!status) return;
   let saved = null;
   try { saved = JSON.parse(localStorage.getItem(OFFLINE_KEY) || 'null'); } catch (e) {}
-  if (saved && saved.tilesKey === OFFLINE_TILES_KEY) {
+  if (saved && saved.tilesKey === OFFLINE_TILES_KEY && !saved.missing) {
     let used = '';
     try {
       const est = await navigator.storage.estimate();
@@ -836,6 +836,8 @@ async function showOfflineState() {
     } catch (e) {}
     status.textContent = '\u2713 Pronto per l\u2019offline · preparato il ' + fmtWhen(saved.at) + used;
     status.classList.add('offline-status--ok');
+  } else if (saved && saved.missing && saved.tilesKey === OFFLINE_TILES_KEY) {
+    status.textContent = 'Preparazione incompleta: mancano ' + saved.missing + ' elementi. Ripeti (scarica solo quelli mancanti).';
   } else if (saved) {
     status.textContent = 'Il percorso è cambiato dall\u2019ultima preparazione: ripeti per aggiornare le mappe.';
   }
@@ -862,13 +864,17 @@ async function prepareOffline() {
   let done = 0, failed = 0, next = 0;
 
   async function run(job) {
-    try {
-      if (!(await job.cache.match(job.url, { ignoreSearch: true }))) {
+    // fino a 3 tentativi: OpenStreetMap a volte rifiuta qualche riquadro se si scarica in fretta
+    for (let attempt = 0; ; attempt++) {
+      try {
+        if (await job.cache.match(job.url, { ignoreSearch: true })) break;
         const res = await fetch(job.url, { mode: 'cors' });
-        if (res.ok) await job.cache.put(job.url, res);
-        else if (!job.optional) failed++;   // una foto non ancora caricata (404) non è un errore
-      }
-    } catch (e) { failed++; }
+        if (res.ok) { await job.cache.put(job.url, res); break; }
+        if (job.optional) break;   // una foto non ancora caricata (404) non è un errore
+      } catch (e) {}
+      if (attempt === 2) { failed++; break; }
+      await new Promise(r => setTimeout(r, 1500 * (attempt + 1)));
+    }
     done++;
     const pct = Math.round(done / jobs.length * 100);
     fill.style.width = pct + '%';
@@ -879,11 +885,12 @@ async function prepareOffline() {
   await Promise.all([0, 1].map(async () => { while (next < jobs.length) await run(jobs[next++]); }));
 
   btn.disabled = false;
+  // salvato anche se incompleto, così alla riapertura il messaggio dice cosa manca
+  try { localStorage.setItem(OFFLINE_KEY, JSON.stringify({ at: new Date().toISOString(), tiles: OFFLINE_TILES.length, tilesKey: OFFLINE_TILES_KEY, missing: failed })); } catch (e) {}
   if (failed) {
     status.textContent = failed + ' elementi non scaricati: riprova con una connessione migliore (quelli già salvati restano).';
     return;
   }
-  try { localStorage.setItem(OFFLINE_KEY, JSON.stringify({ at: new Date().toISOString(), tiles: OFFLINE_TILES.length, tilesKey: OFFLINE_TILES_KEY })); } catch (e) {}
   bar.hidden = true;
   showOfflineState();
 }
