@@ -836,6 +836,9 @@ async function showOfflineState() {
     } catch (e) {}
     status.textContent = '\u2713 Pronto per l\u2019offline · preparato il ' + fmtWhen(saved.at) + used;
     status.classList.add('offline-status--ok');
+    const btn = document.getElementById('offline-btn');
+    // già pronto: il pulsante resta (per ripetere) ma passa in secondo piano
+    if (btn) { btn.textContent = 'Già pronto \u2713 · riscarica'; btn.classList.add('offline-btn--done'); }
   } else if (saved && saved.missing && saved.tilesKey === OFFLINE_TILES_KEY) {
     status.textContent = 'Preparazione incompleta: mancano ' + saved.missing + ' elementi. Ripeti (scarica solo quelli mancanti).';
   } else if (saved) {
@@ -849,6 +852,8 @@ async function prepareOffline() {
   const fill = document.getElementById('offline-fill');
   const status = document.getElementById('offline-status');
   status.classList.remove('offline-status--ok');
+  btn.classList.remove('offline-btn--done');
+  btn.textContent = 'Prepara offline';
   if (!('caches' in window)) { status.textContent = 'Questo browser non permette di salvare i contenuti offline.'; return; }
   if (!navigator.onLine) { status.textContent = 'Serve una connessione (meglio Wi-Fi) per scaricare i contenuti.'; return; }
   btn.disabled = true;

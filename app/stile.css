@@ -122,6 +122,7 @@ main { max-width:820px; margin:0 auto; padding:20px 20px 70px; display:flex; fle
 .offline-status.app-received { margin-top:2px; }
 .offline-btn { margin-top:10px; min-height:44px; padding:0 18px; border:none; border-radius:8px; background:var(--navy); color:#f2ede2; font-family:'IBM Plex Sans',sans-serif; font-size:0.9375rem; font-weight:700; cursor:pointer; }
 .offline-btn:disabled { opacity:.6; cursor:default; }
+.offline-btn.offline-btn--done { background:transparent; color:var(--navy); border:1px solid var(--panel-border); font-weight:600; }
 .app-toast { position:fixed; left:50%; bottom:80px; transform:translateX(-50%); z-index:450; background:var(--navy); color:#f2ede2; font-size:0.84375rem; font-weight:600; padding:8px 14px; border-radius:8px; box-shadow:0 4px 14px rgba(0,0,0,.3); opacity:0; transition:opacity .3s; pointer-events:none; }
 .app-toast--show { opacity:.95; }
 .info-card { background:var(--panel); border:1px solid var(--panel-border); border-radius:8px; padding:16px; }
@@ -226,6 +227,7 @@ main { max-width:820px; margin:0 auto; padding:20px 20px 70px; display:flex; fle
   .fab-fx-btn { background:#22344a; }
   .offline-btn, .aurora-push__btn:not(.aurora-push__btn--ghost) { background:#2f4b68; }
   .aurora-push__btn--ghost { border-color:#3a4a5c; }
+  .offline-btn.offline-btn--done { background:transparent; color:#e8e2d6; border-color:#3a4a5c; }
   .map-frame, #trip-map { border-color:#2b3949 !important; }
   .leaflet-tile-pane { filter:brightness(.8) contrast(1.05); }
   .leaflet-container { background:#1d2630 !important; }
