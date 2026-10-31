@@ -103,9 +103,12 @@ tengono ancora raggiungibili vecchi commit con voucher ed email.
 
 **Stima nell'app.** Nella tab Info il riquadro "Aurora boreale" chiuso mostra
 Kp attuale e "Stasera a …: buone / scarse / nulle probabilità"; toccandolo si
-apre con ore migliori, due notti successive e, quando fa buio e si è online,
-la riga "Adesso" con la probabilità OVATION verso nord e il vento solare
-(scaricati solo all'apertura). Nella tab di ogni giorno la stima di quella
+apre e, quando fa buio e si è online, mostra in cima "🌌 Adesso a …: buone /
+forse / difficile": la migliore tra Kp attuale e probabilità OVATION verso
+nord (≥30% come Kp 4, ≥20% come Kp 3, ≥10% come Kp 2), per il cielo sereno
+delle nuvole di quest'ora, più lo stato del vento solare (OVATION e vento
+scaricati solo all'apertura). Sotto: ore migliori e due notti successive.
+L'avviso "adesso" invece usa ancora solo il Kp. Nella tab di ogni giorno la stima di quella
 notte. Dettaglio e tab dei giorni ricordano che la previsione del Kp sbaglia
 spesso di circa 1 punto (ricerca Kp). Combina Kp previsto (NOAA, fino a 3
 giorni), nuvole ora per ora (Open-Meteo) e buio astronomico. La località

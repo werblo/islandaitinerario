@@ -55,8 +55,14 @@ main { max-width:820px; margin:0 auto; padding:20px 20px 70px; display:flex; fle
 .aurora-tonight__detail { font-size:0.9375rem; color:#c7ccd2; margin-top:4px; line-height:1.5; }
 .aurora-tonight__days { font-size:0.84375rem; color:#9aa4ad; margin-top:6px; }
 .aurora-tonight__src { font-size:0.8125rem; color:#9aa4ad; margin-top:6px; }
-.aurora-tonight { border-bottom:none; margin-top:12px; }
-.aurora-now { font-size:0.9375rem; color:#c7ccd2; line-height:1.5; text-align:center; padding-bottom:12px; margin-bottom:12px; border-bottom:1px solid #26374a; }
+.aurora-tonight { margin-top:12px; }
+.aurora-now { text-align:center; line-height:1.5; margin-top:12px; padding:12px 14px; border-radius:8px; background:#22344a; }
+.aurora-now__verdict { font-size:1.0625rem; font-weight:700; color:#faf5ea; }
+.aurora-now__verdict--buone { color:#8fd6cd; }
+.aurora-now__verdict--scarse { color:#e8c48f; }
+.aurora-now__verdict--nulle { color:#c7ccd2; }
+.aurora-now__facts { font-size:0.875rem; color:#c7ccd2; margin-top:4px; }
+.aurora-now__facts b { color:#faf5ea; }
 /* riquadro aurora: chiuso mostra Kp e stima di stasera, si apre toccandolo */
 .aurora-panel__summary { list-style:none; display:block; cursor:pointer; text-align:center; }
 .aurora-panel__summary::-webkit-details-marker { display:none; }
@@ -206,6 +212,7 @@ main { max-width:820px; margin:0 auto; padding:20px 20px 70px; display:flex; fle
 /* Tema scuro: si attiva da solo quando il telefono è in modalità scura
    (la sera, in attesa dell'aurora, lo schermo chiaro abbaglia) */
 @media (prefers-color-scheme: dark) {
+  .aurora-now { background:#22344a; }   /* il riquadro aurora è scuro in entrambi i temi */
   :root {
     --ink:#e4ded2; --paper:#0f1620; --panel:#18222e; --panel-border:#2b3949;
     --amber:#d08a5a; --amber-2:#e3a173;
