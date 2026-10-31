@@ -158,6 +158,30 @@ button { font:inherit; color:inherit; }
 .am-night__legend i { display:inline-block; width:10px; height:10px; border-radius:2px; margin:0 3px 0 6px; vertical-align:-1px; }
 .am-night__now span { outline:2px solid var(--ink); outline-offset:1px; }
 
+/* Pannello di controllo (schede come Hello Aurora) */
+.am-detail .am-dash__eyebrow { margin:0; font-size:.75rem; text-transform:uppercase; letter-spacing:.06em; }
+.am-dash { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:12px 0 4px; }
+.am-card { background:var(--card-2); border:1px solid var(--line); border-radius:16px; padding:12px 14px; min-height:96px; display:flex; flex-direction:column; min-width:0; }
+.am-card--wide { grid-column:span 2; min-height:0; }
+.am-card__title { font-size:.8125rem; color:var(--muted); }
+.am-card__body { display:flex; flex-direction:column; gap:6px; margin-top:auto; padding-top:8px; }
+.am-card--wide .am-card__body { flex-direction:row; align-items:center; justify-content:space-between; gap:10px; }
+.am-card__label { font-size:1.0625rem; font-weight:700; line-height:1.25; }
+.am-card__value { font-size:.875rem; color:var(--muted); margin-top:2px; }
+.am-card__nodata { font-size:.75rem; color:var(--muted); }
+.am-spark { width:150px; max-width:50%; height:46px; flex:none; }
+.am-spark polyline { fill:none; stroke-width:1.6; vector-effect:non-scaling-stroke; }
+.am-spark--force polyline { stroke:#e05a4f; } .am-spark--force polygon { fill:rgba(224,90,79,.18); }
+.am-spark--bz polyline { stroke:var(--muted); }
+.am-spark--bz line { stroke:var(--muted); stroke-dasharray:3 3; stroke-width:1; vector-effect:non-scaling-stroke; opacity:.6; }
+.am-bar { height:8px; border-radius:4px; background:var(--line); overflow:hidden; }
+.am-bar i { display:block; height:100%; border-radius:4px; background:#9aa6b2; }
+.am-bar--kp i { background:#e0b84a; }
+.am-gauge { width:100%; max-width:120px; }
+.am-gauge path { fill:none; stroke:#e0b84a; stroke-width:7; stroke-linecap:round; opacity:.55; }
+.am-gauge circle { fill:var(--card); stroke:#e0b84a; stroke-width:3; }
+.am-moon { font-size:1.75rem; line-height:1; }
+
 /* Dettaglio "Adesso" (si apre toccando la scheda) */
 .am-detail { position:fixed; z-index:1000; left:0; right:0; bottom:0; max-height:75vh; overflow:auto;
   padding:18px 18px calc(env(safe-area-inset-bottom) + 18px); border-radius:20px 20px 0 0; background:var(--card);
@@ -177,6 +201,9 @@ button { font:inherit; color:inherit; }
 @media (prefers-color-scheme: dark) {
   .am-clear-pin { background:#f3d36b; border-color:#1b2633; }
   .am-spot { background:#2f4b68; color:#f3d36b; border-color:#1b2633; }
+  .am-spark--force polyline { stroke:#e05a4f; } .am-spark--force polygon { fill:rgba(224,90,79,.18); }
+  .am-bar i { background:#9aa6b2; } .am-bar--kp i { background:#e0b84a; }
+  .am-gauge path { stroke:#e0b84a; } .am-gauge circle { stroke:#e0b84a; }
   .am-night--buone { background:#8fd6cd; } .am-night--scarse { background:#e8c48f; }
   .am-night--nulle { background:#55606c; } .am-night--chiaro { background:#2a3542; }
   .am-me { border-color:#1b2633; }
