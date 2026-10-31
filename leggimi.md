@@ -127,7 +127,13 @@ d'aria con nuvole ≤ 30%, con link di navigazione), i posti bui vicino alle
 serate (`aurora_spots` in `dati.py`, stelle visibili da zoom 8, coordinate
 indicative), la Luna, la stima "Adesso" (stessa regola dell'app, da
 `app/aurora.js`) e nel dettaglio la notte ora per ora (Kp previsto × nuvole
-della griglia). Senza rete usa le ultime copie salvate.
+della griglia). L'aurora copre tutto l'emisfero nord (40-82°): allontanando
+la mappa si vede la fascia verde. Toccando la scheda "Adesso" si apre il
+pannello di controllo: forza dell'aurora (magnetometro di Narsarsuaq, servizio
+BGS, escursione nell'ultima ora), Bz e velocità del vento solare con i grafici
+delle ultime 3 ore (dati NOAA minuto per minuto, scaricati solo all'apertura),
+nuvole, Luna, sole, picco di Kp atteso, indice K e OVATION. Senza rete usa le
+ultime copie salvate.
 
 **Notifiche** (workflow "Avvisi aurora", `tools/aurora_alert.py`, orari in
 ora islandese = UTC):

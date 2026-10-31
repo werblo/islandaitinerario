@@ -856,8 +856,9 @@ mappa_out = f"""<!DOCTYPE html>
 
 <section class="am-detail" id="am-detail" hidden aria-live="polite">
   <button class="am-detail__close" type="button" id="am-detail-close" aria-label="Chiudi">×</button>
+  <p class="am-dash__eyebrow">Riepilogo</p>
   <h2 id="am-detail-title">Adesso</h2>
-  <ul id="am-detail-list"></ul>
+  <div class="am-dash" id="am-dash"></div>
   <h3 class="am-night__title" id="am-night-title">Stasera ora per ora</h3>
   <div class="am-night" id="am-night"></div>
   <p class="am-night__legend"><i class="am-night--buone"></i>buone <i class="am-night--scarse"></i>forse <i class="am-night--nulle"></i>difficile <i class="am-night--chiaro"></i>chiaro · Kp previsto (NOAA) × nuvole della mappa: il Kp previsto sbaglia spesso di circa 1 punto.</p>

@@ -10,8 +10,9 @@ const G_LATS = [], G_LONS = [];
 for (let la = 63.25; la <= 66.751; la += 0.5) G_LATS.push(Math.round(la * 100) / 100);
 for (let lo = -24.5; lo <= -13.499; lo += 0.5) G_LONS.push(Math.round(lo * 100) / 100);
 // scala dell'aurora (probabilità OVATION sopra quel punto), come le immagini NOAA
-const AUR_STOPS = [[5, [61, 220, 132], 0], [10, [61, 220, 132], 0.30], [20, [168, 224, 95], 0.45],
-  [30, [255, 216, 74], 0.55], [50, [255, 159, 46], 0.65], [80, [255, 59, 48], 0.72]];
+// fascia verde luminosa come Hello Aurora: verde già dal 5%, giallo, arancio e rosso solo dove è forte
+const AUR_STOPS = [[3, [70, 230, 110], 0], [8, [70, 230, 110], 0.38], [15, [80, 226, 100], 0.52],
+  [25, [150, 222, 80], 0.58], [35, [255, 216, 74], 0.62], [50, [255, 159, 46], 0.66], [80, [255, 59, 48], 0.72]];
 
 const st = { ov: null, ovAt: null, grid: null, kp: null, kpFc: [], bz: null, v: null, hour: 0, me: null, cloudErr: null };
 const $ = id => document.getElementById(id);
@@ -19,7 +20,7 @@ const HHMM = ms => { const d = new Date(ms); return String(d.getUTCHours()).padS
 const fmtNum = x => String(x).replace('.', ',').replace('-', '−');
 
 // ---------- mappa di base: le tile OSM dell'app (anche offline dopo "Prepara offline") ----------
-const map = L.map('am-map', { zoomControl: false, attributionControl: true, minZoom: 4, maxZoom: 12 })
+const map = L.map('am-map', { zoomControl: false, attributionControl: true, minZoom: 2, maxZoom: 12 })
   .setView([64.6, -19.2], 6);
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 12, subdomains: 'abc',
   attribution: '© OpenStreetMap' }).addTo(map);
@@ -85,11 +86,12 @@ function drawAurora() {
   if (viewLine) { map.removeLayer(viewLine); viewLine = null; }
   if (!st.ov || !layerOn('aurora')) return;
   const g = st.ov;
-  const url = canvasOverlay(58, 74, -45, 5, 6, (lat, lon) => auroraColor(ovAt(g, lon, lat)));
-  auroraLayer = L.imageOverlay(url, [[58, -45], [74, 5]], { pane: 'aurora', interactive: false }).addTo(map);
+  // tutto l'emisfero nord tra 40° e 82°: allontanando la mappa si vede la fascia intera
+  const url = canvasOverlay(40, 82, -180, 180, 2.5, (lat, lon) => auroraColor(ovAt(g, lon, lat)));
+  auroraLayer = L.imageOverlay(url, [[40, -180], [82, 180]], { pane: 'aurora', interactive: false }).addTo(map);
   // "fin qui si vede bassa a nord": bordo sud dell'ovale (≥ 10%) spostato di 7° (circa 800 km) verso sud
   const pts = [];
-  for (let lon = -45; lon <= 5; lon++) {
+  for (let lon = -180; lon <= 180; lon++) {
     let edge = null;
     for (let lat = 80; lat >= 50; lat -= 0.25) { if (ovAt(g, lon, lat) >= 10) edge = lat; else if (edge !== null) break; }
     pts.push(edge === null ? null : [edge - 7, lon]);
@@ -375,19 +377,100 @@ function renderNow() {
   v.className = 'am-now__verdict' + (level ? ' am-now__verdict--' + level : '');
   v.textContent = text.charAt(0).toUpperCase() + text.slice(1);
   $('am-facts').textContent = facts.join(' · ');
-  // dettaglio
-  const li = [];
-  li.push('<b>Aurora verso nord:</b> ' + (ov === null ? 'dato OVATION non disponibile' : ov + '% (OVATION, NOAA' + (st.ovAt ? ', previsione per le ' + HHMM(st.ovAt) : '') + ')'));
-  li.push('<b>Kp adesso:</b> ' + (st.kp === null ? 'non disponibile' : fmtNum(st.kp)));
-  li.push('<b>Nuvole quest\'ora:</b> ' + (cloud === null ? 'non disponibili' : cloud + '%'));
-  li.push('<b>Vento solare:</b> ' + (wind ? wind.label + ' (Bz ' + (st.bz > 0 ? '+' : '') + fmtNum(Math.round(st.bz)) + ' nT'
-    + (st.v !== null ? ', ' + Math.round(st.v) + ' km/s' : '') + ')' : 'non disponibile'));
-  li.push('<b>Luna:</b> ' + moonText(ref).replace(/^Luna /, ''));
-  li.push('<b>Sole:</b> ' + (sunAlt < -12 ? 'buio' : sunAlt < 0 ? 'crepuscolo (' + Math.round(sunAlt) + '°)' : 'giorno'));
+  // pannello di controllo
+  st.now = { ov, cloud, wind, sunAlt, ref, level };
   $('am-detail-title').textContent = (me ? 'Adesso dove sei' : 'Adesso a ' + nm) + ': ' + text
     + (st.me && !me ? ' (sei fuori dall\'Islanda: stima per il posto della serata)' : '');
-  $('am-detail-list').innerHTML = li.map(x => '<li>' + x + '</li>').join('');
+  renderDash();
   renderNight();
+}
+
+// ---------- pannello di controllo (come Hello Aurora), si riempie aprendo la scheda "Adesso" ----------
+const DASH_MAX_AGE = 5 * 60000;
+async function loadDash() {
+  if (st.dash && Date.now() - st.dash.at < DASH_MAX_AGE) return;
+  const get = u => fetch(u, { cache: 'no-store' }).then(r => r.json()).catch(() => null);
+  const day = d => d.toISOString().slice(0, 10);
+  const now = new Date(), days = now.getUTCHours() < 4 ? [new Date(now - 86400000), now] : [now];
+  const gin = d => get('https://imag-data.bgs.ac.uk/GIN_V1/GINServices?Request=GetData&format=json&testObsys=0'
+    + '&observatoryIagaCode=NAQ&samplesPerDay=minute&publicationState=best-avail&dataStartDate=' + day(d) + '&dataDuration=1');
+  const [mag, wind, ...naq] = await Promise.all([get(NOAA + 'json/rtsw/rtsw_mag_1m.json'), get(NOAA + 'json/rtsw/rtsw_wind_1m.json'), ...days.map(gin)]);
+  const since = Date.now() - 3 * 3600000;
+  const series = (rows, key) => (Array.isArray(rows) ? rows : [])
+    .filter(r => r && r.active && num(r[key]) !== null)
+    .map(r => [Date.parse(String(r.time_tag).replace(' ', 'T') + (/Z$/.test(r.time_tag) ? '' : 'Z')), num(r[key])])
+    .filter(p => p[0] > since).sort((a, b) => a[0] - b[0]);
+  const h = [];   // magnetometro di Narsarsuaq: componente orizzontale H
+  naq.forEach(g => g && (g.datetime || []).forEach((t, i) => {
+    const x = num((g.X || [])[i]), y = num((g.Y || [])[i]), ms = Date.parse(t);
+    if (x !== null && y !== null && Math.abs(x) < 90000 && Math.abs(y) < 90000 && ms > since) h.push([ms, Math.hypot(x, y)]);
+  }));
+  st.dash = { at: Date.now(), bz: series(mag, 'bz_gsm'), v: series(wind, 'proton_speed'), naq: h.sort((a, b) => a[0] - b[0]) };
+}
+function spark(pts, opt) {   // grafico a linea delle ultime ore (SVG)
+  if (!pts || pts.length < 5) return '<div class="am-card__nodata">grafico non disponibile</div>';
+  const W = 150, H = 46, t0 = pts[0][0], t1 = pts[pts.length - 1][0];
+  let lo = Math.min(...pts.map(p => p[1])), hi = Math.max(...pts.map(p => p[1]));
+  if (opt.zero) { lo = Math.min(lo, -1); hi = Math.max(hi, 1); }
+  if (hi - lo < 1) hi = lo + 1;
+  const X = t => ((t - t0) / Math.max(1, t1 - t0) * W).toFixed(1), Y = v => (H - 2 - (v - lo) / (hi - lo) * (H - 4)).toFixed(1);
+  const line = pts.map(p => X(p[0]) + ',' + Y(p[1])).join(' ');
+  return '<svg class="am-spark am-spark--' + opt.kind + '" viewBox="0 0 ' + W + ' ' + H + '" preserveAspectRatio="none" aria-hidden="true">'
+    + (opt.fill ? '<polygon points="0,' + H + ' ' + line + ' ' + W + ',' + H + '"/>' : '')
+    + (opt.zero ? '<line x1="0" x2="' + W + '" y1="' + Y(0) + '" y2="' + Y(0) + '"/>' : '')
+    + '<polyline points="' + line + '"/></svg>';
+}
+function sunNext(ref) {   // prossimo tramonto o alba (sole a 0°) e inizio del buio pieno (−12°)
+  const t0 = Date.now(), up = sunAltitude(new Date(t0), ref.lat, ref.lon) > 0;
+  let ev = null, dark = null;
+  for (let m = 5; m <= 24 * 60; m += 5) {
+    const a = sunAltitude(new Date(t0 + m * 60000), ref.lat, ref.lon);
+    if (!ev && (a > 0) !== up) ev = t0 + m * 60000;
+    if (!dark && a < -12 && sunAltitude(new Date(t0 + (m - 5) * 60000), ref.lat, ref.lon) >= -12) dark = t0 + m * 60000;
+    if (ev && dark) break;
+  }
+  return { up, ev, dark };
+}
+function renderDash() {
+  const el = $('am-dash'), n = st.now;
+  if (!el || !n) return;
+  const d = st.dash || {}, cards = [];
+  const card = (title, label, value, extra, wide) => cards.push('<div class="am-card' + (wide ? ' am-card--wide' : '') + '"><div class="am-card__title">' + title
+    + '</div><div class="am-card__body"><div><div class="am-card__label">' + label + '</div><div class="am-card__value">' + value + '</div></div>' + (extra || '') + '</div></div>');
+  // forza dell'aurora: quanto si muove il magnetometro di Narsarsuaq nell'ultima ora (come la ricerca Kp)
+  const lastHour = (d.naq || []).filter(p => p[0] > Date.now() - 3600000).map(p => p[1]);
+  if (lastHour.length > 20) {
+    const r = Math.max(...lastHour) - Math.min(...lastHour), mid = d.naq.reduce((a, p) => a + p[1], 0) / d.naq.length;
+    card('Forza dell\'aurora · magnetometro di Narsarsuaq', r < 50 ? 'Calma' : r < 150 ? 'Moderata' : r < 300 ? 'Forte' : 'Tempestosa', Math.round(r) + ' nT in un\'ora',
+      spark(d.naq.map(p => [p[0], p[1] - mid]), { kind: 'force', fill: true }), true);
+  } else card('Forza dell\'aurora · magnetometro di Narsarsuaq', st.dash ? 'Non disponibile' : 'Carico…', '', '', true);
+  const bzNow = d.bz && d.bz.length ? d.bz[d.bz.length - 1][1] : st.bz;
+  card('Bz in tempo reale', bzNow === null ? 'Non disponibile' : bzNow <= -10 ? 'Molto favorevole' : bzNow <= -5 ? 'Favorevole' : bzNow <= -2 ? 'Lieve' : 'Sfavorevole',
+    bzNow === null ? '' : (bzNow > 0 ? '+' : '') + fmtNum(Math.round(bzNow * 10) / 10) + ' nT', spark(d.bz, { kind: 'bz', zero: true }), true);
+  card('Nuvole', n.cloud === null ? 'Non disponibili' : n.cloud < 20 ? 'Sereno' : n.cloud < 50 ? 'Poco nuvoloso' : n.cloud < 80 ? 'Nuvoloso' : 'Coperto',
+    n.cloud === null ? '' : n.cloud + '%', n.cloud === null ? '' : '<div class="am-bar"><i style="width:' + n.cloud + '%"></i></div>');
+  const v = d.v && d.v.length ? d.v[d.v.length - 1][1] : st.v;
+  const vPos = v === null ? 0 : Math.max(0, Math.min(1, (v - 250) / 550));
+  card('Vento solare', v === null ? 'Non disponibile' : v < 400 ? 'Lento' : v < 500 ? 'Medio' : v < 650 ? 'Veloce' : 'Molto veloce',
+    v === null ? '' : Math.round(v) + ' km/s', v === null ? '' : '<svg class="am-gauge" viewBox="0 0 100 54" aria-hidden="true"><path d="M8 50a42 42 0 0 1 84 0"/>'
+    + '<circle cx="' + (50 - 42 * Math.cos(Math.PI * vPos)).toFixed(1) + '" cy="' + (50 - 42 * Math.sin(Math.PI * vPos)).toFixed(1) + '" r="6"/></svg>');
+  const m = moonInfo(new Date(), n.ref.lat, n.ref.lon), pct = Math.round(m.frac * 100);
+  const ph = m.waxing ? Math.acos(1 - 2 * m.frac) / (2 * Math.PI) : 1 - Math.acos(1 - 2 * m.frac) / (2 * Math.PI);
+  const moonName = pct <= 3 ? 'Luna nuova' : pct >= 97 ? 'Luna piena' : Math.abs(pct - 50) <= 8 ? (m.waxing ? 'Primo quarto' : 'Ultimo quarto') : (m.waxing ? 'Crescente' : 'Calante');
+  card('Luna', moonName, pct + '% · ' + (m.alt < 0 ? 'sotto l\'orizzonte' : 'alta ' + Math.round(m.alt) + '°'),
+    '<div class="am-moon">' + ['🌑', '🌒', '🌓', '🌔', '🌕', '🌖', '🌗', '🌘'][Math.round(ph * 8) % 8] + '</div>');
+  const s = sunNext(n.ref);
+  card('Sole', n.sunAlt < -12 ? 'Buio' : n.sunAlt < 0 ? 'Crepuscolo' : 'Giorno',
+    s.ev ? (s.up ? 'tramonto ' : 'alba ') + HHMM(s.ev) + (s.dark && s.up ? ' · buio dalle ' + HHMM(s.dark) : '') : '');
+  const fc = st.kpFc.filter(r => r.t + 3 * 3600000 > Date.now() && r.t < Date.now() + 24 * 3600000);
+  const peak = fc.length ? fc.reduce((a, b) => (b.kp > a.kp ? b : a)) : null;
+  card('Picco atteso (24 ore)', peak ? 'Kp ' + fmtNum(Math.round(peak.kp * 10) / 10) : 'Non disponibile',
+    peak ? 'dalle ' + HHMM(peak.t) + ' · ' + (peak.kp >= 5 ? 'tempesta' : peak.kp >= 4 ? 'attivo' : peak.kp >= 3 ? 'instabile' : 'calmo') : '');
+  card('Indice K adesso', st.kp === null ? 'Non disponibile' : st.kp >= 5 ? 'Tempesta' : st.kp >= 4 ? 'Attivo' : st.kp >= 3 ? 'Instabile' : 'Calmo',
+    st.kp === null ? '' : fmtNum(st.kp), st.kp === null ? '' : '<div class="am-bar am-bar--kp"><i style="width:' + Math.min(100, st.kp / 9 * 100) + '%"></i></div>');
+  card('Aurora verso nord (OVATION)', n.ov === null ? 'Non disponibile' : n.ov >= 30 ? 'Probabile' : n.ov >= 10 ? 'Possibile' : 'Improbabile',
+    n.ov === null ? '' : n.ov + '%' + (st.ovAt ? ' · per le ' + HHMM(st.ovAt) : ''));
+  el.innerHTML = cards.join('');
 }
 
 // ---------- stasera ora per ora: Kp previsto × nuvole della griglia, nel posto di ogni ora ----------
@@ -456,7 +539,10 @@ function setStatus(text, kind) {
   if (!text) { el.hidden = true; return; }
   el.textContent = text; el.className = 'am-status am-status--' + (kind || 'info'); el.hidden = false;
 }
-$('am-now').addEventListener('click', () => { $('am-detail').hidden = !$('am-detail').hidden; });
+$('am-now').addEventListener('click', () => {
+  $('am-detail').hidden = !$('am-detail').hidden;
+  if (!$('am-detail').hidden && navigator.onLine) loadDash().then(renderDash);
+});
 $('am-detail-close').addEventListener('click', () => { $('am-detail').hidden = true; });
 $('am-back').addEventListener('click', e => {
   // si torna dov'eri nell'app (stessa tab); se la pagina è stata aperta da sola, si apre l'app
