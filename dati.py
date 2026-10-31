@@ -244,6 +244,26 @@ evening_stops = {
            {'place': 'thingvellir', 'until': 22},    # ~1h20 di strada verso Reykjavík
            {'place': 'reykjavik'}],
 }
+# Posti bui per l'aurora vicino alle serate, mostrati nella Mappa aurora (ricerca del 31/10 su guide e
+# OpenStreetMap: coordinate del parcheggio indicative, ±200 m; scartati per sicurezza Reynisfjara,
+# Dyrhólaey, Sólheimajökull e Hrunalaug).
+aurora_spots = [
+    {'base': 'reykjavik', 'name': 'Faro di Grótta', 'lat': 64.1628, 'lon': -22.0125, 'drive': '10-15 min',
+     'note': 'Orizzonte libero sul mare verso nord. Al faro si arriva a piedi solo con la bassa marea: di notte guardate dal parcheggio o dalla riva.'},
+    {'base': 'reykjavik', 'name': 'Hvaleyrarvatn', 'lat': 64.0370, 'lon': -21.9236, 'drive': '20 min',
+     'note': 'Lago con ampio parcheggio sopra Hafnarfjörður. Buio, ma verso nord si vede il bagliore della città: riserva.'},
+    {'base': 'laugarvatn', 'name': 'Riva del lago di Laugarvatn', 'lat': 64.2148, 'lon': -20.7302, 'drive': '2 min da Fontana',
+     'note': 'Subito dopo le terme: il lago riflette l\'aurora, ma il parcheggio di Fontana è illuminato.'},
+    {'base': 'thingvellir', 'name': 'Þingvellir, parcheggio P1 (Hakið)', 'lat': 64.2554, 'lon': -21.1321, 'drive': 'sulla strada del ritorno',
+     'note': 'Buio e aperto verso nord. A pagamento (circa 1.000 ISK al giorno, app o macchinette); non è chiaro se di notte sia aperto.'},
+    {'base': 'vik', 'name': 'Collina della chiesa di Vík', 'lat': 63.4205, 'lon': -19.0029, 'drive': '3-5 min',
+     'note': 'Sicura e con vista verso nord, ma un po\' di luce dal paese. A Vík i posti bui sono pochi: le montagne chiudono il nord.'},
+    {'base': 'fludir', 'name': 'Skálholt', 'lat': 64.1257, 'lon': -20.5243, 'drive': '20 min',
+     'note': 'Paese minuscolo e buio, parcheggio della chiesa gratuito. Anche i dintorni dell\'alloggio di Flúðir sono già bui.'},
+    {'base': 'fludir', 'name': 'Gullfoss, parcheggio superiore', 'lat': 64.3248, 'lon': -20.1254, 'drive': '35-40 min',
+     'note': 'Nessuna luce intorno, aperto sempre. Restate al parcheggio: di notte i sentieri sono ghiacciati.'},
+]
+
 # Stima delle nuvole (vedi tools/research/nuvole.py e leggimi sezione 6):
 #   'totale'    nuvolosità totale del modello automatico (DMI HARMONIE in Islanda)
 #   'pesata'    stesso modello, strati pesati: bassi contano tutti, medi e alti meno

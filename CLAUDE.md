@@ -38,12 +38,15 @@ l'utente: `leggimi.md` (breve: com'è il progetto oggi).
 - `render.py` — genera la pagina: HTML dei giorni, tab Storia, Info. Inserisce `app/stile.css` e `app/app.js` così come sono.
 - `app/stile.css`, `app/app.js` — aspetto e logica della pagina (meteo,
   alba/tramonto, stima aurora, mappe Leaflet, offline, notifiche).
-- Generati, da committare sempre: `index.html`, `sw.js` (da
+- `app/aurora.js` — logica aurora comune ad app e Mappa aurora (sole, posti
+  delle serate, nuvole efficaci, stima "Adesso"); `app/mappa.css`,
+  `app/mappa.js` — la pagina `mappa-aurora.html` (generata da `render.py`).
+- Generati, da committare sempre: `index.html`, `mappa-aurora.html`, `sw.js` (da
   `sw-template.js`), `images/web/*.webp` (dalle foto in `images/`: 1200px,
   le miniature delle attività 400px sul lato corto).
 - `routes.json` — percorsi OSRM, aggiornati dal workflow "Aggiorna percorsi mappa".
 - `tools/aurora_alert.py` — notifiche push (legge i dati da `index.html`);
-  la sua stima deve restare identica a quella di `app/app.js`.
+  la sua stima deve restare identica a quella di `app/app.js`/`app/aurora.js`.
 - `tools/research/` + workflow `ricerca-nuvole.yml` — ricerca di ottobre sul
   metodo delle nuvole; dopo la scelta del 1° novembre si possono cancellare.
 - `tools/kp/` + workflow `ricerca-kp.yml` — ricerca sull'affidabilità del Kp
