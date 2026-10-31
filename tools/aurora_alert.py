@@ -606,8 +606,8 @@ def main():
 
 # ---------- turno: controlli ogni 30 minuti per ~5 ore e mezza ----------
 PROVA_AUTO = (2026, 11, 13, 18, 7)    # prova automatica: 13 novembre 2026 dalle 18:07
-# anteprima prima del viaggio (chiesta da Michele il 22/10): di notte solo l'avviso "adesso"
-# per Reykjavík, solo ai telefoni che non sono di Federica, per guardare le webcam
+# anteprima prima del viaggio (chiesta da Michele il 22/10): di notte solo gli avvisi "adesso" e
+# "arrivo" per Reykjavík, per guardare le webcam (dal 31/10 anche a Federica)
 ANTEPRIMA = ('2026-10-22', '2026-11-12')
 MORNING_FROM, MORNING_UNTIL = (7, 25), (15, 0)   # messaggio del mattino: dalle 7:37 (slot) alle 15
 
@@ -691,8 +691,7 @@ def run(mode, now, manual=False):
     stops = [{'place': 'reykjavik'}] if preview else night_stops(night, trip)
     subs = parse_subscriptions(os.environ.get('AURORA_SUBSCRIPTIONS'))
     if preview:
-        print('Anteprima prima del viaggio: solo gli avvisi "adesso" e "arrivo" per Reykjavík, Federica esclusa.')
-        subs = [(n, s) for n, s in subs if not is_federica(n)]
+        print('Anteprima prima del viaggio: solo gli avvisi "adesso" e "arrivo" per Reykjavík.')
     names = ', '.join(n or '(senza nome)' for n, _ in subs)
     print(f'Notte del {night} · tappe: {" → ".join(s["place"] for s in stops)} · {now:%H:%M} UTC'
           f' · nuvole: {trip["method"]} · telefoni: {len(subs)} ({names})')
