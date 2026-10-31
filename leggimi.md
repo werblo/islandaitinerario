@@ -213,6 +213,8 @@ nel riepilogo di ogni esecuzione e nell'artifact `ricerca-kp`. Esito al 30/10
 nord ha visto l'attività del 22/10 meglio del Kp al minuto, ma con dati
 troppo pochi per sostituirlo. Decisi con Michele il 31/10: frase sul Kp,
 riga "Adesso" con OVATION e vento solare, avviso "arrivo".
+Avvistamenti reali (es. foto o storie di chi è in Islanda) in
+`tools/kp/osservazioni.csv`: servono a verificare stime e avvisi su casi veri.
 
 ## 7. Prenotazioni e alloggi
 
