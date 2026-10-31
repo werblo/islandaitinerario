@@ -70,6 +70,8 @@ button { font:inherit; color:inherit; }
 .am-chip[aria-pressed="false"] { opacity:.92; }
 .am-chip[aria-pressed="false"] span { color:var(--muted); }
 .am-chip--tonight { background:var(--navy); color:#faf5ea; }
+.am-chip--panel { font-weight:600; }
+.am-chip--panel svg { color:var(--ok); }
 .am-chip--tonight svg { color:#e8c48f; }
 @media (prefers-color-scheme: dark) { .am-chip--tonight { background:#2f4b68; } }
 
@@ -203,9 +205,10 @@ button { font:inherit; color:inherit; }
 .am-moon { font-size:1.75rem; line-height:1; }
 
 /* Dettaglio "Adesso" (si apre toccando la scheda) */
-.am-detail { position:fixed; z-index:1000; left:0; right:0; bottom:0; max-height:75vh; overflow:auto;
-  padding:18px 18px calc(env(safe-area-inset-bottom) + 18px); border-radius:20px 20px 0 0; background:var(--card);
-  box-shadow:0 -4px 20px rgba(0,0,0,.25); font-size:.9375rem; line-height:1.5; }
+.am-detail { position:fixed; z-index:1100; inset:0; overflow:auto; overscroll-behavior:contain;
+  padding:calc(env(safe-area-inset-top) + 10px) 16px calc(env(safe-area-inset-bottom) + 24px); background:var(--map-bg);
+  font-size:.9375rem; line-height:1.5; }
+.am-detail > * { max-width:640px; margin-left:auto; margin-right:auto; }
 .am-detail[hidden] { display:none; }
 .am-detail h2 { margin:0 0 4px; font-size:1.0625rem; }
 .am-detail ul { margin:8px 0 12px; padding:0; list-style:none; }
@@ -213,11 +216,11 @@ button { font:inherit; color:inherit; }
 .am-detail li b { font-weight:600; }
 .am-detail p { margin:8px 0; color:var(--muted); font-size:.8125rem; }
 .am-detail a { color:var(--me); }
-.am-detail__close { float:right; min-width:44px; min-height:44px; margin:-10px -8px 0 0; border:none; background:none; font-size:1.5rem; color:var(--muted); cursor:pointer; }
+.am-detail__close { display:flex; align-items:center; gap:6px; min-height:48px; padding:0 18px 0 12px; margin-bottom:14px; border:none; border-radius:24px;
+  background:var(--card); color:var(--ink); box-shadow:var(--shadow); font-size:.9375rem; font-weight:600; cursor:pointer; }
+.am-detail__close svg { width:20px; height:20px; }
+.am-detail > .am-detail__close { margin-left:0; }
 .am-legend__note { margin-left:6px; font-size:.6875rem; }
-@media (min-width:800px) {
-  .am-detail { left:16px; right:auto; bottom:auto; top:140px; width:380px; border-radius:20px; }
-}
 @media (prefers-color-scheme: dark) {
   .am-clear-pin { background:#f3d36b; border-color:#1b2633; }
   .am-spot { background:#2f4b68; color:#f3d36b; border-color:#1b2633; }
@@ -236,6 +239,7 @@ button { font:inherit; color:inherit; }
 
 <nav class="am-top" aria-label="Strati della mappa">
   <a class="am-back" href="./" id="am-back" aria-label="Torna all'app"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></a>
+  <button class="am-chip am-chip--panel" type="button" id="am-open-panel"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg><span>Pannello</span></button>
   <button class="am-chip" type="button" aria-pressed="true" data-layer="cloud"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 18h10a4 4 0 0 0 .5-8A6 6 0 0 0 6 9.5 4.3 4.3 0 0 0 7 18z"/></svg><span>Nuvole</span></button>
   <button class="am-chip" type="button" aria-pressed="true" data-layer="aurora"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="2"/><path d="M8 8a5.6 5.6 0 0 0 0 8M16 8a5.6 5.6 0 0 1 0 8M5 5a10 10 0 0 0 0 14M19 5a10 10 0 0 1 0 14"/></svg><span>Ovale aurora</span></button>
   <button class="am-chip am-chip--tonight" type="button" id="am-tonight"><svg viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg><span id="am-tonight-name">Stasera</span></button>
@@ -273,8 +277,8 @@ button { font:inherit; color:inherit; }
   </div>
 </div>
 
-<section class="am-detail" id="am-detail" hidden aria-live="polite">
-  <button class="am-detail__close" type="button" id="am-detail-close" aria-label="Chiudi">×</button>
+<section class="am-detail" id="am-detail" hidden aria-label="Pannello dell'aurora">
+  <button class="am-detail__close" type="button" id="am-detail-close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>Mappa</button>
   <p class="am-dash__eyebrow">Riepilogo</p>
   <h2 id="am-detail-title">Adesso</h2>
   <div class="am-dash" id="am-dash"></div>
@@ -1014,11 +1018,22 @@ function setStatus(text, kind) {
   if (!text) { el.hidden = true; return; }
   el.textContent = text; el.className = 'am-status am-status--' + (kind || 'info'); el.hidden = false;
 }
-$('am-now').addEventListener('click', () => {
-  $('am-detail').hidden = !$('am-detail').hidden;
-  if (!$('am-detail').hidden && navigator.onLine) loadDash().then(renderDash);
+// pannello di controllo: pagina secondaria della mappa (#pannello), il tasto Indietro del telefono torna alla mappa
+function showPanel(open) {
+  $('am-detail').hidden = !open;
+  if (open) { $('am-detail').scrollTop = 0; if (navigator.onLine) loadDash().then(renderDash); }
+}
+function openPanel() {
+  if (location.hash !== '#pannello') history.pushState({ panel: true }, '', '#pannello');
+  showPanel(true);
+}
+window.addEventListener('popstate', () => showPanel(location.hash === '#pannello'));
+$('am-now').addEventListener('click', openPanel);
+$('am-open-panel').addEventListener('click', openPanel);
+$('am-detail-close').addEventListener('click', () => {
+  if (history.state && history.state.panel) history.back(); else { history.replaceState(null, '', location.pathname); showPanel(false); }
 });
-$('am-detail-close').addEventListener('click', () => { $('am-detail').hidden = true; });
+if (location.hash === '#pannello') showPanel(true);
 $('am-back').addEventListener('click', e => {
   // si torna dov'eri nell'app (stessa tab); se la pagina è stata aperta da sola, si apre l'app
   if (document.referrer && new URL(document.referrer).origin === location.origin && history.length > 1) { e.preventDefault(); history.back(); }
