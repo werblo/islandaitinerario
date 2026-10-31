@@ -821,20 +821,22 @@ mappa_out = f"""<!DOCTYPE html>
   <button class="am-chip" type="button" aria-pressed="true" data-layer="aurora">{_ICON('<circle cx="12" cy="12" r="2"/><path d="M8 8a5.6 5.6 0 0 0 0 8M16 8a5.6 5.6 0 0 1 0 8M5 5a10 10 0 0 0 0 14M19 5a10 10 0 0 1 0 14"/>')}<span>Ovale aurora</span></button>
   <button class="am-chip am-chip--tonight" type="button" id="am-tonight">{_ICON('<path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/>', 'currentColor')}<span id="am-tonight-name">Stasera</span></button>
   <button class="am-chip" type="button" aria-pressed="false" data-layer="sat">{_ICON('<path d="M4 10l6-6 4 4-6 6zM14 14l6-6M10 18l-2 2M15 20a5 5 0 0 0 5-5M15 16.5a1.5 1.5 0 0 0 1.5-1.5"/>')}<span>Satellite</span></button>
+  <button class="am-chip" type="button" aria-pressed="true" data-layer="spots">{_ICON('<path d="M12 3l2.6 5.6 6 .7-4.5 4.1 1.2 6L12 16.4 6.7 19.4l1.2-6L3.4 9.3l6-.7z"/>')}<span>Posti bui</span></button>
   <button class="am-chip" type="button" aria-pressed="true" data-layer="places">{_ICON('<path d="M12 21s-6-5.5-6-11a6 6 0 0 1 12 0c0 5.5-6 11-6 11z"/><circle cx="12" cy="10" r="2"/>')}<span>Serate</span></button>
 </nav>
 
 <div class="am-status" id="am-status" role="status" hidden></div>
 
-<a class="am-clear" id="am-clear" target="_blank" rel="noopener" hidden></a>
-
-<button class="am-now" type="button" id="am-now" aria-label="Aurora adesso: dettagli">
-  <span class="am-ring" id="am-ring" style="--p:0"><span id="am-ring-txt">–</span></span>
-  <span class="am-now__txt">
-    <span class="am-now__verdict" id="am-verdict">Carico i dati…</span><br>
-    <span class="am-now__facts" id="am-facts"></span>
-  </span>
-</button>
+<div class="am-bottom">
+  <a class="am-clear" id="am-clear" target="_blank" rel="noopener" hidden></a>
+  <button class="am-now" type="button" id="am-now" aria-label="Aurora adesso: dettagli">
+    <span class="am-ring" id="am-ring" style="--p:0"><span id="am-ring-txt">–</span></span>
+    <span class="am-now__txt">
+      <span class="am-now__verdict" id="am-verdict">Carico i dati…</span><br>
+      <span class="am-now__facts" id="am-facts"></span>
+    </span>
+  </button>
+</div>
 
 <button class="am-locate" type="button" id="am-locate" aria-label="Dove sono io">{_ICON('<circle cx="12" cy="12" r="6.5"/><circle cx="12" cy="12" r="2" fill="currentColor"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/>').replace('1.8', '2')}</button>
 
@@ -856,7 +858,10 @@ mappa_out = f"""<!DOCTYPE html>
   <button class="am-detail__close" type="button" id="am-detail-close" aria-label="Chiudi">×</button>
   <h2 id="am-detail-title">Adesso</h2>
   <ul id="am-detail-list"></ul>
-  <p><b>Come si legge.</b> Velo colorato: probabilità di aurora sopra quel punto (OVATION, NOAA, per la prossima ora): verde debole, giallo probabile, arancio e rosso forte. Linea tratteggiata gialla: a nord di essa l'aurora si vede almeno bassa all'orizzonte verso nord. Aree color sabbia: nuvole previste nell'ora del cursore (Open-Meteo, stesso metodo dell'app). Satellite: nuvole vere di circa 20 minuti fa (Meteosat, infrarosso). ☀ indica la schiarita più vicina, in linea d'aria: prima di partire controllate le strade su <a href="https://umferdin.is/en" target="_blank" rel="noopener">umferdin.is</a>.</p>
+  <h3 class="am-night__title" id="am-night-title">Stasera ora per ora</h3>
+  <div class="am-night" id="am-night"></div>
+  <p class="am-night__legend"><i class="am-night--buone"></i>buone <i class="am-night--scarse"></i>forse <i class="am-night--nulle"></i>difficile <i class="am-night--chiaro"></i>chiaro · Kp previsto (NOAA) × nuvole della mappa: il Kp previsto sbaglia spesso di circa 1 punto.</p>
+  <p><b>Come si legge.</b> Velo colorato: probabilità di aurora sopra quel punto (OVATION, NOAA, per la prossima ora): verde debole, giallo probabile, arancio e rosso forte. Linea tratteggiata gialla: a nord di essa l'aurora si vede almeno bassa all'orizzonte verso nord. Aree color sabbia: nuvole previste nell'ora del cursore (Open-Meteo, stesso metodo dell'app). Satellite: nuvole vere di circa 20 minuti fa (Meteosat, infrarosso). ⭐ posti bui vicino alle serate (coordinate indicative: seguite i cartelli del parcheggio). ☀ indica la schiarita più vicina, in linea d'aria: prima di partire controllate le strade su <a href="https://umferdin.is/en" target="_blank" rel="noopener">umferdin.is</a>.</p>
   <p>Previsione ufficiale islandese: <a href="https://en.vedur.is/weather/forecasts/aurora/" target="_blank" rel="noopener">vedur.is/aurora</a> · ovale NOAA: <a href="https://www.swpc.noaa.gov/products/aurora-30-minute-forecast" target="_blank" rel="noopener">NOAA</a></p>
 </section>
 
@@ -868,6 +873,7 @@ const NIGHT_STOPS = {night_stops_js};
 const CLOUD_METHOD = '{CLOUD_METHOD}';
 const CLOUD_W_MID = {CLOUD_W_MID}, CLOUD_W_HIGH = {CLOUD_W_HIGH};
 const CLOUD_MODELS = {json.dumps(CLOUD_MODELS)};
+const DARK_SPOTS = {json.dumps(aurora_spots, ensure_ascii=False)};
 {AURORA_JS}
 
 {MAPPA_JS}

@@ -354,6 +354,7 @@ function auroraSave(part) {
   if (part.clouds) { d.clouds = Object.assign(d.clouds || {}, part.clouds); d.cloudsAt = new Date().toISOString(); }
   try { localStorage.setItem(AURORA_KEY, JSON.stringify(d)); } catch (e) {}
   renderAurora();
+  renderAuroraNow();   // le nuvole possono arrivare dopo OVATION: il box "Adesso" va ricalcolato
 }
 
 function parseKpForecast(json) {

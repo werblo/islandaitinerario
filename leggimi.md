@@ -122,8 +122,11 @@ previste ora per ora su una griglia di 0,5° (Open-Meteo, stesso metodo
 dell'app, una richiesta riusata per 45 minuti) con il cursore "Ora", il
 satellite Meteosat infrarosso (pillola "Satellite", spento all'avvio), i posti
 delle serate, "dove sono", la schiarita più vicina (punto entro 120 km in linea
-d'aria con nuvole ≤ 30%, con link di navigazione), la Luna e la stima "Adesso"
-(stessa regola dell'app). Senza rete usa le ultime copie salvate.
+d'aria con nuvole ≤ 30%, con link di navigazione), i posti bui vicino alle
+serate (`aurora_spots` in `dati.py`, stelle visibili da zoom 8, coordinate
+indicative), la Luna, la stima "Adesso" (stessa regola dell'app, da
+`app/aurora.js`) e nel dettaglio la notte ora per ora (Kp previsto × nuvole
+della griglia). Senza rete usa le ultime copie salvate.
 
 **Notifiche** (workflow "Avvisi aurora", `tools/aurora_alert.py`, orari in
 ora islandese = UTC):

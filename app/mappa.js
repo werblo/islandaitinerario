@@ -13,7 +13,7 @@ for (let lo = -24.5; lo <= -13.499; lo += 0.5) G_LONS.push(Math.round(lo * 100) 
 const AUR_STOPS = [[5, [61, 220, 132], 0], [10, [61, 220, 132], 0.30], [20, [168, 224, 95], 0.45],
   [30, [255, 216, 74], 0.55], [50, [255, 159, 46], 0.65], [80, [255, 59, 48], 0.72]];
 
-const st = { ov: null, ovAt: null, grid: null, kp: null, bz: null, v: null, hour: 0, me: null, cloudErr: null };
+const st = { ov: null, ovAt: null, grid: null, kp: null, kpFc: [], bz: null, v: null, hour: 0, me: null, cloudErr: null };
 const $ = id => document.getElementById(id);
 const HHMM = ms => { const d = new Date(ms); return String(d.getUTCHours()).padStart(2, '0') + ':' + String(d.getUTCMinutes()).padStart(2, '0'); };
 const fmtNum = x => String(x).replace('.', ',').replace('-', '−');
@@ -126,6 +126,11 @@ function cloudAt(hour, lat, lon) {   // interpolazione tra i 4 punti della grigl
   const tx = fx - x0, ty = fy - y0;
   return (q[0] * (1 - tx) + q[1] * tx) * (1 - ty) + (q[2] * (1 - tx) + q[3] * tx) * ty;
 }
+// indice della griglia per l'ora in corso (la previsione salvata può partire da qualche ora prima)
+function hourNow() {
+  if (!st.grid) return -1;
+  return st.grid.times.findIndex(t => t > Date.now() - 3600000 && t <= Date.now());
+}
 function drawClouds() {
   if (cloudLayer) { map.removeLayer(cloudLayer); cloudLayer = null; }
   if (!st.grid || !layerOn('cloud')) return;
@@ -154,7 +159,11 @@ async function loadClouds() {
     + '&hourly=' + vars + (multi ? '&models=' + CLOUD_MODELS.join(',') : '') + '&forecast_hours=24&timezone=UTC';
   try {
     const res = await fetch(url, { cache: 'no-store' });
-    if (res.status === 429) { st.cloudErr = 'Nuvole: troppe richieste, riprova tra un minuto'; return; }
+    if (res.status === 429) {   // limite d'uso gratuito: si riprova da soli una volta dopo un minuto
+      st.cloudErr = 'Nuvole: troppe richieste, riprovo tra un minuto';
+      if (!loadClouds.retry) { loadClouds.retry = true; setTimeout(start, 61000); }
+      return;
+    }
     const json = await res.json();
     const pts = Array.isArray(json) ? json : [json];
     if (pts.length !== lats.length || !pts[0].hourly) throw new Error('risposta inattesa');
@@ -192,6 +201,20 @@ function drawPlaces() {
   });
 }
 
+// ---------- posti bui per l'aurora (aurora_spots in dati.py) ----------
+const spotsLayer = L.layerGroup().addTo(map);
+map.on('zoomend', () => drawSpots());
+function drawSpots() {   // da vicino (zoom 8 o più): nella vista d'insieme coprirebbero i posti delle serate
+  spotsLayer.clearLayers();
+  if (!layerOn('spots') || map.getZoom() < 8) return;
+  DARK_SPOTS.forEach(sp => {
+    const nav = 'https://www.google.com/maps/dir/?api=1&destination=' + sp.lat + ',' + sp.lon;
+    L.marker([sp.lat, sp.lon], { icon: L.divIcon({ className: '', html: '<div class="am-spot">★</div>', iconSize: [0, 0] }), keyboard: false, zIndexOffset: 2000 })
+      .bindPopup('<b>⭐ ' + sp.name + '</b><br>' + sp.drive + '<br>' + sp.note + '<br><a class="am-nav" href="' + nav + '" target="_blank" rel="noopener">Naviga ›</a>')
+      .addTo(spotsLayer);
+  });
+}
+
 // ---------- strati accesi/spenti (pillole in alto) ----------
 function layerOn(name) { const b = document.querySelector('[data-layer="' + name + '"]'); return !!b && b.getAttribute('aria-pressed') === 'true'; }
 document.querySelectorAll('[data-layer]').forEach(b => b.addEventListener('click', () => {
@@ -200,6 +223,10 @@ document.querySelectorAll('[data-layer]').forEach(b => b.addEventListener('click
   if (name === 'aurora') drawAurora();
   else if (name === 'cloud') { drawClouds(); renderClear(); }
   else if (name === 'places') drawPlaces();
+  else if (name === 'spots') {
+    if (layerOn('spots') && map.getZoom() < 8) { const p = AURORA_PLACES[tonightKey()]; map.flyTo([p.lat, p.lon], 9, { duration: 0.8 }); }
+    drawSpots();
+  }
   else if (name === 'sat') { if (layerOn('sat')) satLayer.addTo(map); else map.removeLayer(satLayer); }
 }));
 $('am-tonight').addEventListener('click', () => {
@@ -217,7 +244,8 @@ $('am-locate').addEventListener('click', () => {
     if (meMarker) map.removeLayer(meMarker);
     meMarker = L.marker([st.me.lat, st.me.lon], { icon: L.divIcon({ className: '', html: '<div class="am-me"></div>', iconSize: [0, 0] }), keyboard: false }).addTo(map);
     map.flyTo([st.me.lat, st.me.lon], Math.max(map.getZoom(), 8), { duration: 0.8 });
-    setStatus(null); renderNow(); renderClear();
+    setStatus(inIceland(st.me) ? null : 'Sei fuori dall\'Islanda: la stima resta sul posto della serata', inIceland(st.me) ? null : 'offline');
+    renderNow(); renderClear();
   }, () => setStatus('Posizione non concessa: attivala per Firefox nelle impostazioni', 'error'),
   { enableHighAccuracy: true, timeout: 15000, maximumAge: 60000 });
 });
@@ -238,7 +266,7 @@ function compass(a, b) {
 }
 function findClear() {
   if (!st.grid) return null;
-  const ref = st.me || AURORA_PLACES[tonightKey()];
+  const ref = inIceland(st.me) ? st.me : AURORA_PLACES[tonightKey()];
   const here = cloudAt(st.hour, ref.lat, ref.lon);
   if (here === null || here < 40) return null;
   let best = null;
@@ -250,7 +278,7 @@ function findClear() {
     const score = c + d / 4;
     if (!best || score < best.score) best = { lat: la, lon: lo, cloud: c, d, score };
   }));
-  return best && Object.assign(best, { here: Math.round(here), dir: compass(ref, best), from: st.me ? 'da te' : 'da ' + shortPlace(ref.name) });
+  return best && Object.assign(best, { here: Math.round(here), dir: compass(ref, best), from: inIceland(st.me) ? 'da te' : 'da ' + shortPlace(ref.name) });
 }
 function renderClear() {
   const el = $('am-clear');
@@ -303,18 +331,20 @@ function appCloudNow(place) {   // nuvole del posto salvate dall'app, se ci sono
   } catch (e) {}
   return null;
 }
+const inIceland = p => p && p.lat > 62.8 && p.lat < 67.2 && p.lon > -25.5 && p.lon < -12.5;
 function renderNow() {
   const { place, loc } = auroraNowPlace();
-  const ref = st.me ? { lat: st.me.lat, lon: st.me.lon, name: 'qui' } : loc;
+  const me = inIceland(st.me) ? st.me : null;   // da casa la stima resta sul posto della serata
+  const ref = me ? { lat: me.lat, lon: me.lon } : loc;
   const ovRaw = st.ov && st.ovAt ? ovationNorth(st.ovCoords, ref) : null;
   const ov = ovRaw === null ? null : Math.round(ovRaw);
-  let cloud = st.me ? null : appCloudNow(place);
-  if (cloud === null) { const c = cloudAt(0, ref.lat, ref.lon); cloud = c === null ? null : Math.round(c); }
+  let cloud = me ? null : appCloudNow(place);
+  if (cloud === null && hourNow() >= 0) { const c = cloudAt(hourNow(), ref.lat, ref.lon); cloud = c === null ? null : Math.round(c); }
   const wind = windState(st.bz, st.v);
   const sunAlt = sunAltitude(new Date(), ref.lat, ref.lon);
   const { level, text } = auroraNowVerdict({ ov, kp: st.kp, cloud, sunAlt, wind });
-  const nm = st.me ? 'dove sei' : shortPlace(loc.name);
-  const facts = [st.me ? 'Adesso dove sei' : 'Adesso a ' + nm];
+  const nm = me ? 'dove sei' : shortPlace(loc.name);
+  const facts = [me ? 'Adesso dove sei' : 'Adesso a ' + nm];
   if (st.kp !== null) facts.push('Kp ' + fmtNum(st.kp));
   facts.push(cloud !== null ? 'nuvole ' + cloud + '%' : 'nuvole n.d.');
   if (st.ovAt) facts.push('dati ' + HHMM(st.ovAt));
@@ -333,8 +363,35 @@ function renderNow() {
     + (st.v !== null ? ', ' + Math.round(st.v) + ' km/s' : '') + ')' : 'non disponibile'));
   li.push('<b>Luna:</b> ' + moonText(ref).replace(/^Luna /, ''));
   li.push('<b>Sole:</b> ' + (sunAlt < -12 ? 'buio' : sunAlt < 0 ? 'crepuscolo (' + Math.round(sunAlt) + '°)' : 'giorno'));
-  $('am-detail-title').textContent = (st.me ? 'Adesso dove sei' : 'Adesso a ' + nm) + ': ' + text;
+  $('am-detail-title').textContent = (me ? 'Adesso dove sei' : 'Adesso a ' + nm) + ': ' + text
+    + (st.me && !me ? ' (sei fuori dall\'Islanda: stima per il posto della serata)' : '');
   $('am-detail-list').innerHTML = li.map(x => '<li>' + x + '</li>').join('');
+  renderNight();
+}
+
+// ---------- stasera ora per ora: Kp previsto × nuvole della griglia, nel posto di ogni ora ----------
+function renderNight() {
+  const el = $('am-night');
+  const { night } = auroraNowPlace();
+  const start = Date.parse(night + 'T16:00:00Z'), stops = nightStops(night);
+  const cells = [];
+  for (let i = 0; i < 16; i++) {   // dalle 16 alle 8 del mattino
+    const t = start + i * 3600000, p = AURORA_PLACES[stopAt(stops, new Date(t)).place];
+    const h = st.grid ? st.grid.times.indexOf(t) : -1;
+    const cloud = h >= 0 ? cloudAt(h, p.lat, p.lon) : null;
+    const row = st.kpFc.find(r => t >= r.t && t < r.t + 3 * 3600000);
+    let cls = 'chiaro', tip = 'troppo chiaro';
+    if (sunAltitude(new Date(t + 1800000), p.lat, p.lon) < -12) {
+      if (!row || cloud === null) { cls = ''; tip = 'dati non disponibili'; }
+      else { cls = auroraLevel(kpFactor(row.kp) * (100 - cloud) / 100); tip = 'Kp ' + fmtNum(row.kp) + ', nuvole ' + Math.round(cloud) + '%'; }
+    }
+    const hh = new Date(t).getUTCHours(), isNow = Date.now() >= t && Date.now() < t + 3600000;
+    cells.push('<div' + (isNow ? ' class="am-night__now"' : '') + ' title="' + String(hh).padStart(2, '0') + ':00 · ' + shortPlace(p.name) + ' · ' + tip + '">'
+      + '<span class="' + (cls ? 'am-night--' + cls : '') + '"' + (cls ? '' : ' style="background:repeating-linear-gradient(45deg,var(--line) 0 3px,transparent 3px 6px)"') + '></span>'
+      + (hh % 3 === 1 ? String(hh).padStart(2, '0') : '&nbsp;') + '</div>');
+  }
+  el.innerHTML = cells.join('');
+  $('am-night-title').textContent = (Date.now() < start + 16 * 3600000 && Date.now() >= start - 4 * 3600000 ? 'Stasera' : 'Notte del ' + +night.slice(8, 10) + '/' + +night.slice(5, 7)) + ' ora per ora';
 }
 
 // ---------- cursore "Ora" (ore della previsione delle nuvole) ----------
@@ -354,6 +411,7 @@ function setupHours() {
     const nowH = Date.now() - 3600000;
     const idx = st.grid.times.findIndex(t => t > nowH);
     st.hour = Math.max(0, idx);
+    if (st.hour > +input.max) st.hour = +input.max;
   }
   input.value = String(st.hour);
   hourLabel();
@@ -364,7 +422,7 @@ function hourLabel() {
   const t = new Date(st.grid.times[st.hour]);
   const isNow = Math.abs(t - Date.now()) < 3600000 && t <= Date.now();
   lbl.innerHTML = isNow ? 'Ora' : String(t.getUTCHours()).padStart(2, '0') + ':00'
-    + (t.getUTCDate() !== new Date().getUTCDate() && t.getUTCHours() < 12 ? '<small>dopo mezzanotte</small>' : '');
+    + (t.getUTCDate() !== new Date().getUTCDate() ? (t.getUTCHours() < 12 ? '<small>dopo mezzanotte</small>' : '<small>domani</small>') : '');
   $('am-legend-note').hidden = isNow;
 }
 $('am-hour').addEventListener('input', e => {
@@ -388,12 +446,19 @@ $('am-back').addEventListener('click', e => {
 async function loadNoaa() {
   const opt = { cache: 'no-store' };
   const get = p => fetch(NOAA + p, opt).then(r => r.json()).catch(() => null);
-  const [ov, kp, mag, sp] = await Promise.all([get('json/ovation_aurora_latest.json'), get('json/planetary_k_index_1m.json'),
-    get('products/summary/solar-wind-mag-field.json'), get('products/summary/solar-wind-speed.json')]);
+  const [ov, kp, mag, sp, fc] = await Promise.all([get('json/ovation_aurora_latest.json'), get('json/planetary_k_index_1m.json'),
+    get('products/summary/solar-wind-mag-field.json'), get('products/summary/solar-wind-speed.json'),
+    get('products/noaa-planetary-k-index-forecast.json')]);
+  if (Array.isArray(fc)) {   // righe [time_tag, kp, …] con intestazione, oppure oggetti
+    const rows = Array.isArray(fc[0]) ? fc.slice(1).map(r => ({ t: r[0], kp: r[1] })) : fc.map(o => ({ t: o.time_tag, kp: o.kp }));
+    st.kpFc = rows.map(r => ({ t: Date.parse(String(r.t).replace(' ', 'T') + (/Z$/.test(r.t) ? '' : 'Z')), kp: num(r.kp) }))
+      .filter(r => isFinite(r.t) && r.kp !== null);
+  }
   // offline il service worker restituisce l'ultima copia: i dati vecchi si scartano
   const ovT = ov && NOAA_AGE(ov['Observation Time'], 60);
-  if (ovT && Array.isArray(ov.coordinates)) { st.ov = ovGrid(ov.coordinates); st.ovCoords = ov.coordinates; st.ovAt = ovT; }
-  else if (ov && Array.isArray(ov.coordinates)) { st.ovOld = Date.parse(ov['Observation Time']); }
+  const okCoords = ov && Array.isArray(ov.coordinates) && ov.coordinates.filter(c => Array.isArray(c) && c.length === 3).length > 1000;
+  if (ovT && okCoords) { st.ov = ovGrid(ov.coordinates); st.ovCoords = ov.coordinates; st.ovAt = ovT; }
+  else if (okCoords) { st.ovOld = Date.parse(ov['Observation Time']); }
   const last = Array.isArray(kp) && kp[kp.length - 1];
   if (last && NOAA_AGE(last.time_tag, 30) && num(last.kp_index) !== null) st.kp = Math.round(num(last.kp_index) * 10) / 10;
   const m = Array.isArray(mag) && mag[0], w = Array.isArray(sp) && sp[0];
@@ -403,10 +468,10 @@ async function loadNoaa() {
 async function start() {
   const tn = AURORA_PLACES[tonightKey()];
   $('am-tonight-name').textContent = 'Stasera: ' + shortPlace(tn.name);
-  drawPlaces();
+  drawPlaces(); drawSpots();
   if (!start.done) {   // all'apertura: tutti i posti delle serate (Reykjavík, Laugarvatn, Flúðir, Vík)
     const pts = Object.keys(AURORA_PLACES).filter(k => placeNights(k).length).map(k => [AURORA_PLACES[k].lat, AURORA_PLACES[k].lon]);
-    if (pts.length) map.fitBounds(pts, { paddingTopLeft: [30, 90], paddingBottomRight: [30, 230], maxZoom: 8 });
+    if (pts.length) map.fitBounds(pts, { paddingTopLeft: [80, 90], paddingBottomRight: [30, 230], maxZoom: 8 });
     start.done = true;
   }
   setStatus(navigator.onLine ? 'Carico aurora e nuvole…' : 'Offline: uso gli ultimi dati salvati', navigator.onLine ? 'loading' : 'offline');
