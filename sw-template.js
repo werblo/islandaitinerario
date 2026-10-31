@@ -78,10 +78,12 @@ self.addEventListener('fetch', (event) => {
     }
     // Pagina e file statici: dalla cache della versione installata
     // (coerente con il service worker), rete solo se mancano.
+    // Le pagine sono due (app e Mappa aurora): si cerca quella richiesta, l'app solo se manca.
     const isPage = req.mode === 'navigate';
     event.respondWith(
       caches.open(APP_CACHE)
-        .then((cache) => cache.match(isPage ? 'index.html' : req, { ignoreSearch: true }))
+        .then((cache) => cache.match(req, { ignoreSearch: true })
+          .then((hit) => hit || (isPage && !url.pathname.endsWith('/mappa-aurora.html') ? cache.match('index.html') : null)))
         .then((cached) => cached || fetch(req))
     );
     return;

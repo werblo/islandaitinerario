@@ -548,8 +548,10 @@ WEATHER_CODES_JS = """{0:'Sereno',1:'Prevalentemente sereno',2:'Parzialmente nuv
 # Stile e codice della pagina: file a parte in app/, inseriti così come sono
 with open('app/stile.css', encoding='utf-8') as f:
     APP_CSS = f.read().rstrip('\n')
+with open('app/aurora.js', encoding='utf-8') as f:
+    AURORA_JS = f.read().rstrip('\n')    # logica comune ad app e Mappa aurora
 with open('app/app.js', encoding='utf-8') as f:
-    APP_JS = f.read().rstrip('\n')
+    APP_JS = AURORA_JS + '\n\n' + f.read().rstrip('\n')
 
 html_out = f'''<!DOCTYPE html>
 <html lang="it">
@@ -605,6 +607,7 @@ html_out = f'''<!DOCTYPE html>
       <span class="aurora-tonight__verdict" id="aurora-verdict" aria-live="polite">Stasera: calcolo…</span>
       <span class="aurora-now" id="aurora-now" hidden></span>
       <span class="kp-line"><span class="kp-value" id="kp-value">…</span> · <span id="kp-status">Caricamento…</span></span>
+      <a class="aurora-map-link" href="mappa-aurora.html">🗺️ Mappa aurora e nuvole ›</a>
       <span class="aurora-panel__toggle">Dettagli</span>
     </summary>
     <div class="aurora-tonight" id="aurora-tonight">
@@ -776,6 +779,104 @@ const WEATHER_CODES = {WEATHER_CODES_JS};
 '''
 
 # ------------------------------------------------------------
+# Mappa aurora (mappa-aurora.html): pagina separata aperta dal riquadro aurora, scarica i dati
+# solo quando la si apre. Stessa logica dell'app (app/aurora.js) e stesse costanti incorporate.
+# ------------------------------------------------------------
+with open('app/mappa.css', encoding='utf-8') as f:
+    MAPPA_CSS = f.read().rstrip('\n')
+with open('app/mappa.js', encoding='utf-8') as f:
+    MAPPA_JS = f.read().rstrip('\n')
+_ICON = lambda d, fill='none': (f'<svg viewBox="0 0 24 24" fill="{fill}" stroke="currentColor" stroke-width="1.8" '
+                                f'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">{d}</svg>')
+mappa_out = f"""<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#e9e4d8" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#1a222b" media="(prefers-color-scheme: dark)">
+<title>Mappa aurora · Islanda 2026</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icons/aurora-192.png">
+<link rel="stylesheet" href="vendor/leaflet/leaflet.css"/>
+<style>
+@font-face {{
+  font-family:'Cinzel'; font-style:normal; font-weight:500 700; font-display:swap;
+  src:url(data:font/woff2;base64,{cinzel_b64}) format('woff2');
+}}
+@font-face {{
+  font-family:'IBM Plex Sans'; font-style:normal; font-weight:400 700; font-display:swap;
+  src:url(data:font/woff2;base64,{plex_b64}) format('woff2');
+}}
+{MAPPA_CSS}
+</style>
+</head>
+<body>
+
+<div id="am-map" role="region" aria-label="Mappa dell'aurora in Islanda"></div>
+
+<nav class="am-top" aria-label="Strati della mappa">
+  <a class="am-back" href="./" id="am-back" aria-label="Torna all'app">{_ICON('<path d="M15 5l-7 7 7 7"/>').replace('1.8', '2.2')}</a>
+  <button class="am-chip" type="button" aria-pressed="true" data-layer="cloud">{_ICON('<path d="M7 18h10a4 4 0 0 0 .5-8A6 6 0 0 0 6 9.5 4.3 4.3 0 0 0 7 18z"/>')}<span>Nuvole</span></button>
+  <button class="am-chip" type="button" aria-pressed="true" data-layer="aurora">{_ICON('<circle cx="12" cy="12" r="2"/><path d="M8 8a5.6 5.6 0 0 0 0 8M16 8a5.6 5.6 0 0 1 0 8M5 5a10 10 0 0 0 0 14M19 5a10 10 0 0 1 0 14"/>')}<span>Ovale aurora</span></button>
+  <button class="am-chip am-chip--tonight" type="button" id="am-tonight">{_ICON('<path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/>', 'currentColor')}<span id="am-tonight-name">Stasera</span></button>
+  <button class="am-chip" type="button" aria-pressed="false" data-layer="sat">{_ICON('<path d="M4 10l6-6 4 4-6 6zM14 14l6-6M10 18l-2 2M15 20a5 5 0 0 0 5-5M15 16.5a1.5 1.5 0 0 0 1.5-1.5"/>')}<span>Satellite</span></button>
+  <button class="am-chip" type="button" aria-pressed="true" data-layer="places">{_ICON('<path d="M12 21s-6-5.5-6-11a6 6 0 0 1 12 0c0 5.5-6 11-6 11z"/><circle cx="12" cy="10" r="2"/>')}<span>Serate</span></button>
+</nav>
+
+<div class="am-status" id="am-status" role="status" hidden></div>
+
+<a class="am-clear" id="am-clear" target="_blank" rel="noopener" hidden></a>
+
+<button class="am-now" type="button" id="am-now" aria-label="Aurora adesso: dettagli">
+  <span class="am-ring" id="am-ring" style="--p:0"><span id="am-ring-txt">–</span></span>
+  <span class="am-now__txt">
+    <span class="am-now__verdict" id="am-verdict">Carico i dati…</span><br>
+    <span class="am-now__facts" id="am-facts"></span>
+  </span>
+</button>
+
+<button class="am-locate" type="button" id="am-locate" aria-label="Dove sono io">{_ICON('<circle cx="12" cy="12" r="6.5"/><circle cx="12" cy="12" r="2" fill="currentColor"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/>').replace('1.8', '2')}</button>
+
+<div class="am-legend" aria-label="Legenda">
+  <i class="am-legend__aur" title="Probabilità di aurora (OVATION)"></i>
+  <b>0%</b><i style="background:var(--sand-1)"></i><i style="background:var(--sand-2)"></i><i style="background:var(--sand-3)"></i><i style="background:var(--sand-4)"></i><b>100%</b>
+  <span class="am-legend__note" id="am-legend-note" hidden>aurora: adesso</span>
+</div>
+
+<div class="am-hour">
+  <div class="am-hour__lbl" id="am-hour-lbl">Ora</div>
+  <div class="am-hour__track">
+    <div class="am-hour__ticks" id="am-ticks"></div>
+    <input type="range" id="am-hour" min="0" max="23" step="1" value="0" aria-label="Ora della previsione delle nuvole">
+  </div>
+</div>
+
+<section class="am-detail" id="am-detail" hidden aria-live="polite">
+  <button class="am-detail__close" type="button" id="am-detail-close" aria-label="Chiudi">×</button>
+  <h2 id="am-detail-title">Adesso</h2>
+  <ul id="am-detail-list"></ul>
+  <p><b>Come si legge.</b> Velo colorato: probabilità di aurora sopra quel punto (OVATION, NOAA, per la prossima ora): verde debole, giallo probabile, arancio e rosso forte. Linea tratteggiata gialla: a nord di essa l'aurora si vede almeno bassa all'orizzonte verso nord. Aree color sabbia: nuvole previste nell'ora del cursore (Open-Meteo, stesso metodo dell'app). Satellite: nuvole vere di circa 20 minuti fa (Meteosat, infrarosso). ☀ indica la schiarita più vicina, in linea d'aria: prima di partire controllate le strade su <a href="https://umferdin.is/en" target="_blank" rel="noopener">umferdin.is</a>.</p>
+  <p>Previsione ufficiale islandese: <a href="https://en.vedur.is/weather/forecasts/aurora/" target="_blank" rel="noopener">vedur.is/aurora</a> · ovale NOAA: <a href="https://www.swpc.noaa.gov/products/aurora-30-minute-forecast" target="_blank" rel="noopener">NOAA</a></p>
+</section>
+
+<script src="vendor/leaflet/leaflet.js"></script>
+<script>
+const DAYS_META = {days_meta_js};
+const AURORA_PLACES = {aurora_places_js};
+const NIGHT_STOPS = {night_stops_js};
+const CLOUD_METHOD = '{CLOUD_METHOD}';
+const CLOUD_W_MID = {CLOUD_W_MID}, CLOUD_W_HIGH = {CLOUD_W_HIGH};
+const CLOUD_MODELS = {json.dumps(CLOUD_MODELS)};
+{AURORA_JS}
+
+{MAPPA_JS}
+</script>
+</body>
+</html>
+"""
+
+# ------------------------------------------------------------
 # Versione automatica: hash di pagina, foto, percorsi e file statici.
 # Qualunque modifica pubblicata cambia CACHE_NAME in sw.js, e il
 # telefono scarica la nuova versione da solo.
@@ -850,7 +951,7 @@ STATIC_FILES = ['manifest.json', 'icons/aurora-180.png', 'icons/aurora-192.png',
 SW_TEMPLATE = open('sw-template.js', encoding='utf-8').read()
 
 _h = hashlib.sha256()
-for _chunk in [html_out.encode('utf-8'), SW_TEMPLATE.encode('utf-8'), json.dumps(_routes_raw, sort_keys=True).encode()]:
+for _chunk in [html_out.encode('utf-8'), mappa_out.encode('utf-8'), SW_TEMPLATE.encode('utf-8'), json.dumps(_routes_raw, sort_keys=True).encode()]:
     _h.update(_chunk)
 for _path in STATIC_FILES + ['images/' + p for p in webp_files]:
     _h.update(_path.encode())
@@ -859,7 +960,7 @@ for _path in STATIC_FILES + ['images/' + p for p in webp_files]:
 app_version = _h.hexdigest()[:12]
 
 html_out = html_out.replace('__APP_VERSION__', app_version)
-precache = ['./', 'index.html'] + STATIC_FILES + ['images/' + p for p in webp_files]
+precache = ['./', 'index.html', 'mappa-aurora.html'] + STATIC_FILES + ['images/' + p for p in webp_files]
 sw_out = (SW_TEMPLATE
           .replace('__APP_VERSION__', app_version)
           .replace('__PRECACHE__', json.dumps(precache, ensure_ascii=False, indent=2)))
@@ -868,6 +969,8 @@ with open('index.html', 'w', encoding='utf-8') as f:
     f.write(html_out)
 with open('sw.js', 'w', encoding='utf-8') as f:
     f.write(sw_out)
+with open('mappa-aurora.html', 'w', encoding='utf-8') as f:
+    f.write(mappa_out)
 
 print('index.html written,', len(html_out), 'bytes · versione', app_version,
       '· foto in precache', len(photo_files), '· percorsi incorporati', len(day_geometry),

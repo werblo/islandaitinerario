@@ -1,5 +1,5 @@
 // Generato da render.py a partire da sw-template.js: non modificare sw.js a mano.
-const VERSION = '4c882645e9be';
+const VERSION = 'f42a37ef5c38';
 const APP_CACHE = 'islanda-2026-app-' + VERSION;
 const TILE_CACHE = 'islanda-2026-tiles';
 const LIVE_CACHE = 'islanda-2026-live';
@@ -9,6 +9,7 @@ const LIVE_CACHE = 'islanda-2026-live';
 const PRECACHE = [
   "./",
   "index.html",
+  "mappa-aurora.html",
   "manifest.json",
   "icons/aurora-180.png",
   "icons/aurora-192.png",
@@ -127,10 +128,12 @@ self.addEventListener('fetch', (event) => {
     }
     // Pagina e file statici: dalla cache della versione installata
     // (coerente con il service worker), rete solo se mancano.
+    // Le pagine sono due (app e Mappa aurora): si cerca quella richiesta, l'app solo se manca.
     const isPage = req.mode === 'navigate';
     event.respondWith(
       caches.open(APP_CACHE)
-        .then((cache) => cache.match(isPage ? 'index.html' : req, { ignoreSearch: true }))
+        .then((cache) => cache.match(req, { ignoreSearch: true })
+          .then((hit) => hit || (isPage && !url.pathname.endsWith('/mappa-aurora.html') ? cache.match('index.html') : null)))
         .then((cached) => cached || fetch(req))
     );
     return;

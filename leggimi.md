@@ -113,6 +113,18 @@ riquadro si aprono ore migliori e due notti successive. Nella tab di ogni giorno
 la stima di quella notte. Dettaglio e tab dei giorni ricordano che la previsione
 del Kp sbaglia spesso di circa 1 punto (ricerca Kp).
 
+**Mappa aurora** (`mappa-aurora.html`, link "🗺️ Mappa aurora e nuvole" nel
+riquadro aurora): pagina separata in stile Hello Aurora, chiara o scura col
+tema del telefono, che scarica i dati solo quando la si apre. Mostra la
+probabilità OVATION (velo verde-giallo-rosso) con la linea tratteggiata "fin
+qui si vede bassa a nord" (bordo dell'ovale spostato di 7° a sud), le nuvole
+previste ora per ora su una griglia di 0,5° (Open-Meteo, stesso metodo
+dell'app, una richiesta riusata per 45 minuti) con il cursore "Ora", il
+satellite Meteosat infrarosso (pillola "Satellite", spento all'avvio), i posti
+delle serate, "dove sono", la schiarita più vicina (punto entro 120 km in linea
+d'aria con nuvole ≤ 30%, con link di navigazione), la Luna e la stima "Adesso"
+(stessa regola dell'app). Senza rete usa le ultime copie salvate.
+
 **Notifiche** (workflow "Avvisi aurora", `tools/aurora_alert.py`, orari in
 ora islandese = UTC):
 
