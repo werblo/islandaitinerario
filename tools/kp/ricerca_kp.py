@@ -4,7 +4,7 @@ Punto 1 (fino al 14/11): la previsione del Kp che l'app e gli avvisi leggono al 
 (NOAA, 3 giorni) confrontata con il Kp misurato davvero la notte dopo, nelle fasce
 18-21, 21-24, 0-3, 3-6 UTC (= ora islandese).
 
-Punto 2 (una settimana, 22-29/10): ogni 10 minuti, di notte, si salvano gli indicatori
+Punto 2 (22/10-14/11; prima settimana valutata il 30/10): ogni 10 minuti, di notte, si salvano gli indicatori
 "di adesso" che si trovano sui siti dell'aurora:
   kp_1m       Kp stimato al minuto (NOAA), quello della riga "Aurora boreale — ora" dell'app
   ovation     probabilità di aurora sopra Reykjavík del modello OVATION (NOAA, 30-90 minuti avanti)
@@ -27,7 +27,8 @@ from datetime import datetime, timedelta, timezone
 UTC = timezone.utc
 REYKJAVIK = (64.1466, -21.9426)
 NIGHT_BLOCKS = (18, 21, 0, 3)          # fasce di 3 ore con il buio, ore UTC di inizio
-NOWCAST_UNTIL = datetime(2026, 10, 30, 12, tzinfo=UTC)   # fine del punto 2
+NOWCAST_UNTIL = datetime(2026, 11, 15, 7, tzinfo=UTC)    # fine del punto 2 (prolungato il 31/10, chiesto da
+#   Michele: per confrontare gli avvistamenti reali di tools/kp/osservazioni.csv)
 MORNING = (6, 15)                      # la previsione "del mattino": salvata tra le 6 e le 15
 
 KP_FORECAST = 'https://services.swpc.noaa.gov/products/noaa-planetary-k-index-forecast.json'
