@@ -257,13 +257,14 @@ async function fetchKp() {
     const res = await fetch('https://services.swpc.noaa.gov/json/planetary_k_index_1m.json');
     const json = await res.json();
     const last = json[json.length - 1];
+    if (last.kp_index == null || !isFinite(last.kp_index)) throw new Error('Kp mancante');
     state.kp = Math.round(last.kp_index * 10) / 10;
     state.kpStatus = 'ok';
     // ora del dato NOAA (UTC), non dell'apertura: offline la copia salvata può essere vecchia
     const at = last.time_tag ? new Date(String(last.time_tag).replace(' ', 'T') + (/Z|[+-]\d\d:?\d\d$/.test(last.time_tag) ? '' : 'Z')) : null;
     state.kpAt = at && isFinite(at) ? at : new Date();
   } catch (e) { state.kpStatus = 'error'; }
-  document.getElementById('kp-value').textContent = state.kpStatus === 'ok' ? ('Kp ' + String(state.kp).replace('.', ',')) : '—';
+  document.getElementById('kp-value').textContent = state.kpStatus === 'ok' ? ('Kp adesso ' + String(state.kp).replace('.', ',')) : '—';
   let kpText;
   if (state.kpStatus === 'ok') {
     const t = state.kpAt;
@@ -279,39 +280,60 @@ async function fetchKp() {
 }
 
 // ---------- Aurora adesso: OVATION e vento solare (NOAA) ----------
-// Scaricati solo con il riquadro aperto, online e quando è buio (o sta per esserlo) dove siete:
-// OVATION pesa circa 150 kB. Soglie del vento solare come l'avviso "arrivo" (tools/aurora_alert.py).
+// Scaricati solo con il riquadro aperto, online e quando è buio (o sta per esserlo) dove siete;
+// OVATION (circa 900 kB, 150 kB compresso) al massimo ogni 5 minuti. Il vento solare qui è
+// l'ultimo minuto (l'avviso "arrivo" in tools/aurora_alert.py guarda invece la media di 15-20 minuti).
 function auroraNowPlace() {
   const now = new Date();
-  const start = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), 12) - (now.getUTCHours() < 7 ? 86400000 : 0);
-  const place = stopAt(nightStops(new Date(start).toISOString().slice(0, 10)), now).place;
-  return { place, loc: AURORA_PLACES[place] };
+  // fino a mezzogiorno vale la notte appena passata (come lo script degli avvisi): all'alba si è
+  // ancora dove si è dormito, non nell'alloggio della sera dopo
+  const start = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), 12) - (now.getUTCHours() < 12 ? 86400000 : 0);
+  const night = new Date(start).toISOString().slice(0, 10);
+  const place = stopAt(nightStops(night), now).place;
+  return { place, loc: AURORA_PLACES[place], night };
 }
+const NOAA_AGE = (t, maxMin) => {   // orario NOAA (UTC) non più vecchio di maxMin minuti
+  const ms = Date.parse(String(t || '').replace(' ', 'T') + (/Z|[+-]\d\d:?\d\d$/.test(String(t)) ? '' : 'Z'));
+  return isFinite(ms) && Date.now() - ms <= maxMin * 60000 ? ms : null;
+};
+const num = v => (v != null && v !== '' && isFinite(v) ? Number(v) : null);
 async function fetchAuroraNow() {
   const panel = document.getElementById('aurora-panel');
   if (!panel || !panel.open) return;
-  const { loc } = auroraNowPlace();
-  state.auroraNow = null;
-  if (!navigator.onLine || !loc || sunAltitude(new Date(), loc.lat, loc.lon) >= 0) { renderAuroraNow(); return; }
-  const opt = { cache: 'no-store' };
-  const [ov, mag, sp] = await Promise.all([
-    fetch('https://services.swpc.noaa.gov/json/ovation_aurora_latest.json', opt).then(r => r.json()).catch(() => null),
-    fetch('https://services.swpc.noaa.gov/products/summary/solar-wind-mag-field.json', opt).then(r => r.json()).catch(() => null),
-    fetch('https://services.swpc.noaa.gov/products/summary/solar-wind-speed.json', opt).then(r => r.json()).catch(() => null)
-  ]);
-  const now = { ov: null, bz: null, v: null };
-  if (ov && Array.isArray(ov.coordinates)) {
-    // massimo tra la latitudine del posto e 70°N, alla stessa longitudine (±2°): aurora a nord
-    const lon0 = ((Math.round(loc.lon) % 360) + 360) % 360;
-    let p = 0;
-    ov.coordinates.forEach(([lon, lat, v]) => {
-      if (Math.abs(((lon - lon0 + 540) % 360) - 180) <= 2 && lat >= loc.lat && lat <= 70) p = Math.max(p, v);
-    });
-    now.ov = p;
-  }
-  if (mag && mag[0] && isFinite(mag[0].bz_gsm)) now.bz = Number(mag[0].bz_gsm);
-  if (sp && sp[0] && isFinite(sp[0].proton_speed)) now.v = Number(sp[0].proton_speed);
-  state.auroraNow = now;
+  try {
+    const { loc, night } = auroraNowPlace();
+    // dopo l'ultima notte in Islanda (21-22 novembre) non serve più
+    if (!navigator.onLine || !loc || night > '2026-11-21' || sunAltitude(new Date(), loc.lat, loc.lon) >= 0) {
+      state.auroraNow = null; renderAuroraNow(); return;
+    }
+    const opt = { cache: 'no-store' };
+    const prev = state.auroraNow;
+    const fresh = prev && prev.place === loc.name && Date.now() - prev.at < 5 * 60000;
+    const [ov, mag, sp] = await Promise.all([
+      fresh ? null : fetch('https://services.swpc.noaa.gov/json/ovation_aurora_latest.json', opt).then(r => r.json()).catch(() => null),
+      fetch('https://services.swpc.noaa.gov/products/summary/solar-wind-mag-field.json', opt).then(r => r.json()).catch(() => null),
+      fetch('https://services.swpc.noaa.gov/products/summary/solar-wind-speed.json', opt).then(r => r.json()).catch(() => null)
+    ]);
+    const now = fresh ? Object.assign({}, prev) : { place: loc.name, at: Date.now(), ov: null, ovAt: null };
+    now.bz = null; now.v = null;
+    // con la rete che non risponde il service worker restituisce l'ultima copia: i dati vecchi si scartano
+    const ovAt = ov && NOAA_AGE(ov['Observation Time'], 60);
+    if (ovAt && Array.isArray(ov.coordinates)) {
+      // massimo tra la latitudine del posto e 70°N, alla stessa longitudine (±2°): aurora a nord
+      const lon0 = ((Math.round(loc.lon) % 360) + 360) % 360;
+      let p = null;
+      ov.coordinates.forEach(c => {
+        if (!Array.isArray(c) || c.length !== 3 || !c.every(x => typeof x === 'number' && isFinite(x))) return;
+        const [lon, lat, v] = c;
+        if (Math.abs(((lon - lon0 + 540) % 360) - 180) <= 2 && lat >= loc.lat && lat <= 70) p = Math.max(p || 0, v);
+      });
+      if (p !== null) { now.ov = p; now.ovAt = ovAt; }
+    }
+    const m = Array.isArray(mag) && mag[0], w = Array.isArray(sp) && sp[0];
+    if (m && NOAA_AGE(m.time_tag, 30)) now.bz = num(m.bz_gsm);
+    if (w && NOAA_AGE(w.time_tag, 30)) now.v = num(w.proton_speed);
+    state.auroraNow = now;
+  } catch (e) { /* resta il dato precedente */ }
   renderAuroraNow();
 }
 
@@ -335,7 +357,7 @@ function renderAuroraNow() {
   const facts = [];
   const acts = [];
   if (n.ov !== null) { acts.push(ovationFactor(n.ov)); facts.push('aurora verso nord <b>' + n.ov + '%</b> (OVATION)'); }
-  if (state.kpStatus === 'ok') { acts.push(kpFactor(state.kp)); facts.push('Kp <b>' + fmt(state.kp) + '</b>'); }
+  if (state.kpStatus === 'ok' && t - state.kpAt <= 30 * 60000) { acts.push(kpFactor(state.kp)); facts.push('Kp <b>' + fmt(state.kp) + '</b>'); }
   const clouds = (auroraLoad().clouds || {})[place];
   let cloud = null;
   if (clouds && clouds.time) {
@@ -347,14 +369,14 @@ function renderAuroraNow() {
   if (n.bz !== null) {
     fav = (n.bz <= -7 && n.v !== null && n.v >= 500) || n.bz <= -10;
     const verdict = fav ? 'favorevole' : n.bz <= -3 ? 'un po\' favorevole' : 'nella norma';
-    facts.push('vento solare ' + verdict + ' (Bz ' + (n.bz > 0 ? '+' : '') + fmt(Math.round(n.bz)) + ' nT'
-      + (n.v !== null ? ', ' + Math.round(n.v) + ' km/s' : '') + ')');
+    facts.push('vento solare ' + verdict + ' (Bz ' + (n.bz > 0 ? '+' : '') + fmt(Math.round(n.bz)) + ' nT'
+      + (n.v !== null ? ', ' + Math.round(n.v) + ' km/s' : '') + ')');
   }
   let level = null, text;
   const nm = shortPlace(loc.name);
   const where = nm.startsWith('strada') ? 'lungo la ' + nm : 'a ' + nm;
   if (sunAltitude(t, loc.lat, loc.lon) >= -12) {
-    text = 'ancora troppo chiaro per vederla';
+    text = 'troppo chiaro per vederla';
   } else if (!acts.length) {
     text = 'dati sull\'attività non disponibili';
   } else {
@@ -370,6 +392,7 @@ function renderAuroraNow() {
     }
     if (fav && level !== 'buone') text += '; il vento solare è favorevole, può accendersi entro un\'ora';
   }
+  if (n.ovAt) { const d = new Date(n.ovAt); facts.push('OVATION delle ' + String(d.getUTCHours()).padStart(2, '0') + ':' + String(d.getUTCMinutes()).padStart(2, '0')); }
   el.innerHTML = '<div class="aurora-now__verdict' + (level ? ' aurora-now__verdict--' + level : '') + '">🌌 Adesso ' + where + ': ' + text + '</div>'
     + '<div class="aurora-now__facts">' + facts.join(' · ') + '</div>';
   el.hidden = false;

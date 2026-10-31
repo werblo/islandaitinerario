@@ -108,7 +108,7 @@ forse / difficile": la migliore tra Kp attuale e probabilità OVATION verso
 nord (≥30% come Kp 4, ≥20% come Kp 3, ≥10% come Kp 2), per il cielo sereno
 delle nuvole di quest'ora, più lo stato del vento solare (OVATION e vento
 scaricati solo all'apertura). Sotto: ore migliori e due notti successive.
-L'avviso "adesso" invece usa ancora solo il Kp. Nella tab di ogni giorno la stima di quella
+L'avviso "adesso" usa la stessa regola. Nella tab di ogni giorno la stima di quella
 notte. Dettaglio e tab dei giorni ricordano che la previsione del Kp sbaglia
 spesso di circa 1 punto (ricerca Kp). Combina Kp previsto (NOAA, fino a 3
 giorni), nuvole ora per ora (Open-Meteo) e buio astronomico. La località
@@ -126,15 +126,16 @@ ora islandese = UTC):
   titolo dice "previsione incompleta" o "non disponibile".
 - **"🔄 Cambio di programma"**: controlli ogni 30 minuti (16:07-3:37); solo
   se la stima diventa "buone" e al mattino non lo era.
-- **"Aurora: condizioni buone adesso"**: quando è buio e Kp e nuvole del
-  momento sono buoni.
+- **"Aurora: condizioni buone adesso"**: quando è buio e l'attività del
+  momento (la migliore tra Kp attuale e OVATION verso nord, come il box
+  "Adesso" dell'app) e le nuvole di quest'ora sono buone.
 - **"Aurora in arrivo?"**: di notte, ogni 10 minuti, se il vento solare è
   favorevole da un po' (Bz medio ≤ −7 nT per 20 minuti con vento oltre
   500 km/s, oppure Bz ≤ −10 per 15 minuti), è buio e le nuvole previste tra
   45 minuti sono sotto il 75%. Una volta per notte, e non dopo un "adesso".
 - **Anteprima prima del viaggio** (22 ottobre - 12 novembre): di notte, tutta la
   notte, solo gli avvisi "adesso" e "arrivo" per Reykjavík (Kp e nuvole di quel momento), al
-  massimo uno per notte e solo ai telefoni che non sono di Federica: serve a
+  massimo uno per tipo per notte e solo ai telefoni che non sono di Federica: serve a
   guardare le webcam e a provare gli avvisi prima di partire.
 - **Prova automatica**: 13 novembre dalle 18:07 (19:07 in Italia), una volta
   sola anche se un telefono non la riceve (in quel caso il turno su GitHub
