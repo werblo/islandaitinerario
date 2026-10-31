@@ -842,7 +842,7 @@ mappa_out = f"""<!DOCTYPE html>
 
 <div class="am-legend" aria-label="Legenda">
   <i class="am-legend__aur" title="Probabilità di aurora (OVATION)"></i>
-  <b>0%</b><i style="background:var(--sand-1)"></i><i style="background:var(--sand-2)"></i><i style="background:var(--sand-3)"></i><i style="background:var(--sand-4)"></i><b>100%</b>
+  <b>nuvole 0%</b><i class="am-legend__cloud"></i><b>100%</b>
   <span class="am-legend__note" id="am-legend-note" hidden>aurora: adesso</span>
 </div>
 
