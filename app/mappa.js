@@ -539,11 +539,22 @@ function setStatus(text, kind) {
   if (!text) { el.hidden = true; return; }
   el.textContent = text; el.className = 'am-status am-status--' + (kind || 'info'); el.hidden = false;
 }
-$('am-now').addEventListener('click', () => {
-  $('am-detail').hidden = !$('am-detail').hidden;
-  if (!$('am-detail').hidden && navigator.onLine) loadDash().then(renderDash);
+// pannello di controllo: pagina secondaria della mappa (#pannello), il tasto Indietro del telefono torna alla mappa
+function showPanel(open) {
+  $('am-detail').hidden = !open;
+  if (open) { $('am-detail').scrollTop = 0; if (navigator.onLine) loadDash().then(renderDash); }
+}
+function openPanel() {
+  if (location.hash !== '#pannello') history.pushState({ panel: true }, '', '#pannello');
+  showPanel(true);
+}
+window.addEventListener('popstate', () => showPanel(location.hash === '#pannello'));
+$('am-now').addEventListener('click', openPanel);
+$('am-open-panel').addEventListener('click', openPanel);
+$('am-detail-close').addEventListener('click', () => {
+  if (history.state && history.state.panel) history.back(); else { history.replaceState(null, '', location.pathname); showPanel(false); }
 });
-$('am-detail-close').addEventListener('click', () => { $('am-detail').hidden = true; });
+if (location.hash === '#pannello') showPanel(true);
 $('am-back').addEventListener('click', e => {
   // si torna dov'eri nell'app (stessa tab); se la pagina è stata aperta da sola, si apre l'app
   if (document.referrer && new URL(document.referrer).origin === location.origin && history.length > 1) { e.preventDefault(); history.back(); }

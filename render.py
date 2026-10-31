@@ -817,6 +817,7 @@ mappa_out = f"""<!DOCTYPE html>
 
 <nav class="am-top" aria-label="Strati della mappa">
   <a class="am-back" href="./" id="am-back" aria-label="Torna all'app">{_ICON('<path d="M15 5l-7 7 7 7"/>').replace('1.8', '2.2')}</a>
+  <button class="am-chip am-chip--panel" type="button" id="am-open-panel">{_ICON('<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>')}<span>Pannello</span></button>
   <button class="am-chip" type="button" aria-pressed="true" data-layer="cloud">{_ICON('<path d="M7 18h10a4 4 0 0 0 .5-8A6 6 0 0 0 6 9.5 4.3 4.3 0 0 0 7 18z"/>')}<span>Nuvole</span></button>
   <button class="am-chip" type="button" aria-pressed="true" data-layer="aurora">{_ICON('<circle cx="12" cy="12" r="2"/><path d="M8 8a5.6 5.6 0 0 0 0 8M16 8a5.6 5.6 0 0 1 0 8M5 5a10 10 0 0 0 0 14M19 5a10 10 0 0 1 0 14"/>')}<span>Ovale aurora</span></button>
   <button class="am-chip am-chip--tonight" type="button" id="am-tonight">{_ICON('<path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/>', 'currentColor')}<span id="am-tonight-name">Stasera</span></button>
@@ -854,8 +855,8 @@ mappa_out = f"""<!DOCTYPE html>
   </div>
 </div>
 
-<section class="am-detail" id="am-detail" hidden aria-live="polite">
-  <button class="am-detail__close" type="button" id="am-detail-close" aria-label="Chiudi">×</button>
+<section class="am-detail" id="am-detail" hidden aria-label="Pannello dell'aurora">
+  <button class="am-detail__close" type="button" id="am-detail-close">{_ICON('<path d="M15 5l-7 7 7 7"/>').replace('1.8', '2.2')}Mappa</button>
   <p class="am-dash__eyebrow">Riepilogo</p>
   <h2 id="am-detail-title">Adesso</h2>
   <div class="am-dash" id="am-dash"></div>
