@@ -9,11 +9,14 @@ nelle ore di buio) nei posti in cui siete la sera, tappa per tappa
                 con una frase scherzosa (personalizzata se il telefono ha un nome);
 - "previsione": la sera, solo se la stima diventa "buone" e al mattino non lo era
                 (cambio di programma in meglio);
-- "adesso":     quando è buio e Kp misurato + nuvole di quest'ora sono buoni.
+- "adesso":     quando è buio e Kp misurato + nuvole di quest'ora sono buoni;
+- "arrivo":     quando è buio, il cielo non è coperto e il vento solare è favorevole da un po'
+                (Bz molto negativo, vento veloce): l'aurora potrebbe accendersi entro 30-60 minuti.
 
 Le esecuzioni programmate di GitHub partono spesso con ore di ritardo: per questo il
 workflow lancia dei "turni" (AURORA_MODE=turno) che restano accesi circa 5 ore e mezza e
-fanno da soli i controlli ogni 30 minuti (ai minuti :07 e :37), il messaggio del mattino
+fanno da soli i controlli ogni 30 minuti (ai minuti :07 e :37; di notte, in mezzo, ogni 10
+minuti solo il vento solare per l'avviso "arrivo"), il messaggio del mattino
 (dalle 7:37) e la prova automatica del 13 novembre (dalle 18:07). I turni partono ogni 2
 ore e si mettono in coda uno dopo l'altro: anche se uno parte tardi, quello già acceso
 copre le ore in cui serve.
@@ -22,8 +25,8 @@ Variabili d'ambiente:
   VAPID_PRIVATE_KEY     chiave privata VAPID (secret del repo)
   AURORA_SUBSCRIPTIONS  codici copiati dall'app ("Attiva avvisi aurora"), uno dopo
                         l'altro; un nome davanti ("Federica: {...}") personalizza le frasi
-  AURORA_MODE           "turno" (esecuzioni programmate), "controllo" (default), "mattino"
-                        oppure "prova" (notifica subito)
+  AURORA_MODE           "turno" (esecuzioni programmate), "controllo" (default), "vento"
+                        (solo l'avviso "arrivo"), "mattino" oppure "prova" (notifica subito)
   AURORA_TURNO_MIN      durata di un turno in minuti (default 330)
   AURORA_TURNO_SIMULA   solo per test: "1" = il turno non aspetta davvero, fa avanzare
                         l'orologio da AURORA_NOW
@@ -42,6 +45,12 @@ CLOUDS_URL = ('https://api.open-meteo.com/v1/forecast?latitude={lat}&longitude={
               '&hourly=cloud_cover,cloud_cover_low,cloud_cover_mid,cloud_cover_high'
               '&timezone=UTC&past_days=1&forecast_days=3')
 GOOD = 0.45   # soglia di "buone probabilità", come nell'app
+# vento solare in tempo reale (satellite in L1, circa 30-60 minuti prima dell'arrivo sulla Terra)
+WIND_MAG_URL = 'https://services.swpc.noaa.gov/json/rtsw/rtsw_mag_1m.json'
+WIND_PLASMA_URL = 'https://services.swpc.noaa.gov/json/rtsw/rtsw_wind_1m.json'
+# frase sulla previsione del Kp (ricerca Kp di ottobre: al mattino sbaglia in media di circa 1),
+# uguale a KP_NOTE in app/app.js
+KP_NOTE = 'La previsione del Kp sbaglia spesso di circa 1 punto: ricontrollate la sera.'
 
 
 # ---------- dati del viaggio: letti da index.html, così restano allineati all'app ----------
@@ -298,6 +307,76 @@ def describe(est):
     return f'{place_label(est)}: {est["level"]} probabilità · ' + details(est)
 
 
+# ---------- avviso "arrivo": vento solare favorevole ----------
+def solar_wind(now):
+    """Bz e velocità del vento solare negli ultimi minuti (solo il satellite attivo).
+    None se i dati sono vecchi di più di 15 minuti o troppo pochi."""
+    def recent(url, key, minutes):
+        rows = [r for r in get_json(url) if r.get('active') and isinstance(r.get(key), (int, float))]
+        rows = [(parse_time(r['time_tag']), r[key]) for r in rows]
+        rows = [(t, v) for t, v in rows if now - timedelta(minutes=minutes) < t <= now + timedelta(minutes=2)]
+        return [v for _, v in rows], max((t for t, _ in rows), default=None)
+    bz20, last = recent(WIND_MAG_URL, 'bz_gsm', 20)
+    if last is None or now - last > timedelta(minutes=15) or len(bz20) < 12:
+        return None
+    bz15, _ = recent(WIND_MAG_URL, 'bz_gsm', 15)
+    speed, _ = recent(WIND_PLASMA_URL, 'proton_speed', 20)
+    return {'bz20': sum(bz20) / len(bz20), 'bz15': sum(bz15) / len(bz15) if bz15 else 0,
+            'neg5': sum(v <= -5 for v in bz20) / len(bz20), 'neg7': sum(v <= -7 for v in bz15) / max(1, len(bz15)),
+            'speed': sum(speed) / len(speed) if speed else None}
+
+
+def wind_favorable(w):
+    """Bz medio ≤ −7 nT da 20 minuti con vento oltre 500 km/s, oppure Bz medio ≤ −10 da 15 minuti;
+    in entrambi i casi stabile (quasi tutti i minuti ben negativi), non un picco isolato."""
+    fast = w['speed'] is not None and w['speed'] >= 500
+    return ((w['bz20'] <= -7 and w['neg5'] >= 0.8 and fast)
+            or (w['bz15'] <= -10 and w['neg7'] >= 0.8))
+
+
+def arrivo_alert(now, night, stops, trip, clouds, done, preview):
+    """Avviso "arrivo" (una volta per notte, non dopo un "adesso"): buio, cielo non coperto,
+    vento solare favorevole. Restituisce (tipo, messaggio, ttl) oppure None."""
+    if 'arrivo' in done or 'adesso' in done:
+        return None
+    place = stop_at(stops, now)['place']
+    loc = trip['places'][place]
+    if sun_altitude(now, loc['lat'], loc['lon']) >= -12:
+        return None
+    try:
+        w = solar_wind(now)
+    except Exception as e:
+        print(f'::warning::Vento solare NOAA non disponibile: {e}')
+        return None
+    if not w:
+        print('Vento solare: dati non aggiornati.')
+        return None
+    bz = w['bz15'] if w['bz15'] <= -10 else w['bz20']
+    sp = f', {w["speed"]:.0f} km/s' if w['speed'] is not None else ''
+    print(f'Vento solare: Bz medio {w["bz20"]:.1f} nT (20 min), {w["bz15"]:.1f} (15 min){sp}')
+    if not wind_favorable(w):
+        return None
+    if place not in clouds:
+        try:
+            clouds[place] = clouds_by_hour(get_json(clouds_url(loc, trip)), trip)
+        except Exception as e:
+            print(f'::warning::Nuvolosità Open-Meteo per {place} non disponibile: {e}')
+    cloud = clouds.get(place, {}).get(hour_key(now + timedelta(minutes=45)))   # quando arriva
+    if cloud is not None and cloud >= 75:
+        print(f'Vento solare favorevole, ma cielo coperto ({cloud}%): niente avviso.')
+        return None
+    name = short_name(loc['name'])
+    return ('arrivo', {
+        'title': '🌌 Aurora in arrivo?',
+        'body': f'{name[:1].upper()}{name[1:]}: il vento solare è favorevole (Bz {bz:.0f} nT{sp}): '
+                'nei prossimi 30-60 minuti l\'aurora potrebbe accendersi'
+                + (f', nuvole {cloud}%' if cloud is not None else ' (dati sulle nuvole non disponibili)')
+                + ('. Tieni d\'occhio le webcam verso nord (livefromiceland.is)!' if preview
+                   else '. Preparatevi e guardate verso nord!'),
+        'tag': f'aurora-{night}-arrivo',
+    }, 3600)
+
+
 # ---------- frasi del mattino ----------
 # {luogo} = dove siete stasera; {nome} = nome davanti al codice del telefono.
 PHRASES = {
@@ -486,11 +565,15 @@ ANTEPRIMA = ('2026-10-22', '2026-11-12')
 MORNING_FROM, MORNING_UNTIL = (7, 25), (15, 0)   # messaggio del mattino: dalle 7:37 (slot) alle 15
 
 
+def is_night_hour(t):
+    return t.hour >= 16 or t.hour < 4
+
+
 def next_slot(t):
-    """Prossimo controllo dopo t, ai minuti :07 e :37."""
-    for m in (7, 37, 67):
+    """Prossimo controllo dopo t: ai minuti :07 e :37, di notte anche ogni 10 minuti in mezzo."""
+    for m in (7, 17, 27, 37, 47, 57, 67):
         cand = t.replace(minute=0, second=0, microsecond=0) + timedelta(minutes=m)
-        if cand > t:
+        if cand > t and (cand.minute in (7, 37) or is_night_hour(cand)):
             return cand
 
 
@@ -501,7 +584,7 @@ def turno(now):
     trip_nights = {d['dateISO'] for d in trip_data()['days'] if d['id'] != 'd8'}
     print(f'Turno dalle {now:%d/%m %H:%M} alle {deadline:%d/%m %H:%M} UTC')
     failed = False
-    t = now
+    t = slot = now     # il primo giro (all'avvio) è un controllo completo
     while True:
         jobs = []
         hm = (t.hour, t.minute)
@@ -513,8 +596,9 @@ def turno(now):
         if (tonight in trip_nights and MORNING_FROM <= hm < MORNING_UNTIL
                 and 'mattino' not in (rec.get('inviati', rec) if isinstance(rec, dict) else rec)):
             jobs.append('mattino')
-        if t.hour >= 16 or t.hour < 4:
-            jobs.append('controllo')
+        if is_night_hour(t):
+            # il tipo dipende dall'orario previsto, non da quando parte (può slittare di un minuto)
+            jobs.append('controllo' if slot == now or slot.minute in (7, 37) else 'vento')
         if not jobs:
             print(f'--- {t:%d/%m %H:%M} UTC: niente da fare a quest\'ora')
         for job in jobs:
@@ -529,7 +613,7 @@ def turno(now):
                 st['_prova_auto'] = t.strftime('%Y-%m-%d %H:%M')
                 save_state(state_path, st)
             failed = failed or rc != 0
-        t = next_slot(t)
+        t = slot = next_slot(t)
         if t > deadline:
             break
         if simulate:
@@ -552,19 +636,27 @@ def run(mode, now, manual=False):
     start = now.replace(hour=12, minute=0) - timedelta(days=1 if now.hour < 10 and mode != 'mattino' else 0)
     night = start.strftime('%Y-%m-%d')
     trip_nights = {d['dateISO'] for d in trip['days'] if d['id'] != 'd8'}
-    preview = mode == 'controllo' and night not in trip_nights and ANTEPRIMA[0] <= night <= ANTEPRIMA[1]
-    if night not in trip_nights and not preview and (mode == 'controllo' or (mode == 'mattino' and not manual)):
+    preview = mode in ('controllo', 'vento') and night not in trip_nights and ANTEPRIMA[0] <= night <= ANTEPRIMA[1]
+    if night not in trip_nights and not preview and (mode in ('controllo', 'vento') or (mode == 'mattino' and not manual)):
         print(f'Notte del {night}: fuori dalle date del viaggio, nessun controllo.')
         return 0
 
     stops = [{'place': 'reykjavik'}] if preview else night_stops(night, trip)
     subs = parse_subscriptions(os.environ.get('AURORA_SUBSCRIPTIONS'))
     if preview:
-        print('Anteprima prima del viaggio: solo l\'avviso "adesso" per Reykjavík, Federica esclusa.')
+        print('Anteprima prima del viaggio: solo gli avvisi "adesso" e "arrivo" per Reykjavík, Federica esclusa.')
         subs = [(n, s) for n, s in subs if not is_federica(n)]
     names = ', '.join(n or '(senza nome)' for n, _ in subs)
     print(f'Notte del {night} · tappe: {" → ".join(s["place"] for s in stops)} · {now:%H:%M} UTC'
           f' · nuvole: {trip["method"]} · telefoni: {len(subs)} ({names})')
+
+    sent = load_state(state_path)
+    rec = sent.get(night)
+    rec = {'inviati': rec} if isinstance(rec, list) else (rec or {'inviati': []})
+    done = set(rec['inviati'])
+    if mode == 'vento':      # tra un controllo e l'altro: solo il vento solare, senza stima
+        alert = arrivo_alert(now, night, stops, trip, {}, done, preview)
+        return send_alerts([alert] if alert else [], subs, sent, rec, done, night, state_path)
 
     kp_rows, clouds, kp_now = [], {}, None
     try:
@@ -604,18 +696,13 @@ def run(mode, now, manual=False):
         print(f'Prova inviata a {ok} telefoni su {len(subs)}.')
         return 0 if ok == len(subs) else 3 if ok else 1
 
-    sent = load_state(state_path)
-    rec = sent.get(night)
-    rec = {'inviati': rec} if isinstance(rec, list) else (rec or {'inviati': []})
-    done = set(rec['inviati'])
-
     if mode == 'mattino':
         if not manual and not (est['level'] and est['clouds']) and now.hour < 10:
             # dati NOAA o nuvole mancanti (rete o servizio giù): il turno riprova al prossimo
             # controllo; dalle 10 manda comunque il messaggio con quello che c'è
             print('Previsione incompleta: riprovo al prossimo controllo (fino alle 10).')
             return 0
-        body_info = '\n' + details(est) if est['level'] else ''
+        body_info = '\n' + details(est) + '\n' + KP_NOTE if est['level'] else ''
         complete = bool(est['level'] and est['clouds'])
         title = (MORNING_TITLES[est['level']] if complete
                  else '🌅 Aurora stasera: previsione incompleta' if est['level']
@@ -663,6 +750,14 @@ def run(mode, now, manual=False):
                 'tag': f'aurora-{night}-adesso',
             }, 3600))
 
+    # 3) arrivo: vento solare favorevole, l'aurora potrebbe accendersi entro 30-60 minuti
+    alert = arrivo_alert(now, night, stops, trip, clouds, done | {a[0] for a in alerts}, preview)
+    if alert:
+        alerts.append(alert)
+    return send_alerts(alerts, subs, sent, rec, done, night, state_path)
+
+
+def send_alerts(alerts, subs, sent, rec, done, night, state_path):
     if not alerts:
         print('Nessun avviso da mandare' + (f' (già inviati: {", ".join(sorted(done))})' if done else '') + '.')
         return 0
