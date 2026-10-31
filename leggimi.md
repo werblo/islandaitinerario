@@ -102,19 +102,16 @@ tengono ancora raggiungibili vecchi commit con voucher ed email.
 ## 5. Aurora e avvisi sul telefono
 
 **Stima nell'app.** Nella tab Info il riquadro "Aurora boreale" chiuso mostra
-Kp attuale e "Stasera a …: buone / scarse / nulle probabilità"; toccandolo si
-apre e, quando fa buio e si è online, mostra in cima "🌌 Adesso a …: buone /
-forse / difficile": la migliore tra Kp attuale e probabilità OVATION verso
-nord (≥30% come Kp 4, ≥20% come Kp 3, ≥10% come Kp 2), per il cielo sereno
-delle nuvole di quest'ora, più lo stato del vento solare (OVATION e vento
-scaricati solo all'apertura). Sotto: ore migliori e due notti successive.
-L'avviso "adesso" usa la stessa regola. Nella tab di ogni giorno la stima di quella
-notte. Dettaglio e tab dei giorni ricordano che la previsione del Kp sbaglia
-spesso di circa 1 punto (ricerca Kp). Combina Kp previsto (NOAA, fino a 3
-giorni), nuvole ora per ora (Open-Meteo) e buio astronomico. La località
-segue il viaggio: l'alloggio della notte, oppure le tappe serali ora per ora
-(`evening_stops` in `dati.py`; oggi solo il Giorno 3: Fontana fino alle 21,
-strada del ritorno fino alle 22, poi Reykjavík).
+"Stasera a …: buone / scarse / nulle probabilità" e, quando fa buio e si è
+online, il box "🌌 Adesso a …: buone / forse / difficile" al posto della riga
+"Kp adesso": la migliore tra Kp attuale e probabilità OVATION verso nord (≥30%
+come Kp 4, ≥20% come Kp 3, ≥10% come Kp 2), per il cielo sereno delle nuvole di
+quest'ora, più lo stato del vento solare. OVATION (circa 150 kB) si scarica
+all'apertura dell'app solo col buio e al massimo ogni 15 minuti (il telefono
+ricorda l'ultimo valore); di giorno o offline resta la riga del Kp. Toccando il
+riquadro si aprono ore migliori e due notti successive. Nella tab di ogni giorno
+la stima di quella notte. Dettaglio e tab dei giorni ricordano che la previsione
+del Kp sbaglia spesso di circa 1 punto (ricerca Kp).
 
 **Notifiche** (workflow "Avvisi aurora", `tools/aurora_alert.py`, orari in
 ora islandese = UTC):
