@@ -393,7 +393,11 @@ function renderAuroraNow() {
       text = act >= 0.65 ? 'attività buona: se il cielo è sereno, uscite a guardare' : 'attività bassa';
     } else {
       level = auroraLevel(act * (100 - cloud) / 100);
+      // attività forte con cielo variabile: si vede nelle schiarite (come l'avviso "adesso")
+      const variable = level !== 'buone' && act >= 0.85 && cloud < 80;
+      if (variable) level = 'scarse';
       text = level === 'buone' ? 'buone probabilità di vederla: uscite e guardate verso nord!'
+        : variable ? 'attività forte, cielo variabile: guardate fuori nelle schiarite'
         : level === 'scarse' ? 'forse: vale la pena dare un\'occhiata fuori'
         : act >= 0.65 ? 'c\'è attività, ma il cielo è troppo coperto' : 'difficile vederla';
     }

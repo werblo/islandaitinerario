@@ -125,7 +125,11 @@ ora islandese = UTC):
   se la stima diventa "buone" e al mattino non lo era.
 - **"Aurora: condizioni buone adesso"**: quando è buio e l'attività del
   momento (la migliore tra Kp attuale e OVATION verso nord, come il box
-  "Adesso" dell'app) e le nuvole di quest'ora sono buone.
+  "Adesso" dell'app) e le nuvole di quest'ora sono buone. Con attività forte
+  (Kp ≥ 4 o OVATION ≥ 30%) parte anche con nuvole fino all'80%, come
+  "attività forte, cielo variabile": nelle notti a rovesci l'aurora si vede
+  nelle schiarite (30/10 a Reykjavík: Kp 4,3, nessun avviso con la regola
+  di prima).
 - **"Aurora in arrivo?"**: di notte, ogni 10 minuti, se il vento solare è
   favorevole da un po' (Bz medio ≤ −7 nT per 20 minuti con vento oltre
   500 km/s, oppure Bz ≤ −10 per 15 minuti), è buio e le nuvole previste tra

@@ -46,6 +46,9 @@ CLOUDS_URL = ('https://api.open-meteo.com/v1/forecast?latitude={lat}&longitude={
               '&hourly=cloud_cover,cloud_cover_low,cloud_cover_mid,cloud_cover_high'
               '&timezone=UTC&past_days=1&forecast_days=3')
 GOOD = 0.45   # soglia di "buone probabilità", come nell'app
+# attività forte (Kp ≥ 4 o OVATION ≥ 30%) con cielo variabile: l'aurora si vede nelle schiarite tra
+# un rovescio e l'altro, che la previsione oraria delle nuvole non vede (notte del 30/10, Reykjavík)
+STRONG, VARIABLE_MAX = 0.85, 80
 # vento solare in tempo reale (satellite in L1, circa 30-60 minuti prima dell'arrivo sulla Terra)
 WIND_MAG_URL = 'https://services.swpc.noaa.gov/json/rtsw/rtsw_mag_1m.json'
 WIND_PLASMA_URL = 'https://services.swpc.noaa.gov/json/rtsw/rtsw_wind_1m.json'
@@ -779,15 +782,20 @@ def run(mode, now, manual=False):
     acts = [f(x) for f, x in ((kp_factor, kp_now), (ovation_factor, ov_now)) if x is not None]
     if 'adesso' not in done and dark and acts:
         sky = 0.5 if cloud is None else (100 - cloud) / 100
-        if max(acts) * sky >= GOOD:
+        good = max(acts) * sky >= GOOD
+        variable = not good and max(acts) >= STRONG and cloud is not None and cloud < VARIABLE_MAX
+        if good or variable:
             facts = ([f'aurora verso nord {ov_now}% (OVATION)'] if ov_now is not None else []) \
                 + ([f'Kp {fmt_kp(kp_now)}'] if kp_now is not None else [])
+            look = ('guarda le webcam verso nord (livefromiceland.is)' if preview
+                    else 'allontanatevi dalle luci e guardate verso nord')
             alerts.append(('adesso', {
-                'title': '🌌 Aurora: condizioni buone adesso',
+                'title': '🌌 Aurora: condizioni buone adesso' if good else '🌌 Aurora: attività forte, cielo variabile',
                 'body': f'{short_name(loc["name"])[:1].upper()}{short_name(loc["name"])[1:]}: ' + ', '.join(facts)
                         + (f', nuvole {cloud}%' if cloud is not None else ' (dati sulle nuvole non disponibili: guardate se il cielo è sereno)')
-                        + ('. Guarda le webcam verso nord (livefromiceland.is)!' if preview
-                           else '. Allontanatevi dalle luci e guardate verso nord!'),
+                        + (f'. {look[:1].upper()}{look[1:]}!' if good
+                           else '. Guarda le webcam verso nord (livefromiceland.is): si vede nelle schiarite!' if preview
+                           else f'. Nelle schiarite {look}!'),
                 'tag': f'aurora-{night}-adesso',
             }, 3600))
 
