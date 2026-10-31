@@ -102,7 +102,8 @@ tengono ancora raggiungibili vecchi commit con voucher ed email.
 ## 5. Aurora e avvisi sul telefono
 
 **Stima nell'app.** Nella tab Info il riquadro "Aurora boreale" chiuso mostra
-"Stasera a …: buone / scarse / nulle probabilità" e, quando fa buio e si è
+"Stasera a …: buone / scarse / nulle probabilità" (con il motivo: "per le
+nuvole", "attività debole") e, quando fa buio e si è
 online, il box "🌌 Adesso a …: buone / forse / difficile" al posto della riga
 "Kp adesso": la migliore tra Kp attuale e probabilità OVATION verso nord (≥30%
 come Kp 4, ≥20% come Kp 3, ≥10% come Kp 2), per il cielo sereno delle nuvole di

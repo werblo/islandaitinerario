@@ -250,6 +250,18 @@ def night_estimate(start, stops, trip, kp_rows, clouds):
     return est
 
 
+def reason_of(est):
+    """Perché la stima non è "buone", dall'ora migliore (come auroraReason in app/aurora.js)."""
+    hs = [h for h in est['hours'] if 'score' in h]
+    if not est['level'] or est['level'] == 'buone' or not hs:
+        return ''
+    h = max(hs, key=lambda x: x['score'])     # a pari merito la prima, come reduce nell'app
+    clouds = h['cloud'] is not None and h['cloud'] >= 50
+    weak = kp_factor(h['kp']) < 0.65
+    return ('nuvole e attività debole' if clouds and weak else 'per le nuvole' if clouds
+            else 'attività debole' if weak else '')
+
+
 def fmt_kp(kp):
     return f'{kp:.1f}'.replace('.0', '').replace('.', ',')    # all'italiana: 4,3
 
@@ -309,7 +321,9 @@ def describe(est):
         return f'{place_label(est)}: previsione non disponibile.'
     if not est['clouds']:      # come l'app: senza nuvole niente verdetto
         return f'{place_label(est)}: previsione incompleta · ' + details(est)
-    return f'{place_label(est)}: {est["level"]} probabilità · ' + details(est)
+    why = reason_of(est)
+    why = (' ' if why.startswith('per') else ', ') + why if why else ''
+    return f'{place_label(est)}: {est["level"]} probabilità{why} · ' + details(est)
 
 
 # ---------- avviso "arrivo": vento solare favorevole ----------

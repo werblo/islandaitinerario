@@ -503,7 +503,8 @@ function renderAurora() {
       detailEl.textContent = 'Kp previsto fino a ' + est.kpMax.toFixed(1).replace('.0', '').replace('.', ',')
         + ' · nuvole non disponibili' + (navigator.onLine ? '' : ' (sei offline)') + ': guardate se il cielo è sereno';
     } else {
-      verdictEl.textContent = tonight + ' a ' + nightPlaceNames(est) + ': ' + est.level + ' probabilità';
+      const why = auroraReason(est.level, est.withKp);
+      verdictEl.textContent = tonight + ' a ' + nightPlaceNames(est) + ': ' + est.level + ' probabilità' + (why ? (why[0] === 'p' ? ' ' : ', ') + why : '');
       verdictEl.classList.add('aurora-tonight__verdict--' + est.level);
       const parts = [];
       if (est.stops.length > 1) est.stops.forEach(st => parts.push(shortPlace(st.name) + ' ' + AU_HH(st.from) + '–' + AU_HH(st.end) + ': ' + st.level));
@@ -543,7 +544,8 @@ function renderAurora() {
     el.textContent = e.level && auroraNoClouds(e)
       ? ' Previsione per questa notte: incompleta (mancano i dati sulle nuvole).'
       : e.level
-      ? ' Previsione per questa notte: ' + e.level + ' probabilità' + (e.level !== 'nulle' && e.windows.length ? ', meglio ' + auroraWindowsText(e) : '')
+      ? ' Previsione per questa notte: ' + e.level + ' probabilità' + ((w => w ? (w[0] === 'p' ? ' ' : ', ') + w : '')(auroraReason(e.level, e.withKp)))
+        + (e.level !== 'nulle' && e.windows.length ? ', meglio ' + auroraWindowsText(e) : '')
         + (e.stops.length > 1 ? ' (' + e.stops.map(st => shortPlace(st.name) + ' ' + st.level).join(', ') + ')' : '') + '. ' + KP_NOTE
       : '';
   });
