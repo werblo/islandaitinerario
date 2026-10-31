@@ -108,6 +108,15 @@ function auroraLevel(best) {
 
 const shortPlace = name => name.replace(/ \(.*\)$/, '');
 
+// Perché la stima della serata non è "buone": guarda l'ora migliore (uguale a reason_of in aurora_alert.py).
+// hours = ore con Kp e punteggio (est.withKp di nightEstimate). '' se è "buone" o senza dati.
+function auroraReason(level, hours) {
+  if (!level || level === 'buone' || !hours.length) return '';
+  const h = hours.reduce((a, b) => (b.score > a.score ? b : a));
+  const clouds = h.cloud !== null && h.cloud >= 50, weak = kpFactor(h.kp) < 0.65;
+  return clouds && weak ? 'nuvole e attività debole' : clouds ? 'per le nuvole' : weak ? 'attività debole' : '';
+}
+
 // Probabilità OVATION "verso nord" per un posto: massimo tra la sua latitudine e 70°N alla stessa
 // longitudine (±2°), scartando voci malformate. null se non c'è nessun valore utile.
 function ovationNorth(coords, loc) {
