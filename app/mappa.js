@@ -134,11 +134,15 @@ function hourNow() {
 function drawClouds() {
   if (cloudLayer) { map.removeLayer(cloudLayer); cloudLayer = null; }
   if (!st.grid || !layerOn('cloud')) return;
-  const sand = sandColors();
+  const sand = sandColors()[3];   // colore e opacità massima delle nuvole (tema chiaro o scuro)
   const s = G_LATS[0], n = G_LATS[G_LATS.length - 1], w = G_LONS[0], e = G_LONS[G_LONS.length - 1];
-  const url = canvasOverlay(s, n, w, e, 12, (lat, lon) => {
+  // sfumate: opacità continua con la copertura, e bordi della griglia che sfumano nel nulla (niente rettangolo)
+  const url = canvasOverlay(s, n, w, e, 16, (lat, lon) => {
     const c = cloudAt(st.hour, lat, lon);
-    return c === null || c < 20 ? null : sand[Math.min(3, Math.floor(c / 20) - 1)];
+    if (c === null || c < 10) return null;
+    const edge = Math.min(1, (lat - s) / 0.6, (n - lat) / 0.6, (lon - w) / 0.9, (e - lon) / 0.9);
+    const a = Math.min(1, (c - 10) / 85) * Math.max(0, edge);
+    return a <= 0 ? null : [sand[0], sand[1], sand[2], Math.round(sand[3] * a)];
   });
   cloudLayer = L.imageOverlay(url, [[s, w], [n, e]], { pane: 'clouds', interactive: false }).addTo(map);
 }
@@ -189,7 +193,8 @@ function drawPlaces() {
   if (!layerOn('places')) return;
   const tonight = tonightKey();
   // solo i posti dove si passa una serata (non l'aeroporto dell'ultimo giorno)
-  Object.keys(AURORA_PLACES).filter(key => key === tonight || placeNights(key).length).forEach(key => {
+  // la "strada del ritorno" del 17/11 solo quando è stasera: per il resto c'è la stella di Þingvellir
+  Object.keys(AURORA_PLACES).filter(key => key === tonight || (placeNights(key).length && !/^strada/.test(AURORA_PLACES[key].name))).forEach(key => {
     const p = AURORA_PLACES[key], nm = shortPlace(p.name), isT = key === tonight;
     const html = '<span><b>' + nm.replace(/^strada.*/, 'S').charAt(0).toUpperCase() + '</b>'
       + (isT ? nm + ' <em>stasera</em>' : '') + '</span>' + (isT ? '' : '<i>' + nm + '</i>');
@@ -203,7 +208,9 @@ function drawPlaces() {
 
 // ---------- posti bui per l'aurora (aurora_spots in dati.py) ----------
 const spotsLayer = L.layerGroup().addTo(map);
-map.on('zoomend', () => drawSpots());
+// da lontano solo le iniziali dei posti: i nomi si sovrapporrebbero
+const farLabels = () => map.getContainer().classList.toggle('am-far', map.getZoom() < 8);
+map.on('zoomend', () => { drawSpots(); farLabels(); });
 function drawSpots() {   // da vicino (zoom 8 o più): nella vista d'insieme coprirebbero i posti delle serate
   spotsLayer.clearLayers();
   if (!layerOn('spots') || map.getZoom() < 8) return;
@@ -469,15 +476,24 @@ async function start() {
   const tn = AURORA_PLACES[tonightKey()];
   $('am-tonight-name').textContent = 'Stasera: ' + shortPlace(tn.name);
   drawPlaces(); drawSpots();
-  if (!start.done) {   // all'apertura: tutti i posti delle serate (Reykjavík, Laugarvatn, Flúðir, Vík)
+  if (!start.done) {
+    map.whenReady(farLabels);   // all'apertura: tutti i posti delle serate (Reykjavík, Laugarvatn, Flúðir, Vík)
     const pts = Object.keys(AURORA_PLACES).filter(k => placeNights(k).length).map(k => [AURORA_PLACES[k].lat, AURORA_PLACES[k].lon]);
     if (pts.length) map.fitBounds(pts, { paddingTopLeft: [80, 90], paddingBottomRight: [30, 230], maxZoom: 8 });
     start.done = true;
   }
+  // subito le nuvole salvate, poi ogni strato appena arrivano i suoi dati (niente attesa di tutto)
+  try {
+    const saved = JSON.parse(localStorage.getItem(CLOUD_KEY) || 'null');
+    if (!st.grid && saved && Array.isArray(saved.v) && Array.isArray(saved.times)) st.grid = saved;
+  } catch (e) {}
+  if (st.grid) { setupHours(); drawClouds(); renderClear(); }
+  renderNow();
   setStatus(navigator.onLine ? 'Carico aurora e nuvole…' : 'Offline: uso gli ultimi dati salvati', navigator.onLine ? 'loading' : 'offline');
-  await Promise.all([loadNoaa(), loadClouds()]);
-  setupHours();
-  drawClouds(); drawAurora(); renderNow(); renderClear();
+  await Promise.all([
+    loadNoaa().then(() => { drawAurora(); renderNow(); }),
+    loadClouds().then(() => { setupHours(); drawClouds(); renderNow(); renderClear(); })
+  ]);
   const problems = [];
   if (!st.ovAt) problems.push(st.ovOld ? 'aurora: dato vecchio delle ' + HHMM(st.ovOld) : 'aurora non disponibile');
   if (st.cloudErr) problems.push(st.cloudErr);
