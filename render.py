@@ -602,8 +602,8 @@ html_out = f'''<!DOCTYPE html>
   <details class="aurora-panel" id="aurora-panel">
     <summary class="aurora-panel__summary">
       <span class="panel-title">Aurora boreale — ora</span>
-      <span class="kp-row"><span class="kp-big" id="kp-value">…</span><span class="kp-status" id="kp-status">Caricamento…</span></span>
       <span class="aurora-tonight__verdict" id="aurora-verdict" aria-live="polite">Stasera: calcolo…</span>
+      <span class="kp-line"><span class="kp-value" id="kp-value">…</span> · <span id="kp-status">Caricamento…</span></span>
       <span class="aurora-panel__toggle">Dettagli</span>
     </summary>
     <div class="aurora-now" id="aurora-now" hidden></div>
@@ -612,7 +612,7 @@ html_out = f'''<!DOCTYPE html>
       <div class="aurora-tonight__days" id="aurora-days"></div>
       <div class="aurora-tonight__src" id="aurora-src"></div>
     </div>
-    <p>Indice geomagnetico Kp attuale (NOAA), aggiornato in tempo reale se sei online. La stima di stasera combina Kp previsto (NOAA), copertura nuvolosa oraria (Open-Meteo) e buio astronomico per il luogo in cui sarete la sera (alloggio o tappe serali, come Fontana il Giorno 3). Quando fa buio, in cima al riquadro aperto compare "Adesso": combina il Kp attuale e la probabilità di aurora verso nord (modello OVATION, la migliore delle due) con le nuvole di quest'ora, più il vento solare (Bz negativo e vento veloce annunciano l'aurora 30-60 minuti prima).</p>
+    <p>Kp: attività geomagnetica (NOAA). OVATION: probabilità di aurora verso nord. Vento solare favorevole = aurora possibile entro un'ora. Le stime tengono conto di nuvole (Open-Meteo) e buio nel posto in cui siete la sera.</p>
     <div class="more">Previsione ufficiale islandese con le nuvole: <a href="https://en.vedur.is/weather/forecasts/aurora/" target="_blank" rel="noopener">vedur.is/aurora</a> · mappa dell'ovale nella prossima mezz'ora: <a href="https://www.swpc.noaa.gov/products/aurora-30-minute-forecast" target="_blank" rel="noopener">NOAA</a></div>
   </details>
 

@@ -9,7 +9,8 @@ nelle ore di buio) nei posti in cui siete la sera, tappa per tappa
                 con una frase scherzosa (personalizzata se il telefono ha un nome);
 - "previsione": la sera, solo se la stima diventa "buone" e al mattino non lo era
                 (cambio di programma in meglio);
-- "adesso":     quando è buio e Kp misurato + nuvole di quest'ora sono buoni;
+- "adesso":     quando è buio e attività del momento (la migliore tra Kp attuale e OVATION
+                verso nord) + nuvole di quest'ora sono buone;
 - "arrivo":     quando è buio, il cielo non è coperto e il vento solare è favorevole da un po'
                 (Bz molto negativo, vento veloce): l'aurora potrebbe accendersi entro 30-60 minuti.
 
@@ -50,6 +51,7 @@ WIND_MAG_URL = 'https://services.swpc.noaa.gov/json/rtsw/rtsw_mag_1m.json'
 WIND_PLASMA_URL = 'https://services.swpc.noaa.gov/json/rtsw/rtsw_wind_1m.json'
 # frase sulla previsione del Kp (ricerca Kp di ottobre: al mattino sbaglia in media di circa 1),
 # uguale a KP_NOTE in app/app.js
+OVATION_URL = 'https://services.swpc.noaa.gov/json/ovation_aurora_latest.json'
 KP_NOTE = 'La previsione del Kp sbaglia spesso di circa 1 punto: ricontrollate la sera.'
 
 
@@ -309,21 +311,49 @@ def describe(est):
 
 # ---------- avviso "arrivo": vento solare favorevole ----------
 def solar_wind(now):
-    """Bz e velocità del vento solare negli ultimi minuti (solo il satellite attivo).
-    None se i dati sono vecchi di più di 15 minuti o troppo pochi."""
-    def recent(url, key, minutes):
+    """Bz e velocità del vento solare negli ultimi minuti (solo il satellite attivo, che arriva
+    con 5-6 minuti di ritardo: le finestre partono dal dato più recente, non da adesso).
+    None se l'ultimo dato è vecchio di più di 15 minuti o se i dati sono troppo pochi."""
+    def series(url, key):
         rows = [r for r in get_json(url) if r.get('active') and isinstance(r.get(key), (int, float))]
-        rows = [(parse_time(r['time_tag']), r[key]) for r in rows]
-        rows = [(t, v) for t, v in rows if now - timedelta(minutes=minutes) < t <= now + timedelta(minutes=2)]
-        return [v for _, v in rows], max((t for t, _ in rows), default=None)
-    bz20, last = recent(WIND_MAG_URL, 'bz_gsm', 20)
-    if last is None or now - last > timedelta(minutes=15) or len(bz20) < 12:
+        return [(parse_time(r['time_tag']), r[key]) for r in rows]
+    def window(rows, minutes, last):
+        return [v for t, v in rows if last - timedelta(minutes=minutes) < t <= last]
+    mag = [(t, v) for t, v in series(WIND_MAG_URL, 'bz_gsm') if t <= now + timedelta(minutes=2)]
+    last = max((t for t, _ in mag), default=None)
+    if last is None or now - last > timedelta(minutes=15):
         return None
-    bz15, _ = recent(WIND_MAG_URL, 'bz_gsm', 15)
-    speed, _ = recent(WIND_PLASMA_URL, 'proton_speed', 20)
-    return {'bz20': sum(bz20) / len(bz20), 'bz15': sum(bz15) / len(bz15) if bz15 else 0,
-            'neg5': sum(v <= -5 for v in bz20) / len(bz20), 'neg7': sum(v <= -7 for v in bz15) / max(1, len(bz15)),
+    bz20, bz15 = window(mag, 20, last), window(mag, 15, last)
+    if len(bz20) < 12 or len(bz15) < 9:
+        return None
+    plasma = [(t, v) for t, v in series(WIND_PLASMA_URL, 'proton_speed') if t <= now + timedelta(minutes=2)]
+    plast = max((t for t, _ in plasma), default=None)
+    speed = window(plasma, 20, plast) if plast and now - plast <= timedelta(minutes=15) else []
+    return {'bz20': sum(bz20) / len(bz20), 'bz15': sum(bz15) / len(bz15),
+            'neg5': sum(v <= -5 for v in bz20) / len(bz20), 'neg7': sum(v <= -7 for v in bz15) / len(bz15),
             'speed': sum(speed) / len(speed) if speed else None}
+
+
+def ovation_north(data, now, loc):
+    """Probabilità OVATION di aurora verso nord: massimo tra la latitudine del posto e 70°N alla
+    stessa longitudine (±2°), come nella riga "Adesso" dell'app. None se il dato ha più di un'ora."""
+    try:
+        if now - parse_time(data['Observation Time']) > timedelta(hours=1):
+            return None
+    except (KeyError, TypeError, ValueError):
+        return None
+    lon0 = round(loc['lon']) % 360
+    vals = [p for c in data.get('coordinates') or [] if isinstance(c, list) and len(c) == 3
+            and all(isinstance(x, (int, float)) for x in c)
+            for lon, lat, p in [c]
+            if abs(((lon - lon0 + 180) % 360) - 180) <= 2 and loc['lat'] <= lat <= 70]
+    return max(vals) if vals else None
+
+
+def ovation_factor(p):
+    """OVATION sulla stessa scala di kp_factor (come ovationFactor nell'app; ricerca Kp di ottobre:
+    sopra il 30% c'era attività quasi sempre)."""
+    return 0.85 if p >= 30 else 0.65 if p >= 20 else 0.4 if p >= 10 else 0.15
 
 
 def wind_favorable(w):
@@ -668,10 +698,11 @@ def run(mode, now, manual=False):
             clouds[place] = clouds_by_hour(get_json(clouds_url(trip['places'][place], trip)), trip)
         except Exception as e:
             print(f'::warning::Nuvolosità Open-Meteo per {place} non disponibile: {e}')
+    ov_now = None
     if mode == 'controllo':
         try:
             last = get_json(KP_NOW_URL)[-1]
-            kp_now = float(last.get('estimated_kp', last.get('kp_index')))
+            kp_now = float(last['kp_index'])      # lo stesso valore del Kp grande dell'app
         except Exception as e:
             print(f'::warning::Kp attuale NOAA non disponibile: {e}')
 
@@ -733,17 +764,27 @@ def run(mode, now, manual=False):
         alerts.append(('previsione', {'title': title, 'body': place_label(est) + ' · ' + details(est),
                                       'tag': f'aurora-{night}-previsione'}, 6 * 3600))
 
-    # 2) adesso: buio, Kp misurato e cielo di quest'ora buoni, dove siete adesso
+    # 2) adesso: buio, attività del momento (la migliore tra Kp attuale e OVATION verso nord, come la
+    #    riga "Adesso" dell'app) e cielo di quest'ora buoni, dove siete adesso
     place = stop_at(stops, now)['place']
     loc = trip['places'][place]
     cloud = clouds.get(place, {}).get(hour_key(now))
     dark = sun_altitude(now, loc['lat'], loc['lon']) < -12
-    if 'adesso' not in done and dark and kp_now is not None:
+    if 'adesso' not in done and dark:
+        try:
+            ov_now = ovation_north(get_json(OVATION_URL), now, loc)
+        except Exception as e:
+            print(f'::warning::OVATION NOAA non disponibile: {e}')
+        print(f'Adesso: Kp {kp_now}, OVATION verso nord {ov_now}%, nuvole {cloud}%')
+    acts = [f(x) for f, x in ((kp_factor, kp_now), (ovation_factor, ov_now)) if x is not None]
+    if 'adesso' not in done and dark and acts:
         sky = 0.5 if cloud is None else (100 - cloud) / 100
-        if kp_factor(kp_now) * sky >= GOOD:
+        if max(acts) * sky >= GOOD:
+            facts = ([f'aurora verso nord {ov_now}% (OVATION)'] if ov_now is not None else []) \
+                + ([f'Kp {fmt_kp(kp_now)}'] if kp_now is not None else [])
             alerts.append(('adesso', {
                 'title': '🌌 Aurora: condizioni buone adesso',
-                'body': f'{short_name(loc["name"])[:1].upper()}{short_name(loc["name"])[1:]}: Kp {fmt_kp(kp_now)} in questo momento'
+                'body': f'{short_name(loc["name"])[:1].upper()}{short_name(loc["name"])[1:]}: ' + ', '.join(facts)
                         + (f', nuvole {cloud}%' if cloud is not None else ' (dati sulle nuvole non disponibili: guardate se il cielo è sereno)')
                         + ('. Guarda le webcam verso nord (livefromiceland.is)!' if preview
                            else '. Allontanatevi dalle luci e guardate verso nord!'),
