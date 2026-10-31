@@ -603,10 +603,10 @@ html_out = f'''<!DOCTYPE html>
     <summary class="aurora-panel__summary">
       <span class="panel-title">Aurora boreale — ora</span>
       <span class="aurora-tonight__verdict" id="aurora-verdict" aria-live="polite">Stasera: calcolo…</span>
+      <span class="aurora-now" id="aurora-now" hidden></span>
       <span class="kp-line"><span class="kp-value" id="kp-value">…</span> · <span id="kp-status">Caricamento…</span></span>
       <span class="aurora-panel__toggle">Dettagli</span>
     </summary>
-    <div class="aurora-now" id="aurora-now" hidden></div>
     <div class="aurora-tonight" id="aurora-tonight">
       <div class="aurora-tonight__detail" id="aurora-detail"></div>
       <div class="aurora-tonight__days" id="aurora-days"></div>

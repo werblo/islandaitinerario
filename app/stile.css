@@ -55,12 +55,12 @@ main { max-width:820px; margin:0 auto; padding:20px 20px 70px; display:flex; fle
 .aurora-tonight__days { font-size:0.84375rem; color:#9aa4ad; margin-top:6px; }
 .aurora-tonight__src { font-size:0.8125rem; color:#9aa4ad; margin-top:6px; }
 .aurora-tonight { margin-top:12px; }
-.aurora-now { text-align:center; line-height:1.5; margin-top:12px; padding:12px 14px; border-radius:8px; background:#22344a; }
-.aurora-now__verdict { font-size:1.0625rem; font-weight:700; color:#faf5ea; }
+.aurora-now { display:block; text-align:center; line-height:1.5; margin-top:12px; padding:12px 14px; border-radius:8px; background:#22344a; }
+.aurora-now__verdict { display:block; font-size:1.0625rem; font-weight:700; color:#faf5ea; }
 .aurora-now__verdict--buone { color:#8fd6cd; }
 .aurora-now__verdict--scarse { color:#e8c48f; }
 .aurora-now__verdict--nulle { color:#c7ccd2; }
-.aurora-now__facts { font-size:0.875rem; color:#c7ccd2; margin-top:4px; }
+.aurora-now__facts { display:block; font-size:0.875rem; color:#c7ccd2; margin-top:4px; }
 .aurora-now__facts b { color:#faf5ea; }
 /* riquadro aurora: chiuso mostra Kp e stima di stasera, si apre toccandolo */
 .aurora-panel__summary { list-style:none; display:block; cursor:pointer; text-align:center; }

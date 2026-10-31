@@ -280,8 +280,9 @@ async function fetchKp() {
 }
 
 // ---------- Aurora adesso: OVATION e vento solare (NOAA) ----------
-// Scaricati solo con il riquadro aperto, online e quando è buio (o sta per esserlo) dove siete;
-// OVATION (circa 900 kB, 150 kB compresso) al massimo ogni 5 minuti. Il vento solare qui è
+// Scaricati all'apertura dell'app solo online e quando è buio (o sta per esserlo) dove siete;
+// OVATION (circa 900 kB, 150 kB compresso) al massimo ogni 15 minuti, anche tra un'apertura e
+// l'altra (ultimo valore salvato nel telefono). Il vento solare qui è
 // l'ultimo minuto (l'avviso "arrivo" in tools/aurora_alert.py guarda invece la media di 15-20 minuti).
 function auroraNowPlace() {
   const now = new Date();
@@ -297,9 +298,8 @@ const NOAA_AGE = (t, maxMin) => {   // orario NOAA (UTC) non più vecchio di max
   return isFinite(ms) && Date.now() - ms <= maxMin * 60000 ? ms : null;
 };
 const num = v => (v != null && v !== '' && isFinite(v) ? Number(v) : null);
+const OVATION_KEY = 'islanda2026-ovation';
 async function fetchAuroraNow() {
-  const panel = document.getElementById('aurora-panel');
-  if (!panel || !panel.open) return;
   try {
     const { loc, night } = auroraNowPlace();
     // dopo l'ultima notte in Islanda (21-22 novembre) non serve più
@@ -307,8 +307,10 @@ async function fetchAuroraNow() {
       state.auroraNow = null; renderAuroraNow(); return;
     }
     const opt = { cache: 'no-store' };
-    const prev = state.auroraNow;
-    const fresh = prev && prev.place === loc.name && Date.now() - prev.at < 5 * 60000;
+    let prev = state.auroraNow;
+    if (!prev) { try { prev = JSON.parse(localStorage.getItem(OVATION_KEY) || 'null'); } catch (e) {} }
+    const fresh = prev && prev.ov != null && prev.place === loc.name && Date.now() - prev.at < 15 * 60000
+      && Date.now() - prev.ovAt <= 60 * 60000;
     const [ov, mag, sp] = await Promise.all([
       fresh ? null : fetch('https://services.swpc.noaa.gov/json/ovation_aurora_latest.json', opt).then(r => r.json()).catch(() => null),
       fetch('https://services.swpc.noaa.gov/products/summary/solar-wind-mag-field.json', opt).then(r => r.json()).catch(() => null),
@@ -327,7 +329,10 @@ async function fetchAuroraNow() {
         const [lon, lat, v] = c;
         if (Math.abs(((lon - lon0 + 540) % 360) - 180) <= 2 && lat >= loc.lat && lat <= 70) p = Math.max(p || 0, v);
       });
-      if (p !== null) { now.ov = p; now.ovAt = ovAt; }
+      if (p !== null) {
+        now.ov = p; now.ovAt = ovAt;
+        try { localStorage.setItem(OVATION_KEY, JSON.stringify({ place: now.place, at: now.at, ov: p, ovAt })); } catch (e) {}
+      }
     }
     const m = Array.isArray(mag) && mag[0], w = Array.isArray(sp) && sp[0];
     if (m && NOAA_AGE(m.time_tag, 30)) now.bz = num(m.bz_gsm);
@@ -349,8 +354,10 @@ function ovationFactor(p) {
 function renderAuroraNow() {
   const el = document.getElementById('aurora-now');
   const n = state.auroraNow;
+  const kpLine = document.querySelector('.kp-line');
   if (!el) return;
-  if (!n) { el.hidden = true; return; }
+  if (!n) { el.hidden = true; if (kpLine) kpLine.hidden = false; return; }
+  if (kpLine) kpLine.hidden = true;
   const { place, loc } = auroraNowPlace();
   const t = new Date();
   const fmt = x => String(x).replace('.', ',').replace('-', '−');
@@ -393,8 +400,8 @@ function renderAuroraNow() {
     if (fav && level !== 'buone') text += '; il vento solare è favorevole, può accendersi entro un\'ora';
   }
   if (n.ovAt) { const d = new Date(n.ovAt); facts.push('OVATION delle ' + String(d.getUTCHours()).padStart(2, '0') + ':' + String(d.getUTCMinutes()).padStart(2, '0')); }
-  el.innerHTML = '<div class="aurora-now__verdict' + (level ? ' aurora-now__verdict--' + level : '') + '">🌌 Adesso ' + where + ': ' + text + '</div>'
-    + '<div class="aurora-now__facts">' + facts.join(' · ') + '</div>';
+  el.innerHTML = '<span class="aurora-now__verdict' + (level ? ' aurora-now__verdict--' + level : '') + '">🌌 Adesso ' + where + ': ' + text + '</span>'
+    + '<span class="aurora-now__facts">' + facts.join(' · ') + '</span>';
   el.hidden = false;
 }
 
