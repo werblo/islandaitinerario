@@ -276,7 +276,7 @@ async function fetchAuroraNow() {
     const now = fresh ? Object.assign({}, prev) : { place: loc.name, at: Date.now(), ov: null, ovAt: null };
     now.bz = null; now.v = null;
     // con la rete che non risponde il service worker restituisce l'ultima copia: i dati vecchi si scartano
-    const ovAt = ov && NOAA_AGE(ov['Observation Time'], 60);
+    const ovAt = ovationTime(ov, 60);
     if (ovAt) {
       const p = ovationNorth(ov.coordinates, loc);
       if (p !== null) {
@@ -321,7 +321,7 @@ function renderAuroraNow() {
   const { level, text } = auroraNowVerdict({ ov: n.ov, kp, cloud, sunAlt: sunAltitude(t, loc.lat, loc.lon), wind });
   const nm = shortPlace(loc.name);
   const where = nm.startsWith('strada') ? 'lungo la ' + nm : 'a ' + nm;
-  if (n.ovAt) { const d = new Date(n.ovAt); facts.push('OVATION delle ' + String(d.getUTCHours()).padStart(2, '0') + ':' + String(d.getUTCMinutes()).padStart(2, '0')); }
+  if (n.ovAt) { const d = new Date(n.ovAt); facts.push('OVATION per le ' + String(d.getUTCHours()).padStart(2, '0') + ':' + String(d.getUTCMinutes()).padStart(2, '0')); }
   el.innerHTML = '<span class="aurora-now__verdict' + (level ? ' aurora-now__verdict--' + level : '') + '">🌌 Adesso ' + where + ': ' + text + '</span>'
     + '<span class="aurora-now__facts">' + facts.join(' · ') + '</span>';
   el.hidden = false;

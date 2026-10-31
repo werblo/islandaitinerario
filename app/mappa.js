@@ -181,6 +181,20 @@ async function loadClouds() {
   }
 }
 
+// ---------- tocco sulla mappa: aurora e nuvole in quel punto ----------
+map.on('click', e => {
+  const { lat, lng } = e.latlng, rows = [];
+  if (st.ov) {
+    rows.push('Aurora sopra questo punto: <b>' + Math.round(ovAt(st.ov, lng, lat)) + '%</b>');
+    const n = ovationNorth(st.ovCoords, { lat, lon: lng });
+    if (n !== null) rows.push('Verso nord (si vede bassa): <b>' + Math.round(n) + '%</b>');
+  }
+  const c = cloudAt(st.hour, lat, lng);
+  if (c !== null) rows.push('Nuvole ' + ($('am-hour-lbl').textContent.startsWith('Ora') ? 'adesso' : 'alle ' + $('am-hour-lbl').textContent.slice(0, 5)) + ': <b>' + Math.round(c) + '%</b>');
+  if (!rows.length) rows.push('Nessun dato per questo punto');
+  L.popup().setLatLng(e.latlng).setContent(rows.join('<br>')).openOn(map);
+});
+
 // ---------- posti delle serate del viaggio ----------
 const placesLayer = L.layerGroup().addTo(map);
 function tonightKey() { return auroraNowPlace().place; }
@@ -354,7 +368,7 @@ function renderNow() {
   const facts = [me ? 'Adesso dove sei' : 'Adesso a ' + nm];
   if (st.kp !== null) facts.push('Kp ' + fmtNum(st.kp));
   facts.push(cloud !== null ? 'nuvole ' + cloud + '%' : 'nuvole n.d.');
-  if (st.ovAt) facts.push('dati ' + HHMM(st.ovAt));
+  if (st.ovAt) facts.push('aurora per le ' + HHMM(st.ovAt));
   $('am-ring').style.setProperty('--p', ov === null ? 0 : Math.min(100, ov));
   $('am-ring-txt').textContent = ov === null ? '–' : ov + '%';
   const v = $('am-verdict');
@@ -363,7 +377,7 @@ function renderNow() {
   $('am-facts').textContent = facts.join(' · ');
   // dettaglio
   const li = [];
-  li.push('<b>Aurora verso nord:</b> ' + (ov === null ? 'dato OVATION non disponibile' : ov + '% (OVATION, NOAA' + (st.ovAt ? ', delle ' + HHMM(st.ovAt) : '') + ')'));
+  li.push('<b>Aurora verso nord:</b> ' + (ov === null ? 'dato OVATION non disponibile' : ov + '% (OVATION, NOAA' + (st.ovAt ? ', previsione per le ' + HHMM(st.ovAt) : '') + ')'));
   li.push('<b>Kp adesso:</b> ' + (st.kp === null ? 'non disponibile' : fmtNum(st.kp)));
   li.push('<b>Nuvole quest\'ora:</b> ' + (cloud === null ? 'non disponibili' : cloud + '%'));
   li.push('<b>Vento solare:</b> ' + (wind ? wind.label + ' (Bz ' + (st.bz > 0 ? '+' : '') + fmtNum(Math.round(st.bz)) + ' nT'
@@ -462,10 +476,10 @@ async function loadNoaa() {
       .filter(r => isFinite(r.t) && r.kp !== null);
   }
   // offline il service worker restituisce l'ultima copia: i dati vecchi si scartano
-  const ovT = ov && NOAA_AGE(ov['Observation Time'], 60);
+  const ovT = ovationTime(ov, 60);
   const okCoords = ov && Array.isArray(ov.coordinates) && ov.coordinates.filter(c => Array.isArray(c) && c.length === 3).length > 1000;
   if (ovT && okCoords) { st.ov = ovGrid(ov.coordinates); st.ovCoords = ov.coordinates; st.ovAt = ovT; }
-  else if (okCoords) { st.ovOld = Date.parse(ov['Observation Time']); }
+  else if (okCoords) { st.ovOld = Date.parse(ov['Forecast Time'] || ov['Observation Time']); }
   const last = Array.isArray(kp) && kp[kp.length - 1];
   if (last && NOAA_AGE(last.time_tag, 30) && num(last.kp_index) !== null) st.kp = Math.round(num(last.kp_index) * 10) / 10;
   const m = Array.isArray(mag) && mag[0], w = Array.isArray(sp) && sp[0];

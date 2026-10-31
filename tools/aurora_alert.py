@@ -353,11 +353,17 @@ def solar_wind(now):
 
 def ovation_north(data, now, loc):
     """Probabilità OVATION di aurora verso nord: massimo tra la latitudine del posto e 70°N alla
-    stessa longitudine (±2°), come nella riga "Adesso" dell'app. None se il dato ha più di un'ora."""
-    try:
-        if now - parse_time(data['Observation Time']) > timedelta(hours=1):
-            return None
-    except (KeyError, TypeError, ValueError):
+    stessa longitudine (±2°), come nella riga "Adesso" dell'app. None se il dato ha più di un'ora:
+    conta la "Forecast Time" (l'osservazione a volte resta indietro di ore), come ovationTime() nell'app."""
+    fresh = False
+    for key in ('Forecast Time', 'Observation Time'):
+        try:
+            if now - parse_time(data[key]) <= timedelta(hours=1):
+                fresh = True
+                break
+        except (KeyError, TypeError, ValueError):
+            pass
+    if not fresh:
         return None
     lon0 = round(loc['lon']) % 360
     vals = [p for c in data.get('coordinates') or [] if isinstance(c, list) and len(c) == 3

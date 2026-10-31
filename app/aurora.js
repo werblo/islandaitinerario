@@ -131,6 +131,14 @@ function ovationNorth(coords, loc) {
   return p;
 }
 
+// Ora a cui vale il file OVATION: la "Forecast Time" (l'osservazione del vento solare a volte resta
+// indietro di ore mentre la previsione è aggiornata, come il 31/10 sera); ripiego sulla "Observation Time".
+// Restituisce i millisecondi solo se non è più vecchia di maxMin minuti, altrimenti null.
+function ovationTime(ov, maxMin) {
+  if (!ov) return null;
+  return NOAA_AGE(ov['Forecast Time'], maxMin) || NOAA_AGE(ov['Observation Time'], maxMin);
+}
+
 // Vento solare dell'ultimo minuto: soglie come l'avviso "arrivo" (che però guarda la media di 15-20 minuti)
 function windState(bz, v) {
   if (bz === null) return null;
