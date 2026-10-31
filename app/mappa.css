@@ -86,8 +86,9 @@ button { font:inherit; color:inherit; }
 .am-legend b { font-weight:500; margin:0 3px; }
 .am-legend__cloud { width:52px !important; height:8px !important; border-radius:4px !important;
   background:linear-gradient(90deg,transparent,var(--sand-4)); box-shadow:inset 0 0 0 1px var(--line); }
+.am-legend__sep { margin-left:10px !important; }
 .am-legend__aur { width:44px !important; height:8px !important; border-radius:4px !important; margin-right:8px;
-  background:linear-gradient(90deg,rgba(61,220,132,.3),#a8e05f 30%,#ffd84a 50%,#ff9f2e 75%,#ff3b30); }
+  background:linear-gradient(90deg,rgba(61,220,132,.3),#a8e05f 25%,#ffd84a 45%,#ff9f2e 70%,#ff3b30); margin-right:0 !important; }
 .am-locate { position:fixed; z-index:900; right:12px; bottom:calc(env(safe-area-inset-bottom) + 110px);
   width:52px; height:52px; border-radius:50%; border:none; background:var(--card); color:var(--ink);
   box-shadow:var(--shadow); display:grid; place-items:center; cursor:pointer; }

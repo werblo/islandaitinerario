@@ -106,8 +106,9 @@ button { font:inherit; color:inherit; }
 .am-legend b { font-weight:500; margin:0 3px; }
 .am-legend__cloud { width:52px !important; height:8px !important; border-radius:4px !important;
   background:linear-gradient(90deg,transparent,var(--sand-4)); box-shadow:inset 0 0 0 1px var(--line); }
+.am-legend__sep { margin-left:10px !important; }
 .am-legend__aur { width:44px !important; height:8px !important; border-radius:4px !important; margin-right:8px;
-  background:linear-gradient(90deg,rgba(61,220,132,.3),#a8e05f 30%,#ffd84a 50%,#ff9f2e 75%,#ff3b30); }
+  background:linear-gradient(90deg,rgba(61,220,132,.3),#a8e05f 25%,#ffd84a 45%,#ff9f2e 70%,#ff3b30); margin-right:0 !important; }
 .am-locate { position:fixed; z-index:900; right:12px; bottom:calc(env(safe-area-inset-bottom) + 110px);
   width:52px; height:52px; border-radius:50%; border:none; background:var(--card); color:var(--ink);
   box-shadow:var(--shadow); display:grid; place-items:center; cursor:pointer; }
@@ -232,8 +233,8 @@ button { font:inherit; color:inherit; }
 <button class="am-locate" type="button" id="am-locate" aria-label="Dove sono io"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="6.5"/><circle cx="12" cy="12" r="2" fill="currentColor"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg></button>
 
 <div class="am-legend" aria-label="Legenda">
-  <i class="am-legend__aur" title="Probabilità di aurora (OVATION)"></i>
-  <b>nuvole 0%</b><i class="am-legend__cloud"></i><b>100%</b>
+  <b>aurora 5%</b><i class="am-legend__aur" title="Probabilità di aurora (OVATION)"></i><b>80%</b>
+  <b class="am-legend__sep">nuvole</b><i class="am-legend__cloud"></i>
   <span class="am-legend__note" id="am-legend-note" hidden>aurora: adesso</span>
 </div>
 
@@ -252,7 +253,7 @@ button { font:inherit; color:inherit; }
   <h3 class="am-night__title" id="am-night-title">Stasera ora per ora</h3>
   <div class="am-night" id="am-night"></div>
   <p class="am-night__legend"><i class="am-night--buone"></i>buone <i class="am-night--scarse"></i>forse <i class="am-night--nulle"></i>difficile <i class="am-night--chiaro"></i>chiaro · Kp previsto (NOAA) × nuvole della mappa: il Kp previsto sbaglia spesso di circa 1 punto.</p>
-  <p><b>Come si legge.</b> Velo colorato: probabilità di aurora sopra quel punto (OVATION, NOAA, per la prossima ora): verde debole, giallo probabile, arancio e rosso forte. Linea tratteggiata gialla: a nord di essa l'aurora si vede almeno bassa all'orizzonte verso nord. Aree color sabbia: nuvole previste nell'ora del cursore (Open-Meteo, stesso metodo dell'app). Satellite: nuvole vere di circa 20 minuti fa (Meteosat, infrarosso). ⭐ posti bui vicino alle serate (coordinate indicative: seguite i cartelli del parcheggio). ☀ indica la schiarita più vicina, in linea d'aria: prima di partire controllate le strade su <a href="https://umferdin.is/en" target="_blank" rel="noopener">umferdin.is</a>.</p>
+  <p><b>Come si legge.</b> Velo colorato: probabilità di aurora sopra quel punto (OVATION, NOAA, per la prossima ora): verde debole, giallo probabile, arancio e rosso forte; toccando la mappa si leggono i numeri di quel punto. Linea tratteggiata gialla: a nord di essa l'aurora si vede almeno bassa all'orizzonte verso nord. Aree color sabbia: nuvole previste nell'ora del cursore (Open-Meteo, stesso metodo dell'app). Satellite: nuvole vere di circa 20 minuti fa (Meteosat, infrarosso). ⭐ posti bui vicino alle serate (coordinate indicative: seguite i cartelli del parcheggio). ☀ indica la schiarita più vicina, in linea d'aria: prima di partire controllate le strade su <a href="https://umferdin.is/en" target="_blank" rel="noopener">umferdin.is</a>.</p>
   <p>Previsione ufficiale islandese: <a href="https://en.vedur.is/weather/forecasts/aurora/" target="_blank" rel="noopener">vedur.is/aurora</a> · ovale NOAA: <a href="https://www.swpc.noaa.gov/products/aurora-30-minute-forecast" target="_blank" rel="noopener">NOAA</a></p>
 </section>
 
@@ -396,6 +397,14 @@ function ovationNorth(coords, loc) {
     if (Math.abs(((lon - lon0 + 540) % 360) - 180) <= 2 && lat >= loc.lat && lat <= 70) p = Math.max(p || 0, v);
   });
   return p;
+}
+
+// Ora a cui vale il file OVATION: la "Forecast Time" (l'osservazione del vento solare a volte resta
+// indietro di ore mentre la previsione è aggiornata, come il 31/10 sera); ripiego sulla "Observation Time".
+// Restituisce i millisecondi solo se non è più vecchia di maxMin minuti, altrimenti null.
+function ovationTime(ov, maxMin) {
+  if (!ov) return null;
+  return NOAA_AGE(ov['Forecast Time'], maxMin) || NOAA_AGE(ov['Observation Time'], maxMin);
 }
 
 // Vento solare dell'ultimo minuto: soglie come l'avviso "arrivo" (che però guarda la media di 15-20 minuti)
@@ -619,6 +628,20 @@ async function loadClouds() {
   }
 }
 
+// ---------- tocco sulla mappa: aurora e nuvole in quel punto ----------
+map.on('click', e => {
+  const { lat, lng } = e.latlng, rows = [];
+  if (st.ov) {
+    rows.push('Aurora sopra questo punto: <b>' + Math.round(ovAt(st.ov, lng, lat)) + '%</b>');
+    const n = ovationNorth(st.ovCoords, { lat, lon: lng });
+    if (n !== null) rows.push('Verso nord (si vede bassa): <b>' + Math.round(n) + '%</b>');
+  }
+  const c = cloudAt(st.hour, lat, lng);
+  if (c !== null) rows.push('Nuvole ' + ($('am-hour-lbl').textContent.startsWith('Ora') ? 'adesso' : 'alle ' + $('am-hour-lbl').textContent.slice(0, 5)) + ': <b>' + Math.round(c) + '%</b>');
+  if (!rows.length) rows.push('Nessun dato per questo punto');
+  L.popup().setLatLng(e.latlng).setContent(rows.join('<br>')).openOn(map);
+});
+
 // ---------- posti delle serate del viaggio ----------
 const placesLayer = L.layerGroup().addTo(map);
 function tonightKey() { return auroraNowPlace().place; }
@@ -792,7 +815,7 @@ function renderNow() {
   const facts = [me ? 'Adesso dove sei' : 'Adesso a ' + nm];
   if (st.kp !== null) facts.push('Kp ' + fmtNum(st.kp));
   facts.push(cloud !== null ? 'nuvole ' + cloud + '%' : 'nuvole n.d.');
-  if (st.ovAt) facts.push('dati ' + HHMM(st.ovAt));
+  if (st.ovAt) facts.push('aurora per le ' + HHMM(st.ovAt));
   $('am-ring').style.setProperty('--p', ov === null ? 0 : Math.min(100, ov));
   $('am-ring-txt').textContent = ov === null ? '–' : ov + '%';
   const v = $('am-verdict');
@@ -801,7 +824,7 @@ function renderNow() {
   $('am-facts').textContent = facts.join(' · ');
   // dettaglio
   const li = [];
-  li.push('<b>Aurora verso nord:</b> ' + (ov === null ? 'dato OVATION non disponibile' : ov + '% (OVATION, NOAA' + (st.ovAt ? ', delle ' + HHMM(st.ovAt) : '') + ')'));
+  li.push('<b>Aurora verso nord:</b> ' + (ov === null ? 'dato OVATION non disponibile' : ov + '% (OVATION, NOAA' + (st.ovAt ? ', previsione per le ' + HHMM(st.ovAt) : '') + ')'));
   li.push('<b>Kp adesso:</b> ' + (st.kp === null ? 'non disponibile' : fmtNum(st.kp)));
   li.push('<b>Nuvole quest\'ora:</b> ' + (cloud === null ? 'non disponibili' : cloud + '%'));
   li.push('<b>Vento solare:</b> ' + (wind ? wind.label + ' (Bz ' + (st.bz > 0 ? '+' : '') + fmtNum(Math.round(st.bz)) + ' nT'
@@ -900,10 +923,10 @@ async function loadNoaa() {
       .filter(r => isFinite(r.t) && r.kp !== null);
   }
   // offline il service worker restituisce l'ultima copia: i dati vecchi si scartano
-  const ovT = ov && NOAA_AGE(ov['Observation Time'], 60);
+  const ovT = ovationTime(ov, 60);
   const okCoords = ov && Array.isArray(ov.coordinates) && ov.coordinates.filter(c => Array.isArray(c) && c.length === 3).length > 1000;
   if (ovT && okCoords) { st.ov = ovGrid(ov.coordinates); st.ovCoords = ov.coordinates; st.ovAt = ovT; }
-  else if (okCoords) { st.ovOld = Date.parse(ov['Observation Time']); }
+  else if (okCoords) { st.ovOld = Date.parse(ov['Forecast Time'] || ov['Observation Time']); }
   const last = Array.isArray(kp) && kp[kp.length - 1];
   if (last && NOAA_AGE(last.time_tag, 30) && num(last.kp_index) !== null) st.kp = Math.round(num(last.kp_index) * 10) / 10;
   const m = Array.isArray(mag) && mag[0], w = Array.isArray(sp) && sp[0];

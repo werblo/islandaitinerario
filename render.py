@@ -841,8 +841,8 @@ mappa_out = f"""<!DOCTYPE html>
 <button class="am-locate" type="button" id="am-locate" aria-label="Dove sono io">{_ICON('<circle cx="12" cy="12" r="6.5"/><circle cx="12" cy="12" r="2" fill="currentColor"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/>').replace('1.8', '2')}</button>
 
 <div class="am-legend" aria-label="Legenda">
-  <i class="am-legend__aur" title="Probabilità di aurora (OVATION)"></i>
-  <b>nuvole 0%</b><i class="am-legend__cloud"></i><b>100%</b>
+  <b>aurora 5%</b><i class="am-legend__aur" title="Probabilità di aurora (OVATION)"></i><b>80%</b>
+  <b class="am-legend__sep">nuvole</b><i class="am-legend__cloud"></i>
   <span class="am-legend__note" id="am-legend-note" hidden>aurora: adesso</span>
 </div>
 
@@ -861,7 +861,7 @@ mappa_out = f"""<!DOCTYPE html>
   <h3 class="am-night__title" id="am-night-title">Stasera ora per ora</h3>
   <div class="am-night" id="am-night"></div>
   <p class="am-night__legend"><i class="am-night--buone"></i>buone <i class="am-night--scarse"></i>forse <i class="am-night--nulle"></i>difficile <i class="am-night--chiaro"></i>chiaro · Kp previsto (NOAA) × nuvole della mappa: il Kp previsto sbaglia spesso di circa 1 punto.</p>
-  <p><b>Come si legge.</b> Velo colorato: probabilità di aurora sopra quel punto (OVATION, NOAA, per la prossima ora): verde debole, giallo probabile, arancio e rosso forte. Linea tratteggiata gialla: a nord di essa l'aurora si vede almeno bassa all'orizzonte verso nord. Aree color sabbia: nuvole previste nell'ora del cursore (Open-Meteo, stesso metodo dell'app). Satellite: nuvole vere di circa 20 minuti fa (Meteosat, infrarosso). ⭐ posti bui vicino alle serate (coordinate indicative: seguite i cartelli del parcheggio). ☀ indica la schiarita più vicina, in linea d'aria: prima di partire controllate le strade su <a href="https://umferdin.is/en" target="_blank" rel="noopener">umferdin.is</a>.</p>
+  <p><b>Come si legge.</b> Velo colorato: probabilità di aurora sopra quel punto (OVATION, NOAA, per la prossima ora): verde debole, giallo probabile, arancio e rosso forte; toccando la mappa si leggono i numeri di quel punto. Linea tratteggiata gialla: a nord di essa l'aurora si vede almeno bassa all'orizzonte verso nord. Aree color sabbia: nuvole previste nell'ora del cursore (Open-Meteo, stesso metodo dell'app). Satellite: nuvole vere di circa 20 minuti fa (Meteosat, infrarosso). ⭐ posti bui vicino alle serate (coordinate indicative: seguite i cartelli del parcheggio). ☀ indica la schiarita più vicina, in linea d'aria: prima di partire controllate le strade su <a href="https://umferdin.is/en" target="_blank" rel="noopener">umferdin.is</a>.</p>
   <p>Previsione ufficiale islandese: <a href="https://en.vedur.is/weather/forecasts/aurora/" target="_blank" rel="noopener">vedur.is/aurora</a> · ovale NOAA: <a href="https://www.swpc.noaa.gov/products/aurora-30-minute-forecast" target="_blank" rel="noopener">NOAA</a></p>
 </section>
 
