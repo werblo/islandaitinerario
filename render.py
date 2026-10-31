@@ -599,18 +599,22 @@ html_out = f'''<!DOCTYPE html>
     <div class="countdown-banner__sub" id="countdown-sub"></div>
   </div>
 
-  <div class="aurora-panel">
-    <div class="panel-title">Aurora boreale — ora</div>
-    <div class="kp-row"><div class="kp-big" id="kp-value">…</div><div class="kp-status" id="kp-status">Caricamento…</div></div>
-    <div class="aurora-tonight" aria-live="polite">
-      <div class="aurora-tonight__verdict" id="aurora-verdict">Stasera: calcolo…</div>
+  <details class="aurora-panel" id="aurora-panel">
+    <summary class="aurora-panel__summary">
+      <span class="panel-title">Aurora boreale — ora</span>
+      <span class="kp-row"><span class="kp-big" id="kp-value">…</span><span class="kp-status" id="kp-status">Caricamento…</span></span>
+      <span class="aurora-tonight__verdict" id="aurora-verdict" aria-live="polite">Stasera: calcolo…</span>
+      <span class="aurora-panel__toggle">Dettagli</span>
+    </summary>
+    <div class="aurora-tonight" id="aurora-tonight">
       <div class="aurora-tonight__detail" id="aurora-detail"></div>
       <div class="aurora-tonight__days" id="aurora-days"></div>
       <div class="aurora-tonight__src" id="aurora-src"></div>
     </div>
-    <p>Indice geomagnetico Kp attuale (NOAA), aggiornato in tempo reale se sei online. La stima di stasera combina Kp previsto (NOAA), copertura nuvolosa oraria (Open-Meteo) e buio astronomico per il luogo in cui sarete la sera (alloggio o tappe serali, come Fontana il Giorno 3).</p>
-    <div class="more">Più vicino alla partenza, controlla <a href="https://en.vedur.is/weather/forecasts/aurora/" target="_blank" rel="noopener">vedur.is/aurora</a> per la previsione reale sulle vostre date e sul cielo sereno.</div>
-  </div>
+    <div class="aurora-now" id="aurora-now" hidden></div>
+    <p>Indice geomagnetico Kp attuale (NOAA), aggiornato in tempo reale se sei online. La stima di stasera combina Kp previsto (NOAA), copertura nuvolosa oraria (Open-Meteo) e buio astronomico per il luogo in cui sarete la sera (alloggio o tappe serali, come Fontana il Giorno 3). Quando fa buio, qui sopra compaiono anche la probabilità di aurora verso nord (modello OVATION) e il vento solare (Bz negativo e vento veloce annunciano l'aurora 30-60 minuti prima).</p>
+    <div class="more">Previsione ufficiale islandese con le nuvole: <a href="https://en.vedur.is/weather/forecasts/aurora/" target="_blank" rel="noopener">vedur.is/aurora</a> · mappa dell'ovale nella prossima mezz'ora: <a href="https://www.swpc.noaa.gov/products/aurora-30-minute-forecast" target="_blank" rel="noopener">NOAA</a></div>
+  </details>
 
   <div class="panel">
     <div class="panel-title">Mappa del viaggio</div>

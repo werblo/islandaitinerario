@@ -101,9 +101,13 @@ tengono ancora raggiungibili vecchi commit con voucher ed email.
 
 ## 5. Aurora e avvisi sul telefono
 
-**Stima nell'app.** Nella tab Info: "Stasera a …: buone / scarse / nulle
-probabilità" con le ore migliori, più le due notti successive; nella tab di
-ogni giorno la stima di quella notte. Combina Kp previsto (NOAA, fino a 3
+**Stima nell'app.** Nella tab Info il riquadro "Aurora boreale" chiuso mostra
+Kp attuale e "Stasera a …: buone / scarse / nulle probabilità"; toccandolo si
+apre con ore migliori, due notti successive e, quando fa buio e si è online,
+la riga "Adesso" con la probabilità OVATION verso nord e il vento solare
+(scaricati solo all'apertura). Nella tab di ogni giorno la stima di quella
+notte. Dettaglio e tab dei giorni ricordano che la previsione del Kp sbaglia
+spesso di circa 1 punto (ricerca Kp). Combina Kp previsto (NOAA, fino a 3
 giorni), nuvole ora per ora (Open-Meteo) e buio astronomico. La località
 segue il viaggio: l'alloggio della notte, oppure le tappe serali ora per ora
 (`evening_stops` in `dati.py`; oggi solo il Giorno 3: Fontana fino alle 21,
@@ -121,8 +125,12 @@ ora islandese = UTC):
   se la stima diventa "buone" e al mattino non lo era.
 - **"Aurora: condizioni buone adesso"**: quando è buio e Kp e nuvole del
   momento sono buoni.
+- **"Aurora in arrivo?"**: di notte, ogni 10 minuti, se il vento solare è
+  favorevole da un po' (Bz medio ≤ −7 nT per 20 minuti con vento oltre
+  500 km/s, oppure Bz ≤ −10 per 15 minuti), è buio e le nuvole previste tra
+  45 minuti sono sotto il 75%. Una volta per notte, e non dopo un "adesso".
 - **Anteprima prima del viaggio** (22 ottobre - 12 novembre): di notte, tutta la
-  notte, solo l'avviso "adesso" per Reykjavík (Kp e nuvole di quel momento), al
+  notte, solo gli avvisi "adesso" e "arrivo" per Reykjavík (Kp e nuvole di quel momento), al
   massimo uno per notte e solo ai telefoni che non sono di Federica: serve a
   guardare le webcam e a provare gli avvisi prima di partire.
 - **Prova automatica**: 13 novembre dalle 18:07 (19:07 in Italia), una volta
@@ -131,7 +139,8 @@ ora islandese = UTC):
 
 **Turni.** GitHub fa partire le esecuzioni programmate anche con 4-12 ore di
 ritardo (misurato a ottobre). Per questo ogni esecuzione è un "turno" che resta
-acceso 5 ore e mezza e fa da solo tutti i controlli, ai minuti :07 e :37. I
+acceso 5 ore e mezza e fa da solo tutti i controlli, ai minuti :07 e :37 (di
+notte, in mezzo, ogni 10 minuti solo il vento solare). I
 turni partono ogni 2 ore dal 13 al 22 novembre e si mettono in coda: quando uno
 finisce parte il successivo, così le ore utili restano coperte anche se GitHub
 ritarda. Gli avvisi già mandati sono salvati nella cache di GitHub Actions, non
@@ -191,10 +200,14 @@ commit di `index.html`, perché le notifiche leggono il valore da lì.
 14 novembre; cartella separata, non va cancellata con quella delle nuvole).
 Punto 1: il Kp previsto al mattino (quello di app e avvisi) contro il Kp
 misurato la notte dopo. Punto 2, dal 22 al 29 ottobre: ogni 10 minuti di notte
-Kp al minuto, OVATION e vento solare contro il magnetometro islandese di
-Leirvogur, per capire quale dato "di adesso" segue meglio l'Islanda. Risultati
-nel riepilogo di ogni esecuzione e nell'artifact `ricerca-kp`; decisioni (es.
-una frase "previsione incerta") solo con il sì di Michele.
+Kp al minuto, OVATION e vento solare contro i magnetometri di Narsarsuaq e
+Abisko, per capire quale dato "di adesso" segue meglio l'Islanda. Risultati
+nel riepilogo di ogni esecuzione e nell'artifact `ricerca-kp`. Esito al 30/10
+(settimana calma, attività solo il 22-23/10): previsione del mattino in media
++0,5 troppo alta, stessa fascia dell'app solo nel 31% dei casi; OVATION verso
+nord ha visto l'attività del 22/10 meglio del Kp al minuto, ma con dati
+troppo pochi per sostituirlo. Decisi con Michele il 31/10: frase sul Kp,
+riga "Adesso" con OVATION e vento solare, avviso "arrivo".
 
 ## 7. Prenotazioni e alloggi
 

@@ -277,8 +277,49 @@ async function fetchKp() {
   document.getElementById('kp-status').textContent = kpText;
 }
 
+// ---------- Aurora adesso: OVATION e vento solare (NOAA) ----------
+// Scaricati solo con il riquadro aperto, online e quando è buio (o sta per esserlo) dove siete:
+// OVATION pesa circa 150 kB. Soglie del vento solare come l'avviso "arrivo" (tools/aurora_alert.py).
+async function fetchAuroraNow() {
+  const el = document.getElementById('aurora-now');
+  const panel = document.getElementById('aurora-panel');
+  if (!el || !panel || !panel.open) return;
+  const now = new Date();
+  const start = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), 12) - (now.getUTCHours() < 7 ? 86400000 : 0);
+  const place = stopAt(nightStops(new Date(start).toISOString().slice(0, 10)), now).place;
+  const loc = AURORA_PLACES[place];
+  if (!navigator.onLine || !loc || sunAltitude(now, loc.lat, loc.lon) >= 0) { el.hidden = true; return; }
+  const parts = [];
+  const opt = { cache: 'no-store' };
+  const [ov, mag, sp] = await Promise.all([
+    fetch('https://services.swpc.noaa.gov/json/ovation_aurora_latest.json', opt).then(r => r.json()).catch(() => null),
+    fetch('https://services.swpc.noaa.gov/products/summary/solar-wind-mag-field.json', opt).then(r => r.json()).catch(() => null),
+    fetch('https://services.swpc.noaa.gov/products/summary/solar-wind-speed.json', opt).then(r => r.json()).catch(() => null)
+  ]);
+  if (ov && Array.isArray(ov.coordinates)) {
+    // massimo tra la latitudine del posto e 70°N, alla stessa longitudine (±2°): aurora a nord
+    const lon0 = ((Math.round(loc.lon) % 360) + 360) % 360;
+    let p = 0;
+    ov.coordinates.forEach(([lon, lat, v]) => {
+      if (Math.abs(((lon - lon0 + 540) % 360) - 180) <= 2 && lat >= loc.lat && lat <= 70) p = Math.max(p, v);
+    });
+    parts.push('aurora verso nord ' + p + '% (OVATION)');
+  }
+  const bz = mag && mag[0] && isFinite(mag[0].bz_gsm) ? Number(mag[0].bz_gsm) : null;
+  const v = sp && sp[0] && isFinite(sp[0].proton_speed) ? Number(sp[0].proton_speed) : null;
+  if (bz !== null) {
+    const verdict = (bz <= -7 && v !== null && v >= 500) || bz <= -10 ? 'favorevole' : bz <= -3 ? 'un po\' favorevole' : 'nella norma';
+    parts.push('vento solare ' + verdict + ' (Bz ' + (bz > 0 ? '+' : '') + String(Math.round(bz)).replace('-', '−') + ' nT'
+      + (v !== null ? ', ' + Math.round(v) + ' km/s' : '') + ')');
+  }
+  el.textContent = parts.length ? 'Adesso: ' + parts.join(' · ') : '';
+  el.hidden = !parts.length;
+}
+
 // ---------- Aurora: stima per stasera (Kp previsto + nuvole + buio) ----------
 const AURORA_KEY = 'islanda2026-aurora';
+// ricerca Kp di ottobre: la previsione del mattino sbaglia in media di circa 1 (uguale in tools/aurora_alert.py)
+const KP_NOTE = 'La previsione del Kp sbaglia spesso di circa 1 punto: ricontrollate la sera.';
 function auroraLoad() {
   let d = null;
   try { d = JSON.parse(localStorage.getItem(AURORA_KEY) || 'null'); } catch (e) {}
@@ -479,8 +520,8 @@ function renderAurora() {
   const tonight = now.getUTCHours() < 7 ? 'Stanotte' : 'Stasera';
 
   // dopo l'ultima notte in Islanda (21-22 novembre) la stima non serve più
-  const tonightBox = verdictEl && verdictEl.parentElement;
-  if (tonightBox) tonightBox.hidden = isoOf(start) > '2026-11-21';
+  const tonightBox = document.getElementById('aurora-tonight');
+  if (tonightBox) tonightBox.hidden = verdictEl.hidden = isoOf(start) > '2026-11-21';
   if (verdictEl) {
     const detailEl = document.getElementById('aurora-detail');
     const daysEl = document.getElementById('aurora-days');
@@ -507,7 +548,7 @@ function renderAurora() {
       parts.push('Kp previsto fino a ' + est.kpMax.toFixed(1).replace('.0', '').replace('.', ','));
       parts.push(cl.text);
       parts.push('buio ' + AU_HH(est.hours[0].t) + '–' + AU_HH(new Date(est.hours[est.hours.length - 1].t.getTime() + 3600000)) + ' (ora islandese)');
-      detailEl.textContent = parts.join(' · ');
+      detailEl.textContent = parts.join(' · ') + '. ' + KP_NOTE;
     }
     // le due notti successive, ognuna nel suo luogo
     const next = [1, 2].map(n => {
@@ -539,13 +580,21 @@ function renderAurora() {
       ? ' Previsione per questa notte: incompleta (mancano i dati sulle nuvole).'
       : e.level
       ? ' Previsione per questa notte: ' + e.level + ' probabilità' + (e.level !== 'nulle' && e.windows.length ? ', meglio ' + auroraWindowsText(e) : '')
-        + (e.stops.length > 1 ? ' (' + e.stops.map(st => shortPlace(st.name) + ' ' + st.level).join(', ') + ')' : '') + '.'
+        + (e.stops.length > 1 ? ' (' + e.stops.map(st => shortPlace(st.name) + ' ' + st.level).join(', ') + ')' : '') + '. ' + KP_NOTE
       : '';
   });
 }
 
 var auroraReady = true;   // var: all'avvio vale ancora undefined, prima di queste definizioni
 try { renderAurora(); } catch (e) { /* la stima aurora non deve fermare il resto dell'app */ }
+
+// riquadro aurora compatto: aprendolo si scaricano OVATION e vento solare (se è buio)
+const auroraPanel = document.getElementById('aurora-panel');
+if (auroraPanel) auroraPanel.addEventListener('toggle', () => {
+  const tg = auroraPanel.querySelector('.aurora-panel__toggle');
+  if (tg) tg.textContent = auroraPanel.open ? 'Chiudi' : 'Dettagli';
+  if (auroraPanel.open) fetchAuroraNow();
+});
 
 const FX_FALLBACK_RATE = 145.5; // stima approssimativa EUR->ISK, usata se offline
 let fxRate = FX_FALLBACK_RATE;
@@ -699,6 +748,7 @@ function refreshLiveData(force) {
   if (!force && now - lastLiveRefresh < 60000) return;
   lastLiveRefresh = now;
   fetchKp();
+  fetchAuroraNow();
   fetchKpForecast();
   fetchAllWeather();
   fetchFxRate();
