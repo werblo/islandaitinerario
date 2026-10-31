@@ -275,27 +275,31 @@ async function fetchKp() {
     kpText = navigator.onLine ? 'Dato non disponibile al momento (NOAA non risponde)' : 'Dato non disponibile offline';
   }
   document.getElementById('kp-status').textContent = kpText;
+  renderAuroraNow();
 }
 
 // ---------- Aurora adesso: OVATION e vento solare (NOAA) ----------
 // Scaricati solo con il riquadro aperto, online e quando è buio (o sta per esserlo) dove siete:
 // OVATION pesa circa 150 kB. Soglie del vento solare come l'avviso "arrivo" (tools/aurora_alert.py).
-async function fetchAuroraNow() {
-  const el = document.getElementById('aurora-now');
-  const panel = document.getElementById('aurora-panel');
-  if (!el || !panel || !panel.open) return;
+function auroraNowPlace() {
   const now = new Date();
   const start = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), 12) - (now.getUTCHours() < 7 ? 86400000 : 0);
   const place = stopAt(nightStops(new Date(start).toISOString().slice(0, 10)), now).place;
-  const loc = AURORA_PLACES[place];
-  if (!navigator.onLine || !loc || sunAltitude(now, loc.lat, loc.lon) >= 0) { el.hidden = true; return; }
-  const parts = [];
+  return { place, loc: AURORA_PLACES[place] };
+}
+async function fetchAuroraNow() {
+  const panel = document.getElementById('aurora-panel');
+  if (!panel || !panel.open) return;
+  const { loc } = auroraNowPlace();
+  state.auroraNow = null;
+  if (!navigator.onLine || !loc || sunAltitude(new Date(), loc.lat, loc.lon) >= 0) { renderAuroraNow(); return; }
   const opt = { cache: 'no-store' };
   const [ov, mag, sp] = await Promise.all([
     fetch('https://services.swpc.noaa.gov/json/ovation_aurora_latest.json', opt).then(r => r.json()).catch(() => null),
     fetch('https://services.swpc.noaa.gov/products/summary/solar-wind-mag-field.json', opt).then(r => r.json()).catch(() => null),
     fetch('https://services.swpc.noaa.gov/products/summary/solar-wind-speed.json', opt).then(r => r.json()).catch(() => null)
   ]);
+  const now = { ov: null, bz: null, v: null };
   if (ov && Array.isArray(ov.coordinates)) {
     // massimo tra la latitudine del posto e 70°N, alla stessa longitudine (±2°): aurora a nord
     const lon0 = ((Math.round(loc.lon) % 360) + 360) % 360;
@@ -303,17 +307,72 @@ async function fetchAuroraNow() {
     ov.coordinates.forEach(([lon, lat, v]) => {
       if (Math.abs(((lon - lon0 + 540) % 360) - 180) <= 2 && lat >= loc.lat && lat <= 70) p = Math.max(p, v);
     });
-    parts.push('aurora verso nord ' + p + '% (OVATION)');
+    now.ov = p;
   }
-  const bz = mag && mag[0] && isFinite(mag[0].bz_gsm) ? Number(mag[0].bz_gsm) : null;
-  const v = sp && sp[0] && isFinite(sp[0].proton_speed) ? Number(sp[0].proton_speed) : null;
-  if (bz !== null) {
-    const verdict = (bz <= -7 && v !== null && v >= 500) || bz <= -10 ? 'favorevole' : bz <= -3 ? 'un po\' favorevole' : 'nella norma';
-    parts.push('vento solare ' + verdict + ' (Bz ' + (bz > 0 ? '+' : '') + String(Math.round(bz)).replace('-', '−') + ' nT'
-      + (v !== null ? ', ' + Math.round(v) + ' km/s' : '') + ')');
+  if (mag && mag[0] && isFinite(mag[0].bz_gsm)) now.bz = Number(mag[0].bz_gsm);
+  if (sp && sp[0] && isFinite(sp[0].proton_speed)) now.v = Number(sp[0].proton_speed);
+  state.auroraNow = now;
+  renderAuroraNow();
+}
+
+// OVATION sulla stessa scala di kpFactor (ricerca Kp: sopra il 30% c'era attività quasi sempre)
+function ovationFactor(p) {
+  if (p >= 30) return 0.85;
+  if (p >= 20) return 0.65;
+  if (p >= 10) return 0.4;
+  return 0.15;
+}
+
+// "Si vede adesso?": attività (la migliore tra Kp attuale e OVATION) × cielo sereno di quest'ora
+function renderAuroraNow() {
+  const el = document.getElementById('aurora-now');
+  const n = state.auroraNow;
+  if (!el) return;
+  if (!n) { el.hidden = true; return; }
+  const { place, loc } = auroraNowPlace();
+  const t = new Date();
+  const fmt = x => String(x).replace('.', ',').replace('-', '−');
+  const facts = [];
+  const acts = [];
+  if (n.ov !== null) { acts.push(ovationFactor(n.ov)); facts.push('aurora verso nord <b>' + n.ov + '%</b> (OVATION)'); }
+  if (state.kpStatus === 'ok') { acts.push(kpFactor(state.kp)); facts.push('Kp <b>' + fmt(state.kp) + '</b>'); }
+  const clouds = (auroraLoad().clouds || {})[place];
+  let cloud = null;
+  if (clouds && clouds.time) {
+    const idx = clouds.time.indexOf(t.toISOString().slice(0, 13) + ':00');
+    if (idx >= 0) cloud = effCloud(clouds, idx);
   }
-  el.textContent = parts.length ? 'Adesso: ' + parts.join(' · ') : '';
-  el.hidden = !parts.length;
+  facts.push(cloud !== null ? 'nuvole <b>' + cloud + '%</b>' : 'nuvole non disponibili');
+  let fav = false;
+  if (n.bz !== null) {
+    fav = (n.bz <= -7 && n.v !== null && n.v >= 500) || n.bz <= -10;
+    const verdict = fav ? 'favorevole' : n.bz <= -3 ? 'un po\' favorevole' : 'nella norma';
+    facts.push('vento solare ' + verdict + ' (Bz ' + (n.bz > 0 ? '+' : '') + fmt(Math.round(n.bz)) + ' nT'
+      + (n.v !== null ? ', ' + Math.round(n.v) + ' km/s' : '') + ')');
+  }
+  let level = null, text;
+  const nm = shortPlace(loc.name);
+  const where = nm.startsWith('strada') ? 'lungo la ' + nm : 'a ' + nm;
+  if (sunAltitude(t, loc.lat, loc.lon) >= -12) {
+    text = 'ancora troppo chiaro per vederla';
+  } else if (!acts.length) {
+    text = 'dati sull\'attività non disponibili';
+  } else {
+    const act = Math.max(...acts);
+    if (cloud === null) {
+      level = act >= 0.65 ? 'scarse' : 'nulle';
+      text = act >= 0.65 ? 'attività buona: se il cielo è sereno, uscite a guardare' : 'attività bassa';
+    } else {
+      level = auroraLevel(act * (100 - cloud) / 100);
+      text = level === 'buone' ? 'buone probabilità di vederla: uscite e guardate verso nord!'
+        : level === 'scarse' ? 'forse: vale la pena dare un\'occhiata fuori'
+        : act >= 0.65 ? 'c\'è attività, ma il cielo è troppo coperto' : 'difficile vederla';
+    }
+    if (fav && level !== 'buone') text += '; il vento solare è favorevole, può accendersi entro un\'ora';
+  }
+  el.innerHTML = '<div class="aurora-now__verdict' + (level ? ' aurora-now__verdict--' + level : '') + '">🌌 Adesso ' + where + ': ' + text + '</div>'
+    + '<div class="aurora-now__facts">' + facts.join(' · ') + '</div>';
+  el.hidden = false;
 }
 
 // ---------- Aurora: stima per stasera (Kp previsto + nuvole + buio) ----------
