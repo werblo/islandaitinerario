@@ -11,7 +11,7 @@ name: Avvisi aurora
 # I turni partono ogni 2 ore dal 13 al 22 novembre e si mettono in coda (concurrency):
 # quando uno finisce parte quello in attesa, così le ore utili restano coperte anche se
 # GitHub ritarda. Dal 22/10 al 12/11 c'è un'anteprima: di notte solo gli avvisi "adesso"
-# e "arrivo" per Reykjavík, ai telefoni che non sono di Federica.
+# e "arrivo" per Reykjavík, a tutti i telefoni.
 # A mano (tab Actions -> "Avvisi aurora" -> Run workflow): "prova" manda subito una
 # notifica di prova, "mattino" un'anteprima del messaggio del mattino, "controllo" un
 # controllo come di notte, "vento" solo il controllo del vento solare, "turno" una prova del giro dei controlli (non durante il
