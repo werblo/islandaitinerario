@@ -204,7 +204,7 @@ commit di `index.html`, perché le notifiche leggono il valore da lì.
 **Ricerca sul Kp** (`tools/kp/ricerca_kp.py`, workflow "Ricerca Kp", fino al
 14 novembre; cartella separata, non va cancellata con quella delle nuvole).
 Punto 1: il Kp previsto al mattino (quello di app e avvisi) contro il Kp
-misurato la notte dopo. Punto 2, dal 22 al 29 ottobre: ogni 10 minuti di notte
+misurato la notte dopo. Punto 2, dal 22 ottobre al 14 novembre: ogni 10 minuti di notte
 Kp al minuto, OVATION e vento solare contro i magnetometri di Narsarsuaq e
 Abisko, per capire quale dato "di adesso" segue meglio l'Islanda. Risultati
 nel riepilogo di ogni esecuzione e nell'artifact `ricerca-kp`. Esito al 30/10
@@ -213,6 +213,8 @@ nel riepilogo di ogni esecuzione e nell'artifact `ricerca-kp`. Esito al 30/10
 nord ha visto l'attività del 22/10 meglio del Kp al minuto, ma con dati
 troppo pochi per sostituirlo. Decisi con Michele il 31/10: frase sul Kp,
 riga "Adesso" con OVATION e vento solare, avviso "arrivo".
+Avvistamenti reali (es. foto o storie di chi è in Islanda) in
+`tools/kp/osservazioni.csv`: servono a verificare stime e avvisi su casi veri.
 
 ## 7. Prenotazioni e alloggi
 
