@@ -18,7 +18,6 @@ Questo file descrive **com'è il progetto oggi**. La storia delle modifiche
   2026", condivisa; nella tab Info c'è il link.
 - **Aspetto:** tema scuro automatico quando il telefono è in modalità scura.
 - **Date da ricordare:**
-  - 2 novembre: risultato finale della ricerca sulle nuvole (sezione 6).
   - 8 novembre: ricontrollo automatico pre-partenza (Routine su claude.ai).
   - 13 novembre, 19:07 ora italiana: notifica di prova degli avvisi aurora
     su entrambi i telefoni (sezione 5).
@@ -35,7 +34,6 @@ Questo file descrive **com'è il progetto oggi**. La storia delle modifiche
 | `icons/` | Icona dell'app (Canva, ottobre 2026): `aurora-180/192/512.png` e le `-maskable` per Android. Se si cambia l'icona, darle un nome di file nuovo (la copia offline vecchia altrimenti rimostra quella di prima) e reinstallare l'app dopo l'aggiornamento. |
 | `routes.json` | Percorsi stradali precalcolati (sezione 4). |
 | `tools/aurora_alert.py` | Avvisi aurora (sezione 5). |
-| `tools/research/` | Ricerca sulle nuvole (sezione 6), da cancellare dopo il 2 novembre. |
 | `tools/kp/` | Ricerca sul Kp (sezione 6), fino al 14 novembre. |
 | `CLAUDE.md` | Promemoria breve per le sessioni con Claude. |
 
@@ -205,24 +203,19 @@ perderebbero iscrizione e copia offline). Se nel log compare "iscrizione
 scaduta", su quel telefono si tocca di nuovo "Attiva avvisi aurora" e si
 aggiorna il secret.
 
-## 6. Ricerca sulle nuvole (fino al 2 novembre)
+## 6. Ricerca sulle nuvole e sul Kp
 
-`tools/research/nuvole.py` e il workflow "Ricerca nuvole" confrontano le
-previsioni delle nuvole delle 7:30 con il cielo osservato (METAR di Reykjavík
-e Keflavík, SYNOP di Reykjavík), per scegliere il metodo usato da app e
-notifiche: `CLOUD_METHOD` in `dati.py` (`'totale'`, `'pesata'`, `'media'`,
-`'media_pes'`). Raccolta ogni mattina di ottobre (alle 10:47 c'è una seconda
-prova se GitHub ritarda), risultati nel riepilogo di ogni esecuzione e
-nell'artifact `ricerca-nuvole`.
-
-Metodo in uso dal 19 ottobre: **`media_pes`** (prima `'totale'`). Confronto
-del 18/10 (circa 13 notti, Reykjavík + Keflavík, soglia 30%): ore azzeccate
-92% contro 84% di `'totale'`, errore medio 17 punti contro 25.
-Programmati con Claude: il 2
-novembre risultato finale (conferma o ritorno indietro solo con il sì di
-Michele) e cancellazione di `tools/research/` e `ricerca-nuvole.yml`, con
-test completo. Dopo un cambio di metodo si rilancia `render.py` e si fa il
-commit di `index.html`, perché le notifiche leggono il valore da lì.
+**Nuvole (ottobre 2026, conclusa).** Le previsioni delle nuvole del mattino
+sono state confrontate ogni giorno con il cielo osservato (METAR di Reykjavík
+e Keflavík, SYNOP di Reykjavík) per scegliere `CLOUD_METHOD` in `dati.py`
+(`'totale'`, `'pesata'`, `'media'`, `'media_pes'`). Metodo scelto:
+**`media_pes`** (in uso dal 19 ottobre). Risultato finale (circa 26 notti):
+errore medio 22 punti contro 32 di `'totale'`, ore azzeccate 76-78% contro
+70-75%; prevede però nuvoloso circa metà delle ore serene reali (per questo
+c'è l'avviso "cielo variabile"). Codice e dati restano nella storia git e
+negli artifact `ricerca-nuvole` di GitHub Actions. Dopo un cambio di metodo
+si rilancia `render.py` e si fa il commit di `index.html`, perché le
+notifiche leggono il valore da lì.
 
 **Ricerca sul Kp** (`tools/kp/ricerca_kp.py`, workflow "Ricerca Kp", fino al
 14 novembre; cartella separata, non va cancellata con quella delle nuvole).
