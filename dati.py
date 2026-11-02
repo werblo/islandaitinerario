@@ -264,7 +264,7 @@ aurora_spots = [
      'note': 'Nessuna luce intorno, aperto sempre. Restate al parcheggio: di notte i sentieri sono ghiacciati.'},
 ]
 
-# Stima delle nuvole (vedi tools/research/nuvole.py e leggimi sezione 6):
+# Stima delle nuvole (scelta con la ricerca di ottobre 2026, leggimi sezione 6):
 #   'totale'    nuvolosità totale del modello automatico (DMI HARMONIE in Islanda)
 #   'pesata'    stesso modello, strati pesati: bassi contano tutti, medi e alti meno
 #   'media'     media della nuvolosità totale dei CLOUD_MODELS
