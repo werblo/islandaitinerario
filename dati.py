@@ -206,14 +206,14 @@ days = [
   ],
   'activities':[
     {'time':'06:45','title':'Partenza da Flúðir','desc':'Partite presto per avere margine: riconsegna auto e imbarco sono molto ravvicinati.','cost':None},
-    {'time':'~09:15','title':'Riconsegna auto FairCar','desc':'Il voucher indica riconsegna alle 11:00, ma il volo parte alle 11:25: verificate con FairCar se potete riconsegnare prima (es. entro le 9:00\u20119:30) per avere tempo per check-in e imbarco. Controllate sul voucher la regola del carburante: se va riconsegnata col pieno, fate benzina a Keflavík/Reykjanesbær prima di arrivare.','cost':None,'nav':'FairCar Bogatröð 1 Keflavík'},
+    {'time':'~09:15','title':'Riconsegna auto FairCar','desc':'Il voucher indica riconsegna alle 11:00, ma FairCar ha confermato che si può riconsegnare prima: verso le 9:15, così resta tempo per check-in e imbarco (volo alle 11:25). Controllate sul voucher la regola del carburante: se va riconsegnata col pieno, fate benzina a Keflavík/Reykjanesbær prima di arrivare.','cost':None,'nav':'FairCar Bogatröð 1 Keflavík'},
     {'time':'11:25','title':'Volo EJU3970 Keflavík → Milano Malpensa','desc':'Arrivo previsto alle 16:45.','cost':None}
   ],
   'food':[
     {'meal':'Colazione','place':'Avanzi della spesa','note':'Partendo alle 6:45 la colazione della guesthouse difficilmente è già servita: tenete da parte qualcosa dalla spesa del Bónus','cost':'€','gf':False}
   ],
   'accommodation': None,
-  'tips':'Pochissimo margine tra riconsegna auto (11:00) e decollo (11:25): meglio anticipare la riconsegna il più possibile.',
+  'tips':'Riconsegna anticipata già confermata da FairCar: partite presto da Flúðir per lasciare l\'auto verso le 9:15 (volo alle 11:25).',
   'culture':"L'Islanda produce quasi tutta la sua elettricità da fonti rinnovabili, soprattutto idroelettrico e geotermia. L'acqua calda geotermica serve anche per il riscaldamento della maggior parte delle abitazioni del paese. L'aeroporto di Keflavík, oggi il principale scalo internazionale dell'isola, fu costruito durante la seconda guerra mondiale dagli Stati Uniti, che vi mantennero una base militare fino al 2006.",
   'culture_links':[("Islanda", "https://it.wikipedia.org/wiki/Islanda"), ("Keflavík", "https://it.wikipedia.org/wiki/Keflavik")],
  }
