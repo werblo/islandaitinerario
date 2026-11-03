@@ -66,7 +66,7 @@ days = [
   ],
   'food':[
     {'meal':'Pranzo','place':'Hlemmur Mathöll','note':'Food hall con vari stand: chiedete stand per stand, nessuna opzione senza glutine confermata','cost':'€€','gf':False},
-    {'meal':'Cena','place':'Sushi Social o cucina in appartamento','note':'Opzioni senza glutine non confermate: chiedete allo staff (la salsa di soia normale contiene glutine, chiedete tamari)','cost':'€€€','gf':False}
+    {'meal':'Cena','place':'Brass Kitchen & Bar, Laugavegur 66','note':'A 200 m dall\'appartamento, adatto ai celiaci: friggitrice dedicata, fish & chips, hamburger e pane senza glutine. Alternative vicine: Harry\'s Seafood and Grill (Laugavegur 85, menu senza glutine) e Old Iceland (Laugavegur 72). Segnalate comunque la celiachia','cost':'€€','gf':True}
   ],
   'accommodation':{'name':'46heima Boutique Apartments','detail':'2ª notte a Reykjavík · stanotte parcheggio in zona P2','url':'https://www.booking.com/hotel/is/46heima-apartments.en-gb.html'},
   'tips':"Nel pomeriggio si va a Reykjanes (circa 135 km in tutto tra andata, tappe e ritorno). Se il meteo è brutto, al posto di Reykjanes c'è il National Museum, al coperto in città.",
