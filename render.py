@@ -285,8 +285,13 @@ def render_food(f):
     note = f'<div class="food-note">{e(f["note"])}</div>' if f.get('note') else ''
     # badge solo dove abbiamo trovato opzioni senza glutine (ricerca ottobre 2026)
     gf = '<span class="gf-badge">opzioni senza glutine</span>' if f.get('gf') else ''
+    # 'nav': il nome del locale apre Google Maps con le indicazioni stradali
+    place = e(f['place'])
+    if f.get('nav'):
+        url = 'https://www.google.com/maps/dir/?api=1&destination=' + urllib.parse.quote(f['nav'])
+        place = f'<a class="food-nav" href="{e(url)}" target="_blank" rel="noopener">{place} \u2197</a>'
     return (f'<div class="food-card"><div class="food-top">'
-            f'<div><strong>{e(f["meal"])}</strong> — {e(f["place"])}</div>'
+            f'<div><strong>{e(f["meal"])}</strong> — {place}</div>'
             f'<div class="food-cost">{e(f["cost"])}</div></div>{note}{gf}</div>')
 
 def wiki_links(links):
