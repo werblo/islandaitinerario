@@ -43,6 +43,13 @@ MAGOBS = ('https://imag-data.bgs.ac.uk/GIN_V1/GINServices?Request=GetData&format
 # osservatori magnetici in tempo reale più vicini all'Islanda (Leirvogur non pubblica in tempo reale):
 # Narsarsuaq (sud della Groenlandia, latitudine magnetica simile) e Abisko (Lapponia svedese)
 OBS = (('naq', 'NAQ', 'Narsarsuaq'), ('abk', 'ABK', 'Abisko'))
+# Leirvogur (12 km da Reykjavík, Università d'Islanda), aggiunto il 4/11 su richiesta di Michele dopo l'aurora
+# del 3/11 vista solo dal magnetometro islandese di Hello Aurora. Non c'è un servizio ufficiale: si usa quello
+# del sito Iceland at Night (ultime 3 ore, una riga al minuto [ora unix, nT, ...]; la seconda colonna è la
+# deviazione che i siti islandesi mostrano, negativa = aurora). Può cambiare o sparire: solo per la ricerca.
+LEIRVOGUR = 'https://icelandatnight.vercel.app/api/leirvogur'
+LRV_NT = -100      # "aurora" secondo Leirvogur: deviazione sotto -100 nT nell'ultima ora (come Hello Aurora)
+REFS = OBS + (('lrv', 'LRV', 'Leirvogur'),)
 
 
 def get_json(url, tries=2):
@@ -152,6 +159,7 @@ def save_observed(d):
 
 # ---------- punto 2: indicatori "di adesso" ogni 10 minuti ----------
 F_NOW = ['ora', 'kp_1m', 'ovation', 'ovation_n', 'bz', 'bt', 'vento', 'naq_range60', 'abk_range60']
+F_LRV = ['ora', 'lrv_min60', 'lrv_range60']     # file separato: adesso.csv ha già la sua intestazione
 
 
 def ovation_probs(data):
@@ -193,6 +201,28 @@ def mag_range(now, code):
             if now - timedelta(minutes=60) <= parse_time(t) <= now:
                 vals.append(math.hypot(x, y))
     return (round(max(vals) - min(vals), 1), len(vals)) if len(vals) >= 20 else (None, len(vals))
+
+
+def lrv_now(now):
+    """Leirvogur nell'ultima ora: valore più basso e escursione (nT), se ci sono almeno 20 minuti."""
+    vals = []
+    for r in get_json(LEIRVOGUR) or []:
+        if isinstance(r, list) and len(r) >= 2 and num(r[0]) is not None and num(r[1]) is not None:
+            t = datetime.fromtimestamp(num(r[0]), UTC)
+            if now - timedelta(minutes=60) <= t <= now + timedelta(minutes=1):
+                vals.append(num(r[1]))
+    return (min(vals), round(max(vals) - min(vals), 1)) if len(vals) >= 20 else (None, None)
+
+
+def save_leirvogur(d, now):
+    try:
+        lo, rng = lrv_now(now)
+    except Exception as e:
+        print(f'  Leirvogur non disponibile: {type(e).__name__}: {e}'[:200])
+        return
+    append(os.path.join(d, 'leirvogur.csv'), F_LRV, {'ora': now.strftime('%Y-%m-%dT%H:%M'),
+                                                     'lrv_min60': lo, 'lrv_range60': rng})
+    print(f'  Leirvogur: minimo {lo} nT, escursione {rng} nT')
 
 
 def save_nowcast(d, now):
@@ -240,6 +270,7 @@ def turno(d, minutes):
         if now < NOWCAST_UNTIL and is_dark_hours(now):
             print(f'--- {now:%d/%m %H:%M} UTC')
             save_nowcast(d, now)
+            save_leirvogur(d, now)
         if now + timedelta(minutes=10) > deadline or now >= NOWCAST_UNTIL or not is_dark_hours(now + timedelta(minutes=10)):
             break
         time.sleep(max(0, (now + timedelta(minutes=10) - datetime.now(UTC)).total_seconds()))
@@ -280,13 +311,14 @@ def spearman(a, b):
 YES = (('kp_1m', 'Kp al minuto ≥ 4', lambda v: v >= 4, 0),
        ('ovation', 'OVATION sopra Reykjavík ≥ 10%', lambda v: v >= 10, 0),
        ('ovation_n', 'OVATION a nord ≥ 10%', lambda v: v >= 10, 0),
-       ('bz', 'Bz ≤ −5 nT (riferimento 30 minuti dopo)', lambda v: v <= -5, 30))
+       ('bz', 'Bz ≤ −5 nT (riferimento 30 minuti dopo)', lambda v: v <= -5, 30),
+       ('lrv_min60', f'Leirvogur sotto {LRV_NT} nT', lambda v: v <= LRV_NT, 0))
 ACTIVE_NT = 150     # "attività": il magnetometro si muove più di 150 nT in un'ora
 
 
 def hit_table(rows, ref):
     """Quante volte ogni indicatore "ci azzecca": sì quando c'è attività, no quando non c'è."""
-    thr, ref_text = ACTIVE_NT, f'{dict((c, n) for c, _, n in OBS)[ref[:3]]} si muove più di {ACTIVE_NT} nT in un\'ora'
+    thr, ref_text = ACTIVE_NT, f'{dict((c, n) for c, _, n in REFS)[ref[:3]]} si muove più di {ACTIVE_NT} nT in un\'ora'
     by_time = {r['ora']: r for r in rows}
     out = [f'**Chi ci azzecca più spesso.** "Attività" = {ref_text}. Per ogni indicatore: '
            'quante volte ha detto la cosa giusta, quante volte l\'attività c\'era davvero quando diceva sì, '
@@ -294,7 +326,7 @@ def hit_table(rows, ref):
            'perché il vento solare arriva in Islanda con un po\' di ritardo.', '',
            '| indicatore | misure | azzeccate | quando dice sì, c\'è davvero | attività viste |', '|---|---|---|---|---|']
     for k, label, yes, lag in YES:
-        if k == ref:
+        if k[:3] == ref[:3]:
             continue
         tp = fp = fn = tn = 0
         for r in rows:
@@ -348,12 +380,15 @@ def valuta(d):
     out.append('')
 
     rows = read(os.path.join(d, 'adesso.csv'))
+    lrv = {r['ora']: r for r in read(os.path.join(d, 'leirvogur.csv'))}
+    for r in rows:
+        r.update({k: v for k, v in lrv.get(r['ora'], {}).items() if k != 'ora'})
     out += ['## Punto 2: quale indicatore "di adesso" segue meglio l\'Islanda?', '']
     if not rows:
         out.append('Nessun dato raccolto.')
     else:
         out.append(f'{len(rows)} misure di notte.')
-        for code, _, name in OBS:
+        for code, _, name in REFS:
             ref = code + '_range60'
             if sum(bool(r.get(ref)) for r in rows) < 10:
                 out += ['', f'### Riferimento {name}: dati insufficienti.']
@@ -366,12 +401,20 @@ def valuta(d):
                                    ('ovation', 'OVATION sopra Reykjavík', 1),
                                    ('ovation_n', 'OVATION a nord di Reykjavík', 1),
                                    ('bz', 'Bz del vento solare (segno invertito)', -1),
-                                   ('vento', 'velocità del vento solare', 1)):
+                                   ('vento', 'velocità del vento solare', 1),
+                                   ('lrv_min60', 'Leirvogur, valore più basso (segno invertito)', -1)):
+                if k[:3] == code:
+                    continue
                 a = [(sign * float(r[k]), float(r[ref])) for r in rows if r.get(k) and r.get(ref)]
                 c = spearman([x for x, _ in a], [y for _, y in a]) if a else None
                 out.append(f'| {label} | {len(a)} | {"–" if c is None else f"{c:.2f}"} |')
             out.append('')
             out += hit_table(rows, ref)
+        n_lrv = [r for r in rows if r.get('lrv_min60')]
+        if n_lrv:
+            hits = [r['ora'] for r in n_lrv if float(r['lrv_min60']) <= LRV_NT]
+            out += ['', f'**Leirvogur** (dal 4/11): {len(n_lrv)} misure, sotto {LRV_NT} nT in {len(hits)}'
+                    + (f' (prima {hits[0]}, ultima {hits[-1]} UTC).' if hits else '.')]
     text = '\n'.join(out)
     print(text)
     with open(os.path.join(d, 'RISULTATI.md'), 'w', encoding='utf-8') as f:
@@ -394,6 +437,7 @@ def prova():
             print(f'{name}: ERRORE {type(e).__name__}: {e}'[:300])
     print('Valori di adesso:')
     save_nowcast('/tmp', now)
+    save_leirvogur('/tmp', now)
 
 
 if __name__ == '__main__':
