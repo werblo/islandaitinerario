@@ -50,6 +50,10 @@ OBS = (('naq', 'NAQ', 'Narsarsuaq'), ('abk', 'ABK', 'Abisko'))
 LEIRVOGUR = 'https://icelandatnight.vercel.app/api/leirvogur'
 LRV_NT = -100      # "aurora" secondo Leirvogur: deviazione sotto -100 nT nell'ultima ora (come Hello Aurora)
 REFS = OBS + (('lrv', 'LRV', 'Leirvogur'),)
+# Corretto il 5/11: la sera (prima di mezzanotte magnetica) l'aurora fa SALIRE il valore di Leirvogur, dopo
+# lo fa scendere; il 5/11 alle 19-20 UTC aurora a Egilsstaðir con Leirvogur fino a +83 nT. Quindi come
+# indicatore conta l'escursione nell'ultima ora, non solo il minimo.
+LRV_RANGE = 70
 
 
 def get_json(url, tries=2):
@@ -312,7 +316,7 @@ YES = (('kp_1m', 'Kp al minuto ≥ 4', lambda v: v >= 4, 0),
        ('ovation', 'OVATION sopra Reykjavík ≥ 10%', lambda v: v >= 10, 0),
        ('ovation_n', 'OVATION a nord ≥ 10%', lambda v: v >= 10, 0),
        ('bz', 'Bz ≤ −5 nT (riferimento 30 minuti dopo)', lambda v: v <= -5, 30),
-       ('lrv_min60', f'Leirvogur sotto {LRV_NT} nT', lambda v: v <= LRV_NT, 0))
+       ('lrv_range60', f'Leirvogur si muove più di {LRV_RANGE} nT', lambda v: v >= LRV_RANGE, 0))
 ACTIVE_NT = 150     # "attività": il magnetometro si muove più di 150 nT in un'ora
 
 
@@ -410,10 +414,12 @@ def valuta(d):
                 out.append(f'| {label} | {len(a)} | {"–" if c is None else f"{c:.2f}"} |')
             out.append('')
             out += hit_table(rows, ref)
-        n_lrv = [r for r in rows if r.get('lrv_min60')]
+        n_lrv = [r for r in rows if r.get('lrv_range60')]
         if n_lrv:
-            hits = [r['ora'] for r in n_lrv if float(r['lrv_min60']) <= LRV_NT]
-            out += ['', f'**Leirvogur** (dal 4/11): {len(n_lrv)} misure, sotto {LRV_NT} nT in {len(hits)}'
+            hits = [r['ora'] for r in n_lrv if float(r['lrv_range60']) >= LRV_RANGE
+                    or (r.get('lrv_min60') and float(r['lrv_min60']) <= LRV_NT)]
+            out += ['', f'**Leirvogur** (dal 4/11): {len(n_lrv)} misure, escursione oltre {LRV_RANGE} nT '
+                    f'o minimo sotto {LRV_NT} nT in {len(hits)}'
                     + (f' (prima {hits[0]}, ultima {hits[-1]} UTC).' if hits else '.')]
     text = '\n'.join(out)
     print(text)

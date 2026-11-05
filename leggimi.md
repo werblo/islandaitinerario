@@ -224,7 +224,8 @@ misurato la notte dopo. Punto 2, dal 22 ottobre al 14 novembre: ogni 10 minuti d
 Kp al minuto, OVATION e vento solare contro i magnetometri di Narsarsuaq e
 Abisko, per capire quale dato "di adesso" segue meglio l'Islanda. Dal 4/11 anche Leirvogur, il
 magnetometro islandese vicino a Reykjavík (dati non ufficiali del sito Iceland at
-Night), dopo l'aurora del 3/11 vista solo dai magnetometri islandesi. Risultati
+Night), dopo l'aurora del 3/11 vista solo dai magnetometri islandesi. La sera l'aurora fa salire il
+valore di Leirvogur, dopo mezzanotte lo fa scendere: conta l'escursione. Risultati
 nel riepilogo di ogni esecuzione e nell'artifact `ricerca-kp`. Esito al 30/10
 (settimana calma, attività solo il 22-23/10): previsione del mattino in media
 +0,5 troppo alta, stessa fascia dell'app solo nel 31% dei casi; OVATION verso
