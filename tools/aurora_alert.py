@@ -33,10 +33,12 @@ Variabili d'ambiente:
                         l'orologio da AURORA_NOW
   AURORA_STATE          file con gli avvisi già inviati (default .aurora-state/state.json)
   AURORA_NOW            solo per test: istante da simulare (ISO, UTC)
+  AURORA_LEIRVOGUR      "1" = nel turno ripubblica i dati di Leirvogur sul branch dati-leirvogur
+                        (solo le esecuzioni programmate su GitHub)
 
 Uso: python3 tools/aurora_alert.py  (dalla radice del repo, dopo render.py)
 """
-import json, math, os, random, re, sys, time, urllib.request
+import json, math, os, random, re, subprocess, sys, time, urllib.request
 from datetime import datetime, timedelta, timezone
 
 VAPID_SUB = 'https://werblo.github.io'   # contatto per i servizi push (solo dominio)
@@ -610,6 +612,40 @@ def main():
     return run(mode, now, manual)
 
 
+# ---------- Leirvogur: magnetometro islandese, ripubblicato per l'app ----------
+# Il servizio (non ufficiale, Iceland at Night) non permette la lettura dal browser: il turno ne copia
+# le ultime ore sul branch dati-leirvogur, che l'app legge da raw.githubusercontent.com. Solo da
+# vedere nell'app (chiesto da Michele l'8/11): non decide gli avvisi (valutazione al 14/11).
+LEIRVOGUR_URL = 'https://icelandatnight.vercel.app/api/leirvogur'
+LEIRVOGUR_BRANCH = 'dati-leirvogur'
+
+
+def publish_leirvogur(now):
+    def git(*args, inp=None):
+        r = subprocess.run(['git', *args], input=inp, capture_output=True, text=True, timeout=60)
+        if r.returncode:
+            raise RuntimeError(f'git {args[0]}: {r.stderr.strip()[:200]}')
+        return r.stdout.strip()
+    try:
+        pts = sorted({(int(r[0]), r[1]) for r in get_json(LEIRVOGUR_URL) or []
+                      if isinstance(r, list) and len(r) >= 2
+                      and all(isinstance(x, (int, float)) for x in r[:2])})
+        if not pts:
+            print('Leirvogur: nessun dato dal servizio.')
+            return
+        body = json.dumps({'aggiornato': now.strftime('%Y-%m-%dT%H:%M:%SZ'),
+                           'fonte': 'icelandatnight.vercel.app/api/leirvogur (non ufficiale)',
+                           'dati': [[t, v] for t, v in pts]}, separators=(',', ':'))
+        blob = git('hash-object', '-w', '--stdin', inp=body)
+        tree = git('mktree', inp=f'100644 blob {blob}\tleirvogur.json\n')
+        commit = git('-c', 'user.name=avvisi-aurora', '-c', 'user.email=avvisi-aurora@users.noreply.github.com',
+                     'commit-tree', tree, '-m', f'Leirvogur {now:%d/%m %H:%M} UTC')
+        git('push', '-q', '-f', 'origin', f'{commit}:refs/heads/{LEIRVOGUR_BRANCH}')
+        print(f'Leirvogur pubblicato: {len(pts)} minuti, ultimo valore {pts[-1][1]} nT')
+    except Exception as e:     # non deve mai fermare il turno
+        print(f'::warning::Leirvogur non pubblicato: {type(e).__name__}: {e}'[:300])
+
+
 # ---------- turno: controlli ogni 30 minuti per ~5 ore e mezza ----------
 PROVA_AUTO = (2026, 11, 13, 18, 7)    # prova automatica: 13 novembre 2026 dalle 18:07
 # anteprima prima del viaggio (chiesta da Michele il 22/10): di notte solo gli avvisi "adesso" e
@@ -619,7 +655,9 @@ MORNING_FROM, MORNING_UNTIL = (7, 25), (15, 0)   # messaggio del mattino: dalle 
 
 
 def is_night_hour(t):
-    return t.hour >= 16 or t.hour < 4
+    # fino alle 7 (chiesto da Michele l'8/11): a novembre è buio fino alle 8 circa, e il 4/11 verso
+    # le 6 c'è stata un'aurora probabile dopo la fine dei controlli (allora alle 3:37)
+    return t.hour >= 16 or t.hour < 7
 
 
 def next_slot(t):
@@ -635,6 +673,7 @@ def turno(now):
     simulate = os.environ.get('AURORA_TURNO_SIMULA') == '1'
     deadline = now + timedelta(minutes=min(330, int(os.environ.get('AURORA_TURNO_MIN') or 330)))   # GitHub ferma i job a 360
     trip_nights = {d['dateISO'] for d in trip_data()['days'] if d['id'] != 'd8'}
+    leirvogur = os.environ.get('AURORA_LEIRVOGUR') == '1' and not simulate
     print(f'Turno dalle {now:%d/%m %H:%M} alle {deadline:%d/%m %H:%M} UTC')
     failed = False
     t = slot = now     # il primo giro (all'avvio) è un controllo completo
@@ -666,6 +705,8 @@ def turno(now):
                 st['_prova_auto'] = t.strftime('%Y-%m-%d %H:%M')
                 save_state(state_path, st)
             failed = failed or rc != 0
+        if leirvogur:     # dopo gli avvisi, che hanno la precedenza
+            publish_leirvogur(t)
         t = slot = next_slot(t)
         if t > deadline:
             break
@@ -724,7 +765,11 @@ def run(mode, now, manual=False):
     if mode == 'controllo':
         try:
             last = get_json(KP_NOW_URL)[-1]
-            kp_now = float(last['kp_index'])      # lo stesso valore del Kp grande dell'app
+            # come l'app: arrotondato a 0,1 e solo se il dato ha al massimo 30 minuti
+            if now - parse_time(last['time_tag']) <= timedelta(minutes=30):
+                kp_now = round(float(last['kp_index']), 1)
+            else:
+                print(f'Kp attuale NOAA vecchio ({last["time_tag"]}): non usato.')
         except Exception as e:
             print(f'::warning::Kp attuale NOAA non disponibile: {e}')
 
@@ -800,8 +845,8 @@ def run(mode, now, manual=False):
         print(f'Adesso: Kp {kp_now}, OVATION verso nord {ov_now}%, nuvole {cloud}%')
     acts = [f(x) for f, x in ((kp_factor, kp_now), (ovation_factor, ov_now)) if x is not None]
     if 'adesso' not in done and dark and acts:
-        sky = 0.5 if cloud is None else (100 - cloud) / 100
-        good = max(acts) * sky >= GOOD
+        # senza dati sulle nuvole niente "buone" (come il box "Adesso" dell'app, che dice al massimo "scarse")
+        good = cloud is not None and max(acts) * (100 - cloud) / 100 >= GOOD
         variable = not good and max(acts) >= STRONG and cloud is not None and cloud < VARIABLE_MAX
         if good or variable:
             facts = ([f'aurora verso nord {ov_now}% (OVATION)'] if ov_now is not None else []) \

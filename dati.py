@@ -61,7 +61,7 @@ days = [
   'activities':[
     {'time':'10:00','title':'Perlan','desc':'Museo con grotta di ghiaccio artificiale e vista panoramica a 360° sulla città.','cost':'€€ ~4900 ISK / ~34€','link':'https://perlan.is/en','nav':'Perlan Reykjavik parking'},
     {'time':'12:30','title':'Harpa & porto vecchio','desc':'Sala concerti in vetro iridescente, passeggiata sul lungomare.','cost':'gratis','link':'https://www.harpa.is/en/','nav':'Harpa Reykjavik parking'},
-    {'time':'14:00','title':'Reykjanes (mezza giornata fuori città)','desc':"Ponte tra i continenti, Gunnuhver (la pozza di fango più grande d'Islanda) e il faro di Reykjanesviti. Circa 55 minuti di guida all'andata e un'ora al ritorno, in un paesaggio di campi di lava. Partite entro le 14:00 per avere luce fino al tramonto (circa 16:30). Zona geologicamente molto attiva e Grindavík e le strade vicine possono essere chiuse: andata e ritorno passano da Keflavík e Hafnir (strada 425); verificate lo stato di accesso il giorno stesso su visitreykjanes.is.",'cost':'gratis','link':'https://www.visitreykjanes.is/en/','nav':'Gunnuhver hot springs parking'},
+    {'time':'14:00','title':'Reykjanes (mezza giornata fuori città)','desc':"Ponte tra i continenti, Gunnuhver (area geotermica con pozze di fango bollente) e il faro di Reykjanesviti. Circa 55 minuti di guida all'andata e un'ora al ritorno, in un paesaggio di campi di lava. Partite entro le 14:00 per avere luce fino al tramonto (circa 16:30). Zona geologicamente molto attiva e Grindavík e le strade vicine possono essere chiuse: andata e ritorno passano da Keflavík e Hafnir (strada 425); verificate lo stato di accesso il giorno stesso su visitreykjanes.is.",'cost':'gratis','link':'https://www.visitreykjanes.is/en/','nav':'Gunnuhver hot springs parking'},
     {'time':'14:00','title':'National Museum of Iceland (facoltativo, se il meteo è brutto)','desc':'Alternativa a Reykjanes in caso di maltempo: storia e cultura islandese dagli insediamenti vichinghi a oggi, al coperto e in città.','cost':'€ ~3300 ISK / ~23€','link':'https://www.thjodminjasafn.is/english','nav':'National Museum of Iceland parking'}
   ],
   'food':[
@@ -141,7 +141,7 @@ days = [
   ],
   'food':[
     {'meal':'Pranzo','place':'Kaffi Jökulsárlón o pranzo al sacco','note':'Nessuna informazione sul senza glutine trovata: chiedete allo staff e portate un\'alternativa al sacco','cost':'€€','gf':False},
-    {'meal':'Cena','place':'Ströndin Bistro, Vík','note':'Opzioni senza glutine (per esempio lo stufato di carne e le costolette d\'agnello): chiedete conferma allo staff','cost':'€€','gf':True}
+    {'meal':'Cena','place':'Ströndin Bistro, Vík','note':'Opzioni senza glutine non verificate (una sola segnalazione online: stufato di carne e costolette d\'agnello): chiedete allo staff e tenete un\'alternativa','cost':'€€','gf':False}
   ],
   'accommodation':{'name':'Hótel Búrfell','detail':'2ª notte a Vík · parcheggio gratuito','url':'https://hotelburfell.is/'},
   'tips':"Circa 390 km andata/ritorno da Vík, circa 6 ore di guida. Tabella di marcia: partenza alle 7:30, Jökulsárlón verso le 10:30-10:45 (circa 2h55 senza soste, in inverno contate qualcosa in più), Diamond Beach e via entro le 12:30, Fjaðrárgljúfur verso le 14:30-14:45 con circa un'ora e mezza di luce prima del tramonto (16:05), rientro a Vík verso le 16:45-17:00. Prima di partire controllate che il sentiero del canyon sia aperto (in inverno a volte viene chiuso per il terreno fradicio) e le strade su umferdin.is; con brutto tempo valutate di fermarvi solo a Jökulsárlón/Diamond Beach.",
@@ -194,8 +194,8 @@ days = [
   ],
   'accommodation':{'name':'The Hill Guesthouse','detail':'Ultima notte a Flúðir · check-out presto domani · parcheggio gratuito','url':'https://thehillhotel.is/guesthouse-fludir/'},
   'tips':"Da Flúðir Geysir e Gullfoss sono a un tiro di schioppo (circa 30-40 km), molto più vicini che da Reykjavík: giornata comoda, e cielo scuro poco inquinato per tenere d'occhio l'aurora la sera.",
-  'culture':"Il Cerchio d'Oro è il percorso turistico che collega il Parco nazionale Þingvellir, la cascata di Gullfoss e l'area geotermica di Haukadalur; il nome è nato per scopi promozionali.\n\nA Haukadalur si trova il Geysir, la sorgente da cui deriva la parola «geyser», oggi quasi sempre inattivo, e lo Strokkur, che erutta ogni 5-10 minuti.\n\nGullfoss («cascata d'oro») è formata dal fiume Hvítá con due salti di circa 11 e 20 metri; secondo la tradizione la sua tutela si deve a Sigríður Tómasdóttir, che all'inizio del Novecento si oppose allo sfruttamento della cascata per produrre energia. A Flúðir l'acqua calda del sottosuolo riscalda le serre, dove si coltivano ortaggi anche in inverno. Faxi è una piccola cascata sul fiume Tungufljót, vicino a Reykholt.",
-  'culture_links':[("Cerchio d'Oro", "https://it.wikipedia.org/wiki/Cerchio_d'Oro"), ("Cascate dell'Islanda", "https://it.wikipedia.org/wiki/Cascate_dell'Islanda")],
+  'culture':"Il Cerchio d'Oro è il percorso turistico che collega il Parco nazionale Þingvellir, la cascata di Gullfoss e l'area geotermica di Haukadalur; il nome è nato per scopi promozionali.\n\nA Haukadalur si trova il Geysir, la sorgente da cui deriva la parola «geyser», oggi quasi sempre inattivo, e lo Strokkur, il geyser più attivo dell'area.\n\nGullfoss («cascata d'oro») è formata dal fiume Hvítá con due salti di circa 11 e 20 metri; secondo la tradizione la sua tutela si deve a Sigríður Tómasdóttir, che all'inizio del Novecento si oppose allo sfruttamento della cascata per produrre energia. A Flúðir l'acqua calda del sottosuolo riscalda le serre, dove si coltivano ortaggi anche in inverno. Faxi è una piccola cascata sul fiume Tungufljót, vicino a Reykholt.",
+  'culture_links':[("Cerchio d'Oro", "https://it.wikipedia.org/wiki/Cerchio_d'Oro"), ("Gullfoss", "https://it.wikipedia.org/wiki/Gullfoss"), ("Strokkur", "https://it.wikipedia.org/wiki/Strokkur")],
   'parking_nav':[
     {'label':'Naviga al parcheggio','query':'The Hill Guesthouse Flúðir'}
   ]
@@ -214,8 +214,8 @@ days = [
   ],
   'accommodation': None,
   'tips':'Riconsegna anticipata già confermata da FairCar: partite presto da Flúðir per lasciare l\'auto verso le 9:15 (volo alle 11:25).',
-  'culture':"L'Islanda produce quasi tutta la sua elettricità da fonti rinnovabili, soprattutto idroelettrico e geotermia. L'acqua calda geotermica serve anche per il riscaldamento della maggior parte delle abitazioni del paese. L'aeroporto di Keflavík, oggi il principale scalo internazionale dell'isola, fu costruito durante la seconda guerra mondiale dagli Stati Uniti, che vi mantennero una base militare fino al 2006.",
-  'culture_links':[("Islanda", "https://it.wikipedia.org/wiki/Islanda"), ("Keflavík", "https://it.wikipedia.org/wiki/Keflavik")],
+  'culture':"L'aeroporto di Keflavík, oggi il principale scalo internazionale dell'isola, fu costruito durante la seconda guerra mondiale dagli Stati Uniti, che vi mantennero una base militare fino al 2006. Il terminal passeggeri, inaugurato nel 1987, porta il nome di Leifr Eiríksson, l'esploratore islandese che intorno all'anno 1000 raggiunse le coste del Nord America.\n\nKeflavík nacque come porto di pesca e di commercio; nel 1994 si è unita a Njarðvík e Hafnir nel comune di Reykjanesbær.",
+  'culture_links':[("Keflavík", "https://it.wikipedia.org/wiki/Keflavik"), ("Reykjanesbær", "https://it.wikipedia.org/wiki/Reykjanesbær"), ("Leif Erikson", "https://it.wikipedia.org/wiki/Leif_Erikson")],
  }
 ]
 

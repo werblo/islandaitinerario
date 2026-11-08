@@ -81,7 +81,7 @@ main { max-width:820px; margin:0 auto; padding:20px 20px 70px; display:flex; fle
 .fab-fx-popup__head { display:flex; align-items:center; justify-content:space-between; font-family:'Cinzel',serif; font-weight:600; font-size:0.9375rem; letter-spacing:.04em; text-transform:uppercase; color:#2c3c4d; margin-bottom:10px; }
 .fab-fx-close { border:none; background:transparent; font-size:1.25rem; line-height:1; color:#5c6a78; cursor:pointer; padding:0; min-width:44px; min-height:44px; margin:-12px -12px -12px 0; }
 .fab-fx-quick { display:flex; flex-direction:column; gap:6px; margin-top:12px; padding-top:12px; border-top:1px solid var(--panel-border); }
-.fab-fx-quick__btn { font-size:0.84375rem; font-weight:600; color:var(--navy); text-decoration:none; }
+.fab-fx-quick__btn { font-size:0.84375rem; font-weight:600; color:var(--navy); text-decoration:none; display:inline-block; padding:11px 0; margin:-11px 0; }
 .fab-fx-quick__btn:hover { text-decoration:underline; }
 .fx-row { display:flex; align-items:flex-end; gap:10px; }
 .fx-field { flex:1; display:flex; flex-direction:column; gap:4px; }
@@ -168,7 +168,9 @@ main { max-width:820px; margin:0 auto; padding:20px 20px 70px; display:flex; fle
 .act-body { flex:1; min-width:0; }
 .act-top { display:flex; justify-content:space-between; gap:10px; align-items:baseline; }
 .act-title { font-weight:600; font-size:0.96875rem; color:#1f2c39; }
-.act-title--link { text-decoration:underline dashed var(--navy); text-decoration-thickness:1px; text-underline-offset:3px; }
+.act-title--link { text-decoration:underline dashed var(--navy); text-decoration-thickness:1px; text-underline-offset:3px; display:inline-block; padding:10px 0; margin:-10px 0; }
+/* pulsanti +/− delle mappe: area da toccare di 40 px (Leaflet ne usa 30) */
+.leaflet-touch .leaflet-bar a, .leaflet-bar a { width:40px !important; height:40px !important; line-height:40px !important; font-size:20px !important; }
 .act-title--link:hover { border-bottom-style:solid; }
 .act-title-arrow { white-space:nowrap; font-weight:400; color:var(--amber-2); font-size:0.8125rem; }
 .act-time { font-size:0.8125rem; color:#5c6a78; white-space:nowrap; }
@@ -192,7 +194,7 @@ main { max-width:820px; margin:0 auto; padding:20px 20px 70px; display:flex; fle
 .acc-name a:hover { color:var(--amber); }
 .acc-detail { color:#c7ccd2; margin-top:2px; }
 .acc-parking-nav { display:flex; flex-wrap:wrap; gap:0 16px; margin-top:2px; }
-.acc-parking-nav .act-link { margin:0; padding:6px 0; color:#8fd6cd; }
+.acc-parking-nav .act-link { margin:-5px 0; padding:11px 0; color:#8fd6cd; }
 
 .tip-card { background:var(--amber-soft); border:1px solid var(--amber-soft-border); border-radius:8px; padding:12px 14px; font-size:0.9375rem; line-height:1.6; color:#5c3a1f; }
 
