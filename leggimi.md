@@ -96,7 +96,12 @@ tengono ancora raggiungibili vecchi commit con voucher ed email.
   entrambi i telefoni e ripetuto solo se l'app lo chiede (percorso cambiato).
   Meteo, aurora e cambio mostrano offline l'ultimo dato salvato.
 - **Alba e tramonto** sono calcolati dall'app (formula NOAA), anche offline.
-- **Meteo e vento** (Open-Meteo, fino a 16 giorni prima, con il simbolo del
+- **Meteo e vento**: dall'8/11 (scelta di Michele) le previsioni dei giorni vengono
+  da **vedur.is**, il servizio meteo islandese (stazioni in `locations` di
+  `dati.py`: Reykjavík, Reynisfjall per Vík, strada Flúðir-Reykholt, aeroporto di
+  Keflavík; circa 10 giorni). Le raffiche, che vedur.is non prevede per stazione,
+  e i giorni più lontani restano di Open-Meteo; le nuvole per l'aurora restano
+  Open-Meteo con `CLOUD_METHOD`. Riquadro con il simbolo del
   tempo: ☀️ 🌤️ ⛅ ☁️ 🌫️ 🌦️ 🌧️ 🌨️ ⛈️): nel riquadro di ogni
   giorno e, nella tab Info, "Meteo oggi e domani" (prima della partenza i primi
   due giorni). Vento "forte" con raffiche da 18 m/s (o vento medio da 13),
