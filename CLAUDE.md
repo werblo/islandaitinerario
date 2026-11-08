@@ -49,7 +49,8 @@ l'utente: `leggimi.md` (breve: com'è il progetto oggi).
 - `tools/kp/` + workflow `ricerca-kp.yml` — ricerca sull'affidabilità del Kp
   (fino al 14/11).
 - `tools/meteo/` + workflow `confronto-meteo.yml` — confronto Open-Meteo /
-  met.no / vedur.is contro il METAR di Reykjavík (8-14/11).
+  met.no / vedur.is (nuvole anche miste con la media dell'app, raffiche per
+  modello) contro i METAR di Reykjavík e Keflavík (8-14/11).
 - Branch `dati-leirvogur` — scritto solo dal turno degli avvisi (magnetometro
   islandese per app e Mappa aurora, in prova; non entra in stima e avvisi).
   Non cancellarlo e non unirlo a `main`.

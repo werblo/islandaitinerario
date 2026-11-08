@@ -1,7 +1,7 @@
 name: Confronto meteo
 
-# Quale previsione ci azzecca di più a Reykjavík: Open-Meteo (quella dell'app), met.no o
-# vedur.is? Chiesto da Michele l'8/11; risultati per il controllo del 14/11.
+# Quale previsione ci azzecca di più a Reykjavík e Keflavík (nuvole, pioggia, vento, raffiche):
+# Open-Meteo, met.no o vedur.is? Chiesto da Michele l'8/11; risultati per il controllo del 14/11.
 # Ogni esecuzione salva le previsioni ora per ora dei prossimi giorni e le confronta con il tempo
 # osservato all'aeroporto di Reykjavík (METAR). Risultati: riepilogo di ogni esecuzione (tab
 # Actions) e artifact "confronto-meteo". Non tocca il sito né gli avvisi.
