@@ -162,7 +162,7 @@ days = [
   'activities':[
     {'time':'10:00','title':'Check-out Hótel Búrfell','desc':'','cost':None},
     {'time':'12:30','title':'Kerið','desc':'Cratere vulcanico con un lago sul fondo, percorribile a piedi in 15-20 min.','cost':'€ ~700 ISK / ~5€','link':'https://kerid.is/','nav':'64.0415,-20.8870'},
-    {'time':'15:30','title':'Check-in The Hill Guesthouse','desc':'Check-in dalle 15:00 alla reception del The Hill Hotel, di fronte alla guesthouse (Vesturbrún 1, Flúðir). Arrivando verso le 14, scrivete qualche giorno prima (messaggio da Agoda/Booking o email dal sito thehillhotel.is) per chiedere un check-in anticipato verso le 14; se non si può, lasciate i bagagli in auto e fate un giro in paese. Chiedete già ora come lasciare la chiave domenica alle 6:45, prima della colazione e forse prima che apra la reception.','cost':None,'nav':'64.1311,-20.3237'},
+    {'time':'15:30','title':'Check-in The Hill Guesthouse','desc':'Check-in dalle 15:00 alla reception del The Hill Hotel, di fronte alla guesthouse (Vesturbrún 1, Flúðir). Check-out anticipato: domenica 22 partite alle 6:45, prima che apra la reception. Scrivete qualche giorno prima (messaggio da Agoda/Booking o email dal sito thehillhotel.is) per avvisare e chiedere dove lasciare la chiave, poi riconfermatelo qui al check-in.','cost':None,'nav':'64.1311,-20.3237'},
     {'time':'17:30','title':'Secret Lagoon','desc':"La piscina geotermica più antica d'Islanda, meno turistica e molto più economica della Blue Lagoon. Alle 17:30 il sole è tramontato da circa un'ora e mezza e il cielo è quasi buio: d'inverno chiude alle 19:00, quindi avete circa un'ora e mezza; con cielo sereno potete provare a scorgere l'aurora dall'acqua calda.",'cost':'€ ~4500 ISK / ~31€ a persona (prenotato, biglietto su Notion)','link':'https://secretlagoon.is/','nav':'64.1377,-20.3110'}
   ],
   'food':[
@@ -182,17 +182,17 @@ days = [
     {'from':'Flúðir','to':'Geysir','km':30,'time':'~25 min'},
     {'from':'Geysir','to':'Gullfoss','km':10,'time':'~10 min'},
     {'from':'Gullfoss','to':'Faxi','km':21,'time':'~20 min'},
-    {'from':'Faxi','to':'Efstidalur II','km':9,'time':'~12 min'},
+    {'from':'Faxi','to':'Efstidalur II','km':9,'time':'~12 min','note':'Passando da Friðheimar (Reykholt) per il pranzo'},
     {'from':'Efstidalur II','to':'Flúðir','km':20,'time':'~18 min'}
   ],
   'activities':[
     {'time':'10:30','title':'Geysir & Strokkur','desc':'Area geotermica: Strokkur erutta ogni 5-10 minuti.','cost':'gratis','nav':'64.3114,-20.2975'},
     {'time':'11:30','title':'Gullfoss','desc':"Cascata a due salti sul fiume Hvítá; d'inverno le rocce intorno sono spesso coperte di ghiaccio.",'cost':'gratis','link':'https://it.wikipedia.org/wiki/Gullfoss','nav':'64.3252,-20.1306'},
-    {'time':'14:00','title':'Faxi','desc':'Cascata piccola e tranquilla vicino a Reykholt, sulla strada del ritorno verso Flúðir, poco turistica.','cost':'gratis','nav':'64.2262,-20.3391'},
+    {'time':'12:30','title':'Faxi','desc':'Cascata piccola e tranquilla vicino a Reykholt, sulla strada del ritorno da Gullfoss, poco turistica. Poi pranzo a Friðheimar, a Reykholt (circa 10 minuti), verso le 13.','cost':'gratis','nav':'64.2262,-20.3391'},
     {'time':'15:30','title':'Efstidalur II','desc':"Fattoria con gelateria e vacche visibili da dietro un vetro, ambiente al caldo e informale. Sosta comoda per il buio che cala presto in questo periodo, prima del rientro a Flúðir.",'cost':'€ gelato/spuntino a parte','nav':'64.2420,-20.5529'}
   ],
   'food':[
-    {'meal':'Pranzo','place':'Friðheimar, Reykholt','note':'Famosa zuppa di pomodoro in serra, sulla strada per Geysir: hanno pane senza glutine, ma non garantito senza contaminazione; in alternativa c\'è un\'insalata. Il 21/11 è sabato: conviene prenotare il tavolo (aperto circa 12-16)','cost':'€€','gf':True},
+    {'meal':'Pranzo','place':'Friðheimar, Reykholt','note':'Famosa zuppa di pomodoro in serra, a Reykholt tra Faxi ed Efstidalur, verso le 13: hanno pane senza glutine, ma non garantito senza contaminazione; in alternativa c\'è un\'insalata. Il 21/11 è sabato: conviene prenotare il tavolo (aperto circa 12-16)','cost':'€€','gf':True},
     {'meal':'Cena','place':'Cena con la spesa o ristorante del The Hill Hotel','note':'Ultima occasione per finire la spesa fatta al Bónus; se in guesthouse non si può cucinare, il ristorante del The Hill Hotel è aperto circa 12-21 (senza glutine non confermato)','cost':'€','gf':False}
   ],
   'accommodation':{'name':'The Hill Guesthouse','detail':'Ultima notte a Flúðir · domani partenza alle 6:45: stasera chiedete dove lasciare la chiave · parcheggio gratuito','url':'https://thehillhotel.is/guesthouse-fludir/'},
