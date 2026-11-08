@@ -106,7 +106,9 @@ nuvole", "attività debole") e, quando fa buio e si è
 online, il box "🌌 Adesso a …: buone / forse / difficile" al posto della riga
 "Kp adesso": la migliore tra Kp attuale e probabilità OVATION verso nord (≥30%
 come Kp 4, ≥20% come Kp 3, ≥10% come Kp 2), per il cielo sereno delle nuvole di
-quest'ora, più lo stato del vento solare. OVATION (circa 150 kB) si scarica
+quest'ora, più lo stato del vento solare e, in prova, il magnetometro islandese
+di Leirvogur ("calmo" / "agitato" sopra 70 nT in un'ora / "molto agitato" sopra
+150: solo da vedere, non cambia il giudizio). OVATION (circa 150 kB) si scarica
 all'apertura dell'app solo col buio e al massimo ogni 15 minuti (il telefono
 ricorda l'ultimo valore); di giorno o offline resta la riga del Kp. Toccando il
 riquadro si aprono ore migliori e due notti successive. Nella tab di ogni giorno
@@ -130,7 +132,8 @@ della griglia). L'aurora copre tutto l'emisfero nord (40-82°): allontanando
 la mappa si vede la fascia verde. La pillola "📊 Pannello" (o la scheda
 "Adesso") apre il pannello di controllo, pagina secondaria a tutto schermo
 (`#pannello`, si torna con "‹ Mappa" o col tasto Indietro): forza dell'aurora (magnetometro di Narsarsuaq, servizio
-BGS, escursione nell'ultima ora), Bz e velocità del vento solare con i grafici
+BGS, escursione nell'ultima ora), magnetometro islandese di Leirvogur (in
+prova), Bz e velocità del vento solare con i grafici
 delle ultime 3 ore (dati NOAA minuto per minuto, scaricati solo all'apertura),
 nuvole, Luna, sole, picco di Kp atteso, indice K e OVATION. Senza rete usa le
 ultime copie salvate.
@@ -143,7 +146,7 @@ ora islandese = UTC):
   alle 10): com'è messa la sera, con
   una frase scherzosa personalizzata per nome. Se mancano nuvole o Kp, il
   titolo dice "previsione incompleta" o "non disponibile".
-- **"🔄 Cambio di programma"**: controlli ogni 30 minuti (16:07-3:37); solo
+- **"🔄 Cambio di programma"**: controlli ogni 30 minuti (16:07-6:37); solo
   se la stima diventa "buone" e al mattino non lo era.
 - **"Aurora: condizioni buone adesso"**: quando è buio e l'attività del
   momento (la migliore tra Kp attuale e OVATION verso nord, come il box
@@ -173,6 +176,13 @@ ore (fine ottobre-inizio novembre). Per questo ogni esecuzione programmata fa 4
 turni uno dopo l'altro (circa 22 ore); quelle che arrivano nel frattempo si
 mettono in coda (in Actions alcune risultano "annullate": è normale). Gli avvisi già mandati sono salvati nella cache di GitHub Actions, non
 nel repo, e non si ripetono tra un turno e l'altro.
+
+**Leirvogur per l'app.** Il servizio del magnetometro islandese (non ufficiale,
+Iceland at Night) non si può leggere dal browser: a ogni controllo il turno ne
+copia le ultime 3 ore nel branch `dati-leirvogur` (un solo commit, riscritto
+ogni volta; per questo il workflow ha il permesso di scrittura), che l'app legge
+da raw.githubusercontent.com. Solo informativo: la decisione se usarlo negli
+avvisi è nel controllo del 14/11.
 
 Nell'app, se mancano i dati sulle nuvole la stima dice "previsione incompleta",
 come le notifiche; prima delle 7 di mattina il riquadro parla di "Stanotte". La

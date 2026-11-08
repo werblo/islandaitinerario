@@ -349,6 +349,27 @@ const NOAA_AGE = (t, maxMin) => {   // orario NOAA (UTC) non più vecchio di max
 };
 const num = v => (v != null && v !== '' && isFinite(v) ? Number(v) : null);
 
+// Leirvogur, magnetometro islandese vicino a Reykjavík (dati non ufficiali di Iceland at Night, che il
+// browser non può leggere: il turno degli avvisi su GitHub li ricopia sul branch dati-leirvogur).
+// Solo da vedere, in prova dall'8/11: non entra nella stima né negli avvisi. Conta l'escursione
+// nell'ultima ora (la sera l'aurora fa salire il valore, dopo mezzanotte scendere); ricerca Kp: oltre
+// 70 nT c'è spesso attività sopra l'Islanda.
+const LRV_URL = 'https://raw.githubusercontent.com/werblo/islandaitinerario/dati-leirvogur/leirvogur.json';
+function lrvSeries(data) {   // [[ms, nT], ...] in ordine di tempo
+  return (data && Array.isArray(data.dati) ? data.dati : [])
+    .filter(p => Array.isArray(p) && num(p[0]) !== null && num(p[1]) !== null)
+    .map(p => [p[0] * 1000, p[1]]).sort((a, b) => a[0] - b[0]);
+}
+function lrvNow(series, now = Date.now()) {   // null se i dati hanno più di 30 minuti o sono pochi
+  if (!series.length) return null;
+  const last = series[series.length - 1][0];
+  if (now - last > 30 * 60000) return null;
+  const hour = series.filter(p => p[0] > last - 3600000).map(p => p[1]);
+  if (hour.length < 20) return null;
+  const range = Math.round(Math.max(...hour) - Math.min(...hour));
+  return { range, label: range >= 150 ? 'molto agitato' : range >= 70 ? 'agitato' : 'calmo', at: last };
+}
+
 // OVATION sulla stessa scala di kpFactor (ricerca Kp: sopra il 30% c'era attività quasi sempre)
 function ovationFactor(p) {
   if (p >= 30) return 0.85;
@@ -875,7 +896,7 @@ async function loadDash() {
   const now = new Date(), days = now.getUTCHours() < 4 ? [new Date(now - 86400000), now] : [now];
   const gin = d => get('https://imag-data.bgs.ac.uk/GIN_V1/GINServices?Request=GetData&format=json&testObsys=0'
     + '&observatoryIagaCode=NAQ&samplesPerDay=minute&publicationState=best-avail&dataStartDate=' + day(d) + '&dataDuration=1');
-  const [mag, wind, ...naq] = await Promise.all([get(NOAA + 'json/rtsw/rtsw_mag_1m.json'), get(NOAA + 'json/rtsw/rtsw_wind_1m.json'), ...days.map(gin)]);
+  const [mag, wind, lrv, ...naq] = await Promise.all([get(NOAA + 'json/rtsw/rtsw_mag_1m.json'), get(NOAA + 'json/rtsw/rtsw_wind_1m.json'), get(LRV_URL), ...days.map(gin)]);
   const since = Date.now() - 3 * 3600000;
   const series = (rows, key) => (Array.isArray(rows) ? rows : [])
     .filter(r => r && r.active && num(r[key]) !== null)
@@ -886,7 +907,8 @@ async function loadDash() {
     const x = num((g.X || [])[i]), y = num((g.Y || [])[i]), ms = Date.parse(t);
     if (x !== null && y !== null && Math.abs(x) < 90000 && Math.abs(y) < 90000 && ms > since) h.push([ms, Math.hypot(x, y)]);
   }));
-  st.dash = { at: Date.now(), bz: series(mag, 'bz_gsm'), v: series(wind, 'proton_speed'), naq: h.sort((a, b) => a[0] - b[0]) };
+  st.dash = { at: Date.now(), bz: series(mag, 'bz_gsm'), v: series(wind, 'proton_speed'), naq: h.sort((a, b) => a[0] - b[0]),
+    lrv: lrvSeries(lrv).filter(p => p[0] > since) };
 }
 function spark(pts, opt) {   // grafico a linea delle ultime ore (SVG)
   if (!pts || pts.length < 5) return '<div class="am-card__nodata">grafico non disponibile</div>';
@@ -925,6 +947,10 @@ function renderDash() {
     card('Forza dell\'aurora · magnetometro di Narsarsuaq', r < 50 ? 'Calma' : r < 150 ? 'Moderata' : r < 300 ? 'Forte' : 'Tempestosa', Math.round(r) + ' nT in un\'ora',
       spark(d.naq.map(p => [p[0], p[1] - mid]), { kind: 'force', fill: true }), true);
   } else card('Forza dell\'aurora · magnetometro di Narsarsuaq', st.dash ? 'Non disponibile' : 'Carico…', '', '', true);
+  // Leirvogur (Islanda): solo da vedere, in prova dall'8/11; non entra nella stima
+  const lrv = lrvNow(d.lrv || []);
+  card('Magnetometro islandese · Leirvogur (in prova)', lrv ? lrv.label.charAt(0).toUpperCase() + lrv.label.slice(1) : st.dash ? 'Non disponibile' : 'Carico…',
+    lrv ? lrv.range + ' nT in un\'ora' : '', lrv ? spark(d.lrv, { kind: 'force', fill: true }) : '', true);
   const bzNow = d.bz && d.bz.length ? d.bz[d.bz.length - 1][1] : st.bz;
   card('Bz in tempo reale', bzNow === null ? 'Non disponibile' : bzNow <= -10 ? 'Molto favorevole' : bzNow <= -5 ? 'Favorevole' : bzNow <= -2 ? 'Lieve' : 'Sfavorevole',
     bzNow === null ? '' : (bzNow > 0 ? '+' : '') + fmtNum(Math.round(bzNow * 10) / 10) + ' nT', spark(d.bz, { kind: 'bz', zero: true }), true);

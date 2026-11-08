@@ -48,6 +48,9 @@ l'utente: `leggimi.md` (breve: com'è il progetto oggi).
   la sua stima deve restare identica a quella di `app/app.js`/`app/aurora.js`.
 - `tools/kp/` + workflow `ricerca-kp.yml` — ricerca sull'affidabilità del Kp
   (fino al 14/11).
+- Branch `dati-leirvogur` — scritto solo dal turno degli avvisi (magnetometro
+  islandese per app e Mappa aurora, in prova; non entra in stima e avvisi).
+  Non cancellarlo e non unirlo a `main`.
 
 ## Come si lavora
 1. `pip install Pillow` (e `pywebpush` solo per provare gli avvisi).
@@ -79,7 +82,7 @@ l'utente: `leggimi.md` (breve: com'è il progetto oggi).
 ## Workflow GitHub (orari UTC = ora islandese)
 - `avvisi-aurora.yml`: GitHub ritarda le esecuzioni programmate di 4-12 ore,
   quindi ogni esecuzione è un "turno" (`AURORA_MODE=turno`, 330 minuti) che fa
-  da solo, ai minuti :07 e :37, i controlli notturni (16:07-3:37; in mezzo,
+  da solo, ai minuti :07 e :37, i controlli notturni (16:07-6:37; in mezzo,
   ogni 10 minuti, solo il vento solare per l'avviso "arrivo"), il mattino
   (dalle 7:37, fino alle 15) e la prova del 13/11 (dalle 18:07). Cron ogni 2
   ore dal 13 al 22/11, ma GitHub ne avvia in media una ogni 6 ore: ogni

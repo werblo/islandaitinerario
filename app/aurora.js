@@ -49,6 +49,27 @@ const NOAA_AGE = (t, maxMin) => {   // orario NOAA (UTC) non più vecchio di max
 };
 const num = v => (v != null && v !== '' && isFinite(v) ? Number(v) : null);
 
+// Leirvogur, magnetometro islandese vicino a Reykjavík (dati non ufficiali di Iceland at Night, che il
+// browser non può leggere: il turno degli avvisi su GitHub li ricopia sul branch dati-leirvogur).
+// Solo da vedere, in prova dall'8/11: non entra nella stima né negli avvisi. Conta l'escursione
+// nell'ultima ora (la sera l'aurora fa salire il valore, dopo mezzanotte scendere); ricerca Kp: oltre
+// 70 nT c'è spesso attività sopra l'Islanda.
+const LRV_URL = 'https://raw.githubusercontent.com/werblo/islandaitinerario/dati-leirvogur/leirvogur.json';
+function lrvSeries(data) {   // [[ms, nT], ...] in ordine di tempo
+  return (data && Array.isArray(data.dati) ? data.dati : [])
+    .filter(p => Array.isArray(p) && num(p[0]) !== null && num(p[1]) !== null)
+    .map(p => [p[0] * 1000, p[1]]).sort((a, b) => a[0] - b[0]);
+}
+function lrvNow(series, now = Date.now()) {   // null se i dati hanno più di 30 minuti o sono pochi
+  if (!series.length) return null;
+  const last = series[series.length - 1][0];
+  if (now - last > 30 * 60000) return null;
+  const hour = series.filter(p => p[0] > last - 3600000).map(p => p[1]);
+  if (hour.length < 20) return null;
+  const range = Math.round(Math.max(...hour) - Math.min(...hour));
+  return { range, label: range >= 150 ? 'molto agitato' : range >= 70 ? 'agitato' : 'calmo', at: last };
+}
+
 // OVATION sulla stessa scala di kpFactor (ricerca Kp: sopra il 30% c'era attività quasi sempre)
 function ovationFactor(p) {
   if (p >= 30) return 0.85;

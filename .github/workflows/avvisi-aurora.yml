@@ -4,7 +4,7 @@ name: Avvisi aurora
 # GitHub fa partire le esecuzioni programmate anche con 4-12 ore di ritardo (misurato a
 # ottobre 2026): per questo ogni esecuzione è un "turno" che resta acceso circa 5 ore e
 # mezza e fa da solo, ai minuti :07 e :37,
-#   - i controlli notturni (16:07-3:37, notti dal 15 al 21 novembre; in mezzo, ogni 10
+#   - i controlli notturni (16:07-6:37, notti dal 15 al 21 novembre; in mezzo, ogni 10
 #     minuti, solo il vento solare per l'avviso "arrivo");
 #   - il messaggio del mattino (dalle 7:37, dal 15 al 21 novembre);
 #   - la prova automatica del 13 novembre dalle 18:07 (19:07 in Italia).
@@ -37,7 +37,7 @@ on:
         default: '330'
 
 permissions:
-  contents: read
+  contents: write   # solo per il branch dati-leirvogur (magnetometro islandese per l'app)
 
 # i turni programmati si mettono in coda uno dopo l'altro; le prove a mano partono subito
 concurrency:
@@ -74,6 +74,7 @@ jobs:
           AURORA_SUBSCRIPTIONS: ${{ secrets.AURORA_SUBSCRIPTIONS }}
           AURORA_MANUAL: ${{ github.event_name == 'workflow_dispatch' && '1' || '0' }}
           AURORA_TURNO_MIN: ${{ inputs.durata || '330' }}
+          AURORA_LEIRVOGUR: ${{ github.event_name == 'schedule' && '1' || '0' }}
       - uses: actions/cache/save@v4
         if: always() && hashFiles('.aurora-state/state.json') != ''
         with:

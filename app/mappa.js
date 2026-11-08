@@ -396,7 +396,7 @@ async function loadDash() {
   const now = new Date(), days = now.getUTCHours() < 4 ? [new Date(now - 86400000), now] : [now];
   const gin = d => get('https://imag-data.bgs.ac.uk/GIN_V1/GINServices?Request=GetData&format=json&testObsys=0'
     + '&observatoryIagaCode=NAQ&samplesPerDay=minute&publicationState=best-avail&dataStartDate=' + day(d) + '&dataDuration=1');
-  const [mag, wind, ...naq] = await Promise.all([get(NOAA + 'json/rtsw/rtsw_mag_1m.json'), get(NOAA + 'json/rtsw/rtsw_wind_1m.json'), ...days.map(gin)]);
+  const [mag, wind, lrv, ...naq] = await Promise.all([get(NOAA + 'json/rtsw/rtsw_mag_1m.json'), get(NOAA + 'json/rtsw/rtsw_wind_1m.json'), get(LRV_URL), ...days.map(gin)]);
   const since = Date.now() - 3 * 3600000;
   const series = (rows, key) => (Array.isArray(rows) ? rows : [])
     .filter(r => r && r.active && num(r[key]) !== null)
@@ -407,7 +407,8 @@ async function loadDash() {
     const x = num((g.X || [])[i]), y = num((g.Y || [])[i]), ms = Date.parse(t);
     if (x !== null && y !== null && Math.abs(x) < 90000 && Math.abs(y) < 90000 && ms > since) h.push([ms, Math.hypot(x, y)]);
   }));
-  st.dash = { at: Date.now(), bz: series(mag, 'bz_gsm'), v: series(wind, 'proton_speed'), naq: h.sort((a, b) => a[0] - b[0]) };
+  st.dash = { at: Date.now(), bz: series(mag, 'bz_gsm'), v: series(wind, 'proton_speed'), naq: h.sort((a, b) => a[0] - b[0]),
+    lrv: lrvSeries(lrv).filter(p => p[0] > since) };
 }
 function spark(pts, opt) {   // grafico a linea delle ultime ore (SVG)
   if (!pts || pts.length < 5) return '<div class="am-card__nodata">grafico non disponibile</div>';
@@ -446,6 +447,10 @@ function renderDash() {
     card('Forza dell\'aurora · magnetometro di Narsarsuaq', r < 50 ? 'Calma' : r < 150 ? 'Moderata' : r < 300 ? 'Forte' : 'Tempestosa', Math.round(r) + ' nT in un\'ora',
       spark(d.naq.map(p => [p[0], p[1] - mid]), { kind: 'force', fill: true }), true);
   } else card('Forza dell\'aurora · magnetometro di Narsarsuaq', st.dash ? 'Non disponibile' : 'Carico…', '', '', true);
+  // Leirvogur (Islanda): solo da vedere, in prova dall'8/11; non entra nella stima
+  const lrv = lrvNow(d.lrv || []);
+  card('Magnetometro islandese · Leirvogur (in prova)', lrv ? lrv.label.charAt(0).toUpperCase() + lrv.label.slice(1) : st.dash ? 'Non disponibile' : 'Carico…',
+    lrv ? lrv.range + ' nT in un\'ora' : '', lrv ? spark(d.lrv, { kind: 'force', fill: true }) : '', true);
   const bzNow = d.bz && d.bz.length ? d.bz[d.bz.length - 1][1] : st.bz;
   card('Bz in tempo reale', bzNow === null ? 'Non disponibile' : bzNow <= -10 ? 'Molto favorevole' : bzNow <= -5 ? 'Favorevole' : bzNow <= -2 ? 'Lieve' : 'Sfavorevole',
     bzNow === null ? '' : (bzNow > 0 ? '+' : '') + fmtNum(Math.round(bzNow * 10) / 10) + ' nT', spark(d.bz, { kind: 'bz', zero: true }), true);

@@ -268,10 +268,16 @@ async function fetchAuroraNow() {
     if (!prev) { try { prev = JSON.parse(localStorage.getItem(OVATION_KEY) || 'null'); } catch (e) {} }
     const fresh = prev && prev.ov != null && prev.place === loc.name && Date.now() - prev.at < 15 * 60000
       && Date.now() - prev.ovAt <= 60 * 60000;
-    const [ov, mag, sp] = await Promise.all([
-      fresh ? null : fetch('https://services.swpc.noaa.gov/json/ovation_aurora_latest.json', opt).then(r => r.json()).catch(() => null),
+    // anche un tentativo andato male (NOAA fermo o file vecchio) vale per 15 minuti: niente 150 kB a ogni apertura
+    let tried = null;
+    try { tried = JSON.parse(localStorage.getItem(OVATION_KEY + '-prova') || 'null'); } catch (e) {}
+    const skipOv = fresh || (tried && tried.place === loc.name && Date.now() - tried.at < 15 * 60000);
+    if (!skipOv) { try { localStorage.setItem(OVATION_KEY + '-prova', JSON.stringify({ place: loc.name, at: Date.now() })); } catch (e) {} }
+    const [ov, mag, sp, lrv] = await Promise.all([
+      skipOv ? null : fetch('https://services.swpc.noaa.gov/json/ovation_aurora_latest.json', opt).then(r => r.json()).catch(() => null),
       fetch('https://services.swpc.noaa.gov/products/summary/solar-wind-mag-field.json', opt).then(r => r.json()).catch(() => null),
-      fetch('https://services.swpc.noaa.gov/products/summary/solar-wind-speed.json', opt).then(r => r.json()).catch(() => null)
+      fetch('https://services.swpc.noaa.gov/products/summary/solar-wind-speed.json', opt).then(r => r.json()).catch(() => null),
+      fetch(LRV_URL, opt).then(r => r.json()).catch(() => null)
     ]);
     const now = fresh ? Object.assign({}, prev) : { place: loc.name, at: Date.now(), ov: null, ovAt: null };
     now.bz = null; now.v = null;
@@ -287,6 +293,7 @@ async function fetchAuroraNow() {
     const m = Array.isArray(mag) && mag[0], w = Array.isArray(sp) && sp[0];
     if (m && NOAA_AGE(m.time_tag, 30)) now.bz = num(m.bz_gsm);
     if (w && NOAA_AGE(w.time_tag, 30)) now.v = num(w.proton_speed);
+    now.lrv = lrvNow(lrvSeries(lrv));
     state.auroraNow = now;
   } catch (e) { /* resta il dato precedente */ }
   renderAuroraNow();
@@ -321,6 +328,8 @@ function renderAuroraNow() {
   const { level, text } = auroraNowVerdict({ ov: n.ov, kp, cloud, sunAlt: sunAltitude(t, loc.lat, loc.lon), wind });
   const nm = shortPlace(loc.name);
   const where = nm.startsWith('strada') ? 'lungo la ' + nm : 'a ' + nm;
+  // Leirvogur: solo da vedere (in prova), non cambia il giudizio
+  if (n.lrv) facts.push('magnetometro islandese <b>' + n.lrv.label + '</b> (' + n.lrv.range + '\u00a0nT in un\'ora, in prova)');
   if (n.ovAt) { const d = new Date(n.ovAt); facts.push('OVATION per le ' + String(d.getUTCHours()).padStart(2, '0') + ':' + String(d.getUTCMinutes()).padStart(2, '0')); }
   el.innerHTML = '<span class="aurora-now__verdict' + (level ? ' aurora-now__verdict--' + level : '') + '">🌌 Adesso ' + where + ': ' + text + '</span>'
     + '<span class="aurora-now__facts">' + facts.join(' · ') + '</span>';
