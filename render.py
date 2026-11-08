@@ -352,6 +352,7 @@ def render_day_section(day):
       <div class="info-card__label">Meteo · {e(locations[day['locKey']]['name'])}</div>
       <div class="info-card__big" data-weather-temp="{day['id']}">…</div>
       <div class="info-card__sub" data-weather-desc="{day['id']}">Caricamento…</div>
+      <div class="weather-wind" data-weather-wind="{day['id']}" hidden></div>
       <div class="info-card__source" data-weather-source="{day['id']}"></div>
     </div>
     <div class="info-card">
@@ -461,7 +462,7 @@ aurora_places_js = json.dumps({**locations, **evening_places}, ensure_ascii=Fals
 night_stops_js = json.dumps({d['dateISO']: evening_stops[d['id']] for d in days if d['id'] in evening_stops},
                             ensure_ascii=False)
 days_meta_js = json.dumps(
-    [{'id': d['id'], 'dateISO': d['dateISO'], 'locKey': d['locKey']} for d in days],
+    [{'id': d['id'], 'dateISO': d['dateISO'], 'locKey': d['locKey'], 'dateLabel': d['dateLabel']} for d in days],
     ensure_ascii=False
 )
 
@@ -623,6 +624,13 @@ html_out = f'''<!DOCTYPE html>
     <p>Kp: attività geomagnetica (NOAA). OVATION: probabilità di aurora verso nord. Vento solare favorevole = aurora possibile entro un'ora. Le stime tengono conto di nuvole (Open-Meteo) e buio nel posto in cui siete la sera.</p>
     <div class="more">Previsione ufficiale islandese con le nuvole: <a href="https://en.vedur.is/weather/forecasts/aurora/" target="_blank" rel="noopener">vedur.is/aurora</a> · mappa dell'ovale nella prossima mezz'ora: <a href="https://www.swpc.noaa.gov/products/aurora-30-minute-forecast" target="_blank" rel="noopener">NOAA</a></div>
   </details>
+
+  <div class="panel" id="weather-today" hidden>
+    <div class="panel-title" id="weather-today-title">Meteo oggi e domani</div>
+    <div class="rune-rule"></div>
+    <div class="weather-today-list" id="weather-today-list"></div>
+    <div class="info-card__source">Previsione Open-Meteo. Allerte ufficiali: <a href="https://en.vedur.is/" target="_blank" rel="noopener">vedur.is</a> · strade: <a href="https://umferdin.is/en" target="_blank" rel="noopener">umferdin.is</a></div>
+  </div>
 
   <div class="panel">
     <div class="panel-title">Mappa del viaggio</div>

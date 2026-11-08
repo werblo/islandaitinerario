@@ -119,10 +119,12 @@ function weatherFor(day) {
     const idx = live.time.indexOf(day.dateISO);
     if (idx >= 0) {
       const code = live.weathercode[idx];
+      const at = (k) => (Array.isArray(live[k]) && isFinite(live[k][idx]) && live[k][idx] !== null ? Number(live[k][idx]) : null);
       return {
         temp: Math.round(live.temperature_2m_max[idx]) + '° / ' + Math.round(live.temperature_2m_min[idx]) + '°C',
         desc: WEATHER_CODES[code] || 'Variabile',
-        source: 'Previsione live (aggiornata automaticamente)'
+        source: 'Previsione live (aggiornata automaticamente)',
+        wind: at('wind_speed_10m_max'), gust: at('wind_gusts_10m_max'), prec: at('precipitation_sum'), live: true
       };
     }
   }
@@ -134,9 +136,52 @@ function weatherFor(day) {
   };
 }
 
+// Vento: in Islanda è il dato che conta di più (portiere strappate, strade chiuse). Soglie indicative:
+// raffiche da 18 m/s (o vento medio da 13) "forte", da 25 m/s "pericoloso" per la guida.
+function windInfo(w) {
+  if (!w || w.wind === null || w.wind === undefined) return null;
+  const g = w.gust !== null ? w.gust : w.wind;
+  const level = g >= 25 ? 'pericoloso' : (g >= 18 || w.wind >= 13) ? 'forte' : '';
+  const lines = ['💨 Vento ' + Math.round(w.wind) + '\u00a0m/s' + (w.gust !== null ? ', raffiche ' + Math.round(w.gust) + '\u00a0m/s (' + Math.round(w.gust * 3.6) + '\u00a0km/h)' : '')];
+  if (w.prec !== null) lines.push('🌧️ Pioggia/neve ' + (w.prec < 0.5 ? 'quasi nulla' : String(Math.round(w.prec * 10) / 10).replace('.', ',') + '\u00a0mm'));
+  if (level === 'pericoloso') lines.push('⚠️ Raffiche pericolose: guardate vedur.is e umferdin.is prima di partire');
+  else if (level === 'forte') lines.push('Vento forte: tenete ferme le portiere');
+  return { text: lines.join('\n'), level };
+}
+
+// Tab Info: meteo di oggi e domani durante il viaggio (prima della partenza: i primi due giorni)
+function renderWeatherToday() {
+  const box = document.getElementById('weather-today');
+  const list = document.getElementById('weather-today-list');
+  if (!box || !list) return;
+  const today = new Date().toISOString().slice(0, 10);   // ora islandese = UTC
+  const i = DAYS_META.findIndex(d => d.dateISO === today);
+  const before = today < DAYS_META[0].dateISO;
+  const days = i >= 0 ? DAYS_META.slice(i, i + 2) : before ? DAYS_META.slice(0, 2) : [];
+  const rows = days.map((d, k) => ({ d, w: weatherFor(d), k })).filter(r => r.w.live);
+  if (!rows.length) { box.hidden = true; return; }
+  document.getElementById('weather-today-title').textContent = i >= 0 ? 'Meteo oggi e domani' : 'Meteo dei primi due giorni';
+  list.innerHTML = rows.map(({ d, w, k }) => {
+    const wi = windInfo(w);
+    const when = i >= 0 ? (k === 0 ? 'Oggi' : 'Domani') : d.dateLabel;
+    return '<div class="info-card"><div class="info-card__label">' + when + ' · ' + LOCATIONS[d.locKey].name + '</div>'
+      + '<div class="info-card__big">' + w.temp + '</div><div class="info-card__sub">' + w.desc + '</div>'
+      + (wi ? '<div class="weather-wind' + (wi.level ? ' weather-wind--' + wi.level : '') + '">' + wi.text + '</div>' : '') + '</div>';
+  }).join('');
+  box.hidden = false;
+}
+
 function renderWeatherAndSun() {
+  renderWeatherToday();
   DAYS_META.forEach(day => {
     const w = weatherFor(day);
+    const windEl = document.querySelector('[data-weather-wind="' + day.id + '"]');
+    if (windEl) {
+      const wi = windInfo(w);
+      windEl.hidden = !wi;
+      windEl.className = 'weather-wind' + (wi && wi.level ? ' weather-wind--' + wi.level : '');
+      windEl.textContent = wi ? wi.text : '';
+    }
     const tempEl = document.querySelector('[data-weather-temp="' + day.id + '"]');
     const descEl = document.querySelector('[data-weather-desc="' + day.id + '"]');
     const srcEl = document.querySelector('[data-weather-source="' + day.id + '"]');
@@ -168,7 +213,7 @@ async function fetchAllWeather() {
     const loc = AURORA_PLACES[key];
     try {
       // meteo giornaliero solo per gli alloggi; nuvole orarie (anche per strati) per tutte le tappe
-      const daily = LOCATIONS[key] ? '&daily=weathercode,temperature_2m_max,temperature_2m_min' : '';
+      const daily = LOCATIONS[key] ? '&daily=weathercode,temperature_2m_max,temperature_2m_min,wind_speed_10m_max,wind_gusts_10m_max,precipitation_sum&wind_speed_unit=ms' : '';
       const url = 'https://api.open-meteo.com/v1/forecast?latitude=' + loc.lat + '&longitude=' + loc.lon + daily + '&hourly=cloud_cover,cloud_cover_low,cloud_cover_mid,cloud_cover_high&timezone=UTC&past_days=1&forecast_days=16';
       const res = await fetch(url);
       const json = await res.json();
