@@ -10,7 +10,7 @@ Questo file descrive **com'è il progetto oggi**. La storia delle modifiche
 - **Sito:** werblo.github.io/islandaitinerario, pubblicato con GitHub Pages
   dal branch `main`. Installato come app con Firefox su Android (menu ⋮ →
   "Installa").
-- **Tab:** Info (countdown, aurora, mappa del viaggio, cambio €/ISK, budget
+- **Tab:** Info (countdown, aurora, meteo di oggi e domani, mappa del viaggio, cambio €/ISK, budget
   e celiachia, sicurezza, alloggi, numeri utili, checklist su Notion, avvisi
   aurora in una riga che si apre toccandola, Prepara offline), Giorno 1-8,
   Storia.
@@ -56,7 +56,8 @@ un segnaposto con un'icona. `render.py` converte le foto in WebP: 1200 px per
 quelle grandi, 400 px sul lato corto per le miniature (nelle schede delle
 attività si vedono piccole, 64 px, a sinistra del testo).
 
-**Ordine di un giorno.** Foto, mappa, meteo e alba/tramonto, nota aurora,
+**Ordine di un giorno.** Foto, mappa, meteo (con vento, raffiche e
+pioggia/neve) e alba/tramonto, nota aurora,
 Spostamenti in auto, Itinerario, Storia & curiosità, Dove mangiare, alloggio,
 consiglio del giorno.
 
@@ -94,6 +95,10 @@ tengono ancora raggiungibili vecchi commit con voucher ed email.
   entrambi i telefoni e ripetuto solo se l'app lo chiede (percorso cambiato).
   Meteo, aurora e cambio mostrano offline l'ultimo dato salvato.
 - **Alba e tramonto** sono calcolati dall'app (formula NOAA), anche offline.
+- **Meteo e vento** (Open-Meteo, fino a 16 giorni prima): nel riquadro di ogni
+  giorno e, nella tab Info, "Meteo oggi e domani" (prima della partenza i primi
+  due giorni). Vento "forte" con raffiche da 18 m/s (o vento medio da 13),
+  "pericoloso" da 25 m/s, con l'invito a guardare vedur.is e umferdin.is.
 - Ogni giorno ha i pulsanti "Strade" (umferdin.is), "Allerte meteo"
   (vedur.is) e "Sicurezza" (safetravel.is), e un link "Naviga" per ogni tappa
   che apre Google Maps con una ricerca testuale.

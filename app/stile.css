@@ -213,6 +213,13 @@ main { max-width:820px; margin:0 auto; padding:20px 20px 70px; display:flex; fle
 .page-view > .map-frame + .line { margin-top:6px; }
 .page-view > .day-head + * { margin-top:8px; }
 
+/* vento nel riquadro meteo (giorni e "Meteo oggi e domani") */
+.weather-wind { font-size:0.875rem; color:#3a4351; margin-top:8px; line-height:1.5; white-space:pre-line; }
+.weather-today-list { display:grid; gap:10px; }
+.weather-wind--forte { background:#fff3d6; color:#6b4600; border-radius:6px; padding:6px 8px; }
+.weather-wind--pericoloso { background:#fde2e2; color:#8a1616; border-radius:6px; padding:6px 8px; font-weight:600; }
+#weather-today .info-card__source a { color:var(--teal); }
+
 /* Tema scuro: si attiva da solo quando il telefono è in modalità scura
    (la sera, in attesa dell'aurora, lo schermo chiaro abbaglia) */
 @media (prefers-color-scheme: dark) {
@@ -255,6 +262,9 @@ main { max-width:820px; margin:0 auto; padding:20px 20px 70px; display:flex; fle
   .leaflet-container { background:#1d2630 !important; }
   .leaflet-control-attribution { background:rgba(24,34,46,.8) !important; color:#a7b0bb; }
   .leaflet-control-attribution a { color:#8fd6cd; }
+  .weather-wind { color:#c3cad2; }
+  .weather-wind--forte { background:rgba(243,197,107,.14); color:#f3c56b; }
+  .weather-wind--pericoloso { background:rgba(255,120,120,.16); color:#ffaaaa; }
 }
 
 /* link alle voci di Wikipedia sotto i box di storia */
