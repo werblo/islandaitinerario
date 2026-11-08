@@ -14,7 +14,10 @@ l'utente: `leggimi.md` (breve: com'è il progetto oggi).
   Fontana (Giorno 3, ore 15:30) è **prenotata**, quindi non proporre mai di
   scambiare il Giorno 2 con il Giorno 3; la foto della Secret Lagoon va bene così.
 - `CLOUD_METHOD` (in `dati.py`) si cambia solo dopo conferma esplicita di Michele
-  (scelta e risultati: leggimi sezione 6).
+  (scelta e risultati: leggimi sezione 6). Unica eccezione (Michele, 8/11): se il
+  confronto meteo del 14/11 dà un vincitore netto per le nuvole serali o per le
+  raffiche, il controllo del 14/11 lo integra senza chiedere (criteri e test nel
+  suo prompt).
 - Il badge senza glutine (`'gf': True`) solo per locali con opzioni senza
   glutine verificate (il celiaco è Michele).
 - Mai mettere segreti nel repo (la chiave privata VAPID sta solo nei secret).
