@@ -220,6 +220,11 @@ main { max-width:820px; margin:0 auto; padding:20px 20px 70px; display:flex; fle
 .weather-wind--pericoloso { background:#fde2e2; color:#8a1616; border-radius:6px; padding:6px 8px; font-weight:600; }
 #weather-today .info-card__source a { color:var(--teal); }
 
+/* mappa del viaggio a tutto schermo (tocco sulla mappa o pulsante ⤢) */
+.trip-map-btn { min-width:40px; height:40px; padding:0 12px; border-radius:8px; border:2px solid var(--navy); background:var(--panel); color:var(--navy); font:600 0.9375rem 'IBM Plex Sans',sans-serif; cursor:pointer; box-shadow:0 2px 8px rgba(0,0,0,.2); }
+#trip-map.trip-map--full { position:fixed !important; inset:0 !important; height:100% !important; height:100dvh !important; z-index:3000 !important; border-radius:0 !important; border:0 !important; }
+body.trip-map-open { overflow:hidden; }
+
 /* Tema scuro: si attiva da solo quando il telefono è in modalità scura
    (la sera, in attesa dell'aurora, lo schermo chiaro abbaglia) */
 @media (prefers-color-scheme: dark) {
@@ -255,6 +260,7 @@ main { max-width:820px; margin:0 auto; padding:20px 20px 70px; display:flex; fle
   .gf-badge { background:#16301e; border-color:#5aa76b; color:#b8e6c1; }
   .fab-fx-btn { background:#22344a; }
   .offline-btn, .aurora-push__btn:not(.aurora-push__btn--ghost) { background:#2f4b68; }
+  .trip-map-btn { background:#18222e; color:#e8e2d6; border-color:#3a4a5c; }
   .aurora-push__btn--ghost { border-color:#3a4a5c; }
   .offline-btn.offline-btn--done { background:transparent; color:#e8e2d6; border-color:#3a4a5c; }
   .map-frame, #trip-map { border-color:#2b3949 !important; }

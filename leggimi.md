@@ -84,7 +84,9 @@ tengono ancora raggiungibili vecchi commit con voucher ed email.
 ## 4. Mappe, percorsi e offline
 
 - **Mappe:** Leaflet con le mappe OpenStreetMap (senza chiave). Si spostano
-  dopo il primo tocco; i pulsanti +/− sono in basso a sinistra.
+  dopo il primo tocco; i pulsanti +/− sono in basso a sinistra. La "Mappa del
+  viaggio" in Info si apre a tutto schermo toccandola (o con ⤢) e si chiude con
+  ✕ o con il tasto Indietro.
 - **Percorsi e km:** calcolati una volta con OSRM e salvati in `routes.json`.
   Se cambiano tappe o coordinate in `map_points`: tab Actions → "Aggiorna
   percorsi mappa" → Run workflow (ricalcola percorsi, km e tempi delle
