@@ -272,11 +272,12 @@ def render_activity(day_id, idx, act):
     if act.get('link'):
         links_html += (f'<a class="act-link" href="{e(act["link"])}" target="_blank" rel="noopener">'
                         f'Scopri di più \u2197</a>')
-    # 'nav': una ricerca su Google Maps, oppure più tappe [(nome, ricerca), ...] con un link ciascuna
+    # 'nav': destinazione per Google Maps (coordinate "lat,lon" verificate su OpenStreetMap, di solito il
+    # parcheggio), oppure più tappe [(nome, destinazione), ...] con un link ciascuna
     navs = act.get('nav')
     if navs:
         for label, query in ([(None, navs)] if isinstance(navs, str) else navs):
-            maps_url = 'https://www.google.com/maps/search/?api=1&query=' + urllib.parse.quote(query)
+            maps_url = 'https://www.google.com/maps/dir/?api=1&destination=' + urllib.parse.quote(query)
             links_html += (f'<a class="act-link act-link--nav" href="{e(maps_url)}" target="_blank" rel="noopener">'
                             f'Naviga{(" " + e(label)) if label else ""} \u2197</a>')
     return (f'<div class="act-card">{img_html}<div class="act-body">'
@@ -321,7 +322,7 @@ def render_day_section(day):
         parking_nav_html = ''
         if day.get('parking_nav'):
             links = ''.join(
-                f'<a class="act-link act-link--nav" href="https://www.google.com/maps/search/?api=1&query={urllib.parse.quote(p["query"])}" target="_blank" rel="noopener">{e(p["label"])} ↗</a>'
+                f'<a class="act-link act-link--nav" href="https://www.google.com/maps/dir/?api=1&destination={urllib.parse.quote(p["query"])}" target="_blank" rel="noopener">{e(p["label"])} ↗</a>'
                 for p in day['parking_nav']
             )
             parking_nav_html = f'<div class="acc-parking-nav">{links}</div>'
