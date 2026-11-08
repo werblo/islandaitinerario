@@ -166,10 +166,11 @@ ora islandese = UTC):
 **Turni.** GitHub fa partire le esecuzioni programmate anche con 4-12 ore di
 ritardo (misurato a ottobre). Per questo ogni esecuzione è un "turno" che resta
 acceso 5 ore e mezza e fa da solo tutti i controlli, ai minuti :07 e :37 (di
-notte, in mezzo, ogni 10 minuti solo il vento solare). I
-turni partono ogni 2 ore dal 13 al 22 novembre e si mettono in coda: quando uno
-finisce parte il successivo, così le ore utili restano coperte anche se GitHub
-ritarda. Gli avvisi già mandati sono salvati nella cache di GitHub Actions, non
+notte, in mezzo, ogni 10 minuti solo il vento solare). GitHub però avvia le
+esecuzioni in media ogni 6 ore: con un turno solo restavano buchi serali di 1-3
+ore (fine ottobre-inizio novembre). Per questo ogni esecuzione programmata fa 4
+turni uno dopo l'altro (circa 22 ore); quelle che arrivano nel frattempo si
+mettono in coda (in Actions alcune risultano "annullate": è normale). Gli avvisi già mandati sono salvati nella cache di GitHub Actions, non
 nel repo, e non si ripetono tra un turno e l'altro.
 
 Nell'app, se mancano i dati sulle nuvole la stima dice "previsione incompleta",
