@@ -639,7 +639,7 @@ html_out = f'''<!DOCTYPE html>
     <div class="panel-title">Mappa del viaggio</div>
     <div class="rune-rule"></div>
     <div id="trip-map" role="region" aria-label="Mappa del viaggio" style="position:relative;isolation:isolate;z-index:0;height:260px;border-radius:8px;overflow:hidden;border:2px solid var(--navy);box-shadow:0 4px 16px rgba(0,0,0,.12);background:#e4e6e3;"></div>
-    <div class="line" style="margin-top:10px;font-size:0.8125rem;color:var(--muted-2);">Mappa reale (OpenStreetMap), zoomabile e trascinabile. Tocca un marker per il nome della tappa. Per la navigazione stradale vera e propria usa Google Maps offline.</div>
+    <div class="line" style="margin-top:10px;font-size:0.8125rem;color:var(--muted-2);">Mappa reale (OpenStreetMap): toccala (o tocca ⤢) per aprirla a tutto schermo; si chiude con ✕ o con Indietro. Tocca un marker per il nome della tappa. Per la navigazione stradale vera e propria usa Google Maps offline.</div>
   </div>
 
   <div class="panel">

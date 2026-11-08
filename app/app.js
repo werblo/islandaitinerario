@@ -869,6 +869,45 @@ function initTripMap() {
   tripMap = map;
 
   el.addEventListener('touchstart', () => { map.scrollWheelZoom.enable(); map.dragging.enable(); }, { once: true, passive: true });
+
+  // Tutto schermo (chiesto da Michele l'8/11): un tocco sulla mappa o il pulsante ⤢ la apre grande;
+  // si chiude con ✕ o con il tasto Indietro del telefono.
+  let full = false;
+  const Btn = L.Control.extend({
+    options: { position: 'topright' },
+    onAdd() {
+      const b = L.DomUtil.create('button', 'trip-map-btn');
+      b.type = 'button';
+      L.DomEvent.disableClickPropagation(b);
+      b.addEventListener('click', () => (full ? history.back() : open()));
+      return b;
+    }
+  });
+  const btn = new Btn().addTo(map).getContainer();
+  const label = () => {
+    btn.textContent = full ? '✕ Chiudi' : '⤢';
+    btn.setAttribute('aria-label', full ? 'Chiudi la mappa a tutto schermo' : 'Apri la mappa a tutto schermo');
+  };
+  const refit = () => requestAnimationFrame(() => { map.invalidateSize(); map.fitBounds(tripBounds, TRIP_FIT); });
+  function open() {
+    if (full) return;
+    full = true;
+    el.classList.add('trip-map--full');
+    document.body.classList.add('trip-map-open');
+    map.dragging.enable(); map.scrollWheelZoom.enable();
+    history.pushState({ tripMap: true }, '');
+    label(); refit();
+  }
+  function close() {
+    if (!full) return;
+    full = false;
+    el.classList.remove('trip-map--full');
+    document.body.classList.remove('trip-map-open');
+    label(); refit();
+  }
+  window.addEventListener('popstate', close);
+  map.on('click', () => { if (!full) open(); });
+  label();
 }
 
 // Aggiornamento dei dati live (aurora, meteo, cambio).
