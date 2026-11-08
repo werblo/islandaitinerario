@@ -213,7 +213,7 @@ LEG_LINKS_HTML = (f'<div class="leg-links">'
 # OSRM): tappe della mappa, località principali e qualche nome alternativo.
 LEG_ALIASES = {
     'Aeroporto di Keflavík': 'Aeroporto Keflavík',
-    'Keflavík': 'Aeroporto Keflavík',
+    'Keflavík': 'Ufficio FairCar',   # il Giorno 1 si guida dall'ufficio FairCar (Ásbrú), dopo la navetta
     'Ponte tra i continenti': 'Bridge Between Continents',
     'Vík': 'Vík í Mýrdal',
 }
