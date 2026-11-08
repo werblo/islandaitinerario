@@ -1,5 +1,5 @@
 
-const state = { weather:{}, sun:{}, kp:null, kpStatus:'loading' };
+const state = { weather:{}, vedur:{}, sun:{}, kp:null, kpStatus:'loading' };
 
 const dayMaps = {};
 
@@ -156,22 +156,83 @@ function daySky(code, prec, hours, snow, cloud) {
   return { icon: snowy ? '🌨️' : showers ? '🌦️' : '🌧️', desc: what + how };
 }
 
+// Previsioni di vedur.is (servizio meteo islandese, scelte da Michele l'8/11 per il meteo dei giorni):
+// passi di 1 ora nei primi giorni, poi di 3-6 ore, fino a circa 10 giorni. Niente raffiche: quelle
+// restano di Open-Meteo. Le nuvole per l'aurora non c'entrano (Open-Meteo, CLOUD_METHOD).
+async function fetchVedur() {
+  for (const key of Object.keys(LOCATIONS)) {
+    const id = LOCATIONS[key].vedur;
+    if (!id) continue;
+    try {
+      const xml = await (await fetch('https://xmlweather.vedur.is/?op_w=xml&type=forec&lang=en&view=xml&ids=' + id + '&params=F;T;W;N;R')).text();
+      const doc = new DOMParser().parseFromString(xml, 'text/xml');
+      const steps = [...doc.querySelectorAll('forecast')].map(f => {
+        const v = k => { const x = f.querySelector(k); return x && x.textContent !== '' && isFinite(x.textContent) ? Number(x.textContent) : null; };
+        const t = Date.parse(((f.querySelector('ftime') || {}).textContent || '').replace(' ', 'T') + 'Z');
+        return { t, T: v('T'), F: v('F'), N: v('N'), R: v('R'), W: ((f.querySelector('W') || {}).textContent || '') };
+      }).filter(x => isFinite(x.t)).sort((a, b) => a.t - b.t);
+      if (steps.length) { state.vedur[key] = steps; renderWeatherAndSun(); }
+    } catch (e) { /* resta Open-Meteo */ }
+  }
+}
+function vedurDay(key, dateISO) {
+  const all = state.vedur[key];
+  if (!all) return null;
+  const d0 = Date.parse(dateISO + 'T00:00Z'), d1 = d0 + 86400000;
+  const steps = all.filter(x => x.t >= d0 && x.t < d1);
+  if (steps.length < 4) return null;   // giornata coperta solo in parte
+  let prec = 0, hours = 0, snow = 0, cloud = 0, cloudH = 0, fog = false;
+  const temps = steps.map(x => x.T).filter(x => x !== null), winds = steps.map(x => x.F).filter(x => x !== null);
+  steps.forEach((x, i) => {
+    const next = steps[i + 1] ? steps[i + 1].t : Math.min(d1, x.t + (i ? x.t - steps[i - 1].t : 3600000));
+    const h = Math.min(6, Math.max(1, (next - x.t) / 3600000));
+    const r = x.R !== null ? x.R : 0;   // R è la quantità del passo (1 ora all'inizio, poi 3-6 ore)
+    prec += r;
+    if (x.R !== null && x.R >= 0.05) hours += h;
+    const w = x.W.toLowerCase();
+    if (/snow/.test(w)) snow += r; else if (/sleet/.test(w)) snow += r / 2;
+    if (/fog/.test(w)) fog = true;
+    if (x.N !== null) { cloud += x.N * h; cloudH += h; }
+  });
+  if (!temps.length) return null;
+  return {
+    tmax: Math.max(...temps), tmin: Math.min(...temps), wind: winds.length ? Math.max(...winds) : null,
+    prec: Math.round(prec * 10) / 10, hours, snowCm: snow * 0.7, cloud: cloudH ? cloud / cloudH : null, fog
+  };
+}
+
 function weatherFor(day) {
   const live = state.weather[day.locKey];
+  const ahead = Math.round((Date.parse(day.dateISO) - Date.parse(new Date().toISOString().slice(0, 10))) / 86400000);
+  const v = vedurDay(day.locKey, day.dateISO);
+  if (v) {
+    const sky = daySky(v.fog ? 45 : 0, v.prec, v.hours, v.snowCm, v.cloud);
+    let gust = null;   // raffiche: vedur.is non le prevede per stazione, si prendono da Open-Meteo
+    if (live && live.time && Array.isArray(live.wind_gusts_10m_max)) {
+      const i = live.time.indexOf(day.dateISO);
+      if (i >= 0 && isFinite(live.wind_gusts_10m_max[i]) && live.wind_gusts_10m_max[i] !== null) gust = Number(live.wind_gusts_10m_max[i]);
+    }
+    return {
+      temp: Math.round(v.tmax) + '° / ' + Math.round(v.tmin) + '°C',
+      desc: sky.desc, icon: sky.icon, far: ahead >= 5,
+      source: 'vedur.is (servizio meteo islandese)' + (ahead >= 5 ? ' · tendenza fra ' + ahead + ' giorni: poco affidabile, si aggiorna da sola' : '')
+        + (gust !== null ? ' · raffiche: Open-Meteo' : ''),
+      wind: v.wind, gust, prec: v.prec, live: true
+    };
+  }
   if (live && live.time) {
     const idx = live.time.indexOf(day.dateISO);
     if (idx >= 0) {
       const code = live.weathercode[idx];
       const at = (k) => (Array.isArray(live[k]) && isFinite(live[k][idx]) && live[k][idx] !== null ? Number(live[k][idx]) : null);
       const sky = daySky(code, at('precipitation_sum'), at('precipitation_hours'), at('snowfall_sum'), at('cloud_cover_mean'));
-      // oltre 5 giorni le previsioni cambiano molto (l'8/11 Open-Meteo e met.no non erano d'accordo sul 15-17/11)
-      const ahead = Math.round((Date.parse(day.dateISO) - Date.parse(new Date().toISOString().slice(0, 10))) / 86400000);
+      // giorno non ancora coperto da vedur.is (oltre circa 10 giorni): Open-Meteo
       return {
         temp: Math.round(live.temperature_2m_max[idx]) + '° / ' + Math.round(live.temperature_2m_min[idx]) + '°C',
         desc: sky.desc,
         icon: sky.icon,
         far: ahead >= 5,
-        source: ahead >= 5 ? 'Tendenza fra ' + ahead + ' giorni: poco affidabile, cambia spesso (si aggiorna da sola)' : 'Previsione live (aggiornata automaticamente)',
+        source: 'Open-Meteo (vedur.is non arriva ancora a questa data)' + (ahead >= 5 ? ' · tendenza fra ' + ahead + ' giorni: poco affidabile, si aggiorna da sola' : ''),
         wind: at('wind_speed_10m_max'), gust: at('wind_gusts_10m_max'), prec: at('precipitation_sum'), live: true
       };
     }
@@ -189,7 +250,7 @@ function weatherFor(day) {
 function windInfo(w) {
   if (!w || w.wind === null || w.wind === undefined) return null;
   const g = w.gust !== null ? w.gust : w.wind;
-  const level = g >= 25 ? 'pericoloso' : (g >= 18 || w.wind >= 13) ? 'forte' : '';
+  const level = (g >= 25 || w.wind >= 20) ? 'pericoloso' : (g >= 18 || w.wind >= 13) ? 'forte' : '';
   const lines = ['💨 Vento ' + Math.round(w.wind) + '\u00a0m/s' + (w.gust !== null ? ', raffiche ' + Math.round(w.gust) + '\u00a0m/s (' + Math.round(w.gust * 3.6) + '\u00a0km/h)' : '')];
   if (w.prec !== null) lines.push('🌧️ Pioggia/neve ' + (w.prec < 0.5 ? 'quasi nulla' : String(Math.round(w.prec * 10) / 10).replace('.', ',') + '\u00a0mm'));
   if (level === 'pericoloso') lines.push('⚠️ Raffiche pericolose: guardate vedur.is e umferdin.is prima di partire');
@@ -822,6 +883,7 @@ function refreshLiveData(force) {
   fetchAuroraNow();
   fetchKpForecast();
   fetchAllWeather();
+  fetchVedur();
   fetchFxRate();
 }
 

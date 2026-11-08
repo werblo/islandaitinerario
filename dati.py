@@ -4,10 +4,13 @@
 # ============================================================
 
 locations = {
-    'reykjavik': {'name': 'Reykjavík', 'lat': 64.1466, 'lon': -21.9426},
-    'vik': {'name': 'Vík í Mýrdal', 'lat': 63.4186, 'lon': -19.0060},
-    'fludir': {'name': 'Flúðir', 'lat': 64.1372, 'lon': -20.3033},
-    'keflavik': {'name': 'Keflavík', 'lat': 63.9850, 'lon': -22.6056}
+    # vedur: stazione di vedur.is per le previsioni meteo dei giorni (scelta da Michele l'8/11;
+    # le nuvole per l'aurora restano Open-Meteo con CLOUD_METHOD). Vík: Reynisfjall, sulla
+    # montagna sopra il paese (un po' più ventosa); Flúðir: strada Flúðir-Reykholt.
+    'reykjavik': {'name': 'Reykjavík', 'lat': 64.1466, 'lon': -21.9426, 'vedur': 1},
+    'vik': {'name': 'Vík í Mýrdal', 'lat': 63.4186, 'lon': -19.0060, 'vedur': 36049},
+    'fludir': {'name': 'Flúðir', 'lat': 64.1372, 'lon': -20.3033, 'vedur': 36415},
+    'keflavik': {'name': 'Keflavík', 'lat': 63.9850, 'lon': -22.6056, 'vedur': 990}
 }
 
 seasonal = {
