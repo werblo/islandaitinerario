@@ -10,7 +10,7 @@ locations = {
     'reykjavik': {'name': 'Reykjavík', 'lat': 64.1466, 'lon': -21.9426, 'vedur': 1},
     'vik': {'name': 'Vík í Mýrdal', 'lat': 63.4186, 'lon': -19.0060, 'vedur': 36049},
     'fludir': {'name': 'Flúðir', 'lat': 64.1372, 'lon': -20.3033, 'vedur': 36415},
-    'keflavik': {'name': 'Keflavík', 'lat': 63.9850, 'lon': -22.6056, 'vedur': 990}
+    'keflavik': {'name': 'Keflavík', 'lat': 63.9950, 'lon': -22.6239, 'vedur': 990}
 }
 
 seasonal = {
@@ -147,7 +147,7 @@ days = [
     {'meal':'Cena','place':'Ströndin Bistro, Vík','note':'Opzioni senza glutine non verificate (una sola segnalazione online: stufato di carne e costolette d\'agnello): chiedete allo staff e tenete un\'alternativa','cost':'€€','gf':False}
   ],
   'accommodation':{'name':'Hótel Búrfell','detail':'2ª notte a Vík · parcheggio gratuito','url':'https://hotelburfell.is/'},
-  'tips':"Circa 390 km andata/ritorno da Vík, circa 6 ore di guida. Tabella di marcia: partenza alle 7:30, Jökulsárlón verso le 10:30-10:45 (circa 2h55 senza soste, in inverno contate qualcosa in più), Diamond Beach e via entro le 12:30, Fjaðrárgljúfur verso le 14:30-14:45 con circa un'ora e mezza di luce prima del tramonto (16:05), rientro a Vík verso le 16:45-17:00. Prima di partire controllate che il sentiero del canyon sia aperto (in inverno a volte viene chiuso per il terreno fradicio) e le strade su umferdin.is; con brutto tempo valutate di fermarvi solo a Jökulsárlón/Diamond Beach.",
+  'tips':"Circa 390 km andata/ritorno da Vík, circa 6 ore di guida. Tabella di marcia: partenza alle 7:30, Jökulsárlón verso le 10:30 (circa 2h45 senza soste, in inverno contate qualcosa in più), Diamond Beach e via entro le 12:30, Fjaðrárgljúfur verso le 14:30-14:45 con circa un'ora e mezza di luce prima del tramonto (16:05), rientro a Vík verso le 16:45-17:00. Prima di partire controllate che il sentiero del canyon sia aperto (in inverno a volte viene chiuso per il terreno fradicio) e le strade su umferdin.is; con brutto tempo valutate di fermarvi solo a Jökulsárlón/Diamond Beach.",
   'culture':"Jökulsárlón è una laguna glaciale formata a partire dagli anni Trenta del Novecento, quando la lingua del ghiacciaio Breiðamerkurjökull ha cominciato a ritirarsi. È collegata all'oceano Atlantico da un breve canale: gli iceberg che si staccano dal ghiacciaio attraversano la laguna e arrivano sulla spiaggia di sabbia nera di fronte, nota come Diamond Beach.\n\nIl Breiðamerkurjökull è una lingua del Vatnajökull, la più grande calotta glaciale d'Islanda e tra le più estese d'Europa, che si trova all'interno del Parco nazionale del Vatnajökull, patrimonio dell'umanità UNESCO dal 2019. Il canyon di Fjaðrárgljúfur, profondo fino a circa 100 metri, è stato scavato dal fiume Fjaðrá alla fine dell'ultima glaciazione, circa 9.000 anni fa, in rocce che hanno circa due milioni di anni.",
   'culture_links':[("Parco nazionale del Vatnajökull", "https://it.wikipedia.org/wiki/Parco_nazionale_del_Vatnajökull"), ("Ghiacciai dell'Islanda", "https://it.wikipedia.org/wiki/Ghiacciai_dell'Islanda")],
   'parking_nav':[
@@ -205,7 +205,8 @@ days = [
  },
  {'id':'d8','num':8,'dateISO':'2026-11-22','dateLabel':'Dom 22 nov','title':'Flúðir → Keflavík → Volo di ritorno','locKey':'keflavik',
   'legs':[
-    {'from':'Flúðir','to':'Aeroporto di Keflavík','km':140,'time':'~2h05'}
+    {'from':'Flúðir','to':'Ufficio FairCar','km':140,'time':'~2h05','note':'Riconsegna dell\'auto a Ásbrú (Bogatröð 1), vicino all\'aeroporto'},
+    {'from':'Ufficio FairCar','to':'Aeroporto di Keflavík','km':4,'time':'~10 min (navetta FairCar)'}
   ],
   'activities':[
     {'time':'06:45','title':'Partenza da Flúðir','desc':'Partite presto per avere margine: riconsegna auto e imbarco sono molto ravvicinati.','cost':None},
@@ -225,14 +226,14 @@ days = [
 # 'extra': True = tappa facoltativa: compare come segnaposto sulla mappa ma non
 # fa parte del percorso stradale.
 map_points = {
-    'd1': [{'name':'Aeroporto Keflavík','lat':63.9850,'lon':-22.6056}, {'name':'Reykjavík','lat':64.1466,'lon':-21.9426}],
+    'd1': [{'name':'Aeroporto Keflavík','lat':63.9950,'lon':-22.6239}, {'name':'Ufficio FairCar','lat':63.9650,'lon':-22.5746}, {'name':'Reykjavík','lat':64.1466,'lon':-21.9426}],
     'd2': [{'name':'Reykjavík','lat':64.1466,'lon':-21.9426}, {'name':'Bridge Between Continents','lat':63.8697,'lon':-22.6764}, {'name':'Gunnuhver','lat':63.8192,'lon':-22.6846}, {'name':'Reykjanesviti','lat':63.8158,'lon':-22.7042}, {'name':'Perlan','lat':64.1289,'lon':-21.9147}, {'name':'Harpa','lat':64.1500,'lon':-21.9326}, {'name':'Whales of Iceland (facoltativo, se piove)','lat':64.1557,'lon':-21.9488,'extra':True}],
     'd3': [{'name':'Reykjavík','lat':64.1466,'lon':-21.9426}, {'name':'Þingvellir','lat':64.2559,'lon':-21.1297}, {'name':'Laugarvatn','lat':64.2141,'lon':-20.7290}, {'name':'Reykjavík','lat':64.1466,'lon':-21.9426}],
     'd4': [{'name':'Reykjavík','lat':64.1466,'lon':-21.9426}, {'name':'Seljalandsfoss','lat':63.6156,'lon':-19.9886}, {'name':'Skógafoss','lat':63.5321,'lon':-19.5116}, {'name':'Dyrhólaey','lat':63.4033,'lon':-19.1250}, {'name':'Reynisfjara','lat':63.4038,'lon':-19.0428}, {'name':'Víkurkirkja','lat':63.4193,'lon':-19.0058}],
-    'd5': [{'name':'Vík','lat':63.4186,'lon':-19.0060}, {'name':'Jökulsárlón','lat':64.0784,'lon':-16.2300}, {'name':'Diamond Beach','lat':64.0645,'lon':-16.1809}, {'name':'Fjaðrárgljúfur','lat':63.7722,'lon':-18.1725}, {'name':'Vík','lat':63.4186,'lon':-19.0060}],
+    'd5': [{'name':'Vík','lat':63.4186,'lon':-19.0060}, {'name':'Jökulsárlón','lat':64.0481,'lon':-16.1799}, {'name':'Diamond Beach','lat':64.0436,'lon':-16.1780}, {'name':'Fjaðrárgljúfur','lat':63.7722,'lon':-18.1725}, {'name':'Vík','lat':63.4186,'lon':-19.0060}],
     'd6': [{'name':'Vík','lat':63.4186,'lon':-19.0060}, {'name':'Kerið','lat':64.0410,'lon':-20.8834}, {'name':'Flúðir','lat':64.1372,'lon':-20.3033}, {'name':'Secret Lagoon','lat':64.1306,'lon':-20.2989}],
     'd7': [{'name':'Flúðir','lat':64.1372,'lon':-20.3033}, {'name':'Geysir','lat':64.3128,'lon':-20.3009}, {'name':'Gullfoss','lat':64.3271,'lon':-20.1199}, {'name':'Faxi','lat':64.2266,'lon':-20.3402}, {'name':'Efstidalur II','lat':64.2567,'lon':-20.5029}, {'name':'Flúðir','lat':64.1372,'lon':-20.3033}],
-    'd8': [{'name':'Flúðir','lat':64.1372,'lon':-20.3033}, {'name':'Aeroporto Keflavík','lat':63.9850,'lon':-22.6056}]
+    'd8': [{'name':'Flúðir','lat':64.1372,'lon':-20.3033}, {'name':'Ufficio FairCar','lat':63.9650,'lon':-22.5746}, {'name':'Aeroporto Keflavík','lat':63.9950,'lon':-22.6239}]
 }
 
 # Tappe serali per la stima aurora (app e notifiche): dove siete la sera, ora per ora
