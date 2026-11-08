@@ -8,10 +8,13 @@ name: Avvisi aurora
 #     minuti, solo il vento solare per l'avviso "arrivo");
 #   - il messaggio del mattino (dalle 7:37, dal 15 al 21 novembre);
 #   - la prova automatica del 13 novembre dalle 18:07 (19:07 in Italia).
-# I turni partono ogni 2 ore dal 13 al 22 novembre e si mettono in coda (concurrency):
-# quando uno finisce parte quello in attesa, così le ore utili restano coperte anche se
-# GitHub ritarda. Dal 22/10 al 12/11 c'è un'anteprima: di notte solo gli avvisi "adesso"
-# e "arrivo" per Reykjavík, a tutti i telefoni.
+# GitHub però avvia le esecuzioni programmate in media ogni 6 ore (non ogni 2): con un solo
+# turno restavano buchi di 1-3 ore, spesso tra le 17:30 e le 21 (misurato dal 28/10 al 7/11).
+# Per questo un'esecuzione programmata fa 4 turni uno dopo l'altro (matrice "parte",
+# max-parallel 1), circa 22 ore; le esecuzioni che arrivano nel frattempo si mettono in coda
+# (concurrency: ne resta in attesa una sola, le altre risultano "annullate", è normale) e
+# ripartono appena finisce. Dal 22/10 al 12/11 c'è un'anteprima: di notte solo gli avvisi
+# "adesso" e "arrivo" per Reykjavík, a tutti i telefoni.
 # A mano (tab Actions -> "Avvisi aurora" -> Run workflow): "prova" manda subito una
 # notifica di prova, "mattino" un'anteprima del messaggio del mattino, "controllo" un
 # controllo come di notte, "vento" solo il controllo del vento solare, "turno" una prova del giro dei controlli (non durante il
@@ -19,7 +22,7 @@ name: Avvisi aurora
 on:
   schedule:
     - cron: '7 */2 13-22 11 *'
-    # anteprima prima del viaggio (22/10-12/11): solo l'avviso "adesso" per Reykjavík
+    # anteprima prima del viaggio (22/10-12/11): solo gli avvisi "adesso" e "arrivo" per Reykjavík
     - cron: '7 */2 22-31 10 *'
     - cron: '7 */2 1-12 11 *'
   workflow_dispatch:
@@ -44,6 +47,12 @@ jobs:
   aurora:
     runs-on: ubuntu-24.04   # fisso: ubuntu-latest passa a una nuova versione a metà ottobre 2026
     timeout-minutes: 350   # il turno dura 330 minuti; GitHub ferma i job dopo 360
+    # esecuzione programmata: 4 turni in fila (circa 22 ore); a mano: uno solo
+    strategy:
+      max-parallel: 1
+      fail-fast: false
+      matrix:
+        parte: ${{ github.event_name == 'schedule' && fromJSON('[1, 2, 3, 4]') || fromJSON('[1]') }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -54,7 +63,7 @@ jobs:
       - uses: actions/cache/restore@v4
         with:
           path: .aurora-state
-          key: aurora-state-${{ github.run_id }}-${{ github.run_attempt }}
+          key: aurora-state-${{ github.run_id }}-${{ matrix.parte }}-${{ github.run_attempt }}
           restore-keys: aurora-state-
       - name: Controlla l'aurora e manda gli avvisi
         run: python tools/aurora_alert.py
@@ -69,4 +78,4 @@ jobs:
         if: always() && hashFiles('.aurora-state/state.json') != ''
         with:
           path: .aurora-state
-          key: aurora-state-${{ github.run_id }}-${{ github.run_attempt }}
+          key: aurora-state-${{ github.run_id }}-${{ matrix.parte }}-${{ github.run_attempt }}

@@ -82,7 +82,9 @@ l'utente: `leggimi.md` (breve: com'è il progetto oggi).
   da solo, ai minuti :07 e :37, i controlli notturni (16:07-3:37; in mezzo,
   ogni 10 minuti, solo il vento solare per l'avviso "arrivo"), il mattino
   (dalle 7:37, fino alle 15) e la prova del 13/11 (dalle 18:07). Cron ogni 2
-  ore dal 13 al 22/11, in coda con `concurrency`. Dal 22/10 al 12/11
+  ore dal 13 al 22/11, ma GitHub ne avvia in media una ogni 6 ore: ogni
+  esecuzione programmata fa 4 turni in fila (matrice `parte`, `max-parallel: 1`,
+  circa 22 ore), le altre restano in coda con `concurrency`. Dal 22/10 al 12/11
   anteprima (`ANTEPRIMA` in `aurora_alert.py`): solo gli avvisi "adesso" e
   "arrivo" per Reykjavík, a tutti e due i telefoni (dal 31/10). Mattino senza dati: riprova
   fino alle 10. Prove: a mano con `modalita` e `durata` (il `turno` a mano è

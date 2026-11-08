@@ -18,9 +18,9 @@ Le esecuzioni programmate di GitHub partono spesso con ore di ritardo: per quest
 workflow lancia dei "turni" (AURORA_MODE=turno) che restano accesi circa 5 ore e mezza e
 fanno da soli i controlli ogni 30 minuti (ai minuti :07 e :37; di notte, in mezzo, ogni 10
 minuti solo il vento solare per l'avviso "arrivo"), il messaggio del mattino
-(dalle 7:37) e la prova automatica del 13 novembre (dalle 18:07). I turni partono ogni 2
-ore e si mettono in coda uno dopo l'altro: anche se uno parte tardi, quello già acceso
-copre le ore in cui serve.
+(dalle 7:37) e la prova automatica del 13 novembre (dalle 18:07). GitHub avvia le esecuzioni
+in media ogni 6 ore: per questo il workflow fa 4 turni uno dopo l'altro per esecuzione
+(circa 22 ore) e le esecuzioni successive si mettono in coda.
 
 Variabili d'ambiente:
   VAPID_PRIVATE_KEY     chiave privata VAPID (secret del repo)
