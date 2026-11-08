@@ -157,12 +157,13 @@ days = [
  {'id':'d6','num':6,'dateISO':'2026-11-20','dateLabel':'Ven 20 nov','title':'Vík → Flúðir','locKey':'fludir',
   'legs':[
     {'from':'Hótel Búrfell','to':'Kerið','km':135,'time':'~1h50'},
-    {'from':'Kerið','to':'Flúðir','km':39,'time':'~30 min'}
+    {'from':'Kerið','to':'Skálholt','km':24,'time':'~25 min'},
+    {'from':'Skálholt','to':'Flúðir','km':21,'time':'~20 min'}
   ],
   'activities':[
     {'time':'10:00','title':'Check-out Hótel Búrfell','desc':'','cost':None},
     {'time':'12:30','title':'Kerið','desc':'Cratere vulcanico con un lago sul fondo, percorribile a piedi in 15-20 min.','cost':'€ ~700 ISK / ~5€','link':'https://kerid.is/','nav':'64.0415,-20.8870'},
-    {'time':'13:30','title':'Skálholt (facoltativo)','desc':'Sede vescovile per circa 700 anni, con la cattedrale attuale degli anni 1950 e i resti dell\'antico centro religioso. È quasi sulla strada tra Kerið e Flúðir: circa 6 km e 15 minuti in più rispetto al percorso diretto; la visita dura 30-45 minuti e si arriva a Flúðir verso le 14:45, in tempo per il check-in. Orari della cattedrale da verificare sul posto.','cost':None,'link':'https://it.wikipedia.org/wiki/Sk%C3%A1lholt','nav':'64.1253,-20.5241'},
+    {'time':'13:30','title':'Skálholt','desc':'Sede vescovile per circa 700 anni, con la cattedrale attuale consacrata nel 1963 e i resti dell\'antico centro religioso. È sulla strada tra Kerið e Flúðir (circa 15 minuti in più rispetto al percorso diretto); la visita dura 30-45 minuti e si arriva a Flúðir verso le 14:45, in tempo per il check-in. Orari della cattedrale da verificare sul posto.','cost':None,'link':'https://it.wikipedia.org/wiki/Sk%C3%A1lholt','nav':'64.1253,-20.5241'},
     {'time':'15:30','title':'Check-in The Hill Guesthouse','desc':'Check-in dalle 15:00 alla reception del The Hill Hotel, di fronte alla guesthouse (Vesturbrún 1, Flúðir). Check-out anticipato: domenica 22 partite alle 6:45, prima che apra la reception. Scrivete qualche giorno prima (messaggio da Agoda/Booking o email dal sito thehillhotel.is) per avvisare e chiedere dove lasciare la chiave, poi riconfermatelo qui al check-in.','cost':None,'nav':'64.1311,-20.3237'},
     {'time':'17:30','title':'Secret Lagoon','desc':"La piscina geotermica più antica d'Islanda, meno turistica e molto più economica della Blue Lagoon. Alle 17:30 il sole è tramontato da circa un'ora e mezza e il cielo è quasi buio: d'inverno chiude alle 19:00, quindi avete circa un'ora e mezza; con cielo sereno potete provare a scorgere l'aurora dall'acqua calda.",'cost':'€ ~4500 ISK / ~31€ a persona (prenotato, biglietto su Notion)','link':'https://secretlagoon.is/','nav':'64.1377,-20.3110'}
   ],
@@ -172,8 +173,8 @@ days = [
   ],
   'accommodation':{'name':'The Hill Guesthouse','detail':'Flúðir · 2 notti · check-in dalle 15:00 alla reception del The Hill Hotel (di fronte) · check-out alle 11 · parcheggio gratuito incluso','url':'https://thehillhotel.is/guesthouse-fludir/'},
   'tips':'Secret Lagoon già prenotata: ingresso alle 17:30 (biglietto su Notion). Arrivate qualche minuto prima: gli slot serali sono sempre pieni.',
-  'culture':"Kerið è un cratere vulcanico di circa 6.500 anni con un piccolo lago sul fondo, alimentato dalla falda. Le pareti sono formate da scorie di colore rosso, diverse dal basalto nero più comune nella zona. La Secret Lagoon di Flúðir, in islandese Gamla Laugin («la vecchia piscina»), fu costruita nel 1891 ed è considerata la piscina pubblica più antica d'Islanda; l'acqua arriva da sorgenti calde vicine a una temperatura di circa 38-40 °C.",
-  'culture_links':[("Lago craterico", "https://it.wikipedia.org/wiki/Lago_craterico")],
+  'culture':"Kerið è un cratere vulcanico di circa 6.500 anni con un piccolo lago sul fondo, alimentato dalla falda. Le pareti sono formate da scorie di colore rosso, diverse dal basalto nero più comune nella zona. La Secret Lagoon di Flúðir, in islandese Gamla Laugin («la vecchia piscina»), fu costruita nel 1891 ed è considerata la piscina pubblica più antica d'Islanda; l'acqua arriva da sorgenti calde vicine a una temperatura di circa 38-40 °C.\n\nSkálholt fu dal 1056 al 1785 sede di uno dei due vescovati dell'Islanda e a lungo il principale centro religioso e culturale del paese. Nel 1550 vi fu decapitato Jón Arason, ultimo vescovo cattolico dell'isola, insieme a due figli. L'attuale cattedrale fu consacrata nel 1963.",
+  'culture_links':[("Lago craterico", "https://it.wikipedia.org/wiki/Lago_craterico"), ("Skálholt", "https://it.wikipedia.org/wiki/Sk%C3%A1lholt")],
   'parking_nav':[
     {'label':'Naviga al parcheggio','query':'64.1311,-20.3237'}
   ]
@@ -232,7 +233,7 @@ map_points = {
     'd3': [{'name':'Reykjavík','lat':64.1466,'lon':-21.9426}, {'name':'Þingvellir','lat':64.2559,'lon':-21.1297}, {'name':'Laugarvatn','lat':64.2141,'lon':-20.7290}, {'name':'Reykjavík','lat':64.1466,'lon':-21.9426}],
     'd4': [{'name':'Reykjavík','lat':64.1466,'lon':-21.9426}, {'name':'Seljalandsfoss','lat':63.6156,'lon':-19.9886}, {'name':'Skógafoss','lat':63.5321,'lon':-19.5116}, {'name':'Dyrhólaey','lat':63.4033,'lon':-19.1250}, {'name':'Reynisfjara','lat':63.4038,'lon':-19.0428}, {'name':'Víkurkirkja','lat':63.4193,'lon':-19.0058}, {'name':'Hótel Búrfell','lat':63.4552,'lon':-19.1793}],
     'd5': [{'name':'Hótel Búrfell','lat':63.4552,'lon':-19.1793}, {'name':'Jökulsárlón','lat':64.0481,'lon':-16.1799}, {'name':'Diamond Beach','lat':64.0436,'lon':-16.1780}, {'name':'Fjaðrárgljúfur','lat':63.7722,'lon':-18.1725}, {'name':'Hótel Búrfell','lat':63.4552,'lon':-19.1793}],
-    'd6': [{'name':'Hótel Búrfell','lat':63.4552,'lon':-19.1793}, {'name':'Kerið','lat':64.0410,'lon':-20.8834}, {'name':'Flúðir','lat':64.1372,'lon':-20.3033}, {'name':'Secret Lagoon','lat':64.1372,'lon':-20.3090}],
+    'd6': [{'name':'Hótel Búrfell','lat':63.4552,'lon':-19.1793}, {'name':'Kerið','lat':64.0410,'lon':-20.8834}, {'name':'Skálholt','lat':64.1253,'lon':-20.5241}, {'name':'Flúðir','lat':64.1372,'lon':-20.3033}, {'name':'Secret Lagoon','lat':64.1372,'lon':-20.3090}],
     'd7': [{'name':'Flúðir','lat':64.1372,'lon':-20.3033}, {'name':'Geysir','lat':64.3128,'lon':-20.3009}, {'name':'Gullfoss','lat':64.3271,'lon':-20.1199}, {'name':'Faxi','lat':64.2266,'lon':-20.3402}, {'name':'Efstidalur II','lat':64.2423,'lon':-20.5521}, {'name':'Flúðir','lat':64.1372,'lon':-20.3033}],
     'd8': [{'name':'Flúðir','lat':64.1372,'lon':-20.3033}, {'name':'Ufficio FairCar','lat':63.9650,'lon':-22.5746}, {'name':'Aeroporto Keflavík','lat':63.9950,'lon':-22.6239}]
 }
