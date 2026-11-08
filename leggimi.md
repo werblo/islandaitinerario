@@ -266,12 +266,15 @@ Avvistamenti reali (es. foto o storie di chi è in Islanda) in
 
 **Confronto meteo** (`tools/meteo/confronto_meteo.py`, workflow "Confronto meteo",
 dall'8 al 14 novembre, chiesto da Michele). Ogni 3 ore salva le previsioni ora
-per ora per Reykjavík di Open-Meteo (quella dell'app), met.no e vedur.is, più le
-nuvole calcolate come nell'app (media di più modelli), e le confronta con il
-tempo osservato all'aeroporto di Reykjavík (METAR): nuvole (anche solo la sera),
-pioggia/neve sì o no, temperatura e vento, per anticipo (entro 24 ore, 1-2 e 2-4
-giorni). Risultati nel riepilogo di ogni esecuzione e nell'artifact
-`confronto-meteo`; il controllo del 14/11 dice quale fonte ci azzecca di più.
+per ora per Reykjavík e Keflavík e le confronta con il tempo osservato agli
+aeroporti (METAR), per anticipo (entro 24 ore, 1-2 e 2-4 giorni):
+- nuvole (anche solo la sera, per l'aurora), pioggia/neve, temperatura e vento di
+  Open-Meteo, met.no e vedur.is, più le nuvole dell'app (media di più modelli) e
+  le miscele "app + vedur.is" e "app + vedur.is + met.no";
+- raffiche dei modelli di Open-Meteo (ECMWF, ICON, GFS, UKMO, MET Nordic, loro
+  media e previsione standard): vedur.is e met.no non le danno per stazione.
+Risultati nel riepilogo di ogni esecuzione e nell'artifact `confronto-meteo`; il
+controllo del 14/11 dice chi ci azzecca di più.
 
 ## 7. Prenotazioni e alloggi
 
