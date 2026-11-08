@@ -679,6 +679,8 @@ map.on('click', e => {
 // ---------- posti delle serate del viaggio ----------
 const placesLayer = L.layerGroup().addTo(map);
 function tonightKey() { return auroraNowPlace().place; }
+// fino a mezzogiorno la mappa mostra la notte appena passata (auroraNowPlace): "Stanotte"
+function nightWord() { return new Date().getUTCHours() < 12 ? 'Stanotte' : 'Stasera'; }
 function placeNights(key) {
   return DAYS_META.filter(d => d.id !== 'd8' && nightStops(d.dateISO).some(s => s.place === key))
     .map(d => +d.dateISO.slice(8, 10) + '/' + +d.dateISO.slice(5, 7));
@@ -692,7 +694,7 @@ function drawPlaces() {
   Object.keys(AURORA_PLACES).filter(key => key === tonight || (placeNights(key).length && !/^strada/.test(AURORA_PLACES[key].name))).forEach(key => {
     const p = AURORA_PLACES[key], nm = shortPlace(p.name), isT = key === tonight;
     const html = '<span><b>' + nm.replace(/^strada.*/, 'S').charAt(0).toUpperCase() + '</b>'
-      + (isT ? nm + ' <em>stasera</em>' : '') + '</span>' + (isT ? '' : '<i>' + nm + '</i>');
+      + (isT ? nm + ' <em>' + nightWord().toLowerCase() + '</em>' : '') + '</span>' + (isT ? '' : '<i>' + nm + '</i>');
     const m = L.marker([p.lat, p.lon], { icon: L.divIcon({ className: 'am-pin' + (isT ? ' am-pin--tonight' : ''), html, iconSize: [0, 0] }),
       zIndexOffset: isT ? 1000 : 0, keyboard: false });
     const nights = placeNights(key);
@@ -974,7 +976,7 @@ function renderNight() {
       + (hh % 3 === 1 ? String(hh).padStart(2, '0') : '&nbsp;') + '</div>');
   }
   el.innerHTML = cells.join('');
-  $('am-night-title').textContent = (Date.now() < start + 16 * 3600000 && Date.now() >= start - 4 * 3600000 ? 'Stasera' : 'Notte del ' + +night.slice(8, 10) + '/' + +night.slice(5, 7)) + ' ora per ora';
+  $('am-night-title').textContent = (Date.now() < start + 16 * 3600000 && Date.now() >= start - 4 * 3600000 ? nightWord() : 'Notte del ' + +night.slice(8, 10) + '/' + +night.slice(5, 7)) + ' ora per ora';
 }
 
 // ---------- cursore "Ora" (ore della previsione delle nuvole) ----------
@@ -1064,7 +1066,7 @@ async function loadNoaa() {
 }
 async function start() {
   const tn = AURORA_PLACES[tonightKey()];
-  $('am-tonight-name').textContent = 'Stasera: ' + shortPlace(tn.name);
+  $('am-tonight-name').textContent = nightWord() + ': ' + shortPlace(tn.name);
   drawPlaces(); drawSpots();
   if (!start.done) {
     map.whenReady(farLabels);   // all'apertura: tutti i posti delle serate (Reykjavík, Laugarvatn, Flúðir, Vík)

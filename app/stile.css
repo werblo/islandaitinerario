@@ -251,6 +251,8 @@ main { max-width:820px; margin:0 auto; padding:20px 20px 70px; display:flex; fle
   .map-frame, #trip-map { border-color:#2b3949 !important; }
   .leaflet-tile-pane { filter:brightness(.8) contrast(1.05); }
   .leaflet-container { background:#1d2630 !important; }
+  .leaflet-control-attribution { background:rgba(24,34,46,.8) !important; color:#a7b0bb; }
+  .leaflet-control-attribution a { color:#8fd6cd; }
 }
 
 /* link alle voci di Wikipedia sotto i box di storia */
