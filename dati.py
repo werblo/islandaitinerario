@@ -26,7 +26,7 @@ NOTION_CHECKLIST_URL = 'https://www.notion.so/3f66b411a944814e8d3ae850ce49a9fb'
 
 stays = [
     {'name': '46heima Boutique Apartments', 'detail': 'Laugavegur 46, Reykjavík · 15–18 nov (3 notti) · check-in dalle 15:00, check-out alle 10'},
-    {'name': 'Hótel Búrfell', 'detail': 'Steig, circa 10 km a ovest di Vík · 18–20 nov (2 notti) · check-in 15-21, check-out alle 10'},
+    {'name': 'Hótel Búrfell', 'detail': 'Steig, circa 18 minuti d\'auto a ovest di Vík · 18–20 nov (2 notti) · check-in 15-21, check-out alle 10'},
     {'name': 'The Hill Guesthouse', 'detail': 'Flúðir · 20–22 nov (2 notti) · check-in dalle 15:00 alla reception del The Hill Hotel, check-out alle 11'}
 ]
 
@@ -40,13 +40,13 @@ days = [
     {'from':'Reykjanesviti','to':'Reykjavík','km':69,'time':'~1h05','note':'Ritorno dalla stessa strada via Keflavík (Grindavík e la strada 43 possono essere chiuse per l\'attività vulcanica), poi strada 41 per Reykjavík: check-in all\'appartamento dalle 15:00.'}
   ],
   'activities':[
-    {'time':'11:00','title':'Ritiro auto 4x4','desc':'FairCar, Bogatröð 1, Keflavík (zona Ásbrú, navetta dall\'aeroporto). Portare patente, carta di credito intestata al conducente e voucher stampato o digitale.','cost':None},
-    {'time':'11:30','title':'Reykjanes (sulla strada per Reykjavík)','desc':"Dal noleggio si va subito sulla penisola di Reykjanes, a 20 minuti: Ponte tra i continenti (verso le 11:30), Gunnuhver (area geotermica con pozze di fango bollente) e faro di Reykjanesviti, con la luce migliore della giornata (alba 9:56, tramonto 16:31). Ripartenza verso le 12:45 per Reykjavík (circa 1 ora). La punta della penisola è molto esposta al vento: se il vento medio supera i 15 m/s o c'è un'allerta (vedur.is), andate diretti a Reykjavík e fate Reykjanes la mattina del 16. Grindavík e le strade vicine possono essere chiuse: verificate su visitreykjanes.is. Non lasciate valigie o oggetti in vista nell'auto.",'cost':'gratis','link':'https://www.visitreykjanes.is/en/','nav':[('1. Ponte','63.8664,-22.6764'), ('2. Gunnuhver','63.8191,-22.6821'), ('3. Faro','63.8145,-22.7038')]},
-    {'time':'15:00','title':'Check-in appartamento','desc':"46heima Boutique Apartments, Laugavegur 46: check-in dalle 15:00 (check-out alle 10:00). Codice d'accesso via email prima dell'arrivo.",'cost':None},
+    {'time':'11:00','title':'Ritiro auto 4x4','desc':'FairCar, Bogatröð 1, Keflavík (zona Ásbrú, navetta dall\'aeroporto). Tra uscita dall\'aereo, navetta e pratiche contate di partire verso le 11:30-11:40. Portare patente, passaporto o carta d\'identità, carta di credito fisica intestata al conducente (non prepagata né virtuale) e voucher stampato o digitale.','cost':None},
+    {'time':'12:00','title':'Reykjanes (sulla strada per Reykjavík)','desc':"Dal noleggio si va subito sulla penisola di Reykjanes, a 20 minuti: Ponte tra i continenti (verso le 12), Gunnuhver (area geotermica con pozze di fango bollente) e faro di Reykjanesviti, con la luce migliore della giornata (alba 9:56, tramonto 16:31). Ripartenza verso le 13:15-13:30 per Reykjavík (circa 1 ora): arrivo verso le 14:30. La punta della penisola è molto esposta al vento: se il vento medio supera i 15 m/s o c'è un'allerta (vedur.is), andate diretti a Reykjavík e fate Reykjanes la mattina del 16. Grindavík e le strade vicine possono essere chiuse: verificate su visitreykjanes.is, umferdin.is e safetravel.is. Non lasciate valigie o oggetti in vista nell'auto.",'cost':'gratis','link':'https://www.visitreykjanes.is/en/','nav':[('1. Ponte','63.8664,-22.6764'), ('2. Gunnuhver','63.8191,-22.6821'), ('3. Faro','63.8145,-22.7038')]},
+    {'time':'15:30','title':'Check-in appartamento','desc':"46heima Boutique Apartments, Laugavegur 46: check-in dalle 15:00 (check-out alle 10:00). Codice d'accesso via email prima dell'arrivo.",'cost':None},
     {'time':'16:30','title':'Passeggiata nel centro','desc':'Laugavegur, la Hallgrímskirkja vista da fuori (la torre domani), porto vecchio e Sun Voyager sul lungomare, con le luci della sera.','cost':'gratis','nav':'64.1447,-21.9246'}
   ],
   'food':[
-    {'meal':'Pranzo (verso le 14, arrivando a Reykjavík)','place':'Bónus (supermercato)','note':'Spesa per i giorni successivi e pranzo veloce: prodotti senza glutine segnati "glútenlaust". Per la mattina a Reykjanes tenete qualcosa da sgranocchiare dall\'Italia o dall\'aeroporto','cost':'€','gf':False},
+    {'meal':'Pranzo (verso le 14:30, arrivando a Reykjavík)','place':'Bónus (supermercato)','note':'Spesa per i giorni successivi e pranzo veloce: prodotti senza glutine segnati "glútenlaust". Per la mattina a Reykjanes tenete qualcosa da sgranocchiare dall\'Italia o dall\'aeroporto','cost':'€','gf':False},
     {'meal':'Cena (prenotata, 19:30-21:30)','place':'3 Frakkar Hjá Úlfari, Baldursgata 14','nav':'64.1423,-21.9337','note':'Regalo di Federica: tavolo per 2 alle 19:30, celiachia già segnalata nella prenotazione (ricordatela comunque al cameriere). Ristorante storico di pesce e cucina islandese, a circa 10 minuti a piedi dall\'appartamento. Telefono +354 552 3939','cost':'€€€','gf':False}
   ],
   'accommodation':{'name':'46heima Boutique Apartments','detail':'Laugavegur 46, Reykjavík · 3 notti · check-in dalle 15:00 · check-out alle 10:00','url':'https://www.booking.com/hotel/is/46heima-apartments.en-gb.html'},
@@ -81,7 +81,7 @@ days = [
  {'id':'d3','num':3,'dateISO':'2026-11-17','dateLabel':'Mar 17 nov','title':'Þingvellir & relax serale','locKey':'reykjavik',
   'legs':[
     {'from':'Reykjavík','to':'Þingvellir','km':45,'time':'~45 min'},
-    {'from':'Þingvellir','to':'Laugarvatn','km':25,'time':'~20 min'},
+    {'from':'Þingvellir','to':'Laugarvatn','km':32,'time':'~35 min'},
     {'from':'Laugarvatn','to':'Reykjavík','km':78,'time':'~1h20'}
   ],
   'activities':[
@@ -106,15 +106,15 @@ days = [
     {'from':'Reykjavík','to':'Seljalandsfoss','km':125,'time':'~1h40'},
     {'from':'Seljalandsfoss','to':'Skógafoss','km':30,'time':'~25 min'},
     {'from':'Skógafoss','to':'Dyrhólaey','km':30,'time':'~25 min'},
-    {'from':'Dyrhólaey','to':'Reynisfjara','km':7,'time':'~10 min'},
+    {'from':'Dyrhólaey','to':'Reynisfjara','km':20,'time':'~25 min'},
     {'from':'Reynisfjara','to':'Vík','km':12,'time':'~12 min'},
-    {'from':'Vík','to':'Hótel Búrfell','km':10,'time':'~12 min','note':'L\'hotel è a Steig, circa 10 km a ovest di Vík'}
+    {'from':'Vík','to':'Hótel Búrfell','km':17,'time':'~18 min','note':'L\'hotel è a Steig, circa 18 minuti d\'auto a ovest di Vík'}
   ],
   'activities':[
     {'time':'09:30','title':'Check-out appartamento','desc':'','cost':None},
     {'time':'11:45','title':'Seljalandsfoss','desc':"Cascata che si può costeggiare sul retro: in inverno il sentiero dietro la cascata è spesso ghiacciato o chiuso, guardatela dal davanti se è transennato. A 10 min a piedi c'è Gljúfrabúi, cascata nascosta in un canyon.",'cost':'gratis','link':'https://it.wikipedia.org/wiki/Seljalandsfoss','nav':'63.6153,-19.9939'},
     {'time':'13:15','title':'Skógafoss','desc':"Una delle cascate più imponenti d'Islanda, 60 m di salto, scalinata panoramica in cima.",'cost':'gratis','link':'https://it.wikipedia.org/wiki/Skogafoss','nav':'63.5269,-19.5116'},
-    {'time':'14:45','title':'Dyrhólaey','desc':'Sosta breve (circa 20 min). Promontorio con arco di roccia e vista su Reynisfjara. Da vedere con un po\' di luce ancora buona: il tramonto qui è verso le 16:15.','cost':'gratis','nav':'63.4040,-19.1290'},
+    {'time':'14:45','title':'Dyrhólaey','desc':'Sosta breve (circa 20 min). Promontorio con arco di roccia e vista su Reynisfjara. Da vedere con un po\' di luce ancora buona: il tramonto qui è verso le 16:15. La strada in salita verso il faro d\'inverno è spesso ghiacciata o chiusa: fermatevi al punto panoramico basso. Se siete in ritardo, saltatela e andate diretti a Reynisfjara.','cost':'gratis','nav':'63.4040,-19.1290'},
     {'time':'15:30','title':'Reynisfjara','desc':'Spiaggia di sabbia nera con colonne basaltiche e i faraglioni di Reynisdrangar. Attenzione alle onde anomale, non voltare le spalle al mare.','cost':'gratis','nav':'63.4043,-19.0453'},
     {'time':'16:15','title':'Víkurkirkja','desc':"Chiesa bianca dal tetto rosso sulla collina sopra Vík, tra le più fotografate d'Islanda. Dalla collina si vedono il villaggio, la spiaggia nera e i faraglioni Reynisdrangar. È l'ultima tappa del giorno per vederla con la luce del tramonto.",'cost':'gratis','nav':'63.4205,-19.0029'}
   ],
@@ -122,7 +122,7 @@ days = [
     {'meal':'Pranzo','place':'Picnic a Skógar','note':'Porta snack dal Bónus di Reykjavík','cost':'€','gf':False},
     {'meal':'Cena','place':'Suður-Vík Restaurant','note':'Opzioni senza glutine segnate nel menu; segnalate la celiachia, in cucina c\'è rischio di contaminazione','cost':'€€','gf':True}
   ],
-  'accommodation':{'name':'Hótel Búrfell','detail':'Steig, circa 10 km a ovest di Vík · 2 notti · check-in dalle 15:00 (fino alle 21) · check-out alle 10 (alcuni siti dicono 11: controllate la conferma) · parcheggio gratuito incluso','url':'https://hotelburfell.is/'},
+  'accommodation':{'name':'Hótel Búrfell','detail':'Steig, circa 18 minuti d\'auto a ovest di Vík · 2 notti · check-in dalle 15:00 (fino alle 21) · check-out alle 10 (alcuni siti dicono 11: chiedete alla reception) · colazione inclusa · parcheggio gratuito incluso','url':'https://hotelburfell.is/'},
   'tips':'Il 18 novembre a Vík il sole tramonta verso le 16:15 (molto prima di quanto sembri): Dyrhólaey e Reynisfjara vanno viste per bene entro quell\'ora, la Víkurkirkja invece va benissimo proprio al tramonto/appena dopo, dato che è a due passi dal centro del paese e non richiede tempo di guida extra.',
   'culture':"Seljalandsfoss e Skógafoss scendono dall'altopiano ai piedi del ghiacciaio Eyjafjallajökull, lungo l'antica linea di costa: il mare, ritirandosi, ha lasciato una serie di cascate sulla parete rocciosa. Skógafoss è larga 25 metri e alta 60; secondo una leggenda il colono Þrasi vi nascose dietro un forziere d'oro.\n\nLa spiaggia di Reynisfjara è formata da sabbia basaltica nera e chiusa dalle colonne di basalto del monte Reynisfjall; al largo si trovano i faraglioni Reynisdrangar, che la tradizione popolare descrive come troll pietrificati dalla luce del giorno.\n\nIl promontorio di Dyrhólaey, con il suo arco di roccia, si è formato da un'eruzione sottomarina. Vík í Mýrdal è il villaggio più meridionale d'Islanda e si trova vicino al vulcano Katla, coperto dal ghiacciaio Mýrdalsjökull; secondo i piani di emergenza la chiesa sulla collina è il punto di raccolta degli abitanti in caso di eruzione.",
   'culture_links':[("Skógafoss", "https://it.wikipedia.org/wiki/Skogafoss"), ("Eyjafjallajökull", "https://it.wikipedia.org/wiki/Eyjafjallajokull"), ("Cascate dell'Islanda", "https://it.wikipedia.org/wiki/Cascate_dell'Islanda")],
@@ -147,7 +147,7 @@ days = [
     {'meal':'Cena','place':'Ströndin Bistro, Vík','note':'Opzioni senza glutine non verificate (una sola segnalazione online: stufato di carne e costolette d\'agnello): chiedete allo staff e tenete un\'alternativa','cost':'€€','gf':False}
   ],
   'accommodation':{'name':'Hótel Búrfell','detail':'2ª notte a Steig, vicino a Vík · parcheggio gratuito','url':'https://hotelburfell.is/'},
-  'tips':"Circa 425 km andata e ritorno dall'hotel, circa 6 ore di guida. Tabella di marcia: partenza alle 7:30, Jökulsárlón verso le 10:30 (circa 3 ore senza soste, in inverno contate qualcosa in più), Diamond Beach e via entro le 12:30, Fjaðrárgljúfur verso le 14:30-14:45 con circa un'ora e mezza di luce prima del tramonto (16:05), rientro in hotel verso le 17. Prima di partire controllate che il sentiero del canyon sia aperto (in inverno a volte viene chiuso per il terreno fradicio) e le strade su umferdin.is; con brutto tempo valutate di fermarvi solo a Jökulsárlón/Diamond Beach.",
+  'tips':"Circa 425 km andata e ritorno dall'hotel, circa 6 ore di guida. Fate il pieno a Vík la sera prima: tra Vík e Jökulsárlón l'unico distributore è a Kirkjubæjarklaustur. Tabella di marcia: partenza alle 7:30, Jökulsárlón verso le 10:30 (circa 3 ore senza soste, in inverno contate qualcosa in più), Diamond Beach e via entro le 12:30, Fjaðrárgljúfur verso le 14:30-14:45 con circa un'ora e mezza di luce prima del tramonto (16:05), rientro in hotel verso le 17. Prima di partire controllate che il sentiero del canyon sia aperto (in inverno a volte viene chiuso per il terreno fradicio) e le strade su umferdin.is; con brutto tempo valutate di fermarvi solo a Jökulsárlón/Diamond Beach.",
   'culture':"Jökulsárlón è una laguna glaciale formata a partire dagli anni Trenta del Novecento, quando la lingua del ghiacciaio Breiðamerkurjökull ha cominciato a ritirarsi. È collegata all'oceano Atlantico da un breve canale: gli iceberg che si staccano dal ghiacciaio attraversano la laguna e arrivano sulla spiaggia di sabbia nera di fronte, nota come Diamond Beach.\n\nIl Breiðamerkurjökull è una lingua del Vatnajökull, la più grande calotta glaciale d'Islanda e tra le più estese d'Europa, che si trova all'interno del Parco nazionale del Vatnajökull, patrimonio dell'umanità UNESCO dal 2019. Il canyon di Fjaðrárgljúfur, profondo fino a circa 100 metri, è stato scavato dal fiume Fjaðrá alla fine dell'ultima glaciazione, circa 9.000 anni fa, in rocce che hanno circa due milioni di anni.",
   'culture_links':[("Parco nazionale del Vatnajökull", "https://it.wikipedia.org/wiki/Parco_nazionale_del_Vatnajökull"), ("Ghiacciai dell'Islanda", "https://it.wikipedia.org/wiki/Ghiacciai_dell'Islanda")],
   'parking_nav':[
@@ -162,12 +162,12 @@ days = [
   'activities':[
     {'time':'10:00','title':'Check-out Hótel Búrfell','desc':'','cost':None},
     {'time':'12:30','title':'Kerið','desc':'Cratere vulcanico con un lago sul fondo, percorribile a piedi in 15-20 min.','cost':'€ ~700 ISK / ~5€','link':'https://kerid.is/','nav':'64.0415,-20.8870'},
-    {'time':'15:30','title':'Check-in The Hill Guesthouse','desc':'Check-in dalle 15:00 alla reception del The Hill Hotel, di fronte alla guesthouse (Vesturbrún 1, Flúðir). Chiedete già ora come lasciare la chiave domenica alle 6:45, prima della colazione e forse prima che apra la reception.','cost':None,'nav':'64.1311,-20.3237'},
-    {'time':'17:30','title':'Secret Lagoon','desc':"La piscina geotermica più antica d'Islanda, meno turistica e molto più economica della Blue Lagoon. Alle 17:30 il sole è tramontato da circa un'ora e mezza e il cielo è quasi buio: con cielo sereno potete provare a scorgere l'aurora dall'acqua calda.",'cost':'€ ~4500 ISK / ~31€ a persona (prenotato, biglietto su Notion)','link':'https://secretlagoon.is/','nav':'64.1377,-20.3110'}
+    {'time':'15:30','title':'Check-in The Hill Guesthouse','desc':'Check-in dalle 15:00 alla reception del The Hill Hotel, di fronte alla guesthouse (Vesturbrún 1, Flúðir). Arrivando verso le 14, scrivete qualche giorno prima (messaggio da Agoda/Booking o email dal sito thehillhotel.is) per chiedere un check-in anticipato verso le 14; se non si può, lasciate i bagagli in auto e fate un giro in paese. Chiedete già ora come lasciare la chiave domenica alle 6:45, prima della colazione e forse prima che apra la reception.','cost':None,'nav':'64.1311,-20.3237'},
+    {'time':'17:30','title':'Secret Lagoon','desc':"La piscina geotermica più antica d'Islanda, meno turistica e molto più economica della Blue Lagoon. Alle 17:30 il sole è tramontato da circa un'ora e mezza e il cielo è quasi buio: d'inverno chiude alle 19:00, quindi avete circa un'ora e mezza; con cielo sereno potete provare a scorgere l'aurora dall'acqua calda.",'cost':'€ ~4500 ISK / ~31€ a persona (prenotato, biglietto su Notion)','link':'https://secretlagoon.is/','nav':'64.1377,-20.3110'}
   ],
   'food':[
     {'meal':'Pranzo','place':'Selfoss (pranzo al sacco o supermercato locale)','note':'Ultima città con supermercati grandi prima di Flúðir, sulla strada da Vík','cost':'€','gf':False},
-    {'meal':'Cena','place':'Cucina alla guesthouse o Restaurant Grund','note':'Opzioni senza glutine non confermate: verificate il menu in loco','cost':'€€','gf':False}
+    {'meal':'Cena (dalle 19:15, dopo la Secret Lagoon)','place':'Cena con la spesa o ristorante del The Hill Hotel','note':'In guesthouse sembra esserci solo un angolo comune con il bollitore (chiedete al check-in): se non basta, il ristorante del The Hill Hotel, di fronte, è aperto circa 12-21. Opzioni senza glutine non confermate: verificate il menu in loco','cost':'€€','gf':False}
   ],
   'accommodation':{'name':'The Hill Guesthouse','detail':'Flúðir · 2 notti · check-in dalle 15:00 alla reception del The Hill Hotel (di fronte) · check-out alle 11 · parcheggio gratuito incluso','url':'https://thehillhotel.is/guesthouse-fludir/'},
   'tips':'Secret Lagoon già prenotata: ingresso alle 17:30 (biglietto su Notion). Arrivate qualche minuto prima: gli slot serali sono sempre pieni.',
@@ -192,8 +192,8 @@ days = [
     {'time':'15:30','title':'Efstidalur II','desc':"Fattoria con gelateria e vacche visibili da dietro un vetro, ambiente al caldo e informale. Sosta comoda per il buio che cala presto in questo periodo, prima del rientro a Flúðir.",'cost':'€ gelato/spuntino a parte','nav':'64.2420,-20.5529'}
   ],
   'food':[
-    {'meal':'Pranzo','place':'Friðheimar, Reykholt','note':'Famosa zuppa di pomodoro in serra, sulla strada per Geysir: hanno pane senza glutine, ma non garantito senza contaminazione; in alternativa c\'è un\'insalata','cost':'€€','gf':True},
-    {'meal':'Cena','place':'Cucina alla guesthouse','note':'Ultima occasione per finire la spesa fatta al Bónus','cost':'€','gf':False}
+    {'meal':'Pranzo','place':'Friðheimar, Reykholt','note':'Famosa zuppa di pomodoro in serra, sulla strada per Geysir: hanno pane senza glutine, ma non garantito senza contaminazione; in alternativa c\'è un\'insalata. Il 21/11 è sabato: conviene prenotare il tavolo (aperto circa 12-16)','cost':'€€','gf':True},
+    {'meal':'Cena','place':'Cena con la spesa o ristorante del The Hill Hotel','note':'Ultima occasione per finire la spesa fatta al Bónus; se in guesthouse non si può cucinare, il ristorante del The Hill Hotel è aperto circa 12-21 (senza glutine non confermato)','cost':'€','gf':False}
   ],
   'accommodation':{'name':'The Hill Guesthouse','detail':'Ultima notte a Flúðir · domani partenza alle 6:45: stasera chiedete dove lasciare la chiave · parcheggio gratuito','url':'https://thehillhotel.is/guesthouse-fludir/'},
   'tips':"Da Flúðir Geysir e Gullfoss sono a un tiro di schioppo (circa 30-40 km), molto più vicini che da Reykjavík: giornata comoda, e cielo scuro poco inquinato per tenere d'occhio l'aurora la sera.",
@@ -209,8 +209,8 @@ days = [
     {'from':'Ufficio FairCar','to':'Aeroporto di Keflavík','km':4,'time':'~10 min (navetta FairCar)'}
   ],
   'activities':[
-    {'time':'06:45','title':'Partenza da Flúðir','desc':'Partite presto per avere margine: riconsegna auto e imbarco sono molto ravvicinati. Lasciate la chiave come concordato la sera prima con la reception (il check-out ufficiale è alle 11).','cost':None},
-    {'time':'~09:15','title':'Riconsegna auto FairCar','desc':'Il voucher indica riconsegna alle 11:00, ma FairCar ha confermato che si può riconsegnare prima: verso le 9:15, così resta tempo per check-in e imbarco (volo alle 11:25). Controllate sul voucher la regola del carburante: se va riconsegnata col pieno, fate benzina a Keflavík/Reykjanesbær prima di arrivare.','cost':None,'nav':'63.9650,-22.5746'},
+    {'time':'06:45','title':'Partenza da Flúðir','desc':'Partite presto per avere margine: riconsegna auto e imbarco sono molto ravvicinati. Lasciate la chiave come concordato la sera prima con la reception (il check-out ufficiale è alle 11). Si guida al buio: se Hellisheiði è chiusa, passate da Þrengsli (strada 39), e guardate umferdin.is prima di partire.','cost':None},
+    {'time':'~09:15','title':'Riconsegna auto FairCar','desc':'Il voucher indica riconsegna alle 11:00, ma FairCar ha confermato che si può riconsegnare prima: verso le 9:15, così resta tempo per check-in e imbarco (volo alle 11:25). Carburante "stesso livello": riconsegnate con lo stesso livello del ritiro (segnatevelo o fate una foto al cruscotto il primo giorno), facendo benzina a Reykjanesbær entro 15 km dall\'ufficio e tenendo lo scontrino.','cost':None,'nav':'63.9650,-22.5746'},
     {'time':'11:25','title':'Volo EJU3970 Keflavík → Milano Malpensa','desc':'Arrivo previsto alle 16:45.','cost':None}
   ],
   'food':[
@@ -231,8 +231,8 @@ map_points = {
     'd3': [{'name':'Reykjavík','lat':64.1466,'lon':-21.9426}, {'name':'Þingvellir','lat':64.2559,'lon':-21.1297}, {'name':'Laugarvatn','lat':64.2141,'lon':-20.7290}, {'name':'Reykjavík','lat':64.1466,'lon':-21.9426}],
     'd4': [{'name':'Reykjavík','lat':64.1466,'lon':-21.9426}, {'name':'Seljalandsfoss','lat':63.6156,'lon':-19.9886}, {'name':'Skógafoss','lat':63.5321,'lon':-19.5116}, {'name':'Dyrhólaey','lat':63.4033,'lon':-19.1250}, {'name':'Reynisfjara','lat':63.4038,'lon':-19.0428}, {'name':'Víkurkirkja','lat':63.4193,'lon':-19.0058}, {'name':'Hótel Búrfell','lat':63.4552,'lon':-19.1793}],
     'd5': [{'name':'Hótel Búrfell','lat':63.4552,'lon':-19.1793}, {'name':'Jökulsárlón','lat':64.0481,'lon':-16.1799}, {'name':'Diamond Beach','lat':64.0436,'lon':-16.1780}, {'name':'Fjaðrárgljúfur','lat':63.7722,'lon':-18.1725}, {'name':'Hótel Búrfell','lat':63.4552,'lon':-19.1793}],
-    'd6': [{'name':'Hótel Búrfell','lat':63.4552,'lon':-19.1793}, {'name':'Kerið','lat':64.0410,'lon':-20.8834}, {'name':'Flúðir','lat':64.1372,'lon':-20.3033}, {'name':'Secret Lagoon','lat':64.1306,'lon':-20.2989}],
-    'd7': [{'name':'Flúðir','lat':64.1372,'lon':-20.3033}, {'name':'Geysir','lat':64.3128,'lon':-20.3009}, {'name':'Gullfoss','lat':64.3271,'lon':-20.1199}, {'name':'Faxi','lat':64.2266,'lon':-20.3402}, {'name':'Efstidalur II','lat':64.2567,'lon':-20.5029}, {'name':'Flúðir','lat':64.1372,'lon':-20.3033}],
+    'd6': [{'name':'Hótel Búrfell','lat':63.4552,'lon':-19.1793}, {'name':'Kerið','lat':64.0410,'lon':-20.8834}, {'name':'Flúðir','lat':64.1372,'lon':-20.3033}, {'name':'Secret Lagoon','lat':64.1372,'lon':-20.3090}],
+    'd7': [{'name':'Flúðir','lat':64.1372,'lon':-20.3033}, {'name':'Geysir','lat':64.3128,'lon':-20.3009}, {'name':'Gullfoss','lat':64.3271,'lon':-20.1199}, {'name':'Faxi','lat':64.2266,'lon':-20.3402}, {'name':'Efstidalur II','lat':64.2423,'lon':-20.5521}, {'name':'Flúðir','lat':64.1372,'lon':-20.3033}],
     'd8': [{'name':'Flúðir','lat':64.1372,'lon':-20.3033}, {'name':'Ufficio FairCar','lat':63.9650,'lon':-22.5746}, {'name':'Aeroporto Keflavík','lat':63.9950,'lon':-22.6239}]
 }
 
