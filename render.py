@@ -654,8 +654,8 @@ html_out = f'''<!DOCTYPE html>
     <div class="rune-rule"></div>
     <div class="line"><strong>Volo andata:</strong> EJU3969 Milano Malpensa → Keflavík, dom 15 nov, 07:00 → 10:35</div>
     <div class="line"><strong>Volo ritorno:</strong> EJU3970 Keflavík → Milano Malpensa, dom 22 nov, 11:25 → 16:45</div>
-    <div class="line"><strong>Auto:</strong> 4x4 (FairCar) · ritiro Keflavík 15 nov ore 11:00 · riconsegna Keflavík 22 nov ore 11:00</div>
-    <div class="warn-box"><strong>Attenzione:</strong> il voucher auto indica riconsegna alle 11:00, ma il volo decolla alle 11:25: margine quasi nullo. Contatta FairCar per riconsegnare prima (vedi Giorno 8).</div>
+    <div class="line"><strong>Auto:</strong> 4x4 (FairCar) · ritiro Keflavík 15 nov ore 11:00 · riconsegna Keflavík 22 nov verso le 9:15 (anticipata, confermata da FairCar)</div>
+    <div class="warn-box"><strong>Attenzione:</strong> il voucher auto indica riconsegna alle 11:00, ma FairCar ha confermato che si può riconsegnare prima, verso le 9:15, per avere margine prima del volo delle 11:25 (vedi Giorno 8).</div>
   </div>
 
   <div class="panel">
@@ -681,7 +681,7 @@ html_out = f'''<!DOCTYPE html>
   </div>
 
   <div class="tip-card">
-    <strong>Colonnine di benzina:</strong> in Islanda sono quasi tutte self-service e chiedono una carta con PIN attivo (niente carte prepagate senza PIN o solo contactless). Se avete una carta di credito o debito normale con PIN funziona senza problemi — verificate solo di avere il PIN a mente prima di partire.
+    <strong>Colonnine di benzina:</strong> in Islanda sono quasi tutte self-service e chiedono una carta con PIN attivo (niente carte prepagate senza PIN o solo contactless). Se avete una carta di credito o debito normale con PIN funziona senza problemi: verificate solo di avere il PIN a mente prima di partire.
   </div>
 
   <div class="panel">

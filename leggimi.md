@@ -19,6 +19,7 @@ Questo file descrive **com'è il progetto oggi**. La storia delle modifiche
 - **Aspetto:** tema scuro automatico quando il telefono è in modalità scura.
 - **Date da ricordare:**
   - 8 novembre: ricontrollo automatico pre-partenza (Routine su claude.ai).
+  - 14 novembre: controllo finale automatico (avvistamenti, avvisi, prime notti).
   - 13 novembre, 19:07 ora italiana: notifica di prova degli avvisi aurora
     su entrambi i telefoni (sezione 5).
 
@@ -156,7 +157,7 @@ ora islandese = UTC):
   500 km/s, oppure Bz ≤ −10 per 15 minuti), è buio e le nuvole previste tra
   45 minuti sono sotto il 75%. Una volta per notte, e non dopo un "adesso".
 - **Anteprima prima del viaggio** (22 ottobre - 12 novembre): di notte, tutta la
-  notte, solo gli avvisi "adesso" e "arrivo" per Reykjavík (Kp e nuvole di quel momento), al
+  notte, solo gli avvisi "adesso" e "arrivo" per Reykjavík (Kp, OVATION e nuvole di quel momento), al
   massimo uno per tipo per notte, a tutti e due i telefoni: serve a
   guardare le webcam e a provare gli avvisi prima di partire.
 - **Prova automatica**: 13 novembre dalle 18:07 (19:07 in Italia), una volta
@@ -195,7 +196,8 @@ cambiata anche in `tools/aurora_alert.py`.
 3. Prova a mano: tab Actions → "Avvisi aurora" → Run workflow → `prova`
    (`turno` con una durata breve, es. 40 minuti, prova il giro dei controlli,
    ma solo fuori dalle date del viaggio: dal 13 al 22 novembre è bloccato per
-   non mandare avvisi doppi; per un controllo in più usate `controllo`).
+   non mandare avvisi doppi; per un controllo in più usate `controllo`, che
+   però non vede gli avvisi del turno in corso e può ripeterne uno).
 
 **Firefox su Android:** notifiche di Firefox attive, batteria di Firefox su
 "Senza restrizioni", dati di Firefox non cancellati alla chiusura (si
@@ -244,4 +246,4 @@ Avvistamenti reali (es. foto o storie di chi è in Islanda) in
 - Hótel Búrfell (Giorni 4-5) e The Hill Guesthouse (Giorni 6-7): parcheggio
   gratuito.
 - Giorno 8: la riconsegna dell'auto da voucher è alle 11:00 con volo alle
-  11:25; nell'app c'è l'invito a chiedere a FairCar di anticipare.
+  11:25; FairCar ha confermato la riconsegna anticipata verso le 9:15.

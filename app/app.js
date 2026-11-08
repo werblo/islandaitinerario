@@ -540,7 +540,9 @@ function renderAurora() {
     const el = document.querySelector('[data-aurora-live="' + day.id + '"]');
     if (!el) return;
     const [Y, M, D] = day.dateISO.split('-').map(Number);
-    const e = day.id === 'd8' ? {} : nightEstimate(Date.UTC(Y, M - 1, D, 12), nightStops(day.dateISO), data);
+    // notte già finita (fino a mezzogiorno del giorno dopo): niente stima, le nuvole salvate non la coprono più
+    const past = Date.now() > Date.UTC(Y, M - 1, D, 12) + 86400000;
+    const e = day.id === 'd8' || past ? {} : nightEstimate(Date.UTC(Y, M - 1, D, 12), nightStops(day.dateISO), data);
     el.textContent = e.level && auroraNoClouds(e)
       ? ' Previsione per questa notte: incompleta (mancano i dati sulle nuvole).'
       : e.level
@@ -585,7 +587,7 @@ function fxUpdateFrom(source, eurId, iskId) {
     iskEl.value = isFinite(eur) ? fxFmt(String(Math.round(eur * fxRate))) : '';
   } else {
     const isk = fxParse(iskEl.value);
-    eurEl.value = isFinite(isk) ? fxFmt(String(Math.round((isk / fxRate) * 100) / 100).replace('.', ',')) : '';
+    eurEl.value = isFinite(isk) ? fxFmt((Math.round((isk / fxRate) * 100) / 100).toFixed(2).replace('.', ',')) : '';
   }
 }
 
