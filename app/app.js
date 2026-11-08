@@ -127,6 +127,35 @@ function weatherIcon(code) {
   return '';
 }
 
+// Tempo del giorno. Il codice giornaliero di Open-Meteo è il momento peggiore della giornata: bastano
+// pochi fiocchi in un'ora per avere "neve" tutto il giorno. Per questo il simbolo si sceglie dai totali:
+// sotto 1 mm in tutta la giornata conta il cielo (nuvole medie), sopra conta pioggia o neve.
+function daySky(code, prec, hours, snow, cloud) {
+  if (prec === null) return { icon: weatherIcon(code), desc: WEATHER_CODES[code] || 'Variabile' };
+  if (code >= 95) return { icon: '⛈️', desc: WEATHER_CODES[code] || 'Temporale' };
+  const snowCode = (code >= 71 && code <= 77) || code === 85 || code === 86;
+  // neve (cm) contro precipitazione totale (mm d'acqua): 1 mm d'acqua fa circa 0,7 cm di neve
+  const snowy = snow !== null ? snow >= 0.35 * prec && snow > 0 : snowCode;
+  const mixed = !snowy && snow !== null && snow > 0.1;
+  if (prec < 1) {
+    const fog = code === 45 || code === 48;
+    let sky;
+    if (fog && (cloud === null || cloud >= 80)) sky = { icon: '🌫️', desc: 'Nebbia' };
+    else if (cloud === null) sky = { icon: weatherIcon(Math.min(code, 3)), desc: WEATHER_CODES[Math.min(code, 3)] || 'Variabile' };
+    else sky = cloud < 25 ? { icon: '☀️', desc: 'Sereno' } : cloud < 50 ? { icon: '🌤️', desc: 'Poco nuvoloso' }
+      : cloud < 80 ? { icon: '⛅', desc: 'Parzialmente nuvoloso' } : { icon: '☁️', desc: 'Nuvoloso' };
+    if (fog && sky.icon !== '🌫️') sky.desc += ', nebbia a tratti';
+    if (prec >= 0.2) sky.desc += snowy || mixed ? ', qualche fiocco' : ', qualche goccia';
+    return sky;
+  }
+  const freezing = (code >= 56 && code <= 57) || (code >= 66 && code <= 67);
+  const showers = hours !== null && hours <= 6;
+  if (mixed) return { icon: '🌧️', desc: 'Pioggia e neve' + (prec < 3 ? ' deboli' : prec >= 10 ? ' abbondanti' : '') };
+  const what = freezing ? 'Pioggia gelata' : snowy ? (showers ? 'Rovesci di neve' : 'Neve') : (showers ? 'Rovesci' : 'Pioggia');
+  const how = prec < 3 ? (showers ? ' leggeri' : ' leggera') : prec >= 10 ? (showers ? ' forti' : ' intensa') : '';
+  return { icon: snowy ? '🌨️' : showers ? '🌦️' : '🌧️', desc: what + how };
+}
+
 function weatherFor(day) {
   const live = state.weather[day.locKey];
   if (live && live.time) {
@@ -134,11 +163,15 @@ function weatherFor(day) {
     if (idx >= 0) {
       const code = live.weathercode[idx];
       const at = (k) => (Array.isArray(live[k]) && isFinite(live[k][idx]) && live[k][idx] !== null ? Number(live[k][idx]) : null);
+      const sky = daySky(code, at('precipitation_sum'), at('precipitation_hours'), at('snowfall_sum'), at('cloud_cover_mean'));
+      // oltre 5 giorni le previsioni cambiano molto (l'8/11 Open-Meteo e met.no non erano d'accordo sul 15-17/11)
+      const ahead = Math.round((Date.parse(day.dateISO) - Date.parse(new Date().toISOString().slice(0, 10))) / 86400000);
       return {
         temp: Math.round(live.temperature_2m_max[idx]) + '° / ' + Math.round(live.temperature_2m_min[idx]) + '°C',
-        desc: WEATHER_CODES[code] || 'Variabile',
-        icon: weatherIcon(code),
-        source: 'Previsione live (aggiornata automaticamente)',
+        desc: sky.desc,
+        icon: sky.icon,
+        far: ahead >= 5,
+        source: ahead >= 5 ? 'Tendenza fra ' + ahead + ' giorni: poco affidabile, cambia spesso (si aggiorna da sola)' : 'Previsione live (aggiornata automaticamente)',
         wind: at('wind_speed_10m_max'), gust: at('wind_gusts_10m_max'), prec: at('precipitation_sum'), live: true
       };
     }
@@ -175,7 +208,8 @@ function renderWeatherToday() {
   const days = i >= 0 ? DAYS_META.slice(i, i + 2) : before ? DAYS_META.slice(0, 2) : [];
   const rows = days.map((d, k) => ({ d, w: weatherFor(d), k })).filter(r => r.w.live);
   if (!rows.length) { box.hidden = true; return; }
-  document.getElementById('weather-today-title').textContent = i >= 0 ? 'Meteo oggi e domani' : 'Meteo dei primi due giorni';
+  document.getElementById('weather-today-title').textContent = i >= 0 ? 'Meteo oggi e domani'
+    : 'Meteo dei primi due giorni' + (rows.some(r => r.w.far) ? ' (tendenza, poco affidabile)' : '');
   list.innerHTML = rows.map(({ d, w, k }) => {
     const wi = windInfo(w);
     const when = i >= 0 ? (k === 0 ? 'Oggi' : 'Domani') : d.dateLabel;
@@ -228,7 +262,7 @@ async function fetchAllWeather() {
     const loc = AURORA_PLACES[key];
     try {
       // meteo giornaliero solo per gli alloggi; nuvole orarie (anche per strati) per tutte le tappe
-      const daily = LOCATIONS[key] ? '&daily=weathercode,temperature_2m_max,temperature_2m_min,wind_speed_10m_max,wind_gusts_10m_max,precipitation_sum&wind_speed_unit=ms' : '';
+      const daily = LOCATIONS[key] ? '&daily=weathercode,temperature_2m_max,temperature_2m_min,wind_speed_10m_max,wind_gusts_10m_max,precipitation_sum,precipitation_hours,snowfall_sum,cloud_cover_mean&wind_speed_unit=ms' : '';
       const url = 'https://api.open-meteo.com/v1/forecast?latitude=' + loc.lat + '&longitude=' + loc.lon + daily + '&hourly=cloud_cover,cloud_cover_low,cloud_cover_mid,cloud_cover_high&timezone=UTC&past_days=1&forecast_days=16';
       const res = await fetch(url);
       const json = await res.json();
