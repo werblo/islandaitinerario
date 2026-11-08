@@ -114,7 +114,8 @@ tengono ancora raggiungibili vecchi commit con voucher ed email.
   giorni la previsione è indicata come "tendenza, poco affidabile".
 - Ogni giorno ha i pulsanti "Strade" (umferdin.is), "Allerte meteo"
   (vedur.is) e "Sicurezza" (safetravel.is), e un link "Naviga" per ogni tappa
-  che apre Google Maps con una ricerca testuale.
+  che apre le indicazioni di Google Maps fino a coordinate verificate su
+  OpenStreetMap (di solito il parcheggio; in `dati.py` come "lat,lon").
 
 ## 5. Aurora e avvisi sul telefono
 
@@ -284,7 +285,7 @@ controllo del 14/11 dice chi ci azzecca di più.
   **prenotate**; i voucher non sono nel repo.
 - Reykjavík (Giorni 1-3): 46heima, senza parcheggio incluso. Le zone e la
   strategia per la notte sono nel consiglio del Giorno 1.
-- Hótel Búrfell (Giorni 4-5) e The Hill Guesthouse (Giorni 6-7): parcheggio
+- Hótel Búrfell (Giorni 4-5, a Steig, circa 10 km a ovest di Vík) e The Hill Guesthouse (Giorni 6-7): parcheggio
   gratuito.
 - Giorno 8: la riconsegna dell'auto da voucher è alle 11:00 con volo alle
   11:25; FairCar ha confermato la riconsegna anticipata verso le 9:15.
