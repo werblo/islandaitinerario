@@ -283,9 +283,9 @@ controllo del 14/11 dice chi ci azzecca di più.
 
 - Fontana (Giorno 3, 15:30) e Secret Lagoon (Giorno 6, 17:30) sono
   **prenotate**; i voucher non sono nel repo.
-- Reykjavík (Giorni 1-3): 46heima, senza parcheggio incluso. Le zone e la
+- Reykjavík (Giorni 1-3): 46heima (check-in dalle 15, check-out alle 10), senza parcheggio incluso. Le zone e la
   strategia per la notte sono nel consiglio del Giorno 1.
-- Hótel Búrfell (Giorni 4-5, a Steig, circa 10 km a ovest di Vík) e The Hill Guesthouse (Giorni 6-7): parcheggio
+- Hótel Búrfell (Giorni 4-5, a Steig, circa 10 km a ovest di Vík; check-in 15-21, check-out alle 10) e The Hill Guesthouse (Giorni 6-7; check-in dalle 15 alla reception del The Hill Hotel, check-out alle 11, il Giorno 8 si parte alle 6:45): parcheggio
   gratuito.
 - Giorno 8: la riconsegna dell'auto da voucher è alle 11:00 con volo alle
   11:25; FairCar ha confermato la riconsegna anticipata verso le 9:15.
