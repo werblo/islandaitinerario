@@ -272,10 +272,13 @@ def render_activity(day_id, idx, act):
     if act.get('link'):
         links_html += (f'<a class="act-link" href="{e(act["link"])}" target="_blank" rel="noopener">'
                         f'Scopri di più \u2197</a>')
-    if act.get('nav'):
-        maps_url = 'https://www.google.com/maps/search/?api=1&query=' + urllib.parse.quote(act['nav'])
-        links_html += (f'<a class="act-link act-link--nav" href="{e(maps_url)}" target="_blank" rel="noopener">'
-                        f'Naviga \u2197</a>')
+    # 'nav': una ricerca su Google Maps, oppure più tappe [(nome, ricerca), ...] con un link ciascuna
+    navs = act.get('nav')
+    if navs:
+        for label, query in ([(None, navs)] if isinstance(navs, str) else navs):
+            maps_url = 'https://www.google.com/maps/search/?api=1&query=' + urllib.parse.quote(query)
+            links_html += (f'<a class="act-link act-link--nav" href="{e(maps_url)}" target="_blank" rel="noopener">'
+                            f'Naviga{(" " + e(label)) if label else ""} \u2197</a>')
     return (f'<div class="act-card">{img_html}<div class="act-body">'
             f'<div class="act-top">{title_html}'
             f'<div class="act-time">{e(act["time"])}</div></div>{desc_html}{cost_html}'
