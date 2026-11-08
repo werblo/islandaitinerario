@@ -36,6 +36,7 @@ Questo file descrive **com'è il progetto oggi**. La storia delle modifiche
 | `routes.json` | Percorsi stradali precalcolati (sezione 4). |
 | `tools/aurora_alert.py` | Avvisi aurora (sezione 5). |
 | `tools/kp/` | Ricerca sul Kp (sezione 6), fino al 14 novembre. |
+| `tools/meteo/` | Confronto delle previsioni meteo (sezione 6), dall'8 al 14 novembre. |
 | `CLAUDE.md` | Promemoria breve per le sessioni con Claude. |
 
 ## 3. Come si modifica
@@ -257,6 +258,15 @@ troppo pochi per sostituirlo. Decisi con Michele il 31/10: frase sul Kp,
 riga "Adesso" con OVATION e vento solare, avviso "arrivo".
 Avvistamenti reali (es. foto o storie di chi è in Islanda) in
 `tools/kp/osservazioni.csv`: servono a verificare stime e avvisi su casi veri.
+
+**Confronto meteo** (`tools/meteo/confronto_meteo.py`, workflow "Confronto meteo",
+dall'8 al 14 novembre, chiesto da Michele). Ogni 3 ore salva le previsioni ora
+per ora per Reykjavík di Open-Meteo (quella dell'app), met.no e vedur.is, più le
+nuvole calcolate come nell'app (media di più modelli), e le confronta con il
+tempo osservato all'aeroporto di Reykjavík (METAR): nuvole (anche solo la sera),
+pioggia/neve sì o no, temperatura e vento, per anticipo (entro 24 ore, 1-2 e 2-4
+giorni). Risultati nel riepilogo di ogni esecuzione e nell'artifact
+`confronto-meteo`; il controllo del 14/11 dice quale fonte ci azzecca di più.
 
 ## 7. Prenotazioni e alloggi
 
