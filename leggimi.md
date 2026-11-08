@@ -100,6 +100,10 @@ tengono ancora raggiungibili vecchi commit con voucher ed email.
   giorno e, nella tab Info, "Meteo oggi e domani" (prima della partenza i primi
   due giorni). Vento "forte" con raffiche da 18 m/s (o vento medio da 13),
   "pericoloso" da 25 m/s, con l'invito a guardare vedur.is e umferdin.is.
+  Il simbolo si sceglie dai totali del giorno e non dal codice meteo di
+  Open-Meteo, che indica il momento peggiore (bastano pochi fiocchi in un'ora
+  per "neve"): sotto 1 mm conta il cielo, sopra pioggia, neve o miste. Oltre 5
+  giorni la previsione è indicata come "tendenza, poco affidabile".
 - Ogni giorno ha i pulsanti "Strade" (umferdin.is), "Allerte meteo"
   (vedur.is) e "Sicurezza" (safetravel.is), e un link "Naviga" per ogni tappa
   che apre Google Maps con una ricerca testuale.
