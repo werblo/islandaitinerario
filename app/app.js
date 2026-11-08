@@ -113,6 +113,20 @@ document.querySelectorAll('.nav-btn').forEach(btn => {
   });
 });
 
+// simbolo del tempo (codici WMO di Open-Meteo)
+function weatherIcon(code) {
+  if (code === 0) return '☀️';
+  if (code === 1) return '🌤️';
+  if (code === 2) return '⛅';
+  if (code === 3) return '☁️';
+  if (code === 45 || code === 48) return '🌫️';
+  if ((code >= 51 && code <= 55) || (code >= 80 && code <= 82)) return '🌦️';
+  if (code >= 56 && code <= 67) return '🌧️';
+  if ((code >= 71 && code <= 77) || code === 85 || code === 86) return '🌨️';
+  if (code >= 95) return '⛈️';
+  return '';
+}
+
 function weatherFor(day) {
   const live = state.weather[day.locKey];
   if (live && live.time) {
@@ -123,6 +137,7 @@ function weatherFor(day) {
       return {
         temp: Math.round(live.temperature_2m_max[idx]) + '° / ' + Math.round(live.temperature_2m_min[idx]) + '°C',
         desc: WEATHER_CODES[code] || 'Variabile',
+        icon: weatherIcon(code),
         source: 'Previsione live (aggiornata automaticamente)',
         wind: at('wind_speed_10m_max'), gust: at('wind_gusts_10m_max'), prec: at('precipitation_sum'), live: true
       };
@@ -165,7 +180,7 @@ function renderWeatherToday() {
     const wi = windInfo(w);
     const when = i >= 0 ? (k === 0 ? 'Oggi' : 'Domani') : d.dateLabel;
     return '<div class="info-card"><div class="info-card__label">' + when + ' · ' + LOCATIONS[d.locKey].name + '</div>'
-      + '<div class="info-card__big">' + w.temp + '</div><div class="info-card__sub">' + w.desc + '</div>'
+      + '<div class="info-card__big">' + (w.icon ? w.icon + ' ' : '') + w.temp + '</div><div class="info-card__sub">' + w.desc + '</div>'
       + (wi ? '<div class="weather-wind' + (wi.level ? ' weather-wind--' + wi.level : '') + '">' + wi.text + '</div>' : '') + '</div>';
   }).join('');
   box.hidden = false;
@@ -185,7 +200,7 @@ function renderWeatherAndSun() {
     const tempEl = document.querySelector('[data-weather-temp="' + day.id + '"]');
     const descEl = document.querySelector('[data-weather-desc="' + day.id + '"]');
     const srcEl = document.querySelector('[data-weather-source="' + day.id + '"]');
-    if (tempEl) tempEl.textContent = w.temp;
+    if (tempEl) tempEl.textContent = (w.icon ? w.icon + ' ' : '') + w.temp;
     if (descEl) descEl.textContent = w.desc;
     if (srcEl) srcEl.textContent = w.source;
 

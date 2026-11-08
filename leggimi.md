@@ -95,7 +95,8 @@ tengono ancora raggiungibili vecchi commit con voucher ed email.
   entrambi i telefoni e ripetuto solo se l'app lo chiede (percorso cambiato).
   Meteo, aurora e cambio mostrano offline l'ultimo dato salvato.
 - **Alba e tramonto** sono calcolati dall'app (formula NOAA), anche offline.
-- **Meteo e vento** (Open-Meteo, fino a 16 giorni prima): nel riquadro di ogni
+- **Meteo e vento** (Open-Meteo, fino a 16 giorni prima, con il simbolo del
+  tempo: ☀️ 🌤️ ⛅ ☁️ 🌫️ 🌦️ 🌧️ 🌨️ ⛈️): nel riquadro di ogni
   giorno e, nella tab Info, "Meteo oggi e domani" (prima della partenza i primi
   due giorni). Vento "forte" con raffiche da 18 m/s (o vento medio da 13),
   "pericoloso" da 25 m/s, con l'invito a guardare vedur.is e umferdin.is.

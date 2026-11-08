@@ -549,7 +549,7 @@ offline_tiles_js = json.dumps(offline_tiles, separators=(',', ':'))
 offline_tiles_label = f'{len(offline_tiles):,}'.replace(',', '.')
 offline_mb = max(1, round(len(offline_tiles) * 0.016))
 
-WEATHER_CODES_JS = """{0:'Sereno',1:'Prevalentemente sereno',2:'Parzialmente nuvoloso',3:'Nuvoloso',45:'Nebbia',48:'Nebbia con brina',51:'Pioviggine leggera',53:'Pioviggine',55:'Pioviggine intensa',56:'Pioviggine gelata',57:'Pioviggine gelata intensa',61:'Pioggia leggera',63:'Pioggia',65:'Pioggia intensa',66:'Pioggia gelata',67:'Pioggia gelata intensa',71:'Neve leggera',73:'Neve',75:'Neve intensa',77:'Granelli di neve',80:'Rovesci leggeri',81:'Rovesci',82:'Rovesci forti',85:'Rovesci di neve leggeri',86:'Rovesci di neve forti',95:'Temporale'}"""
+WEATHER_CODES_JS = """{0:'Sereno',1:'Prevalentemente sereno',2:'Parzialmente nuvoloso',3:'Nuvoloso',45:'Nebbia',48:'Nebbia con brina',51:'Pioviggine leggera',53:'Pioviggine',55:'Pioviggine intensa',56:'Pioviggine gelata',57:'Pioviggine gelata intensa',61:'Pioggia leggera',63:'Pioggia',65:'Pioggia intensa',66:'Pioggia gelata',67:'Pioggia gelata intensa',71:'Neve leggera',73:'Neve',75:'Neve intensa',77:'Granelli di neve',80:'Rovesci leggeri',81:'Rovesci',82:'Rovesci forti',85:'Rovesci di neve leggeri',86:'Rovesci di neve forti',95:'Temporale',96:'Temporale con grandine',99:'Temporale con grandine forte'}"""
 
 # Stile e codice della pagina: file a parte in app/, inseriti così come sono
 with open('app/stile.css', encoding='utf-8') as f:
