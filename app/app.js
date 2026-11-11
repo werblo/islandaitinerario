@@ -1,5 +1,5 @@
 
-const state = { weather:{}, vedur:{}, sun:{}, kp:null, kpStatus:'loading' };
+const state = { weather:{}, vedur:{}, sun:{}, kp:null, kpStatus:'loading', now:null };
 
 const dayMaps = {};
 
@@ -258,6 +258,48 @@ function windInfo(w) {
   return { text: lines.join('\n'), level };
 }
 
+// Tab Info: tempo adesso, dalla stazione automatica di vedur.is del posto in cui siete oggi
+// (prima e dopo il viaggio: Reykjavík). Dati ogni 10 minuti, api.vedur.is (permette l'accesso dal browser).
+function nowLocKey() {
+  const today = new Date().toISOString().slice(0, 10);   // ora islandese = UTC
+  const d = DAYS_META.find(x => x.dateISO === today);
+  return d && LOCATIONS[d.locKey] && LOCATIONS[d.locKey].oss ? d.locKey : 'reykjavik';
+}
+async function fetchNow() {
+  const key = nowLocKey();
+  try {
+    const r = await (await fetch('https://api.vedur.is/weather/observations/aws/10min/latest?station_id=' + LOCATIONS[key].oss)).json();
+    const o = Array.isArray(r) ? r[r.length - 1] : null;
+    if (!o || !isFinite(Date.parse(o.time + 'Z'))) return;
+    state.now = { key, t: Date.parse(o.time + 'Z'), T: o.t, F: o.f, G: o.fg, D: o.d_txt || '', station: o.name || '' };
+    renderWeatherToday();
+  } catch (e) { /* senza rete resta l'ultimo dato */ }
+}
+const DIR_IT = { N:'nord', NNE:'nord-nord-est', NE:'nord-est', ENE:'est-nord-est', E:'est', ESE:'est-sud-est', SE:'sud-est',
+  SSE:'sud-sud-est', S:'sud', SSW:'sud-sud-ovest', SW:'sud-ovest', WSW:'ovest-sud-ovest', W:'ovest', WNW:'ovest-nord-ovest',
+  NW:'nord-ovest', NNW:'nord-nord-ovest' };
+setInterval(() => { if (!document.hidden) fetchNow(); }, 600000);
+function nowCard() {
+  const n = state.now;
+  if (!n || n.T === null || n.T === undefined) return '';
+  const hh = new Date(n.t).toISOString().slice(11, 16);
+  const old = Date.now() - n.t > 2 * 3600000;
+  let feel = '';
+  const kmh = n.F !== null && n.F !== undefined ? n.F * 3.6 : null;
+  if (kmh !== null && n.T <= 10 && kmh > 4.8) {   // temperatura percepita (wind chill)
+    const v = Math.pow(kmh, 0.16);
+    feel = Math.round(13.12 + 0.6215 * n.T - 11.37 * v + 0.3965 * n.T * v);
+  }
+  const wind = n.F === null || n.F === undefined ? '' : '💨 Vento ' + Math.round(n.F) + '\u00a0m/s (' + Math.round(n.F * 3.6) + '\u00a0km/h)'
+    + (DIR_IT[n.D] ? ' da ' + DIR_IT[n.D] : '')
+    + (n.G !== null && n.G !== undefined ? ', raffiche ' + Math.round(n.G) + '\u00a0m/s (' + Math.round(n.G * 3.6) + '\u00a0km/h)' : '');
+  return '<div class="info-card"><div class="info-card__label">Adesso · ' + LOCATIONS[n.key].name + '</div>'
+    + '<div class="info-card__big">🌡️ ' + Math.round(n.T) + '\u00a0°C</div>'
+    + '<div class="info-card__sub">' + (feel !== '' && feel < Math.round(n.T) ? 'Percepita ' + feel + '\u00a0°C · ' : '')
+    + 'misurata alle ' + hh + ' ora islandese' + (old ? ' (dato vecchio)' : '') + ' · stazione ' + n.station + '</div>'
+    + (wind ? '<div class="weather-wind">' + wind + '</div>' : '') + '</div>';
+}
+
 // Tab Info: meteo di oggi e domani durante il viaggio (prima della partenza: i primi due giorni)
 function renderWeatherToday() {
   const box = document.getElementById('weather-today');
@@ -268,10 +310,12 @@ function renderWeatherToday() {
   const before = today < DAYS_META[0].dateISO;
   const days = i >= 0 ? DAYS_META.slice(i, i + 2) : before ? DAYS_META.slice(0, 2) : [];
   const rows = days.map((d, k) => ({ d, w: weatherFor(d), k })).filter(r => r.w.live);
-  if (!rows.length) { box.hidden = true; return; }
-  document.getElementById('weather-today-title').textContent = i >= 0 ? 'Meteo oggi e domani'
-    : 'Meteo dei primi due giorni' + (rows.some(r => r.w.far) ? ' (tendenza, poco affidabile)' : '');
-  list.innerHTML = rows.map(({ d, w, k }) => {
+  const now = nowCard();
+  if (!rows.length && !now) { box.hidden = true; return; }
+  document.getElementById('weather-today-title').textContent = !rows.length ? 'Meteo adesso'
+    : i >= 0 ? 'Meteo: adesso, oggi e domani'
+    : 'Meteo: adesso e primi due giorni' + (rows.some(r => r.w.far) ? ' (tendenza, poco affidabile)' : '');
+  list.innerHTML = now + rows.map(({ d, w, k }) => {
     const wi = windInfo(w);
     const when = i >= 0 ? (k === 0 ? 'Oggi' : 'Domani') : d.dateLabel;
     return '<div class="info-card"><div class="info-card__label">' + when + ' · ' + LOCATIONS[d.locKey].name + '</div>'
@@ -923,6 +967,7 @@ function refreshLiveData(force) {
   fetchKpForecast();
   fetchAllWeather();
   fetchVedur();
+  fetchNow();
   fetchFxRate();
 }
 
