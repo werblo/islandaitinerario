@@ -630,10 +630,10 @@ html_out = f'''<!DOCTYPE html>
   </details>
 
   <div class="panel" id="weather-today" hidden>
-    <div class="panel-title" id="weather-today-title">Meteo oggi e domani</div>
+    <div class="panel-title" id="weather-today-title">Meteo</div>
     <div class="rune-rule"></div>
     <div class="weather-today-list" id="weather-today-list"></div>
-    <div class="info-card__source">Previsione Open-Meteo. Allerte ufficiali: <a href="https://en.vedur.is/" target="_blank" rel="noopener">vedur.is</a> · strade: <a href="https://umferdin.is/en" target="_blank" rel="noopener">umferdin.is</a></div>
+    <div class="info-card__source">Adesso: stazioni automatiche di vedur.is. Previsioni: vedur.is (raffiche Open-Meteo). Allerte ufficiali: <a href="https://en.vedur.is/" target="_blank" rel="noopener">vedur.is</a> · strade: <a href="https://umferdin.is/en" target="_blank" rel="noopener">umferdin.is</a></div>
   </div>
 
   <div class="panel">

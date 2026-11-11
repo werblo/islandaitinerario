@@ -105,8 +105,10 @@ tengono ancora raggiungibili vecchi commit con voucher ed email.
   e i giorni più lontani restano di Open-Meteo; le nuvole per l'aurora restano
   Open-Meteo con `CLOUD_METHOD`. Riquadro con il simbolo del
   tempo: ☀️ 🌤️ ⛅ ☁️ 🌫️ 🌦️ 🌧️ 🌨️ ⛈️): nel riquadro di ogni
-  giorno e, nella tab Info, "Meteo oggi e domani" (prima della partenza i primi
-  due giorni). Vento "forte" con raffiche da 18 m/s (o vento medio da 13),
+  giorno e, nella tab Info, "Meteo: adesso, oggi e domani" (prima della partenza i
+  primi due giorni). "Adesso" è il tempo misurato ogni 10 minuti dalla stazione
+  automatica di vedur.is (`oss` in `locations`; api.vedur.is) del posto della
+  giornata: prima e dopo il viaggio Reykjavík. Vento "forte" con raffiche da 18 m/s (o vento medio da 13),
   "pericoloso" da 25 m/s, con l'invito a guardare vedur.is e umferdin.is.
   Il simbolo si sceglie dai totali del giorno e non dal codice meteo di
   Open-Meteo, che indica il momento peggiore (bastano pochi fiocchi in un'ora
@@ -269,8 +271,10 @@ Avvistamenti reali (es. foto o storie di chi è in Islanda) in
 
 **Confronto meteo** (`tools/meteo/confronto_meteo.py`, workflow "Confronto meteo",
 dall'8 al 14 novembre, chiesto da Michele). Ogni 3 ore salva le previsioni ora
-per ora per Reykjavík e Keflavík e le confronta con il tempo osservato agli
-aeroporti (METAR), per anticipo (entro 24 ore, 1-2 e 2-4 giorni):
+per ora per Reykjavík, Keflavík, Vík e Flúðir (questi due dall'11/11) e le
+confronta con il tempo osservato: METAR agli aeroporti, stazioni automatiche di
+vedur.is a Vík e Flúðir (solo temperatura, vento e raffiche); per anticipo
+(entro 24 ore, 1-2 e 2-4 giorni):
 - nuvole (anche solo la sera, per l'aurora), pioggia/neve, temperatura e vento di
   Open-Meteo, met.no e vedur.is, più le nuvole dell'app (media di più modelli) e
   le miscele "app + vedur.is" e "app + vedur.is + met.no";

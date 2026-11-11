@@ -1,9 +1,11 @@
 """Confronto delle previsioni meteo (chiesto da Michele l'8/11, fino al 14/11).
 
-Quale fonte ci azzecca di più a Reykjavík e Keflavík: Open-Meteo, met.no (servizio norvegese) e
-vedur.is (servizio meteo islandese)? Ogni esecuzione salva le previsioni ora per ora dei prossimi
-giorni ("raccogli"); "valuta" le confronta con il tempo osservato agli aeroporti (METAR di BIRK e
-BIKF, archivio IEM) e scrive RISULTATI.md.
+Quale fonte ci azzecca di più a Reykjavík, Keflavík, Vík e Flúðir: Open-Meteo, met.no (servizio
+norvegese) e vedur.is (servizio meteo islandese)? Ogni esecuzione salva le previsioni ora per ora dei
+prossimi giorni ("raccogli"); "valuta" le confronta con il tempo osservato e scrive RISULTATI.md.
+Osservato: agli aeroporti i METAR di BIRK e BIKF (archivio IEM: nuvole, pioggia/neve, temperatura,
+vento, raffiche); a Vík e Flúðir (aggiunti l'11/11) le stazioni automatiche di vedur.is (api.vedur.is,
+media oraria: solo temperatura, vento e raffica massima dell'ora, niente nuvole né pioggia).
 
 1. Generale: nuvole (in tutte le ore e la sera, 16-23 UTC, quella che conta per l'aurora),
    pioggia/neve sì o no, temperatura, vento. Per le nuvole anche:
@@ -17,7 +19,7 @@ BIKF, archivio IEM) e scrive RISULTATI.md.
 Uso:  python3 tools/meteo/confronto_meteo.py raccogli <cartella>
       python3 tools/meteo/confronto_meteo.py valuta <cartella>
 """
-import csv, json, math, os, re, sys, urllib.request
+import csv, json, math, os, re, sys, time, urllib.error, urllib.request
 import xml.etree.ElementTree as ET
 from datetime import datetime, timedelta, timezone
 
@@ -32,6 +34,11 @@ PLACES = {
                   'prev': 'previsioni.csv', 'oss': 'osservato.csv'},
     'Keflavík': {'lat': 63.9850, 'lon': -22.6056, 'vedur': 990, 'metar': 'BIKF',
                  'prev': 'previsioni_keflavik.csv', 'oss': 'osservato_keflavik.csv'},
+    # previsioni vedur.is come l'app (Vík: Reynisfjall, sopra il paese); osservato: stazione in paese
+    'Vík': {'lat': 63.4186, 'lon': -19.0060, 'vedur': 36049, 'aws': 6049,
+            'prev': 'previsioni_vik.csv', 'oss': 'osservato_vik.csv'},
+    'Flúðir': {'lat': 64.1372, 'lon': -20.3033, 'vedur': 36415, 'aws': 36415,
+               'prev': 'previsioni_fludir.csv', 'oss': 'osservato_fludir.csv'},
 }
 GUST_MODELS = {'ecmwf_ifs025': 'ECMWF', 'icon_seamless': 'ICON', 'gfs_seamless': 'GFS',
                'ukmo_seamless': 'UKMO', 'metno_seamless': 'MET Nordic'}
@@ -46,14 +53,22 @@ VEDUR = 'https://xmlweather.vedur.is/?op_w=xml&type=forec&lang=en&view=xml&ids={
 IEM = ('https://mesonet.agron.iastate.edu/cgi-bin/request/asos.py?station={st}&data=metar'
        '&year1={a.year}&month1={a.month}&day1={a.day}&year2={b.year}&month2={b.month}&day2={b.day}'
        '&tz=Etc/UTC&format=onlycomma&latlon=no&missing=M&trace=T&direct=no&report_type=3&report_type=4')
+VEDUR_AWS = ('https://api.vedur.is/weather/observations/aws/hour?station_id={st}&parameters=basic'
+             '&day_from={a:%Y-%m-%d}&day_to={b:%Y-%m-%d}')
 F_PREV = ['emessa', 'fonte', 'ora', 'nuvole', 'pioggia', 'temp', 'vento', 'raffica']
 
 
-def fetch(url, kind='json'):
-    req = urllib.request.Request(url, headers={'User-Agent': UA})
-    with urllib.request.urlopen(req, timeout=60) as r:
-        data = r.read()
-    return json.loads(data) if kind == 'json' else data.decode('utf-8', 'replace')
+def fetch(url, kind='json', tries=1):
+    for k in range(tries):
+        try:
+            req = urllib.request.Request(url, headers={'User-Agent': UA})
+            with urllib.request.urlopen(req, timeout=60) as r:
+                data = r.read()
+            return json.loads(data) if kind == 'json' else data.decode('utf-8', 'replace')
+        except urllib.error.HTTPError as e:   # 429 = troppe richieste ravvicinate (archivio IEM)
+            if e.code not in (429, 502, 503) or k == tries - 1:
+                raise
+            time.sleep(20 * (k + 1))
 
 
 def num(x):
@@ -70,10 +85,10 @@ def hour_iso(t):
 
 # ---------- previsioni: ogni fonte restituisce {nome: [(ora, nuvole, pioggia, temp, vento, raffica)]} ----------
 def from_open_meteo(p):
-    h = fetch(OPEN_METEO.format(**p))['hourly']
+    h = fetch(OPEN_METEO.format(**p), tries=3)['hourly']
     out = {'Open-Meteo': [(t, num(h['cloud_cover'][i]), num(h['precipitation'][i]), num(h['temperature_2m'][i]),
                            num(h['wind_speed_10m'][i]), num(h['wind_gusts_10m'][i])) for i, t in enumerate(h['time'])]}
-    hm = fetch(OPEN_METEO_MODELS.format(**p))['hourly']
+    hm = fetch(OPEN_METEO_MODELS.format(**p), tries=3)['hourly']
     for m, name in GUST_MODELS.items():
         col = hm.get('wind_gusts_10m_' + m)
         if col:
@@ -83,7 +98,7 @@ def from_open_meteo(p):
 
 def from_app(p):   # nuvole come le calcola l'app (CLOUD_METHOD, più modelli insieme)
     trip = aa.trip_data()
-    by_hour = aa.clouds_by_hour(fetch(aa.clouds_url({'lat': p['lat'], 'lon': p['lon']}, trip)), trip)
+    by_hour = aa.clouds_by_hour(fetch(aa.clouds_url({'lat': p['lat'], 'lon': p['lon']}, trip), tries=3), trip)
     return {'app (media modelli)': [(t, c, None, None, None, None) for t, c in sorted(by_hour.items())]}
 
 
@@ -160,7 +175,11 @@ def raccogli(d):
                     print(f'{place} · {name}: {len(rows)} ore salvate')
 
 
-# ---------- osservazioni (METAR) ----------
+# ---------- osservazioni (METAR o stazione vedur.is) ----------
+def source(p):
+    return f'METAR {p["metar"]}' if p.get('metar') else f'stazione vedur.is {p["aws"]}'
+
+
 COVER = {'FEW': 19, 'SCT': 44, 'BKN': 75, 'OVC': 100, 'VV': 100}
 
 
@@ -182,30 +201,45 @@ def parse_metar(m):
     return cloud, precip, temp, wind, gust
 
 
+def obs_aws(p, start, end):
+    """Stazione automatica di vedur.is: media oraria (l'ora indicata è la fine dell'intervallo)."""
+    obs = {}
+    for r in fetch(VEDUR_AWS.format(st=p['aws'], a=start, b=end + timedelta(days=1)), tries=3):
+        t = datetime.fromisoformat(r['time']) - timedelta(hours=1)   # come le previsioni: ora che inizia
+        v, g = num(r.get('f')), num(r.get('fg'))
+        obs[t.strftime('%Y-%m-%dT%H:00')] = (None, None, num(r.get('t')), v, g if g is not None else v)
+    return obs
+
+
 def osservazioni(d, p, start, end):
     path = os.path.join(d, p['oss'])
     try:
-        text = fetch(IEM.format(st=p['metar'], a=start, b=end + timedelta(days=1)), 'text')
-        obs = {}
-        for r in csv.DictReader(text.splitlines()):
-            if not r.get('metar') or r['metar'] == 'M':
-                continue
-            t = r['valid'].replace(' ', 'T')
-            if t[14:16] == '00' or t[:13] + ':00' not in obs:   # il bollettino dell'ora piena
-                obs[t[:13] + ':00'] = parse_metar(r['metar'])
+        if p.get('metar'):
+            time.sleep(5)   # l'archivio IEM risponde 429 a richieste troppo ravvicinate
+            text = fetch(IEM.format(st=p['metar'], a=start, b=end + timedelta(days=1)), 'text', tries=4)
+            obs = {}
+            for r in csv.DictReader(text.splitlines()):
+                if not r.get('metar') or r['metar'] == 'M':
+                    continue
+                t = r['valid'].replace(' ', 'T')
+                if t[14:16] == '00' or t[:13] + ':00' not in obs:   # il bollettino dell'ora piena
+                    obs[t[:13] + ':00'] = parse_metar(r['metar'])
+        else:
+            obs = obs_aws(p, start, end)
         with open(path, 'w', newline='', encoding='utf-8') as f:
             w = csv.writer(f)
             w.writerow(['ora', 'nuvole', 'pioggia', 'temp', 'vento', 'raffica'])
             for t, v in sorted(obs.items()):
-                w.writerow([t, *v])
+                w.writerow([t, *('' if x is None else x for x in v)])
     except Exception as e:
-        print(f'::warning::METAR {p["metar"]} non disponibili ({type(e).__name__}: {e}); uso la copia salvata'[:300])
+        print(f'::warning::{source(p)} non disponibili ({type(e).__name__}: {e}); uso la copia salvata'[:300])
     out = {}
     if os.path.exists(path):
         with open(path, encoding='utf-8') as f:
             for r in csv.DictReader(f):
                 v = num(r['vento'])
-                out[r['ora']] = (num(r['nuvole']), r['pioggia'] == 'True', num(r['temp']), v,
+                piog = None if r['pioggia'] in ('', 'None') else r['pioggia'] == 'True'
+                out[r['ora']] = (num(r['nuvole']), piog, num(r['temp']), v,
                                  num(r.get('raffica')) if r.get('raffica') not in (None, '') else v)
     return out
 
@@ -228,7 +262,7 @@ def valuta(d):
             continue
         first = min(datetime.fromisoformat(r['emessa']) for r in prev)
         obs = osservazioni(d, p, first, datetime.now(UTC).replace(tzinfo=None))
-        info.append(f'{place}: previsioni dal {first:%d/%m %H:%M} UTC, osservato {len(obs)} ore (METAR {p["metar"]})')
+        info.append(f'{place}: previsioni dal {first:%d/%m %H:%M} UTC, osservato {len(obs)} ore ({source(p)})')
         # miscele per le nuvole: media delle fonti salvate nella stessa esecuzione per la stessa ora
         by = {}
         for r in prev:
@@ -258,7 +292,7 @@ def valuta(d):
                     s['cielo'].append((c >= 50) == (o[0] >= 50))
                     if 16 <= int(r['ora'][11:13]) <= 23:
                         s['nuv_sera'].append(abs(c - o[0]))
-                if pr is not None:
+                if pr is not None and o[1] is not None:
                     s['piog'].append((pr >= 0.1) == o[1])
                 if tt is not None and o[2] is not None:
                     s['temp'].append(abs(tt - o[2]))
@@ -281,7 +315,8 @@ def valuta(d):
     pct = lambda xs: f'{100 * sum(xs) / len(xs):.0f}%' if xs else '–'
     sign = lambda xs: (('+' if sum(xs) >= 0 else '') + f'{sum(xs) / len(xs):.1f}') if xs else '–'
     lines = ['# Confronto meteo: chi ci azzecca', '', *[f'- {x}' for x in info], '',
-             'Errore medio: più basso è meglio; "giusto": più alto è meglio. Reykjavík e Keflavík insieme.', '',
+             'Errore medio: più basso è meglio; "giusto": più alto è meglio. Tutti i luoghi insieme; nuvole e pioggia/neve '
+             'solo agli aeroporti (Reykjavík, Keflavík).', '',
              '## Nuvole, pioggia/neve, temperatura, vento', '',
              '"cielo giusto" = sereno/poco nuvoloso (sotto 50%) o nuvoloso/coperto azzeccato; '
              '"pioggia/neve giusta" = sì o no azzeccato per l\'ora (METAR: precipitazione in corso). '
@@ -298,10 +333,11 @@ def valuta(d):
             lines.append(f'| {b} | {src} | {n} | {avg(s["nuv"])} | {avg(s["nuv_sera"])} | {pct(s["cielo"])} | '
                          f'{pct(s["piog"])} | {avg(s["temp"], "{:.1f}")} | {avg(s["vento"], "{:.1f}")} |')
     lines += ['', '## Raffiche (m/s)', '',
-              'Osservato: raffica del METAR o, se non c\'è, vento medio. "tendenza": + = la previsione '
+              'Osservato: raffica del METAR o, se non c\'è, vento medio; a Vík e Flúðir la raffica più forte '
+              'dell\'ora (stazione vedur.is). "tendenza": + = la previsione '
               'esagera, − = sottostima. "massima del giorno": errore sulla raffica più forte della giornata.', '',
               '| anticipo | fonte | ore | errore medio | tendenza | massima del giorno: errore | '
-              'errore Reykjavík | errore Keflavík |', '|---|---|---|---|---|---|---|---|']
+              + ''.join(f'errore {pl} | ' for pl in PLACES).rstrip(), '|---|---|---|---|---|---|' + '---|' * len(PLACES)]
     for _, _, b in BUCKETS:
         for src in GUSTS + ['media modelli (raffiche)']:
             s = stats.get((src, b))
@@ -309,7 +345,7 @@ def valuta(d):
                 continue
             per = [avg((stats.get((src, b, pl)) or {}).get('raff', []), '{:.1f}') for pl in PLACES]
             lines.append(f'| {b} | {src.replace(" (raffiche)", "")} | {len(s["raff"])} | {avg(s["raff"], "{:.1f}")} | '
-                         f'{sign(s["raff_bias"])} | {avg(s["raff_max"], "{:.1f}")} | {per[0]} | {per[1]} |')
+                         f'{sign(s["raff_bias"])} | {avg(s["raff_max"], "{:.1f}")} | ' + ' | '.join(per) + ' |')
     out = '\n'.join(lines) + '\n'
     print(out)
     with open(os.path.join(d, 'RISULTATI.md'), 'w', encoding='utf-8') as f:
