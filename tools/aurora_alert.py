@@ -128,6 +128,17 @@ def get_json(url):
         return json.load(res)
 
 
+def get_clouds(url):
+    """Open-Meteo con un secondo tentativo dopo 20 secondi: senza nuvole l'avviso "adesso" non parte."""
+    try:
+        return get_json(url)
+    except Exception as e:
+        print(f'Open-Meteo non risponde ({e}): riprovo tra 20 secondi.')
+        if os.environ.get('AURORA_TURNO_SIMULA') != '1':
+            time.sleep(20)
+        return get_json(url)
+
+
 def parse_time(s):
     s = str(s).replace(' ', 'T')
     t = datetime.fromisoformat(s.replace('Z', '+00:00'))
@@ -413,7 +424,7 @@ def arrivo_alert(now, night, stops, trip, clouds, done, preview):
         return None
     if place not in clouds:
         try:
-            clouds[place] = clouds_by_hour(get_json(clouds_url(loc, trip)), trip)
+            clouds[place] = clouds_by_hour(get_clouds(clouds_url(loc, trip)), trip)
         except Exception as e:
             print(f'::warning::Nuvolosità Open-Meteo per {place} non disponibile: {e}')
     cloud = clouds.get(place, {}).get(hour_key(now + timedelta(minutes=45)))   # quando arriva
@@ -758,7 +769,7 @@ def run(mode, now, manual=False):
         print(f'::warning::Previsione Kp NOAA non disponibile: {e}')
     for place in dict.fromkeys(s['place'] for s in stops):
         try:
-            clouds[place] = clouds_by_hour(get_json(clouds_url(trip['places'][place], trip)), trip)
+            clouds[place] = clouds_by_hour(get_clouds(clouds_url(trip['places'][place], trip)), trip)
         except Exception as e:
             print(f'::warning::Nuvolosità Open-Meteo per {place} non disponibile: {e}')
     ov_now = None

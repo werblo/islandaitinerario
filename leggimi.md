@@ -59,7 +59,8 @@ attività si vedono piccole, 64 px, a sinistra del testo).
 
 **Ordine di un giorno.** Foto, mappa, meteo (con vento, raffiche e
 pioggia/neve) e alba/tramonto, nota aurora,
-Spostamenti in auto, Itinerario, Storia & curiosità, Dove mangiare, alloggio,
+Spostamenti in auto, avviso in evidenza (campo facoltativo `alert` del giorno
+in `dati.py`, per ora solo il Giorno 5), Itinerario, Storia & curiosità, Dove mangiare, alloggio,
 consiglio del giorno.
 
 **Testi.** I box "Storia & curiosità" e la tab Storia sono in stile
@@ -102,7 +103,8 @@ tengono ancora raggiungibili vecchi commit con voucher ed email.
   da **vedur.is**, il servizio meteo islandese (stazioni in `locations` di
   `dati.py`: Reykjavík, Reynisfjall per Vík, strada Flúðir-Reykholt, aeroporto di
   Keflavík; circa 10 giorni). Le raffiche, che vedur.is non prevede per stazione,
-  e i giorni più lontani restano di Open-Meteo; le nuvole per l'aurora restano
+  e i giorni più lontani restano di Open-Meteo (la raffica si mostra solo se supera
+  il vento medio di almeno 1 m/s); le nuvole per l'aurora restano
   Open-Meteo con `CLOUD_METHOD`. Riquadro con il simbolo del
   tempo: ☀️ 🌤️ ⛅ ☁️ 🌫️ 🌦️ 🌧️ 🌨️ ⛈️): nel riquadro di ogni
   giorno e, nella tab Info, "Meteo: adesso, oggi e domani" (prima della partenza i
@@ -196,7 +198,10 @@ esecuzioni in media ogni 6 ore: con un turno solo restavano buchi serali di 1-3
 ore (fine ottobre-inizio novembre). Per questo ogni esecuzione programmata fa 4
 turni uno dopo l'altro (circa 22 ore); quelle che arrivano nel frattempo si
 mettono in coda (in Actions alcune risultano "annullate": è normale). Gli avvisi già mandati sono salvati nella cache di GitHub Actions, non
-nel repo, e non si ripetono tra un turno e l'altro.
+nel repo, e non si ripetono tra un turno e l'altro. Ogni turno scarica l'ultima
+versione di `main`: una modifica unita arriva agli avvisi al turno successivo
+(entro 5 ore e mezza). Se Open-Meteo non risponde, le nuvole si riprovano una
+volta dopo 20 secondi.
 
 **Leirvogur per l'app.** Il servizio del magnetometro islandese (non ufficiale,
 Iceland at Night) non si può leggere dal browser: a ogni controllo il turno ne

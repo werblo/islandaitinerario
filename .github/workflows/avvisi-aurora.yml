@@ -54,7 +54,11 @@ jobs:
       matrix:
         parte: ${{ github.event_name == 'schedule' && fromJSON('[1, 2, 3, 4]') || fromJSON('[1]') }}
     steps:
+      # sempre l'ultima versione di main: un'esecuzione dura circa 22 ore e resta in coda per ore,
+      # con la versione di quando è stata creata una modifica arriverebbe agli avvisi 1-2 giorni dopo
       - uses: actions/checkout@v4
+        with:
+          ref: main
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
