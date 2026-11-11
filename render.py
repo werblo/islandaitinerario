@@ -328,6 +328,10 @@ def render_day_section(day):
             parking_nav_html = f'<div class="acc-parking-nav">{links}</div>'
         acc_html = (f'<div class="acc-card"><div class="acc-name">Alloggio: {acc_name_html}</div>'
                     f'<div class="acc-detail">{e(acc["detail"])}</div>{parking_nav_html}</div>')
+    # 'alert' in dati.py: avviso in evidenza sopra l'itinerario del giorno (stile del consiglio)
+    alert_html = ''
+    if day.get('alert'):
+        alert_html = f'<div class="tip-card" role="note" style="margin-top:14px;font-weight:600;">⚠️ {e(day["alert"])}</div>'
     tips_html = ''
     if day.get('tips'):
         tips_html = f'<div class="tip-card"><strong>Consiglio:</strong> {e(day["tips"])}</div>'
@@ -367,6 +371,7 @@ def render_day_section(day):
   </div>
   {aurora_note_html}
   {legs_html}
+  {alert_html}
   <div class="section">
     <div class="section-title">Itinerario</div>
     <div class="stack">{acts_html}</div>
