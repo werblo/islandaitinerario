@@ -99,6 +99,8 @@ l'utente: `leggimi.md` (breve: com'è il progetto oggi).
   fino alle 10. Prove: a mano con `modalita` e `durata` (il `turno` a mano è
   bloccato dal 13 al 22/11 per evitare doppioni), o in locale con
   `AURORA_TURNO_SIMULA=1`.
+  Ogni turno fa il checkout di `main` (`ref: main`): le modifiche unite valgono
+  dal turno successivo.
   Secret: `VAPID_PRIVATE_KEY`, `AURORA_SUBSCRIPTIONS` (righe "Nome: {json}").
 - `aggiorna-percorsi.yml`: manuale, ricalcola percorsi e km con OSRM.
 - Il proxy della sessione non permette di cancellare branch: chiedilo a Michele.

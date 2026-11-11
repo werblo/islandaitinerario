@@ -212,6 +212,8 @@ function weatherFor(day) {
       const i = live.time.indexOf(day.dateISO);
       if (i >= 0 && isFinite(live.wind_gusts_10m_max[i]) && live.wind_gusts_10m_max[i] !== null) gust = Number(live.wind_gusts_10m_max[i]);
     }
+    // due fonti diverse: una raffica che non supera il vento medio di almeno 1 m/s non dice niente
+    if (gust !== null && v.wind !== null && gust < v.wind + 1) gust = null;
     return {
       temp: Math.round(v.tmax) + '° / ' + Math.round(v.tmin) + '°C',
       desc: sky.desc, icon: sky.icon, far: ahead >= 5,
