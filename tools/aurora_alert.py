@@ -18,7 +18,8 @@ Le esecuzioni programmate di GitHub partono spesso con ore di ritardo: per quest
 workflow lancia dei "turni" (AURORA_MODE=turno) che restano accesi circa 5 ore e mezza e
 fanno da soli i controlli ogni 30 minuti (ai minuti :07 e :37; di notte, in mezzo, ogni 10
 minuti solo il vento solare per l'avviso "arrivo"), il messaggio del mattino
-(dalle 7:37) e la prova automatica del 13 novembre (dalle 18:07). GitHub avvia le esecuzioni
+(dalle 7:37), la prova automatica del 13 novembre (dalle 18:07) e, la sera dalle 17:07 alle
+22:37, le allerte meteo ufficiali di vedur.is per il giorno dopo del viaggio. GitHub avvia le esecuzioni
 in media ogni 6 ore: per questo il workflow fa 4 turni uno dopo l'altro per esecuzione
 (circa 22 ore) e le esecuzioni successive si mettono in coda.
 
@@ -27,7 +28,8 @@ Variabili d'ambiente:
   AURORA_SUBSCRIPTIONS  codici copiati dall'app ("Attiva avvisi aurora"), uno dopo
                         l'altro; un nome davanti ("Federica: {...}") personalizza le frasi
   AURORA_MODE           "turno" (esecuzioni programmate), "controllo" (default), "vento"
-                        (solo l'avviso "arrivo"), "mattino" oppure "prova" (notifica subito)
+                        (solo l'avviso "arrivo"), "mattino", "prova" (notifica subito) oppure
+                        "allerta" (allerte meteo di domani, a mano: notifica anche se non ce ne sono)
   AURORA_TURNO_MIN      durata di un turno in minuti (default 330)
   AURORA_TURNO_SIMULA   solo per test: "1" = il turno non aspetta davvero, fa avanzare
                         l'orologio da AURORA_NOW
@@ -620,8 +622,156 @@ def main():
                   'scegli "controllo", per una notifica di prova "prova".')
             return 1
         return turno(now)
+    if mode == 'allerta':
+        return check_allerta(now, manual)
     return run(mode, now, manual)
 
+
+
+# ---------- allerte meteo ufficiali di vedur.is (CAP), chieste da Michele il 13/11 ----------
+# La sera (dalle 17:07 alle 22:37) il turno guarda se per il giorno dopo del viaggio c'è un'allerta
+# gialla, arancione o rossa in una zona dove passerete (posti della mappa del giorno, DAYS_META.pts)
+# e manda una notifica; la rimanda solo se il colore peggiora. L'app mostra le stesse allerte
+# (stessa regola in app/app.js, warningsFor). Se vedur.is non risponde non succede niente.
+CAP_FEED = 'https://api.vedur.is/cap/v1/capbroker/active/feed/met'
+CAP_NS = {'c': 'urn:oasis:names:tc:emergency:cap:1.2'}
+WARN_LEVEL = {'yellow': 1, 'orange': 2, 'red': 3}
+WARN_COLOR_IT = {1: ('🟡', 'gialla'), 2: ('🟠', 'arancione'), 3: ('🔴', 'rossa')}
+WARN_TYPE_IT = {'wind': 'vento forte', 'snow storm': 'tempesta di neve', 'snow': 'neve', 'rain': 'pioggia forte',
+                'blizzard': 'bufera di neve', 'ice': 'ghiaccio', 'fog': 'nebbia', 'storm surge': 'mareggiata'}
+WARN_HOURS = (6, 22)       # ore del giorno che contano (ora islandese = UTC); il 22/11 si parte alle 6:45
+WARN_NEAR_KM = 5           # i poligoni delle zone sono semplificati: un posto sulla costa può cadere appena fuori
+WARN_EVENING = (17, 23)    # controlli della sera per il giorno dopo
+
+
+def get_text(url):
+    req = urllib.request.Request(url, headers={'User-Agent': 'islanda-2026-avvisi-aurora'})
+    with urllib.request.urlopen(req, timeout=30) as res:
+        return res.read().decode('utf-8', 'replace')
+
+
+def cap_warnings():
+    """Allerte meteo attive: [{level, kind, headline, desc, area, onset, expires, polys}]."""
+    import xml.etree.ElementTree as ET
+    out = []
+    for item in ET.fromstring(get_text(CAP_FEED)).iter('item'):
+        try:
+            a = ET.fromstring(get_text(item.findtext('link')))
+        except Exception as e:
+            print(f'::warning::Allerta vedur.is non leggibile: {type(e).__name__}: {e}'[:300])
+            continue
+        txt = lambda el, k: (el.findtext('c:' + k, default='', namespaces=CAP_NS) or '').strip()
+        if txt(a, 'status') != 'Actual' or txt(a, 'msgType') == 'Cancel':
+            continue
+        infos = a.findall('c:info', CAP_NS)
+        info = next((i for i in infos if txt(i, 'language').startswith('en')), infos[0] if infos else None)
+        if info is None:
+            continue
+        params = {txt(x, 'valueName').lower(): txt(x, 'value') for x in info.findall('c:parameter', CAP_NS)}
+        level = WARN_LEVEL.get(params.get('color', '').lower())
+        try:
+            onset, expires = (datetime.fromisoformat(txt(info, k)).astimezone(timezone.utc) for k in ('onset', 'expires'))
+        except ValueError:
+            continue
+        polys, area = [], ''
+        for ar in info.findall('c:area', CAP_NS):
+            area = area or txt(ar, 'areaDesc')
+            for pg in ar.findall('c:polygon', CAP_NS):
+                try:
+                    pts = [tuple(float(v) for v in p.split(',')) for p in (pg.text or '').split()]
+                except ValueError:
+                    continue
+                if len(pts) >= 3:
+                    polys.append(pts)
+        if level and polys:
+            kind = next((txt(x, 'value') for x in info.findall('c:eventCode', CAP_NS)
+                         if txt(x, 'valueName') == 'alertType'), '')
+            out.append({'level': level, 'kind': kind, 'headline': txt(info, 'headline'),
+                        'desc': txt(info, 'description'), 'area': area, 'onset': onset,
+                        'expires': expires, 'polys': polys})
+    return out
+
+
+def near_polygon(lat, lon, poly, near_km=WARN_NEAR_KM):
+    """Il posto è dentro la zona (o a meno di near_km dal suo bordo)? Come nearPolygon() nell'app."""
+    inside, j = False, len(poly) - 1
+    for i in range(len(poly)):
+        (yi, xi), (yj, xj) = poly[i], poly[j]
+        if (yi > lat) != (yj > lat) and lon < (xj - xi) * (lat - yi) / (yj - yi) + xi:
+            inside = not inside
+        j = i
+    if inside:
+        return True
+    kx, ky = 111.32 * math.cos(math.radians(lat)), 110.57
+    for (y1, x1), (y2, x2) in zip(poly, poly[1:] + poly[:1]):
+        ax, ay, bx, by = (x1 - lon) * kx, (y1 - lat) * ky, (x2 - lon) * kx, (y2 - lat) * ky
+        dx, dy = bx - ax, by - ay
+        f = max(0, min(1, -(ax * dx + ay * dy) / (dx * dx + dy * dy))) if dx or dy else 0
+        if math.hypot(ax + f * dx, ay + f * dy) <= near_km:
+            return True
+    return False
+
+
+def warn_near_km(w):
+    # altopiani (disabitati): solo i posti proprio dentro, non quelli sul bordo (Skógafoss, Gullfoss)
+    return 0 if re.search(r'highlands|Miðhálendi', w['area'], re.I) else WARN_NEAR_KM
+
+
+def warnings_for_day(warns, day):
+    d0 = datetime.fromisoformat(day['dateISO']).replace(tzinfo=timezone.utc)
+    w0, w1 = d0 + timedelta(hours=WARN_HOURS[0]), d0 + timedelta(hours=WARN_HOURS[1])
+    mine = [w for w in warns if w['onset'] < w1 and w['expires'] > w0
+            and any(near_polygon(lat, lon, poly, warn_near_km(w)) for lat, lon in day.get('pts') or [] for poly in w['polys'])]
+    return sorted(mine, key=lambda w: (-w['level'], w['onset']))
+
+
+def warning_line(w, day_iso):
+    em, col = WARN_COLOR_IT[w['level']]
+    kind = WARN_TYPE_IT.get(w['kind'].lower(), w['headline'] or w['kind'])
+    when = lambda t: f'{t:%H:%M}' + ('' if t.strftime('%Y-%m-%d') == day_iso else f' del {t:%d/%m}')
+    return f'{em} {col}, {kind}: dalle {when(w["onset"])} alle {when(w["expires"])} ({w["area"]})'
+
+
+def check_allerta(now, manual=False):
+    state_path = os.environ.get('AURORA_STATE', '.aurora-state/state.json')
+    tomorrow = (now + timedelta(days=1)).strftime('%Y-%m-%d')
+    day = next((d for d in trip_data()['days'] if d['dateISO'] == tomorrow), None)
+    if not day:
+        print(f'Allerte: domani ({tomorrow}) non è un giorno del viaggio.')
+        return 0
+    try:
+        warns = cap_warnings()
+    except Exception as e:     # vedur.is giù: si riprova al prossimo controllo, il turno non fallisce
+        print(f'::warning::Allerte vedur.is non disponibili: {type(e).__name__}: {e}'[:300])
+        return 0
+    mine = warnings_for_day(warns, day)
+    level = max((w['level'] for w in mine), default=0)
+    print(f'Allerte vedur.is: {len(warns)} in Islanda, {len(mine)} per domani {tomorrow} sul vostro percorso')
+    for w in mine:
+        print('  ' + warning_line(w, tomorrow))
+    st = load_state(state_path)
+    sent_level = (st.get('_allerte') or {}).get(tomorrow, 0)
+    if not manual and level <= sent_level:
+        print('Nessuna allerta nuova da mandare' + (' (già inviata)' if level else '') + '.')
+        return 0
+    subs = parse_subscriptions(os.environ.get('AURORA_SUBSCRIPTIONS'))
+    if not subs:
+        print('::warning::Allerta da mandare ma nessun telefono in AURORA_SUBSCRIPTIONS.')
+        return 0
+    label = day.get('dateLabel') or tomorrow
+    if level:
+        em, col = WARN_COLOR_IT[level]
+        title = f'{em} Domani ({label}) allerta meteo {col}' + (' più forte' if sent_level else '')
+        body = ('\n'.join(warning_line(w, tomorrow) for w in mine[:4])
+                + '\nDettagli nell\'app (giorno di domani). Strade: umferdin.is')
+    else:     # solo a mano, per provare
+        title, body = f'✅ Domani ({label}) nessuna allerta meteo', 'Nessuna allerta ufficiale di vedur.is sul vostro percorso.'
+    ok = send_all(subs, lambda name: {'title': title, 'body': body, 'tag': f'allerta-{tomorrow}'}, ttl=12 * 3600)
+    if ok and level and not manual:
+        st = load_state(state_path)
+        st.setdefault('_allerte', {})[tomorrow] = level
+        save_state(state_path, st)
+    return 0 if ok == len(subs) else 3 if ok else 1
 
 # ---------- Leirvogur: magnetometro islandese, ripubblicato per l'app ----------
 # Il servizio (non ufficiale, Iceland at Night) non permette la lettura dal browser: il turno ne copia
@@ -702,12 +852,14 @@ def turno(now):
         if is_night_hour(t):
             # il tipo dipende dall'orario previsto, non da quando parte (può slittare di un minuto)
             jobs.append('controllo' if slot == now or slot.minute in (7, 37) else 'vento')
+        if WARN_EVENING[0] <= t.hour < WARN_EVENING[1] and (slot == now or slot.minute in (7, 37)):
+            jobs.append('allerta')     # allerte meteo per domani (dopo gli avvisi aurora)
         if not jobs:
             print(f'--- {t:%d/%m %H:%M} UTC: niente da fare a quest\'ora')
         for job in jobs:
             print(f'--- {t:%d/%m %H:%M} UTC: {job}')
             try:
-                rc = run(job, t, manual=False)
+                rc = check_allerta(t) if job == 'allerta' else run(job, t, manual=False)
             except Exception as e:     # un errore non deve fermare il turno
                 print(f'::error::{job} alle {t:%H:%M}: {e}')
                 rc = 1

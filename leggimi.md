@@ -116,6 +116,15 @@ tengono ancora raggiungibili vecchi commit con voucher ed email.
   Open-Meteo, che indica il momento peggiore (bastano pochi fiocchi in un'ora
   per "neve"): sotto 1 mm conta il cielo, sopra pioggia, neve o miste. Oltre 5
   giorni la previsione è indicata come "tendenza, poco affidabile".
+- **Allerte meteo ufficiali** (vedur.is, chieste da Michele il 13/11): l'app legge
+  le allerte gialle, arancioni e rosse (api.vedur.is, formato CAP) e le mostra nel
+  riquadro meteo del giorno se la zona tocca un posto della mappa di quel giorno
+  (o passa a meno di 5 km; altopiani solo se proprio dentro) tra le 6 e le 22; nella
+  tab Info quelle di oggi e domani, o "nessuna allerta". L'ultimo elenco resta nel
+  telefono per l'offline. La sera (17:07-22:37) il turno degli avvisi manda una
+  notifica se per il giorno dopo del viaggio c'è un'allerta sul percorso, e la
+  rimanda solo se il colore peggiora (stessa regola in `aurora_alert.py`,
+  `check_allerta`; a mano: modalità "allerta").
 - Ogni giorno ha i pulsanti "Strade" (umferdin.is), "Allerte meteo"
   (vedur.is) e "Sicurezza" (safetravel.is), e un link "Naviga" per ogni tappa
   che apre le indicazioni di Google Maps fino a coordinate verificate su
