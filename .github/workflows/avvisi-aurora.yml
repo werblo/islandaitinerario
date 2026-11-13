@@ -28,9 +28,9 @@ on:
   workflow_dispatch:
     inputs:
       modalita:
-        description: 'prova = notifica subito · mattino = anteprima del messaggio delle 7:37 · controllo = come di notte · vento = solo il vento solare · turno = prova del giro dei controlli (solo fuori dalle date del viaggio)'
+        description: 'prova = notifica subito · mattino = anteprima del messaggio delle 7:37 · controllo = come di notte · vento = solo il vento solare · allerta = allerte meteo di domani (vedur.is) · turno = prova del giro dei controlli (solo fuori dalle date del viaggio)'
         type: choice
-        options: [prova, mattino, controllo, vento, turno]
+        options: [prova, mattino, controllo, vento, allerta, turno]
         default: prova
       durata:
         description: 'solo per "turno": durata in minuti (massimo 330)'

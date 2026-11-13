@@ -302,6 +302,119 @@ function nowCard() {
     + (wind ? '<div class="weather-wind">' + wind + '</div>' : '') + '</div>';
 }
 
+// Allerte meteo ufficiali di vedur.is (CAP), chieste da Michele il 13/11. Stessa regola di
+// tools/aurora_alert.py (warnings_for_day), che la sera prima manda la notifica: un'allerta vale per un
+// giorno se la sua zona tocca un posto della mappa del giorno (o passa a meno di 5 km) tra le 6 e le 22.
+// L'ultimo elenco letto resta nel telefono per l'offline.
+const CAP_FEED = 'https://api.vedur.is/cap/v1/capbroker/active/feed/met';
+const WARN_LEVEL = { yellow: 1, orange: 2, red: 3 };
+const WARN_COLOR_IT = { 1: ['🟡', 'gialla'], 2: ['🟠', 'arancione'], 3: ['🔴', 'rossa'] };
+const WARN_TYPE_IT = { 'wind': 'vento forte', 'snow storm': 'tempesta di neve', 'snow': 'neve', 'rain': 'pioggia forte',
+  'blizzard': 'bufera di neve', 'ice': 'ghiaccio', 'fog': 'nebbia', 'storm surge': 'mareggiata' };
+const WARN_HOURS = [6, 22], WARN_NEAR_KM = 5, WARN_KEY = 'allerte-vedur';
+function escHtml(x) { return String(x).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]); }
+function parseCap(xml) {
+  const doc = new DOMParser().parseFromString(xml, 'text/xml');
+  const t = (el, k) => { const x = el.getElementsByTagName(k)[0]; return x ? x.textContent.trim() : ''; };
+  const a = doc.documentElement;
+  if (!a || t(a, 'status') !== 'Actual' || t(a, 'msgType') === 'Cancel') return null;
+  const infos = [...a.getElementsByTagName('info')];
+  const info = infos.find(i => t(i, 'language').startsWith('en')) || infos[0];
+  if (!info) return null;
+  let level = 0, kind = '';
+  [...info.getElementsByTagName('parameter')].forEach(x => { if (t(x, 'valueName').toLowerCase() === 'color') level = WARN_LEVEL[t(x, 'value').toLowerCase()] || 0; });
+  [...info.getElementsByTagName('eventCode')].forEach(x => { if (t(x, 'valueName') === 'alertType') kind = t(x, 'value'); });
+  const onset = Date.parse(t(info, 'onset')), expires = Date.parse(t(info, 'expires'));
+  const areas = [...info.getElementsByTagName('area')], polys = [];
+  areas.forEach(ar => [...ar.getElementsByTagName('polygon')].forEach(pg => {
+    const pts = pg.textContent.trim().split(/\s+/).map(p => p.split(',').map(Number));
+    if (pts.length >= 3 && pts.every(p => p.length === 2 && p.every(isFinite))) polys.push(pts);
+  }));
+  if (!level || !polys.length || !isFinite(onset) || !isFinite(expires)) return null;
+  return { level, kind, headline: t(info, 'headline'), desc: t(info, 'description'),
+    area: areas.length ? t(areas[0], 'areaDesc') : '', onset, expires, polys };
+}
+function nearPolygon(lat, lon, poly, nearKm) {
+  let inside = false;
+  for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) {
+    const [yi, xi] = poly[i], [yj, xj] = poly[j];
+    if ((yi > lat) !== (yj > lat) && lon < (xj - xi) * (lat - yi) / (yj - yi) + xi) inside = !inside;
+  }
+  if (inside) return true;
+  const kx = 111.32 * Math.cos(lat * Math.PI / 180), ky = 110.57;
+  return poly.some(([y1, x1], i) => {
+    const [y2, x2] = poly[(i + 1) % poly.length];
+    const ax = (x1 - lon) * kx, ay = (y1 - lat) * ky, dx = (x2 - lon) * kx - ax, dy = (y2 - lat) * ky - ay;
+    const f = dx || dy ? Math.max(0, Math.min(1, -(ax * dx + ay * dy) / (dx * dx + dy * dy))) : 0;
+    return Math.hypot(ax + f * dx, ay + f * dy) <= nearKm;
+  });
+}
+// altopiani (disabitati): solo i posti proprio dentro, non quelli sul bordo (Skógafoss, Gullfoss)
+function warnNearKm(w) { return /highlands|Miðhálendi/i.test(w.area) ? 0 : WARN_NEAR_KM; }
+function warningsFor(day) {
+  if (!state.warn) return [];
+  const d0 = Date.parse(day.dateISO + 'T00:00Z'), w0 = d0 + WARN_HOURS[0] * 3600000, w1 = d0 + WARN_HOURS[1] * 3600000;
+  return state.warn.list.filter(w => w.onset < w1 && w.expires > w0
+    && (day.pts || []).some(([lat, lon]) => w.polys.some(p => nearPolygon(lat, lon, p, warnNearKm(w)))))
+    .sort((a, b) => b.level - a.level || a.onset - b.onset);
+}
+function warningHtml(w, day) {
+  const [em, col] = WARN_COLOR_IT[w.level];
+  const kind = WARN_TYPE_IT[w.kind.toLowerCase()] || w.headline || w.kind;
+  const when = x => { const iso = new Date(x).toISOString(); return iso.slice(11, 16) + (iso.slice(0, 10) === day.dateISO ? '' : ' del ' + iso.slice(8, 10) + '/' + iso.slice(5, 7)); };
+  return '<div class="warn warn--' + w.level + '"><b>' + em + ' Allerta ' + col + ': ' + escHtml(kind) + '</b><br>dalle '
+    + when(w.onset) + ' alle ' + when(w.expires) + ' · ' + escHtml(w.area)
+    + (w.desc ? '<br><span class="warn__desc">' + escHtml(w.desc) + '</span>' : '') + '</div>';
+}
+function warnStamp() {
+  if (!state.warn) return '';
+  const at = new Date(state.warn.at).toISOString();
+  return 'Allerte ufficiali di <a href="https://en.vedur.is/weather/warnings" target="_blank" rel="noopener">vedur.is</a>, lette '
+    + (at.slice(0, 10) === new Date().toISOString().slice(0, 10) ? 'alle ' : 'il ' + at.slice(8, 10) + '/' + at.slice(5, 7) + ' alle ') + at.slice(11, 16)
+    + (state.warn.partial ? ' (alcune non lette)' : '');
+}
+function renderWarnings() {
+  DAYS_META.forEach(day => {
+    const el = document.querySelector('[data-day-warn="' + day.id + '"]');
+    if (!el) return;
+    const list = warningsFor(day);
+    el.hidden = !list.length;
+    el.innerHTML = list.length ? list.map(w => warningHtml(w, day)).join('') + '<div class="warn__src">' + warnStamp() + '</div>' : '';
+  });
+  renderWeatherToday();
+}
+function warnCard(days) {
+  if (!state.warn || !days.length) return '';
+  const parts = days.map(({ d, label }) => {
+    const list = warningsFor(d);
+    return list.length ? '<div class="info-card__sub">' + label + '</div>' + list.map(w => warningHtml(w, d)).join('') : '';
+  }).join('');
+  const none = '✅ Nessuna allerta meteo ' + (days.length > 1 ? 'per ' + days.map(x => x.label.toLowerCase()).join(' e ') : 'per ' + days[0].label.toLowerCase());
+  return '<div class="info-card"><div class="info-card__label">Allerte meteo</div>'
+    + (parts || '<div class="info-card__sub">' + none + (state.warn.partial ? ' (non tutte lette)' : '') + '</div>')
+    + '<div class="warn__src">' + warnStamp() + '</div></div>';
+}
+async function fetchWarnings() {
+  try {
+    const feed = new DOMParser().parseFromString(await (await fetch(CAP_FEED)).text(), 'text/xml');
+    if (feed.getElementsByTagName('parsererror').length || !feed.getElementsByTagName('channel').length) return;
+    const links = [...feed.getElementsByTagName('item')].map(it => { const l = it.getElementsByTagName('link')[0]; return l ? l.textContent.trim() : ''; }).filter(Boolean);
+    let failed = 0;
+    const list = (await Promise.all(links.map(async url => {
+      try { const r = await fetch(url); if (!r.ok) throw new Error(r.status); return parseCap(await r.text()); } catch (e) { failed++; return null; }
+    }))).filter(Boolean);
+    if (links.length && failed === links.length) return;     // nessuna allerta letta: resta l'elenco di prima
+    state.warn = { at: Date.now(), list, partial: failed > 0 };
+    try { localStorage.setItem(WARN_KEY, JSON.stringify(state.warn)); } catch (e) {}
+    renderWarnings();
+  } catch (e) { /* senza rete resta l'ultimo elenco salvato */ }
+}
+try {
+  const saved = JSON.parse(localStorage.getItem(WARN_KEY) || 'null');
+  if (saved && Array.isArray(saved.list) && Date.now() - saved.at < 3 * 86400000) state.warn = saved;
+} catch (e) {}
+setInterval(() => { if (!document.hidden) fetchWarnings(); }, 1800000);
+
 // Tab Info: meteo di oggi e domani durante il viaggio (prima della partenza: i primi due giorni)
 function renderWeatherToday() {
   const box = document.getElementById('weather-today');
@@ -313,11 +426,12 @@ function renderWeatherToday() {
   const days = i >= 0 ? DAYS_META.slice(i, i + 2) : before ? DAYS_META.slice(0, 2) : [];
   const rows = days.map((d, k) => ({ d, w: weatherFor(d), k })).filter(r => r.w.live);
   const now = nowCard();
-  if (!rows.length && !now) { box.hidden = true; return; }
+  const warn = warnCard(days.map((d, k) => ({ d, label: i >= 0 ? (k === 0 ? 'Oggi' : 'Domani') : d.dateLabel })));
+  if (!rows.length && !now && !warn) { box.hidden = true; return; }
   document.getElementById('weather-today-title').textContent = !rows.length ? 'Meteo adesso'
     : i >= 0 ? 'Meteo: adesso, oggi e domani'
     : 'Meteo: adesso e primi due giorni' + (rows.some(r => r.w.far) ? ' (tendenza, poco affidabile)' : '');
-  list.innerHTML = now + rows.map(({ d, w, k }) => {
+  list.innerHTML = warn + now + rows.map(({ d, w, k }) => {
     const wi = windInfo(w);
     const when = i >= 0 ? (k === 0 ? 'Oggi' : 'Domani') : d.dateLabel;
     return '<div class="info-card"><div class="info-card__label">' + when + ' · ' + LOCATIONS[d.locKey].name + '</div>'
@@ -363,6 +477,7 @@ function renderWeatherAndSun() {
 }
 computeAllSun();
 renderWeatherAndSun();
+renderWarnings();
 
 async function fetchAllWeather() {
   for (const key of Object.keys(AURORA_PLACES)) {
@@ -970,6 +1085,7 @@ function refreshLiveData(force) {
   fetchAllWeather();
   fetchVedur();
   fetchNow();
+  fetchWarnings();
   fetchFxRate();
 }
 

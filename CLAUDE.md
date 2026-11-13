@@ -100,7 +100,9 @@ l'utente: `leggimi.md` (breve: com'è il progetto oggi).
   bloccato dal 13 al 22/11 per evitare doppioni), o in locale con
   `AURORA_TURNO_SIMULA=1`.
   Ogni turno fa il checkout di `main` (`ref: main`): le modifiche unite valgono
-  dal turno successivo.
+  dal turno successivo. La sera (17:07-22:37) il turno controlla anche le allerte
+  meteo ufficiali di vedur.is per il giorno dopo (`check_allerta`, stessa regola
+  di `warningsFor` in `app/app.js`).
   Secret: `VAPID_PRIVATE_KEY`, `AURORA_SUBSCRIPTIONS` (righe "Nome: {json}").
 - `aggiorna-percorsi.yml`: manuale, ricalcola percorsi e km con OSRM.
 - Il proxy della sessione non permette di cancellare branch: chiedilo a Michele.

@@ -361,6 +361,7 @@ def render_day_section(day):
       <div class="info-card__big" data-weather-temp="{day['id']}">…</div>
       <div class="info-card__sub" data-weather-desc="{day['id']}">Caricamento…</div>
       <div class="weather-wind" data-weather-wind="{day['id']}" hidden></div>
+      <div class="day-warn" data-day-warn="{day['id']}" hidden></div>
       <div class="info-card__source" data-weather-source="{day['id']}"></div>
     </div>
     <div class="info-card">
@@ -471,7 +472,9 @@ aurora_places_js = json.dumps({**locations, **evening_places}, ensure_ascii=Fals
 night_stops_js = json.dumps({d['dateISO']: evening_stops[d['id']] for d in days if d['id'] in evening_stops},
                             ensure_ascii=False)
 days_meta_js = json.dumps(
-    [{'id': d['id'], 'dateISO': d['dateISO'], 'locKey': d['locKey'], 'dateLabel': d['dateLabel']} for d in days],
+    # pts: posti della mappa del giorno, per le allerte meteo di vedur.is (app e avvisi)
+    [{'id': d['id'], 'dateISO': d['dateISO'], 'locKey': d['locKey'], 'dateLabel': d['dateLabel'],
+      'pts': [[p['lat'], p['lon']] for p in map_points.get(d['id'], [])]} for d in days],
     ensure_ascii=False
 )
 
