@@ -369,7 +369,7 @@ function warningHtml(w, day) {
 function warnStamp() {
   if (!state.warn) return '';
   const at = new Date(state.warn.at).toISOString();
-  return 'Allerte ufficiali di <a href="https://en.vedur.is/weather/warnings" target="_blank" rel="noopener">vedur.is</a>, lette '
+  return 'Allerte ufficiali di <a href="https://en.vedur.is/alerts" target="_blank" rel="noopener">vedur.is</a>, lette '
     + (at.slice(0, 10) === new Date().toISOString().slice(0, 10) ? 'alle ' : 'il ' + at.slice(8, 10) + '/' + at.slice(5, 7) + ' alle ') + at.slice(11, 16)
     + (state.warn.partial ? ' (alcune non lette)' : '');
 }
