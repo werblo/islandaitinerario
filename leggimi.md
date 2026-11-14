@@ -103,7 +103,8 @@ tengono ancora raggiungibili vecchi commit con voucher ed email.
   da **vedur.is**, il servizio meteo islandese (stazioni in `locations` di
   `dati.py`: Reykjavík, Reynisfjall per Vík, strada Flúðir-Reykholt, aeroporto di
   Keflavík; circa 10 giorni). Le raffiche, che vedur.is non prevede per stazione,
-  e i giorni più lontani restano di Open-Meteo (la raffica si mostra solo se supera
+  vengono dal modello UKMO via Open-Meteo (vincitore del confronto meteo, 14/11;
+  se manca, la previsione standard); i giorni più lontani restano di Open-Meteo (la raffica si mostra solo se supera
   il vento medio di almeno 1 m/s); le nuvole per l'aurora restano
   Open-Meteo con `CLOUD_METHOD`. Riquadro con il simbolo del
   tempo: ☀️ 🌤️ ⛅ ☁️ 🌫️ 🌦️ 🌧️ 🌨️ ⛈️): nel riquadro di ogni
@@ -295,7 +296,10 @@ vedur.is a Vík e Flúðir (solo temperatura, vento e raffiche); per anticipo
 - raffiche dei modelli di Open-Meteo (ECMWF, ICON, GFS, UKMO, MET Nordic, loro
   media e previsione standard): vedur.is e met.no non le danno per stazione.
 Risultati nel riepilogo di ogni esecuzione e nell'artifact `confronto-meteo`; il
-controllo del 14/11 dice chi ci azzecca di più.
+controllo del 14/11 dice chi ci azzecca di più. Esito (14/11): nuvole serali, la
+media dei modelli dell'app resta la migliore (errore 16-20 punti contro 21-34
+delle altre fonti); raffiche, UKMO vince (2,4 e 2,8 m/s contro 3,5 e 4,0 della
+previsione standard, che esagerava) ed è usato dall'app.
 
 ## 7. Prenotazioni e alloggi
 

@@ -201,14 +201,25 @@ function vedurDay(key, dateISO) {
   };
 }
 
+// Raffiche: dal 14/11 il modello UKMO (Met Office) via Open-Meteo, il più preciso nel confronto meteo
+// dell'8-14/11 (errore medio 2,4 m/s contro 3,5 della previsione standard, che esagerava); se manca
+// (rete, oltre i giorni coperti) si torna alla previsione standard di Open-Meteo.
+function gustUkmo(key, dateISO) {
+  const g = state.gustUkmo && state.gustUkmo[key];
+  if (!g || !Array.isArray(g.time)) return null;
+  const col = g.wind_gusts_10m_max_ukmo_seamless || g.wind_gusts_10m_max;
+  const i = g.time.indexOf(dateISO);
+  return i >= 0 && Array.isArray(col) && col[i] !== null && isFinite(col[i]) ? Number(col[i]) : null;
+}
 function weatherFor(day) {
   const live = state.weather[day.locKey];
   const ahead = Math.round((Date.parse(day.dateISO) - Date.parse(new Date().toISOString().slice(0, 10))) / 86400000);
   const v = vedurDay(day.locKey, day.dateISO);
   if (v) {
     const sky = daySky(v.fog ? 45 : 0, v.prec, v.hours, v.snowCm, v.cloud);
-    let gust = null;   // raffiche: vedur.is non le prevede per stazione, si prendono da Open-Meteo
-    if (live && live.time && Array.isArray(live.wind_gusts_10m_max)) {
+    let gust = gustUkmo(day.locKey, day.dateISO);   // raffiche: vedur.is non le prevede per stazione
+    const ukmo = gust !== null;
+    if (!ukmo && live && live.time && Array.isArray(live.wind_gusts_10m_max)) {
       const i = live.time.indexOf(day.dateISO);
       if (i >= 0 && isFinite(live.wind_gusts_10m_max[i]) && live.wind_gusts_10m_max[i] !== null) gust = Number(live.wind_gusts_10m_max[i]);
     }
@@ -218,7 +229,7 @@ function weatherFor(day) {
       temp: Math.round(v.tmax) + '° / ' + Math.round(v.tmin) + '°C',
       desc: sky.desc, icon: sky.icon, far: ahead >= 5,
       source: 'vedur.is (servizio meteo islandese)' + (ahead >= 5 ? ' · tendenza fra ' + ahead + ' giorni: poco affidabile, si aggiorna da sola' : '')
-        + (gust !== null ? ' · raffiche: Open-Meteo' : ''),
+        + (gust !== null ? (ukmo ? ' · raffiche: modello UKMO (Open-Meteo)' : ' · raffiche: Open-Meteo') : ''),
       wind: v.wind, gust, prec: v.prec, live: true
     };
   }
@@ -235,7 +246,7 @@ function weatherFor(day) {
         icon: sky.icon,
         far: ahead >= 5,
         source: 'Open-Meteo (vedur.is non arriva ancora a questa data)' + (ahead >= 5 ? ' · tendenza fra ' + ahead + ' giorni: poco affidabile, si aggiorna da sola' : ''),
-        wind: at('wind_speed_10m_max'), gust: at('wind_gusts_10m_max'), prec: at('precipitation_sum'), live: true
+        wind: at('wind_speed_10m_max'), gust: gustUkmo(day.locKey, day.dateISO) ?? at('wind_gusts_10m_max'), prec: at('precipitation_sum'), live: true
       };
     }
   }
@@ -489,6 +500,13 @@ async function fetchAllWeather() {
       const res = await fetch(url);
       const json = await res.json();
       if (json && json.daily) { state.weather[key] = json.daily; renderWeatherAndSun(); }
+      if (LOCATIONS[key]) {
+        try {
+          const uk = await (await fetch('https://api.open-meteo.com/v1/forecast?latitude=' + loc.lat + '&longitude=' + loc.lon
+            + '&daily=wind_gusts_10m_max&models=ukmo_seamless&wind_speed_unit=ms&timezone=UTC&forecast_days=16')).json();
+          if (uk && uk.daily) { (state.gustUkmo = state.gustUkmo || {})[key] = uk.daily; renderWeatherAndSun(); }
+        } catch (e) { /* resta la raffica standard */ }
+      }
       let hourly = json && json.hourly;
       if (CLOUD_METHOD.startsWith('media')) {
         // più modelli insieme: le variabili arrivano con il nome del modello (cloud_cover_icon_seamless…)
