@@ -69,7 +69,7 @@ days = [
   ],
   'food':[
     {'meal':'Pranzo (verso le 12:30)','place':'Grandi Mathöll (Grandi) o Hlemmur Mathöll','note':'Food hall con vari stand: chiedete stand per stand, nessuna opzione senza glutine confermata. Grandi Mathöll è vicina a Whales of Iceland','cost':'€€','gf':False},
-    {'meal':'Cena','place':'Brass Kitchen & Bar, Laugavegur 66','note':'A 200 m dall\'appartamento, adatto ai celiaci: friggitrice dedicata, fish & chips, hamburger e pane senza glutine. Alternative vicine: Harry\'s Seafood and Grill (Laugavegur 85, menu senza glutine) e Old Iceland (Laugavegur 72). Segnalate comunque la celiachia','cost':'€€','gf':True}
+    {'meal':'Cena','place':'Brass Kitchen & Bar, Laugavegur 66','nav':'64.1441,-21.9213','note':'A 200 m dall\'appartamento, adatto ai celiaci: friggitrice dedicata, fish & chips, hamburger e pane senza glutine. Alternative vicine: Harry\'s Seafood and Grill (Laugavegur 85, menu senza glutine) e Old Iceland (Laugavegur 72). Segnalate comunque la celiachia','cost':'€€','gf':True}
   ],
   'accommodation':{'name':'46heima Boutique Apartments','detail':'2ª notte a Reykjavík · stanotte parcheggio in zona P2','url':'https://www.booking.com/hotel/is/46heima-apartments.en-gb.html'},
   'tips':"Giornata in città, con calma dopo il viaggio: la mattina a Grandi al coperto, il pomeriggio la Hallgrímskirkja e il tramonto dal Perlan, la sera l'Harpa illuminata. In centro si va a piedi; per Perlan meglio l'auto. Se ieri avete saltato Reykjanes, fatelo stamattina al posto di Grandi (partenza verso le 9:15, rientro verso le 13). Per rilassarvi c'è anche una piscina comunale, molto islandese ed economica (per esempio la Sundhöll, vicino alla Hallgrímskirkja: verificate gli orari).",
@@ -92,7 +92,7 @@ days = [
   ],
   'food':[
     {'meal':'Pranzo','place':'Pranzo al sacco / Bónus','note':'Porta qualcosa dal Bónus di Reykjavík, comodo per una sosta veloce vicino a Þingvellir','cost':'€','gf':False},
-    {'meal':'Cena','place':'Hlemmur Mathöll, Reykjavík','note':'Food hall con vari stand (aperto fino alle 23:00), opzioni senza glutine da chiedere stand per stand. Se rientrate tardi in serata, come piano B ci sono minimarket 10-11 aperti 24/7 o Hagkaup (Skeifan, 24h)','cost':'€€','gf':False}
+    {'meal':'Cena','place':'Hlemmur Mathöll, Reykjavík','nav':'64.1432,-21.9142','note':'Food hall con vari stand (aperto fino alle 23:00), opzioni senza glutine da chiedere stand per stand. Se rientrate tardi in serata, come piano B ci sono minimarket 10-11 aperti 24/7 o Hagkaup (Skeifan, 24h)','cost':'€€','gf':False}
   ],
   'accommodation':{'name':'46heima Boutique Apartments','detail':'Ultima notte a Reykjavík · domani partenza alle 9:00 (check-out entro le 10:00) · stanotte parcheggio in zona P1 sotto casa (rientrando da Fontana dopo le 21:00 è già gratis; domattina si paga solo se partite dopo le 9:00)','url':'https://www.booking.com/hotel/is/46heima-apartments.en-gb.html'},
   'tips':"Giornata più leggera (circa 160 km totali) e volutamente rilassante: è l'ultima notte a Reykjavík prima dei due giorni più intensi del viaggio (Costa Sud e Jökulsárlón). Tabella di marcia per non perdere le terme prenotate alle 15:30: partenza da Reykjavík verso le 9:45, Þingvellir dalle 10:30 alle 13:30 con pranzo al sacco lì, Laugarvatn verso le 14:05 (circa 35 min di strada), passeggiata sul lago dalle 14:15, alla reception di Fontana alle 15:15. Geysir e Gullfoss li vedrete il Giorno 7 da Flúðir, molto più vicini da lì che da Reykjavík. Se restate fino a tardi la sera, il rientro a Reykjavík (circa 1h20 da Laugarvatn) va messo in conto: con cielo sereno può valerne la pena per l'aurora. Hlemmur Mathöll chiude alle 23:00 (alcuni stand anche prima): uscendo da Fontana alla chiusura (21:00), tra cambio e parcheggio, arrivate verso le 22:30-22:40, appena in tempo; come piano B c'è sempre un minimarket 10-11 (24/7) o Hagkaup Skeifan (24h).",
@@ -121,7 +121,7 @@ days = [
   ],
   'food':[
     {'meal':'Pranzo','place':'Picnic a Skógar','note':'Porta snack dal Bónus di Reykjavík','cost':'€','gf':False},
-    {'meal':'Cena','place':'Suður-Vík Restaurant','note':'Opzioni senza glutine segnate nel menu; segnalate la celiachia, in cucina c\'è rischio di contaminazione','cost':'€€','gf':True}
+    {'meal':'Cena','place':'Suður-Vík Restaurant','nav':'63.4223,-19.0081','note':'Opzioni senza glutine segnate nel menu; segnalate la celiachia, in cucina c\'è rischio di contaminazione','cost':'€€','gf':True}
   ],
   'accommodation':{'name':'Hótel Búrfell','detail':'Steig, circa 18 minuti d\'auto a ovest di Vík · 2 notti · check-in dalle 15:00 (fino alle 21) · check-out alle 10 (alcuni siti dicono 11: chiedete alla reception) · colazione inclusa · parcheggio gratuito incluso','url':'https://hotelburfell.is/'},
   'tips':'Il 18 novembre a Vík il sole tramonta verso le 16:15 (molto prima di quanto sembri): Dyrhólaey e Reynisfjara vanno viste per bene entro quell\'ora, la Víkurkirkja invece va benissimo proprio al tramonto/appena dopo, dato che è a due passi dal centro del paese e non richiede tempo di guida extra. I parcheggi di Seljalandsfoss, Skógafoss, Dyrhólaey e Reynisfjara sono a pagamento (di solito le telecamere leggono la targa): si paga alla colonnina o con l\'app indicata sui cartelli (quasi sempre Parka), entro la giornata.',
@@ -144,8 +144,8 @@ days = [
     {'time':'14:30','title':'Fjaðrárgljúfur','desc':"Canyon serpeggiante con pareti muschiose, punti panoramici accessibili a piedi. Si visita al ritorno perché con la luce del primo mattino (alba verso le 9:50) si vedrebbe pochissimo.",'cost':'gratis (parcheggio a pagamento, ~1000 ISK / ~7€)','nav':'63.7703,-18.1718'}
   ],
   'food':[
-    {'meal':'Pranzo','place':'Kaffi Jökulsárlón o pranzo al sacco','note':'Nessuna informazione sul senza glutine trovata: chiedete allo staff e portate un\'alternativa al sacco','cost':'€€','gf':False},
-    {'meal':'Cena','place':'Ströndin Bistro, Vík','note':'Opzioni senza glutine non verificate (una sola segnalazione online: stufato di carne e costolette d\'agnello): chiedete allo staff e tenete un\'alternativa','cost':'€€','gf':False}
+    {'meal':'Pranzo','place':'Kaffi Jökulsárlón o pranzo al sacco','nav':'64.0485,-16.1794','note':'Nessuna informazione sul senza glutine trovata: chiedete allo staff e portate un\'alternativa al sacco','cost':'€€','gf':False},
+    {'meal':'Cena','place':'Ströndin Bistro, Vík','nav':'63.4176,-19.0016','note':'Opzioni senza glutine non verificate (una sola segnalazione online: stufato di carne e costolette d\'agnello): chiedete allo staff e tenete un\'alternativa','cost':'€€','gf':False}
   ],
   'accommodation':{'name':'Hótel Búrfell','detail':'2ª notte a Steig, vicino a Vík · parcheggio gratuito','url':'https://hotelburfell.is/'},
   'alert':"Se ripartite da Diamond Beach dopo le 12:45, saltate Fjaðrárgljúfur e tornate diretti in hotel: arrivereste al canyon con poca luce (tramonto alle 16:05).",
@@ -196,7 +196,7 @@ days = [
     {'time':'15:30','title':'Efstidalur II','desc':"Fattoria con gelateria e vacche visibili da dietro un vetro, ambiente al caldo e informale. Sosta comoda per il buio che cala presto in questo periodo, prima del rientro a Flúðir.",'cost':'€ gelato/spuntino a parte','nav':'64.2420,-20.5529'}
   ],
   'food':[
-    {'meal':'Pranzo','place':'Friðheimar, Reykholt','note':'Famosa zuppa di pomodoro in serra, a Reykholt tra Faxi ed Efstidalur, verso le 13: hanno pane senza glutine, ma non garantito senza contaminazione; in alternativa c\'è un\'insalata. Il 21/11 è sabato: conviene prenotare il tavolo (aperto circa 12-16)','cost':'€€','gf':True},
+    {'meal':'Pranzo','place':'Friðheimar, Reykholt','nav':'64.1783,-20.4476','note':'Famosa zuppa di pomodoro in serra, a Reykholt tra Faxi ed Efstidalur, verso le 13: hanno pane senza glutine, ma non garantito senza contaminazione; in alternativa c\'è un\'insalata. Il 21/11 è sabato: conviene prenotare il tavolo (aperto circa 12-16)','cost':'€€','gf':True},
     {'meal':'Cena','place':'Cena con la spesa o ristorante del The Hill Hotel','note':'Ultima occasione per finire la spesa fatta al Bónus; se in guesthouse non si può cucinare, il ristorante del The Hill Hotel è aperto circa 12-21 (senza glutine non confermato)','cost':'€','gf':False}
   ],
   'accommodation':{'name':'The Hill Guesthouse','detail':'Ultima notte a Flúðir · domani partenza alle 6:45: stasera chiedete dove lasciare la chiave · parcheggio gratuito','url':'https://thehillhotel.is/guesthouse-fludir/'},
