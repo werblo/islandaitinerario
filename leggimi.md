@@ -143,7 +143,8 @@ online, il box "🌌 Adesso a …: buone / forse / difficile" al posto della rig
 come Kp 4, ≥20% come Kp 3, ≥10% come Kp 2), per il cielo sereno delle nuvole di
 quest'ora, più lo stato del vento solare e, in prova, il magnetometro islandese
 di Leirvogur ("calmo" / "agitato" sopra 70 nT in un'ora / "molto agitato" sopra
-150: solo da vedere, non cambia il giudizio). OVATION (circa 150 kB) si scarica
+150: solo da vedere, non cambia il giudizio; nella Mappa aurora anche la
+variazione nelle ultime 3 ore, che coglie le discese lente). OVATION (circa 150 kB) si scarica
 all'apertura dell'app solo col buio e al massimo ogni 15 minuti (il telefono
 ricorda l'ultimo valore); di giorno o offline resta la riga del Kp. Toccando il
 riquadro si aprono ore migliori e due notti successive. Nella tab di ogni giorno
