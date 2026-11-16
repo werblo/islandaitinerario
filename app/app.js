@@ -847,7 +847,9 @@ function renderAurora() {
         + ' · nuvole non disponibili' + (navigator.onLine ? '' : ' (sei offline)') + ': guardate se il cielo è sereno';
     } else {
       const why = auroraReason(est.level, est.withKp);
-      verdictEl.textContent = tonight + ' a ' + nightPlaceNames(est) + ': ' + est.level + ' probabilità' + (why ? (why[0] === 'p' ? ' ' : ', ') + why : '');
+      const w0 = est.level !== 'nulle' && est.windows.length ? est.windows[0] : null;
+      verdictEl.textContent = tonight + ' a ' + nightPlaceNames(est) + ' (previsione): ' + est.level + ' probabilità' + (why ? (why[0] === 'p' ? ' ' : ', ') + why : '')
+        + (w0 ? ', meglio ' + AU_HH(w0.from) + '–' + AU_HH(w0.end) : '');
       verdictEl.classList.add('aurora-tonight__verdict--' + est.level);
       const parts = [];
       if (est.stops.length > 1) est.stops.forEach(st => parts.push(shortPlace(st.name) + ' ' + AU_HH(st.from) + '–' + AU_HH(st.end) + ': ' + st.level));
