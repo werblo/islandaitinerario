@@ -86,7 +86,7 @@ days = [
   'legs':[
     {'from':'Reykjavík','to':'Þingvellir','km':45,'time':'~45 min','note':'Partenza consigliata alle 9:45 (con il pranzo al sacco già pronto), arrivo al parcheggio P1 di Hakið verso le 10:30, con la luce del giorno.'},
     {'from':'Þingvellir','to':'Laugarvatn','km':32,'time':'~35 min','note':'Partenza consigliata entro le 13:30, arrivo a Fontana verso le 14:05: parcheggiate lì e fate la passeggiata sul lago prima delle terme (reception alle 15:15).'},
-    {'from':'Laugarvatn','to':'Reykjavík','km':78,'time':'~1h20'}
+    {'from':'Laugarvatn','to':'Reykjavík','km':78,'time':'~1h20','note':'Con cielo sereno partenza consigliata alla chiusura di Fontana (21:00), arrivo verso le 22:30, in tempo per la cena all\'Hlemmur Mathöll (chiude alle 23); con cielo coperto potete ripartire già verso le 18-18:30.'}
   ],
   'activities':[
     {'time':'10:30','title':'Þingvellir National Park','desc':'Faglia tra le placche nordamericana ed euroasiatica, sito del primo parlamento islandese (Unesco). Ripartite entro le 13:30 per arrivare con calma a Laugarvatn prima delle terme.','cost':'gratis (parcheggio ~1000 ISK / ~7€)','link':'https://www.thingvellir.is/en/','nav':'64.2554,-21.1322'},
@@ -108,12 +108,12 @@ days = [
  },
  {'id':'d4','num':4,'dateISO':'2026-11-18','dateLabel':'Mer 18 nov','title':'Reykjavík → Vík: Costa Sud','locKey':'vik',
   'legs':[
-    {'from':'Reykjavík','to':'Seljalandsfoss','km':125,'time':'~1h40'},
-    {'from':'Seljalandsfoss','to':'Skógafoss','km':30,'time':'~25 min'},
-    {'from':'Skógafoss','to':'Dyrhólaey','km':30,'time':'~25 min'},
-    {'from':'Dyrhólaey','to':'Reynisfjara','km':20,'time':'~25 min'},
-    {'from':'Reynisfjara','to':'Vík','km':12,'time':'~12 min'},
-    {'from':'Vík','to':'Hótel Búrfell','km':17,'time':'~18 min','note':'L\'hotel è a Steig, circa 18 minuti d\'auto a ovest di Vík'}
+    {'from':'Reykjavík','to':'Seljalandsfoss','km':125,'time':'~1h40','note':'Partenza consigliata alle 9:00 (check-out), arrivo verso le 10:40-11:00.'},
+    {'from':'Seljalandsfoss','to':'Skógafoss','km':30,'time':'~25 min','note':'Partenza consigliata verso le 12:00, arrivo verso le 12:30.'},
+    {'from':'Skógafoss','to':'Dyrhólaey','km':30,'time':'~25 min','note':'Partenza consigliata verso le 13:30, dopo il picnic a Skógar, arrivo verso le 14:00.'},
+    {'from':'Dyrhólaey','to':'Reynisfjara','km':20,'time':'~25 min','note':'Partenza consigliata verso le 14:20 (sosta di circa 20 minuti a Dyrhólaey), arrivo verso le 14:45.'},
+    {'from':'Reynisfjara','to':'Vík','km':12,'time':'~12 min','note':'Partenza consigliata verso le 15:30, arrivo alla Víkurkirkja verso le 15:45, poco prima del tramonto.'},
+    {'from':'Vík','to':'Hótel Búrfell','km':17,'time':'~18 min','note':'Partenza dopo la cena al Suður-Vík: il check-in è aperto fino alle 21, quindi ripartite al più tardi verso le 20:30. L\'hotel è a Steig, circa 18 minuti d\'auto a ovest di Vík'}
   ],
   'activities':[
     {'time':'09:00','title':'Check-out e partenza','desc':'Partenza alle 9:00 per avere più luce a Dyrhólaey e Reynisfjara (tramonto verso le 16:15) e margine se la strada è lenta. Il check-out previsto è tra le 9:30 e le 10:00: avvisate l\'host qualche giorno prima (messaggio da Booking o telefono) che lascerete l\'appartamento alle 9:00 e chiedete se va bene e cosa fare con le chiavi o il codice. Se non si potesse, partite alle 9:30.','cost':None},
@@ -137,9 +137,9 @@ days = [
  },
  {'id':'d5','num':5,'dateISO':'2026-11-19','dateLabel':'Gio 19 nov','title':'Escursione a Jökulsárlón','locKey':'vik',
   'legs':[
-    {'from':'Hótel Búrfell','to':'Jökulsárlón','km':202,'time':'~2h45 (diretto, oltre Fjaðrárgljúfur senza fermarsi)'},
-    {'from':'Jökulsárlón','to':'Fjaðrárgljúfur','km':130,'time':'~1h50 (sulla via del ritorno)'},
-    {'from':'Fjaðrárgljúfur','to':'Hótel Búrfell','km':82,'time':'~55 min'}
+    {'from':'Hótel Búrfell','to':'Jökulsárlón','km':202,'time':'~2h45 (diretto, oltre Fjaðrárgljúfur senza fermarsi)','note':'Partenza consigliata alle 7:30, ancora al buio, arrivo verso le 10:15-10:30.'},
+    {'from':'Jökulsárlón','to':'Fjaðrárgljúfur','km':130,'time':'~1h50 (sulla via del ritorno)','note':'Partenza consigliata da Diamond Beach entro le 12:30, arrivo verso le 14:20-14:30.'},
+    {'from':'Fjaðrárgljúfur','to':'Hótel Búrfell','km':82,'time':'~55 min','note':'Partenza consigliata verso le 15:45, prima del tramonto (16:05), arrivo in hotel verso le 16:45; si passa da Vík, utile per la cena allo Ströndin Bistro.'}
   ],
   'activities':[
     {'time':'07:30','title':'Partenza presto','desc':'Giornata lunga di guida (circa 6 ore in tutto): si parte con il buio, normale in novembre, e la prima luce arriva verso le 9 (alba alle 9:50).','cost':None},
@@ -162,9 +162,9 @@ days = [
  },
  {'id':'d6','num':6,'dateISO':'2026-11-20','dateLabel':'Ven 20 nov','title':'Vík → Flúðir','locKey':'fludir',
   'legs':[
-    {'from':'Hótel Búrfell','to':'Kerið','km':135,'time':'~1h50'},
-    {'from':'Kerið','to':'Skálholt','km':24,'time':'~25 min'},
-    {'from':'Skálholt','to':'Flúðir','km':21,'time':'~20 min'}
+    {'from':'Hótel Búrfell','to':'Kerið','km':135,'time':'~1h50','note':'Partenza consigliata alle 10:00 (check-out), sosta per il pranzo a Selfoss verso le 11:45, arrivo a Kerið verso le 12:30.'},
+    {'from':'Kerið','to':'Skálholt','km':24,'time':'~25 min','note':'Partenza consigliata verso le 13:05, dopo il giro del cratere, arrivo verso le 13:30.'},
+    {'from':'Skálholt','to':'Flúðir','km':21,'time':'~20 min','note':'Partenza consigliata verso le 14:20, arrivo verso le 14:45 (check-in dalle 15:00).'}
   ],
   'activities':[
     {'time':'10:00','title':'Check-out Hótel Búrfell','desc':'','cost':None},
@@ -187,11 +187,11 @@ days = [
  },
  {'id':'d7','num':7,'dateISO':'2026-11-21','dateLabel':'Sab 21 nov','title':'Geysir & Gullfoss e sorgenti calde','locKey':'fludir',
   'legs':[
-    {'from':'Flúðir','to':'Geysir','km':30,'time':'~25 min'},
-    {'from':'Geysir','to':'Gullfoss','km':10,'time':'~10 min'},
-    {'from':'Gullfoss','to':'Faxi','km':21,'time':'~20 min'},
-    {'from':'Faxi','to':'Efstidalur II','km':9,'time':'~12 min','note':'Passando da Friðheimar (Reykholt) per il pranzo'},
-    {'from':'Efstidalur II','to':'Flúðir','km':20,'time':'~18 min'}
+    {'from':'Flúðir','to':'Geysir','km':30,'time':'~25 min','note':'Partenza consigliata alle 10:00, arrivo verso le 10:30.'},
+    {'from':'Geysir','to':'Gullfoss','km':10,'time':'~10 min','note':'Partenza consigliata verso le 11:15, arrivo verso le 11:30.'},
+    {'from':'Gullfoss','to':'Faxi','km':21,'time':'~20 min','note':'Partenza consigliata verso le 12:10, arrivo verso le 12:30.'},
+    {'from':'Faxi','to':'Efstidalur II','km':9,'time':'~12 min','note':'Partenza consigliata da Faxi verso le 12:50, pranzo a Friðheimar alle 13; da lì a Efstidalur ripartite verso le 15:10. Passando da Friðheimar (Reykholt) per il pranzo'},
+    {'from':'Efstidalur II','to':'Flúðir','km':20,'time':'~18 min','note':'Partenza consigliata verso le 16:30, arrivo verso le 16:50.'}
   ],
   'activities':[
     {'time':'10:30','title':'Geysir & Strokkur','desc':'Area geotermica: Strokkur erutta ogni 5-10 minuti.','cost':'gratis (parcheggio a pagamento, ~1000 ISK / ~7€)','nav':'64.3114,-20.2975'},
@@ -213,8 +213,8 @@ days = [
  },
  {'id':'d8','num':8,'dateISO':'2026-11-22','dateLabel':'Dom 22 nov','title':'Flúðir → Keflavík → Volo di ritorno','locKey':'keflavik',
   'legs':[
-    {'from':'Flúðir','to':'Ufficio FairCar','km':140,'time':'~2h05','note':'Riconsegna dell\'auto a Ásbrú (Bogatröð 1), vicino all\'aeroporto'},
-    {'from':'Ufficio FairCar','to':'Aeroporto di Keflavík','km':4,'time':'~10 min (navetta FairCar)'}
+    {'from':'Flúðir','to':'Ufficio FairCar','km':140,'time':'~2h05','note':'Partenza consigliata alle 6:45, arrivo verso le 8:50: fate benzina a Reykjanesbær poco prima, per riconsegnare l\'auto verso le 9:15. Riconsegna dell\'auto a Ásbrú (Bogatröð 1), vicino all\'aeroporto'},
+    {'from':'Ufficio FairCar','to':'Aeroporto di Keflavík','km':4,'time':'~10 min (navetta FairCar)','note':'Navetta subito dopo la riconsegna, verso le 9:30: in aeroporto verso le 9:45, circa 1h40 prima del volo.'}
   ],
   'activities':[
     {'time':'06:45','title':'Partenza da Flúðir','desc':'Partite presto per avere margine: riconsegna auto e imbarco sono molto ravvicinati. Lasciate la chiave come concordato la sera prima con la reception (il check-out ufficiale è alle 11). Si guida al buio: se Hellisheiði è chiusa, passate da Þrengsli (strada 39), e guardate umferdin.is prima di partire.','cost':None},
