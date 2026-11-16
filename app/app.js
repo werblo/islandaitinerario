@@ -582,6 +582,7 @@ async function fetchKp() {
   }
   document.getElementById('kp-status').textContent = kpText;
   renderAuroraNow();
+  if (auroraReady) try { renderAurora(); } catch (e) { /* il titolo della serata segue il Kp misurato */ }
 }
 
 // ---------- Aurora adesso: OVATION e vento solare (NOAA) ----------
@@ -815,6 +816,18 @@ function auroraWindowsCloudText(est) {
   }).join(' e ');
 }
 
+// Sera in corso con Kp misurato (NOAA, ultimi minuti) almeno 2 punti sotto il Kp previsto per
+// questa fascia: { fc, now }, altrimenti null. Solo per il titolo: stima e avvisi non cambiano.
+const fmtKp = v => (Math.round(v * 10) / 10).toFixed(1).replace('.0', '').replace('.', ',');
+function auroraOffForecast(est, data) {
+  const now = Date.now();
+  if (est.level === 'nulle' || !est.hours.length || state.kpStatus !== 'ok' || !state.kpAt) return null;
+  if (now < est.hours[0].t.getTime() || now > est.hours[est.hours.length - 1].t.getTime() + 3600000) return null;
+  if (now - state.kpAt.getTime() > 3600000) return null;   // dato misurato vecchio (offline)
+  const row = (data.kp || []).find(r => now >= r.t && now < r.t + 3 * 3600000);
+  return row && row.kp - state.kp >= 2 ? { fc: row.kp, now: state.kp } : null;
+}
+
 function renderAurora() {
   const verdictEl = document.getElementById('aurora-verdict');
   const data = auroraLoad();
@@ -848,10 +861,19 @@ function renderAurora() {
     } else {
       const why = auroraReason(est.level, est.withKp);
       const w0 = est.level !== 'nulle' && est.windows.length ? est.windows[0] : null;
-      verdictEl.textContent = tonight + ' a ' + nightPlaceNames(est) + ' (previsione): ' + est.level + ' probabilità' + (why ? (why[0] === 'p' ? ' ' : ', ') + why : '')
-        + (w0 ? ', meglio ' + AU_HH(w0.from) + '–' + AU_HH(w0.end) : '');
-      verdictEl.classList.add('aurora-tonight__verdict--' + est.level);
+      const off = auroraOffForecast(est, data);
+      if (off) {
+        // è già sera e il Kp misurato è molto sotto il previsto: la previsione non si sta avverando
+        verdictEl.textContent = tonight + ' a ' + nightPlaceNames(est) + ': previsione non confermata (previsti Kp '
+          + fmtKp(off.fc) + ', misurati ' + fmtKp(off.now) + ')';
+        verdictEl.classList.add('aurora-tonight__verdict--scarse');
+      } else {
+        verdictEl.textContent = tonight + ' a ' + nightPlaceNames(est) + ' (previsione): ' + est.level + ' probabilità' + (why ? (why[0] === 'p' ? ' ' : ', ') + why : '')
+          + (w0 ? ', meglio ' + AU_HH(w0.from) + '–' + AU_HH(w0.end) : '');
+        verdictEl.classList.add('aurora-tonight__verdict--' + est.level);
+      }
       const parts = [];
+      if (off) parts.push('Probabilità basse per ora: se il vento solare cambia arriva l\'avviso');
       if (est.stops.length > 1) est.stops.forEach(st => parts.push(shortPlace(st.name) + ' ' + AU_HH(st.from) + '–' + AU_HH(st.end) + ': ' + st.level));
       const cl = auroraClouds(est);
       if (est.level !== 'nulle' && est.windows.length) parts.push('meglio ' + (cl.variable ? auroraWindowsCloudText(est) : auroraWindowsText(est)));
