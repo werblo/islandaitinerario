@@ -284,7 +284,7 @@ button { font:inherit; color:inherit; }
   <div class="am-dash" id="am-dash"></div>
   <h3 class="am-night__title" id="am-night-title">Stasera ora per ora</h3>
   <div class="am-night" id="am-night"></div>
-  <p class="am-night__legend"><i class="am-night--buone"></i>buone <i class="am-night--scarse"></i>forse <i class="am-night--nulle"></i>difficile <i class="am-night--chiaro"></i>chiaro · Kp previsto (NOAA) × nuvole della mappa: il Kp previsto sbaglia spesso di circa 1 punto.</p>
+  <p class="am-night__legend"><i class="am-night--buone"></i>buone <i class="am-night--scarse"></i>forse <i class="am-night--nulle"></i>difficile <i class="am-night--chiaro"></i>chiaro · Kp previsto (NOAA) × nuvole della mappa: il Kp previsto sbaglia spesso di circa 1 punto. L'ora attuale (bordo chiaro) usa invece i dati in tempo reale, come "Adesso".</p>
   <p><b>Come si legge.</b> Velo colorato: probabilità di aurora sopra quel punto (OVATION, NOAA, per la prossima ora): verde debole, giallo probabile, arancio e rosso forte; toccando la mappa si leggono i numeri di quel punto. Linea tratteggiata gialla: a nord di essa l'aurora si vede almeno bassa all'orizzonte verso nord. Aree color sabbia: nuvole previste nell'ora del cursore (Open-Meteo, stesso metodo dell'app). Satellite: nuvole vere di circa 20 minuti fa (Meteosat, infrarosso). ⭐ posti bui vicino alle serate (coordinate indicative: seguite i cartelli del parcheggio). ☀ indica la schiarita più vicina, in linea d'aria: prima di partire controllate le strade su <a href="https://umferdin.is/en" target="_blank" rel="noopener">umferdin.is</a>.</p>
   <p>Previsione ufficiale islandese: <a href="https://en.vedur.is/weather/forecasts/aurora/" target="_blank" rel="noopener">vedur.is/aurora</a> · ovale NOAA: <a href="https://www.swpc.noaa.gov/products/aurora-30-minute-forecast" target="_blank" rel="noopener">NOAA</a></p>
 </section>
@@ -997,6 +997,8 @@ function renderNight() {
       else { cls = auroraLevel(kpFactor(row.kp) * (100 - cloud) / 100); tip = 'Kp ' + fmtNum(row.kp) + ', nuvole ' + Math.round(cloud) + '%'; }
     }
     const hh = new Date(t).getUTCHours(), isNow = Date.now() >= t && Date.now() < t + 3600000;
+    // ora attuale: vale la stima "Adesso" (Kp attuale, OVATION, nuvole), non il Kp previsto
+    if (isNow && cls && cls !== 'chiaro' && st.now && st.now.level) { cls = st.now.level; tip = 'adesso: dati in tempo reale'; }
     cells.push('<div' + (isNow ? ' class="am-night__now"' : '') + ' title="' + String(hh).padStart(2, '0') + ':00 · ' + shortPlace(p.name) + ' · ' + tip + '">'
       + '<span class="' + (cls ? 'am-night--' + cls : '') + '"' + (cls ? '' : ' style="background:repeating-linear-gradient(45deg,var(--line) 0 3px,transparent 3px 6px)"') + '></span>'
       + (hh % 3 === 1 ? String(hh).padStart(2, '0') : '&nbsp;') + '</div>');

@@ -497,6 +497,8 @@ function renderNight() {
       else { cls = auroraLevel(kpFactor(row.kp) * (100 - cloud) / 100); tip = 'Kp ' + fmtNum(row.kp) + ', nuvole ' + Math.round(cloud) + '%'; }
     }
     const hh = new Date(t).getUTCHours(), isNow = Date.now() >= t && Date.now() < t + 3600000;
+    // ora attuale: vale la stima "Adesso" (Kp attuale, OVATION, nuvole), non il Kp previsto
+    if (isNow && cls && cls !== 'chiaro' && st.now && st.now.level) { cls = st.now.level; tip = 'adesso: dati in tempo reale'; }
     cells.push('<div' + (isNow ? ' class="am-night__now"' : '') + ' title="' + String(hh).padStart(2, '0') + ':00 · ' + shortPlace(p.name) + ' · ' + tip + '">'
       + '<span class="' + (cls ? 'am-night--' + cls : '') + '"' + (cls ? '' : ' style="background:repeating-linear-gradient(45deg,var(--line) 0 3px,transparent 3px 6px)"') + '></span>'
       + (hh % 3 === 1 ? String(hh).padStart(2, '0') : '&nbsp;') + '</div>');

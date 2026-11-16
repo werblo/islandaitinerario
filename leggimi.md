@@ -161,7 +161,7 @@ d'aria con nuvole ≤ 30%, con link di navigazione), i posti bui vicino alle
 serate (`aurora_spots` in `dati.py`, stelle visibili da zoom 8, coordinate
 indicative), la Luna, la stima "Adesso" (stessa regola dell'app, da
 `app/aurora.js`) e nel dettaglio la notte ora per ora (Kp previsto × nuvole
-della griglia). L'aurora copre tutto l'emisfero nord (40-82°): allontanando
+della griglia; l'ora attuale prende la stima "Adesso" in tempo reale). L'aurora copre tutto l'emisfero nord (40-82°): allontanando
 la mappa si vede la fascia verde. La pillola "📊 Pannello" (o la scheda
 "Adesso") apre il pannello di controllo, pagina secondaria a tutto schermo
 (`#pannello`, si torna con "‹ Mappa" o col tasto Indietro): forza dell'aurora (magnetometro di Narsarsuaq, servizio
