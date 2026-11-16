@@ -1,5 +1,5 @@
 // Generato da render.py a partire da sw-template.js: non modificare sw.js a mano.
-const VERSION = '7d8795d4bd8c';
+const VERSION = 'd58afde6aa89';
 const APP_CACHE = 'islanda-2026-app-' + VERSION;
 const TILE_CACHE = 'islanda-2026-tiles';
 const LIVE_CACHE = 'islanda-2026-live';
@@ -27,7 +27,6 @@ const PRECACHE = [
   "images/web/d2-hallgrimskirkja.webp",
   "images/web/d2-harpa-porto-vecchio.webp",
   "images/web/d2-hero.webp",
-  "images/web/d2-perlan.webp",
   "images/web/d2-skolavordustigur-la-strada-arcobaleno.webp",
   "images/web/d2-whales-of-iceland.webp",
   "images/web/d3-fontana-geothermal-baths.webp",
