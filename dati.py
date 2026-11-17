@@ -126,7 +126,7 @@ days = [
   ],
   'food':[
     {'meal':'Pranzo','place':'Picnic a Skógar','note':'Porta snack dal Bónus di Reykjavík','cost':'€','gf':False},
-    {'meal':'Cena','place':'Suður-Vík Restaurant','nav':'63.4223,-19.0081','note':'Opzioni senza glutine segnate nel menu; segnalate la celiachia, in cucina c\'è rischio di contaminazione','cost':'€€','gf':True}
+    {'meal':'Cena','place':'The Soup Company, Víkurbraut 5','nav':'63.4185,-19.0100','note':'Zuppe calde, famosa la "lava soup" nella pagnotta (con glutine): hanno pane senza glutine e attenzione alla contaminazione, segnalate la celiachia. Orari indicati 12-21: arrivate entro le 20. In alternativa Suður-Vík (opzioni senza glutine nel menu)','cost':'€€','gf':True}
   ],
   'accommodation':{'name':'Hótel Búrfell','detail':'Steig, circa 18 minuti d\'auto a ovest di Vík · 2 notti · check-in dalle 15:00 (fino alle 21) · check-out alle 10 (alcuni siti dicono 11: chiedete alla reception) · colazione inclusa · parcheggio gratuito incluso','url':'https://hotelburfell.is/'},
   'tips':'Il 18 novembre a Vík il sole tramonta verso le 16:15 (molto prima di quanto sembri): Dyrhólaey e Reynisfjara vanno viste per bene entro quell\'ora, la Víkurkirkja invece va benissimo proprio al tramonto/appena dopo, dato che è a due passi dal centro del paese e non richiede tempo di guida extra. I parcheggi di Seljalandsfoss, Skógafoss, Dyrhólaey e Reynisfjara sono a pagamento (di solito le telecamere leggono la targa): si paga alla colonnina o con l\'app indicata sui cartelli (quasi sempre Parka), entro la giornata.',
