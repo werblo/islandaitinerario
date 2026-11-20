@@ -273,11 +273,14 @@ def render_activity(day_id, idx, act):
         links_html += (f'<a class="act-link" href="{e(act["link"])}" target="_blank" rel="noopener">'
                         f'Scopri di più \u2197</a>')
     # 'nav': destinazione per Google Maps (coordinate "lat,lon" verificate su OpenStreetMap, di solito il
-    # parcheggio), oppure più tappe [(nome, destinazione), ...] con un link ciascuna
+    # parcheggio), oppure più tappe [(nome, destinazione), ...] con un link ciascuna; una tappa può
+    # avere un terzo elemento con i punti di passaggio ("lat,lon|lat,lon") per forzare un percorso
     navs = act.get('nav')
     if navs:
-        for label, query in ([(None, navs)] if isinstance(navs, str) else navs):
+        for label, query, *via in ([(None, navs)] if isinstance(navs, str) else navs):
             maps_url = 'https://www.google.com/maps/dir/?api=1&destination=' + urllib.parse.quote(query)
+            if via:
+                maps_url += '&waypoints=' + urllib.parse.quote(via[0])
             links_html += (f'<a class="act-link act-link--nav" href="{e(maps_url)}" target="_blank" rel="noopener">'
                             f'Naviga{(" " + e(label)) if label else ""} \u2197</a>')
     return (f'<div class="act-card">{img_html}<div class="act-body">'

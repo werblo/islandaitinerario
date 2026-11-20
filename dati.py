@@ -217,19 +217,22 @@ days = [
  },
  {'id':'d8','num':8,'dateISO':'2026-11-22','dateLabel':'Dom 22 nov','title':'Flúðir → Keflavík → Volo di ritorno','locKey':'keflavik',
   'legs':[
-    {'from':'Flúðir','to':'Ufficio FairCar','km':140,'time':'~2h05','note':'Partenza consigliata alle 6:45, arrivo verso le 8:50: fate benzina a Reykjanesbær poco prima, per riconsegnare l\'auto verso le 9:15. Riconsegna dell\'auto a Ásbrú (Bogatröð 1), vicino all\'aeroporto'},
-    {'from':'Ufficio FairCar','to':'Aeroporto di Keflavík','km':4,'time':'~10 min (navetta FairCar)','note':'Navetta subito dopo la riconsegna, verso le 9:30: in aeroporto verso le 9:45, circa 1h40 prima del volo.'}
+    {'from':'Flúðir','to':'Distributore Olís (Njarðvík)','km':137,'time':'~1h50 (con la burrasca 2h20-2h35)','note':'Partenza alle 6:00-6:15 invece delle 6:45: c\'è l\'avviso giallo per burrasca (vento 15-23 m/s, raffiche fino a 35-40 m/s, neve o nevischio, dalle 20 di sabato alle 11 al sud e alle 13 a Reykjavík e Keflavík) e l\'Hellisheiði può essere chiusa o lenta: mezz\'ora-tre quarti d\'ora di margine in più.'},
+    {'from':'Distributore Olís (Njarðvík)','to':'Ring Road Cars','km':4,'time':'~6 min','note':'Pieno di gasolio e scontrino, poi riconsegna verso le 8:30.'},
+    {'from':'Ring Road Cars','to':'Aeroporto di Keflavík','km':4,'time':'~10 min (navetta Ring Road Cars)','note':'Navetta subito dopo la riconsegna: in aeroporto verso le 9, più di 2 ore prima del volo (la consegna bagagli chiude alle 10:45).'}
   ],
   'activities':[
-    {'time':'06:45','title':'Partenza da Flúðir','desc':'Partite presto per avere margine: riconsegna auto e imbarco sono molto ravvicinati. Lasciate la chiave come concordato la sera prima con la reception (il check-out ufficiale è alle 11). Si guida al buio: se Hellisheiði è chiusa, passate da Þrengsli (strada 39), e guardate umferdin.is prima di partire.','cost':None},
-    {'time':'~09:15','title':'Riconsegna auto FairCar','desc':'Il voucher indica riconsegna alle 11:00, ma FairCar ha confermato che si può riconsegnare prima: verso le 9:15, così resta tempo per check-in e imbarco (volo alle 11:25). Carburante "stesso livello": riconsegnate con lo stesso livello del ritiro (segnatevelo o fate una foto al cruscotto il primo giorno), facendo benzina a Reykjanesbær entro 15 km dall\'ufficio e tenendo lo scontrino.','cost':None,'nav':'63.9650,-22.5746'},
-    {'time':'11:25','title':'Volo EJU3970 Keflavík → Milano Malpensa','desc':'Arrivo previsto alle 16:45.','cost':None}
+    {'time':'06:00','title':'Partenza da Flúðir','desc':'Perché così presto: da sabato alle 20 c\'è l\'avviso giallo per burrasca da sud-est (vento 15-23 m/s, raffiche fino a 35-40 m/s, neve o nevischio poi pioggia), che al sud dura fino alle 11 e a Reykjavík e Keflavík fino alle 13. L\'Hellisheiði, l\'altopiano tra Hveragerði e Reykjavík, con queste raffiche può chiudere o essere molto lenta. Alle 5 guardate umferdin.is (Hellisheiði, Þrengslavegur, Suðurstrandarvegur) e scegliete il percorso aperto: 1) Hellisheiði, il solito (~1h50 senza vento); 2) Þrengsli, strada 39, se è chiusa l\'Hellisheiði (~2h); 3) costa, strade 38 e 427 via Þorlákshöfn e Grindavík, solo se le prime due sono chiuse e la 427 è aperta: è la più esposta al vento (~2h15). Se è tutto chiuso, chiamate Ring Road Cars (+354 779 9499, dalle 4) e controllate il volo. Lasciate la chiave come concordato con la reception.','cost':None,
+     'nav':[('percorso 1 (Hellisheiði)','63.9797,-22.5467'),('percorso 2 (Þrengsli)','63.9797,-22.5467','63.9696,-21.4580'),('percorso 3 (costa)','63.9797,-22.5467','63.8560,-21.3800|63.8420,-22.4300')]},
+    {'time':'~08:15','title':'Pieno al distributore Olís (Njarðvík)','desc':'Olís di Fitjabakki 2-4, sulla Reykjanesbraut all\'ingresso di Njarðvík, a circa 4 km dal noleggio (il contratto chiede un distributore entro 15 km). L\'auto è a gasolio: pompa "Dísel". Pagate alla colonnina con la carta e il PIN e chiedete lo scontrino ("Kvittun"), che va mostrato alla riconsegna: senza scontrino o con il serbatoio non pieno ci sono 30 € di penale più il carburante.','cost':'€ carburante','nav':'63.9797,-22.5467'},
+    {'time':'~08:30','title':'Riconsegna auto Ring Road Cars','desc':'Bogatröð 1, Ásbrú. Riconsegna anticipata alle 8:30 (il volo è alle 11:25): mostrate lo scontrino del pieno e fate le foto all\'auto. Poi la navetta per il terminal.','cost':None,'nav':'63.9650,-22.5746'},
+    {'time':'11:25','title':'Volo EJU3970 Keflavík → Milano Malpensa','desc':'Arrivo previsto alle 16:45. Con il vento forte i voli possono essere in ritardo: controllate lo stato del volo nell\'app easyJet prima di partire da Flúðir.','cost':None}
   ],
   'food':[
-    {'meal':'Colazione','place':'Avanzi della spesa','note':'Partendo alle 6:45 la colazione della guesthouse difficilmente è già servita: tenete da parte qualcosa dalla spesa del Bónus','cost':'€','gf':False}
+    {'meal':'Colazione','place':'Avanzi della spesa','note':'Partendo alle 6:00 la colazione della guesthouse non è ancora servita: tenete da parte qualcosa dalla spesa del Bónus','cost':'€','gf':False}
   ],
   'accommodation': None,
-  'tips':'Riconsegna anticipata già confermata da FairCar: partite presto da Flúðir per lasciare l\'auto verso le 9:15 (volo alle 11:25).',
+  'tips':'Avviso giallo per burrasca fino a domenica mattina: partite alle 6:00-6:15, guardate umferdin.is alle 5 e scegliete il percorso aperto. Riconsegna dell\'auto verso le 8:30 con il pieno e lo scontrino (volo alle 11:25).',
   'culture':"L'aeroporto di Keflavík, oggi il principale scalo internazionale dell'isola, fu costruito durante la seconda guerra mondiale dagli Stati Uniti, che vi mantennero una base militare fino al 2006. Il terminal passeggeri, inaugurato nel 1987, porta il nome di Leifr Eiríksson, l'esploratore islandese che intorno all'anno 1000 raggiunse le coste del Nord America.\n\nKeflavík nacque come porto di pesca e di commercio; nel 1994 si è unita a Njarðvík e Hafnir nel comune di Reykjanesbær.",
   'culture_links':[("Keflavík", "https://it.wikipedia.org/wiki/Keflavik"), ("Reykjanesbær", "https://it.wikipedia.org/wiki/Reykjanesbær"), ("Leif Erikson", "https://it.wikipedia.org/wiki/Leif_Erikson")],
  }
@@ -245,7 +248,7 @@ map_points = {
     'd5': [{'name':'Hótel Búrfell','lat':63.4552,'lon':-19.1793}, {'name':'Jökulsárlón','lat':64.0481,'lon':-16.1799}, {'name':'Diamond Beach','lat':64.0436,'lon':-16.1780}, {'name':'Fjaðrárgljúfur','lat':63.7722,'lon':-18.1725}, {'name':'Hótel Búrfell','lat':63.4552,'lon':-19.1793}],
     'd6': [{'name':'Hótel Búrfell','lat':63.4552,'lon':-19.1793}, {'name':'Pylsuvagninn','lat':63.9378,'lon':-21.0043}, {'name':'Kerið','lat':64.0410,'lon':-20.8834}, {'name':'Skálholt','lat':64.1253,'lon':-20.5241}, {'name':'Flúðir','lat':64.1372,'lon':-20.3033}, {'name':'Secret Lagoon','lat':64.1372,'lon':-20.3090}],
     'd7': [{'name':'Flúðir','lat':64.1372,'lon':-20.3033}, {'name':'Geysir','lat':64.3128,'lon':-20.3009}, {'name':'Gullfoss','lat':64.3271,'lon':-20.1199}, {'name':'Faxi','lat':64.2266,'lon':-20.3402}, {'name':'Hrunalaug','lat':64.1329,'lon':-20.2551}, {'name':'Efstidalur II','lat':64.2423,'lon':-20.5521}, {'name':'Flúðir','lat':64.1372,'lon':-20.3033}],
-    'd8': [{'name':'Flúðir','lat':64.1372,'lon':-20.3033}, {'name':'Ufficio FairCar','lat':63.9650,'lon':-22.5746}, {'name':'Aeroporto Keflavík','lat':63.9950,'lon':-22.6239}]
+    'd8': [{'name':'Flúðir','lat':64.1372,'lon':-20.3033}, {'name':'Distributore Olís','lat':63.9797,'lon':-22.5467}, {'name':'Ring Road Cars','lat':63.9650,'lon':-22.5746}, {'name':'Aeroporto Keflavík','lat':63.9950,'lon':-22.6239}]
 }
 
 # Tappe serali per la stima aurora (app e notifiche): dove siete la sera, ora per ora
