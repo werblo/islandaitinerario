@@ -192,17 +192,19 @@ days = [
     {'from':'Flúðir','to':'Geysir','km':30,'time':'~25 min','note':'Partenza consigliata alle 10:00, arrivo verso le 10:30.'},
     {'from':'Geysir','to':'Gullfoss','km':10,'time':'~10 min','note':'Partenza consigliata verso le 11:15, arrivo verso le 11:30.'},
     {'from':'Gullfoss','to':'Faxi','km':21,'time':'~20 min','note':'Partenza consigliata verso le 12:10, arrivo verso le 12:30.'},
-    {'from':'Faxi','to':'Efstidalur II','km':9,'time':'~12 min','note':'Partenza consigliata da Faxi verso le 12:50, pranzo a Friðheimar alle 13; da lì a Efstidalur ripartite verso le 15:10. Passando da Friðheimar (Reykholt) per il pranzo'},
-    {'from':'Efstidalur II','to':'Flúðir','km':20,'time':'~18 min','note':'Partenza consigliata verso le 16:30, arrivo verso le 16:50.'}
+    {'from':'Faxi','to':'Hrunalaug','km':19,'time':'~20 min','note':'Partenza consigliata verso le 13:00, dopo il pranzo al sacco a Faxi, arrivo verso le 13:20.'},
+    {'from':'Hrunalaug','to':'Efstidalur II','km':33,'time':'~35 min','note':'Partenza consigliata verso le 14:50, arrivo verso le 15:30. Se il vento rinforza o il tempo peggiora, saltate Efstidalur: da Hrunalaug a Flúðir sono 15 minuti.'},
+    {'from':'Efstidalur II','to':'Flúðir','km':29,'time':'~30 min','note':'Partenza consigliata verso le 16:30, arrivo verso le 17:00. Dalle 20 è previsto l\'avviso giallo per burrasca: rientrate prima.'}
   ],
   'activities':[
-    {'time':'10:30','title':'Geysir & Strokkur','desc':'Area geotermica: Strokkur erutta ogni 5-10 minuti.','cost':'gratis (parcheggio a pagamento, ~1000 ISK / ~7€)','nav':'64.3114,-20.2975'},
-    {'time':'11:30','title':'Gullfoss','desc':"Cascata a due salti sul fiume Hvítá; d'inverno le rocce intorno sono spesso coperte di ghiaccio.",'cost':'gratis','link':'https://it.wikipedia.org/wiki/Gullfoss','nav':'64.3252,-20.1306'},
-    {'time':'12:30','title':'Faxi','desc':'Cascata piccola e tranquilla vicino a Reykholt, sulla strada del ritorno da Gullfoss, poco turistica. Poi pranzo a Friðheimar, a Reykholt (circa 10 minuti), verso le 13.','cost':'gratis','nav':'64.2262,-20.3391'},
+    {'time':'10:30','title':'Geysir & Strokkur','desc':'Area geotermica: Strokkur erutta ogni 5-10 minuti.','cost':'gratis · parcheggio ~1.080 ISK / ~7,50€ con Parka, zona 8201 (verificate sul cartello)','nav':'64.3114,-20.2975'},
+    {'time':'11:30','title':'Gullfoss','desc':"Cascata a due salti sul fiume Hvítá; d'inverno le rocce intorno sono spesso coperte di ghiaccio.",'cost':'gratis · parcheggio forse a pagamento (~1.080 ISK) dal 2026, guide discordanti: guardate il cartello e pagate con Parka','link':'https://it.wikipedia.org/wiki/Gullfoss','nav':'64.3252,-20.1306'},
+    {'time':'12:30','title':'Faxi','desc':'Cascata piccola e tranquilla vicino a Reykholt, sulla strada del ritorno da Gullfoss, poco turistica. Qui il pranzo al sacco, in auto al caldo, verso le 13.','cost':'gratis · parcheggio ~750-900 ISK con Parka, zona 8212 secondo le guide (verificate sul cartello)','nav':'64.2262,-20.3391'},
+    {'time':'13:20','title':'Hrunalaug','desc':'Piccola sorgente calda naturale in campagna, su un terreno privato: due o tre pozze tra muretti di pietra e torba (circa 38-40 °C) e un vecchio capanno per cambiarsi. Niente docce né bar; dal parcheggio 5-10 minuti a piedi su un sentiero che d\'inverno può essere scivoloso. D\'inverno aperta 10-20 (fuori orario è vietato entrare), massimo 1 ora e 30; si paga sul posto. Con il vento tenete l\'accappatoio a portata di mano.','cost':'€€ ~3.000 ISK a testa prima delle 14, ~3.500 dopo (parcheggio compreso)','link':'https://hrunalaug.is/','nav':'64.1329,-20.2551'},
     {'time':'15:30','title':'Efstidalur II','desc':"Fattoria con gelateria e vacche visibili da dietro un vetro, ambiente al caldo e informale. Sosta comoda per il buio che cala presto in questo periodo, prima del rientro a Flúðir.",'cost':'€ gelato/spuntino a parte','nav':'64.2420,-20.5529'}
   ],
   'food':[
-    {'meal':'Pranzo','place':'Friðheimar, Reykholt','nav':'64.1783,-20.4476','note':'Famosa zuppa di pomodoro in serra, a Reykholt tra Faxi ed Efstidalur, verso le 13: hanno pane senza glutine, ma non garantito senza contaminazione; in alternativa c\'è un\'insalata. Il 21/11 è sabato: conviene prenotare il tavolo (aperto circa 12-16)','cost':'€€','gf':True},
+    {'meal':'Pranzo','place':'Pranzo al sacco a Faxi','note':'Comprate tutto venerdì al Krambúðin di Flúðir o con la spesa del Bónus di Selfoss; mangiate in auto al caldo verso le 13, prima di Hrunalaug','cost':'€','gf':False},
     {'meal':'Cena','place':'Cena con la spesa o ristorante del The Hill Hotel','note':'Ultima occasione per finire la spesa fatta al Bónus; se in guesthouse non si può cucinare, il ristorante del The Hill Hotel è aperto circa 12-21 (senza glutine non confermato)','cost':'€','gf':False}
   ],
   'accommodation':{'name':'The Hill Guesthouse','detail':'Ultima notte a Flúðir · domani partenza alle 6:45: stasera chiedete dove lasciare la chiave · parcheggio gratuito','url':'https://thehillhotel.is/guesthouse-fludir/'},
@@ -242,7 +244,7 @@ map_points = {
     'd4': [{'name':'Reykjavík','lat':64.1466,'lon':-21.9426}, {'name':'Seljalandsfoss','lat':63.6156,'lon':-19.9886}, {'name':'Skógafoss','lat':63.5321,'lon':-19.5116}, {'name':'Dyrhólaey','lat':63.4033,'lon':-19.1250}, {'name':'Reynisfjara','lat':63.4038,'lon':-19.0428}, {'name':'Víkurkirkja','lat':63.4193,'lon':-19.0058}, {'name':'Hótel Búrfell','lat':63.4552,'lon':-19.1793}],
     'd5': [{'name':'Hótel Búrfell','lat':63.4552,'lon':-19.1793}, {'name':'Jökulsárlón','lat':64.0481,'lon':-16.1799}, {'name':'Diamond Beach','lat':64.0436,'lon':-16.1780}, {'name':'Fjaðrárgljúfur','lat':63.7722,'lon':-18.1725}, {'name':'Hótel Búrfell','lat':63.4552,'lon':-19.1793}],
     'd6': [{'name':'Hótel Búrfell','lat':63.4552,'lon':-19.1793}, {'name':'Pylsuvagninn','lat':63.9378,'lon':-21.0043}, {'name':'Kerið','lat':64.0410,'lon':-20.8834}, {'name':'Skálholt','lat':64.1253,'lon':-20.5241}, {'name':'Flúðir','lat':64.1372,'lon':-20.3033}, {'name':'Secret Lagoon','lat':64.1372,'lon':-20.3090}],
-    'd7': [{'name':'Flúðir','lat':64.1372,'lon':-20.3033}, {'name':'Geysir','lat':64.3128,'lon':-20.3009}, {'name':'Gullfoss','lat':64.3271,'lon':-20.1199}, {'name':'Faxi','lat':64.2266,'lon':-20.3402}, {'name':'Efstidalur II','lat':64.2423,'lon':-20.5521}, {'name':'Flúðir','lat':64.1372,'lon':-20.3033}],
+    'd7': [{'name':'Flúðir','lat':64.1372,'lon':-20.3033}, {'name':'Geysir','lat':64.3128,'lon':-20.3009}, {'name':'Gullfoss','lat':64.3271,'lon':-20.1199}, {'name':'Faxi','lat':64.2266,'lon':-20.3402}, {'name':'Hrunalaug','lat':64.1329,'lon':-20.2551}, {'name':'Efstidalur II','lat':64.2423,'lon':-20.5521}, {'name':'Flúðir','lat':64.1372,'lon':-20.3033}],
     'd8': [{'name':'Flúðir','lat':64.1372,'lon':-20.3033}, {'name':'Ufficio FairCar','lat':63.9650,'lon':-22.5746}, {'name':'Aeroporto Keflavík','lat':63.9950,'lon':-22.6239}]
 }
 
