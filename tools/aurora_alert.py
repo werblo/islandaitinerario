@@ -725,11 +725,23 @@ def warnings_for_day(warns, day):
     return sorted(mine, key=lambda w: (-w['level'], w['onset']))
 
 
+# zone delle allerte in italiano (come WARN_AREA_IT in app/app.js)
+WARN_AREA_IT = {'reykjavik - capital region': 'Reykjavík e dintorni', 'south iceland': 'Islanda del sud',
+                'faxafloi - southwest iceland': 'Faxaflói, Islanda sud-occidentale',
+                'breidafjordur - westnorthwest iceland': 'Breiðafjörður, Islanda occidentale',
+                'central highlands - uninhabited part of iceland': 'altopiani centrali (disabitati)',
+                'southeast iceland': 'Islanda sud-orientale', 'westfjords': 'Fiordi occidentali',
+                'strandir and northwest iceland': 'Strandir e Islanda nord-occidentale',
+                'northeast iceland': 'Islanda nord-orientale', 'east iceland': 'Islanda orientale',
+                'eastfjords': 'Fiordi orientali'}
+
+
 def warning_line(w, day_iso):
     em, col = WARN_COLOR_IT[w['level']]
     kind = WARN_TYPE_IT.get(w['kind'].lower(), w['headline'] or w['kind'])
     when = lambda t: f'{t:%H:%M}' + ('' if t.strftime('%Y-%m-%d') == day_iso else f' del {t:%d/%m}')
-    return f'{em} {col}, {kind}: dalle {when(w["onset"])} alle {when(w["expires"])} ({w["area"]})'
+    area = WARN_AREA_IT.get(w['area'].lower(), w['area'])
+    return f'{em} {col}, {kind}: dalle {when(w["onset"])} alle {when(w["expires"])} ({area})'
 
 
 def check_allerta(now, manual=False):
