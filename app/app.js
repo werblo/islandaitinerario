@@ -369,13 +369,42 @@ function warningsFor(day) {
     && (day.pts || []).some(([lat, lon]) => w.polys.some(p => nearPolygon(lat, lon, p, warnNearKm(w)))))
     .sort((a, b) => b.level - a.level || a.onset - b.onset);
 }
+// Testi delle allerte (vedur.is li dà in islandese e inglese): traduzione in italiano delle frasi
+// fisse che usano di solito; quello che non riconosce resta in inglese.
+const WARN_DIR_IT = { north: 'nord', south: 'sud', east: 'est', west: 'ovest', northeast: 'nord-est', northwest: 'nord-ovest',
+  southeast: 'sud-est', southwest: 'sud-ovest' };
+const WARN_AREA_IT = { 'reykjavik - capital region': 'Reykjavík e dintorni', 'south iceland': 'Islanda del sud',
+  'faxafloi - southwest iceland': 'Faxaflói, Islanda sud-occidentale', 'breidafjordur - westnorthwest iceland': 'Breiðafjörður, Islanda occidentale',
+  'central highlands - uninhabited part of iceland': 'altopiani centrali (disabitati)', 'southeast iceland': 'Islanda sud-orientale',
+  'westfjords': 'Fiordi occidentali', 'strandir and northwest iceland': 'Strandir e Islanda nord-occidentale',
+  'northeast iceland': 'Islanda nord-orientale', 'east iceland': 'Islanda orientale', 'eastfjords': 'Fiordi orientali' };
+const WARN_TEXT_IT = [
+  [/Traveling can be hazardous and people are advised to plan accordingly, show caution and monitor weather forecasts\.?/gi, 'Viaggiare può essere pericoloso: organizzatevi di conseguenza, guidate con prudenza e seguite le previsioni.'],
+  [/Can be hazardous for vehicles that are sensitive to wind\.?/gi, 'Pericoloso per i veicoli sensibili al vento.'],
+  [/Strong wind gusts near mountains that may exceed ([\d–-]+) m\/s/gi, 'Raffiche forti vicino ai monti, che possono superare $1 m/s'],
+  [/Strong wind gusts can be expected up to ([\d–-]+) m\/s/gi, 'Attese raffiche fino a $1 m/s'],
+  [/wind gusts/gi, 'raffiche'],
+  [/\b(north|south|east|west|northeast|northwest|southeast|southwest)(?:erly)?\s+(severe gale|gale|violent storm|storm|wind)/gi,
+    (m, d, k) => k.toLowerCase().replace('severe gale', 'burrasca forte').replace('violent storm', 'tempesta violenta').replace('gale', 'burrasca').replace('storm', 'tempesta').replace('wind', 'vento') + ' da ' + WARN_DIR_IT[d.toLowerCase()]],
+  [/\bsevere gale\b/gi, 'burrasca forte'], [/\bviolent storm\b/gi, 'tempesta violenta'], [/\bgale\b/gi, 'burrasca'], [/\bstorm\b/gi, 'tempesta'],
+  [/\bsnow or sleet\b/gi, 'neve o nevischio'], [/\bheavy rain\b/gi, 'pioggia forte'], [/\blater rain\b/gi, 'poi pioggia'],
+  [/\bblowing snow\b/gi, 'neve sollevata dal vento'], [/\bpoor visibility\b/gi, 'scarsa visibilità'], [/\bsnowfall\b/gi, 'nevicate'],
+  [/\bsleet\b/gi, 'nevischio'], [/\bsnow\b/gi, 'neve'], [/\brain\b/gi, 'pioggia'],
+  [/\bstrongest in\b/gi, 'più forte a'], [/\bespecially near\b/gi, 'soprattutto vicino a'], [/\bnear\b/gi, 'vicino a'],
+  [/\ba Reykjanes peninsula\b/gi, 'sulla penisola di Reykjanes'], [/\bReykjanes peninsula\b/gi, 'penisola di Reykjanes'], [/\bor\b/g, 'o'], [/\band\b/g, 'e'],
+];
+function warnTextIt(x) {
+  x = WARN_TEXT_IT.reduce((t, [re, to]) => t.replace(re, to), x || '');
+  return x.replace(/(^|[.!?]\s+)([a-zà-ú])/g, (m, a, b) => a + b.toUpperCase());
+}
+function warnAreaIt(a) { return WARN_AREA_IT[(a || '').toLowerCase()] || a; }
 function warningHtml(w, day) {
   const [em, col] = WARN_COLOR_IT[w.level];
   const kind = WARN_TYPE_IT[w.kind.toLowerCase()] || w.headline || w.kind;
   const when = x => { const iso = new Date(x).toISOString(); return iso.slice(11, 16) + (iso.slice(0, 10) === day.dateISO ? '' : ' del ' + iso.slice(8, 10) + '/' + iso.slice(5, 7)); };
   return '<div class="warn warn--' + w.level + '"><b>' + em + ' Allerta ' + col + ': ' + escHtml(kind) + '</b><br>dalle '
-    + when(w.onset) + ' alle ' + when(w.expires) + ' · ' + escHtml(w.area)
-    + (w.desc ? '<br><span class="warn__desc">' + escHtml(w.desc) + '</span>' : '') + '</div>';
+    + when(w.onset) + ' alle ' + when(w.expires) + ' · ' + escHtml(warnAreaIt(w.area))
+    + (w.desc ? '<br><span class="warn__desc" title="' + escHtml(w.desc) + '">' + escHtml(warnTextIt(w.desc)) + '</span>' : '') + '</div>';
 }
 function warnStamp() {
   if (!state.warn) return '';
